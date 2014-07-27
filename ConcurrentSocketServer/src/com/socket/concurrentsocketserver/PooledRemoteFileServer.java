@@ -1,4 +1,4 @@
-package com.echeloneditor.concurrentsocketserver;
+package com.socket.concurrentsocketserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
