@@ -88,10 +88,10 @@ public class TestDemo {
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		TestDemo hello = new TestDemo();
 		Socket socket = new Socket("127.0.0.1", 9000);
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<100;i++){
 			//Socket socket = new Socket("127.0.0.1", 9000);
 			hello.test(socket);
 		}
-		hello.test1();
+		//hello.test1();
 	}
 }

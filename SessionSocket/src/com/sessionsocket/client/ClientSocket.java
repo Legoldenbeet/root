@@ -1,141 +1,80 @@
 package com.sessionsocket.client;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
-import com.sessionsocket.SessionSocket;
+import com.watchdata.commons.lang.WDByteUtil;
 
-public class ClientSocket extends SessionSocket {
-	public static String ip;
-	public static String port;
-	public ClientSocket(Socket socket) {
-		super(socket);
+public class ClientSocket {
+	String _serverAddres = "127.0.0.1";
+	int _serverPort = 6666;
+	BufferedInputStream bis = null;
+	BufferedOutputStream bos = null;
+
+	public ClientSocket(String _serverAddress, int _serverPort) {
+		this._serverAddres = _serverAddress;
+		this._serverPort = _serverPort;
+
 	}
 
-	public static void main(String args[]) {
-		while (true) {
-			String commandList=getInput();
-			String com[]=commandList.split(" ");
-			String command=com[0];
-			if (command.equalsIgnoreCase("connect")) {
-				if (com.length<3) {
-					System.out.println("param is error.");
-					//continue;
-				}else {
-					ip=com[1];
-					port=com[2];
-				}
-				
-				if (ip==""||port=="") {
-					Socket socket;
-					try {
-						socket = new Socket(ip, Integer.parseInt(port));
-						ClientSocket clientSocket = new ClientSocket(socket);
-						// 启动ClientSocket线程
-						clientSocket.start();
-						Thread iMonitor = new Thread(clientSocket.new InputMonitor());
-						iMonitor.setDaemon(true);
-						// 启动输入
-						iMonitor.start();
-
-					} catch (UnknownHostException e) {
-						System.out.println(e.getMessage());
-					} catch (IOException e) {
-						System.out.println(e.getMessage());
-					}
-				}
-			}else {
-				System.out.println("command is not support.");
-			}
-		}
+	// 建立连接
+	public void connect() throws IOException {
+		Socket socket = new Socket();
 		
+		socket.connect(new InetSocketAddress(_serverAddres, _serverPort), 1000 * 3);
+
+		bis = new BufferedInputStream(socket.getInputStream());
+		bos = new BufferedOutputStream(socket.getOutputStream());
 	}
 
-	public void onClose(Socket socket, Thread thread) {
-		System.out.println("与服务器断开连接。");
+	// 发送数据
+	public int write(byte[] bs, int pos, int length) throws IOException {
+		bos.write(bs, pos, length);
+		bos.flush();
+
+		return 0;
 	}
 
-	public void onConnected(Socket socket, Thread thread) {
-		System.out.println("连接服务器成功！");
+	// 接收数据
+	public int read(byte[] bs, int pos, int length) throws IOException {
+		int i = bis.read(bs, pos, length);
+		return i;
 	}
 
-	public void onDataArrived(byte[] data, Socket socket, Thread thread) {
-		System.out.println("<<" + new String(data));
-	}
-
-	public void onError(Exception e, Socket socket, Thread thread) {
-		System.out.println("与服务器连接异常，断开连接。");
-	}
-
-	class InputMonitor implements Runnable {
-		String command = null;
-
-		public void run() {
-
-			while (true) {
-				System.out.println(">>");
-				command = getInput();
-				try {
-					sendMessage(command.getBytes());
-				} catch (IOException e) {
-					e.getMessage();
-				}
-			}
-		}
-/*
-		public String getInput() {
-			InputStream inputStream = System.in;
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			try {
-				String inputString = reader.readLine();
-				return inputString;
-			} catch (Exception e) {
-				return null;
-			}
-		}*/
-
-	}
-
-	@Override
-	public byte[] reciveMessage(Socket socket, Thread thread) {
-		BufferedInputStream reciver = null;
-		ByteArrayOutputStream out = null;
-		try {
-			// 获得输入缓冲流
-			reciver = new BufferedInputStream(socket.getInputStream());
-			// 创建缓存文件
-			out = new ByteArrayOutputStream();
-
-			// 读取数据
-			byte[] buffer = new byte[getBUFFER_SIZE() * 1024];// 缓存大小
-
-			int amount = -1;
-
-			if ((amount = reciver.read(buffer)) != -1) {
-				out.write(buffer, 0, amount);
-			}
-			out.flush();
-			out.close();
-		} catch (Exception e) {
-			errorHandle(e, socket, thread);
+	// 释放连接
+	public void disconnect() throws IOException {
+		if (bos != null) {
+			bos.close();
 		}
 
-		return out.toByteArray();
-	}
-	public static String getInput() {
-		InputStream inputStream = System.in;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		try {
-			String inputString = reader.readLine();
-			return inputString;
-		} catch (Exception e) {
-			return null;
+		if (bis != null) {
+			bis.close();
 		}
+	}
+
+	public static void main(String[] args) throws IOException {
+
+		String dataue = "10114002400100328E019173E02D7856942963C7680057EA0010032FA4D388B4A81B777C47CBD8087D0F4DA0032FE47870EA7EB10364ED1628065C01201";
+		String datatm = "1007500251010032000000000000F0030000000000000F030032BDBAC27997687C311B5E891FF402440D";
+		String datats = "1007700260010032F4A5EF84139E7D0E843EF7F46A22FA7E010032158FC26B00AE19D56B17669D71DDB7ED";
+		String data50 = "10090002710033X8B28258792DC5BA807F74CB6CBD456A000488486AA02DFC34E9EA74BBCED5D700A0FB0A905ED9734C1E0";
+		String dataa6 = "1007800280070033X611FD44000B483F0ECBD9D5E85D8C1A00033X6E4748602C6937E7C3565DA21446A7C8X";
+
+		ClientSocket cs = new ClientSocket("10.0.73.131", 6666);
+		cs.connect();
+		byte[] writedata=WDByteUtil.HEX2Bytes("B2030000000000000000");
+		//byte[] writedata=WDByteUtil.HEX2Bytes("00");
+		byte[] readdata=new byte[1024];
+		cs.write(writedata, 0, writedata.length);
+		
+		int len=cs.read(readdata, 0, readdata.length);
+		
+		byte[] out=new byte[len];
+		System.arraycopy(readdata, 0, out, 0, len);
+		System.out.println(WDByteUtil.bytes2HEX(out));
+		cs.disconnect();
 	}
 }
