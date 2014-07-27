@@ -1,11 +1,13 @@
 package com.echeloneditor.concurrentsocketserver;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.apache.log4j.Logger;
+
 public class PooledRemoteFileServer {
+	private static Logger log = Logger.getLogger(PooledRemoteFileServer.class);
 	protected int maxConnections;
 	protected int listenPort;
 	protected ServerSocket serverSocket;
@@ -18,16 +20,12 @@ public class PooledRemoteFileServer {
 	public void acceptConnections() {
 		try {
 			ServerSocket server = new ServerSocket(listenPort);
-			System.out.println("listen on "+listenPort+"...");
+			log.debug("server listen on " + listenPort + "...");
 			Socket incomingConnection = null;
 			while (true) {
 				incomingConnection = server.accept();
-				incomingConnection.setKeepAlive(true);
-				incomingConnection.setSoTimeout(0);
 				handleConnection(incomingConnection);
 			}
-		} catch (BindException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -38,14 +36,16 @@ public class PooledRemoteFileServer {
 	}
 
 	public void setUpHandlers() {
+		log.debug("pool init ....");
 		for (int i = 0; i < maxConnections; i++) {
 			PooledConnectionHandler currentHandler = new PooledConnectionHandler();
 			new Thread(currentHandler, "Handler " + i).start();
+			log.debug("Handler " + i + "启动...success.");
 		}
 	}
 
 	public static void main(String args[]) {
-		PooledRemoteFileServer server = new PooledRemoteFileServer(8, 1);
+		PooledRemoteFileServer server = new PooledRemoteFileServer(9000, 1000);
 		server.setUpHandlers();
 		server.acceptConnections();
 	}
