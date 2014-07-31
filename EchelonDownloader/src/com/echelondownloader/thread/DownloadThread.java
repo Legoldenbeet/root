@@ -147,8 +147,8 @@ public class DownloadThread extends Thread {
 	public static void main(String[] args) throws Exception {
 		int threadSize = 5;
 		
-		Resource f = new Resource("http://www.apache.org/dist/struts/library/struts-2.1.8.1-lib.zip", 
-				"C:/test-download", "struts.zip", threadSize);
+		Resource f = new Resource("http://dlsw.baidu.com/sw-search-sp/soft/2e/10849/wrar510sc.1402653363.exe", 
+				"C:/test-download", "wrar.exe", threadSize);
 		ContextHolder.dh.doDownload(f);
 	}
 }
