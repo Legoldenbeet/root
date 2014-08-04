@@ -18,6 +18,12 @@ import com.gp.gpscript.script.GPKeyCryptoEngine;
 import com.gp.gpscript.script.NativeByteString;
 import com.gp.gpscript.script.NativeKey;
 import com.gp.gpscript.utils.Hex;
+import com.watchdata.commons.crypto.WD3DesCryptoUtil;
+import com.watchdata.commons.crypto.WDCryptoUtil;
+import com.watchdata.commons.crypto.pboc.WDPBOCUtil;
+import com.watchdata.commons.jce.JceBase.Padding;
+import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class Hsm implements GPKeyCryptoEngine {
 	private Logger log = Logger.getLogger(getClass().getName());
@@ -163,7 +169,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 * @param p7
 	 *            Initial vector for encrypt
 	 * @return a new ByteString of the result of decrypted and encrypted data
-	 */
+	 *//*
 	public NativeByteString decryptEncrypt(NativeKey p1, Number p2, NativeKey p3, Number p4, NativeByteString p5, NativeByteString p6, NativeByteString p7) {
 		NativeByteString bstrKey = p1.getBlob();
 		byte[] decrytKey = new byte[bstrKey.GetLength()];
@@ -198,7 +204,7 @@ public class Hsm implements GPKeyCryptoEngine {
 		Integer ee = new Integer(GPConstant.HEX);
 		NativeByteString sNew = new NativeByteString(str, ee);
 		return sNew;
-	}
+	}*/
 
 	/**
 	 * derive the key using the data and master key
@@ -235,7 +241,7 @@ public class Hsm implements GPKeyCryptoEngine {
 
 	}
 
-	public void deriveOddKey(NativeKey p1, Number p2, NativeByteString p3, NativeKey p4) {
+	/*public void deriveOddKey(NativeKey p1, Number p2, NativeByteString p3, NativeKey p4) {
 		NativeByteString bstrMasterKey = p1.getBlob();
 		byte[] masterKey = new byte[bstrMasterKey.GetLength()];
 		for (int i = 0; i < bstrMasterKey.GetLength(); i++)
@@ -257,7 +263,7 @@ public class Hsm implements GPKeyCryptoEngine {
 			e.printStackTrace();
 			throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
 		}
-	}
+	}*/
 
 	/**
 	 * create a digest of the data,using the algorithm specified by the mech parameter
@@ -268,7 +274,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 *            data
 	 * @return a ByteString containing the digest of data
 	 */
-	public NativeByteString digest(Number p1, NativeByteString p2) {
+	/*public NativeByteString digest(Number p1, NativeByteString p2) {
 		int digestMech = (int) p1.intValue();
 		byte[] data = new byte[p2.GetLength()];
 		for (int i = 0; i < p2.GetLength(); i++)
@@ -288,7 +294,7 @@ public class Hsm implements GPKeyCryptoEngine {
 		NativeByteString sNew = new NativeByteString(str, ee);
 		return sNew;
 	}
-
+*/
 	/**
 	 * encrypt
 	 * 
@@ -304,27 +310,13 @@ public class Hsm implements GPKeyCryptoEngine {
 	 */
 	public NativeByteString encrypt(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) {
 		NativeByteString bstrKey = p1.getBlob();
-		byte[] key = new byte[bstrKey.GetLength()];
-		for (int i = 0; i < bstrKey.GetLength(); i++)
-			key[i] = bstrKey.ByteAt(i);
+		//byte[] key = new byte[bstrKey.GetLength()];
+		//for (int i = 0; i < bstrKey.GetLength(); i++)
+		//	key[i] = bstrKey.ByteAt(i);
 
 		int mech = (int) p2.intValue();
 
-		byte[] dataToEncrypt = new byte[p3.GetLength()];
-		for (int i = 0; i < p3.GetLength(); i++)
-			dataToEncrypt[i] = p3.ByteAt(i);
-
-		byte[] iv = new byte[p4.GetLength()];
-		for (int i = 0; i < p4.GetLength(); i++)
-			iv[i] = p4.ByteAt(i);
-
-		byte[] out = null;
-		try {
-			out = Crypto.encrypt(key, mech, dataToEncrypt, iv);
-		} catch (CryptoException e) {
-			e.printStackTrace();
-			throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
-		}
+		WD3DesCryptoUtil.cbc_encrypt(bstrKey.toString(), p3.toString(), Padding.NoPadding,p4.toString());
 
 		// return
 		String str = new String(Hex.encode(out));
@@ -341,7 +333,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 * @param p2
 	 *            the key object containing the created key
 	 */
-	public void generateKey(Number p1, NativeKey p2) {
+	/*public void generateKey(Number p1, NativeKey p2) {
 		int mech = (int) p1.intValue();
 
 		KeyParameter out;
@@ -356,7 +348,7 @@ public class Hsm implements GPKeyCryptoEngine {
 			e.printStackTrace();
 			throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
 		}
-	}
+	}*/
 
 	/**
 	 * generateKeyPair create a public/private key pair need update the database
@@ -368,7 +360,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 * @param p3
 	 *            private key
 	 */
-	public void generateKeyPair(Number p1, NativeKey p2, NativeKey p3) {
+	/*public void generateKeyPair(Number p1, NativeKey p2, NativeKey p3) {
 		int mech = (int) p1.intValue();
 		// call syp
 		AsymmetricCipherKeyPair pair;
@@ -389,7 +381,7 @@ public class Hsm implements GPKeyCryptoEngine {
 			e.printStackTrace();
 			throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
 		}
-	}
+	}*/
 
 	/**
 	 * generateRandom
@@ -401,18 +393,11 @@ public class Hsm implements GPKeyCryptoEngine {
 	public NativeByteString generateRandom(Number p1) {
 		int rdmLength = (int) p1.intValue();
 
-		byte[] out = null;
-		try {
-			out = Crypto.generaterandom(rdmLength);
-		} catch (CryptoException e) {
-			e.printStackTrace();
-			throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
-		}
+		String random=WDStringUtil.getRandomHexString(rdmLength*2);
 
 		// return
-		String str = new String(Hex.encode(out));
 		Integer ee = new Integer(GPConstant.HEX);
-		NativeByteString sNew = new NativeByteString(str, ee);
+		NativeByteString sNew = new NativeByteString(random, ee);
 		return sNew;
 	}
 
@@ -427,7 +412,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 *            data
 	 * @return the signatrue of data
 	 */
-	public NativeByteString sign(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) {
+	/*public NativeByteString sign(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) {
 		NativeByteString bstrKey = p1.getBlob();
 		byte[] signingkey = new byte[bstrKey.GetLength()];
 		for (int i = 0; i < bstrKey.GetLength(); i++)
@@ -473,7 +458,7 @@ public class Hsm implements GPKeyCryptoEngine {
 		Integer ee = new Integer(GPConstant.HEX);
 		NativeByteString sNew = new NativeByteString(str, ee);
 		return sNew;
-	}
+	}*/
 
 	/**
 	 * unwrap
@@ -488,7 +473,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 *            initial vector
 	 * @return
 	 */
-	public boolean verify(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) {
+/*	public boolean verify(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) {
 		NativeByteString bstrKey = p1.getBlob();
 		byte[] verifykey = new byte[bstrKey.GetLength()];
 		for (int i = 0; i < bstrKey.GetLength(); i++)
@@ -525,7 +510,7 @@ public class Hsm implements GPKeyCryptoEngine {
 		// return
 		return out;
 	}
-
+*/
 	/**
 	 * wrap to encrypt a key
 	 * 
@@ -540,7 +525,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 * @param p5
 	 *            initial vector
 	 */
-	public void wrap(NativeKey p1, Number p2, NativeKey p3, NativeKey p4, NativeByteString p5) {
+/*	public void wrap(NativeKey p1, Number p2, NativeKey p3, NativeKey p4, NativeByteString p5) {
 		NativeByteString bwrapKey = p1.getBlob();
 		byte[] wrapKey = new byte[bwrapKey.GetLength()];
 		for (int i = 0; i < bwrapKey.GetLength(); i++)
@@ -566,7 +551,7 @@ public class Hsm implements GPKeyCryptoEngine {
 		String strKeyResult = new String(Hex.encode(out));
 		p4.strBlob = strKeyResult;
 		// not implemented GP_Global.setKey(p4.strIndex,strKeyResult);
-	}
+	}*/
 
 	/**
 	 * unwrap to decrypt a key using the key returned by getWrapKey() method
@@ -580,7 +565,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 * @param p4
 	 *            initial vector
 	 */
-	public void unwrap(Number p1, NativeKey p2, NativeKey p3, NativeByteString p4) {
+	/*public void unwrap(Number p1, NativeKey p2, NativeKey p3, NativeByteString p4) {
 		int unwrapMech = (int) p1.intValue();
 
 		NativeByteString bKeyToUnwrap = p2.getBlob();
@@ -612,7 +597,7 @@ public class Hsm implements GPKeyCryptoEngine {
 		String strKeyResult = new String(Hex.encode(out));
 		p3.strBlob = strKeyResult;
 		// not implemented GP_Global.setKey(p3.strIndex,strKeyResult);
-	}
+	}*/
 
 	/**
 	 * unwrapWrap decrypt keyToUnwrap using the key returned by getWrapKey() method and wrap the result by wrapKey
@@ -632,7 +617,7 @@ public class Hsm implements GPKeyCryptoEngine {
 	 * @param p7
 	 *            wrapIV
 	 */
-	public void unwrapWrap(Number p1, NativeKey p2, Number p3, NativeKey p4, NativeKey p5, NativeByteString p6, NativeByteString p7) {
+	/*public void unwrapWrap(Number p1, NativeKey p2, Number p3, NativeKey p4, NativeKey p5, NativeByteString p6, NativeByteString p7) {
 		int unwrapMech = (int) p1.intValue();
 		int wrapMech = (int) p3.intValue();
 
@@ -682,7 +667,6 @@ public class Hsm implements GPKeyCryptoEngine {
 		String strKeyResult = new String(Hex.encode(out1));
 		p5.strBlob = strKeyResult;
 		// not implemented GP_Global.setKey(p5.strIndex,strKeyResult);
-	}
-
+	}*/
 
 }

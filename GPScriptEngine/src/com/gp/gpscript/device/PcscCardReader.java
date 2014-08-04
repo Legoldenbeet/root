@@ -2,6 +2,7 @@ package com.gp.gpscript.device;
 
 import com.gp.gpscript.script.ApduChannel;
 import com.watchdata.cardpcsc.CardPcsc;
+import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.util.DataUtil;
 
 public class PcscCardReader implements ApduChannel {
@@ -37,5 +38,7 @@ public class PcscCardReader implements ApduChannel {
 		// TODO Auto-generated method stub
 		return cardPcsc.SendApdu(toSendData).getBytes();
 	}
-
+public static void main(String[] args) {
+	System.out.println(WDStringUtil.getRandomHexString(4));
+}
 }
