@@ -91,7 +91,7 @@ public class PrgToolPanel extends JPanel {
 		textField_2.setBounds(114, 10, 491, 20);
 		add(textField_2);
 
-		JButton button_1 = new JButton("设置");
+		JButton button_1 = new JButton("选择");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				selectFile(textField_2);
@@ -114,7 +114,7 @@ public class PrgToolPanel extends JPanel {
 		textField_3.setBounds(114, 40, 491, 20);
 		add(textField_3);
 
-		JButton button_2 = new JButton("设置");
+		JButton button_2 = new JButton("选择");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				selectFile(textField_3);
@@ -145,6 +145,13 @@ public class PrgToolPanel extends JPanel {
 							cmdList.clear();
 							cmdList.add("cmd.exe");
 							cmdList.add("/c");
+							cmdList.add("del");
+							cmdList.add("*.hex");
+							WindowsExcuter.excute(file.getParentFile(), cmdList);
+							
+							cmdList.clear();
+							cmdList.add("cmd.exe");
+							cmdList.add("/c");
 							cmdList.add("copy");
 							cmdList.add(textField_2.getText().trim());
 							cmdList.add(parentPath);
@@ -164,7 +171,7 @@ public class PrgToolPanel extends JPanel {
 							cmdList.clear();
 							cmdList.add("cmd.exe");
 							cmdList.add("/c");
-							cmdList.add("start");
+							//cmdList.add("start");
 							cmdList.add(hexGhostPath);
 
 							WindowsExcuter.excute(file.getParentFile(), cmdList);
@@ -307,13 +314,20 @@ public class PrgToolPanel extends JPanel {
 		}
 	}
 
-	public void openFileDir(JTextField target) {
-		try {
-			WindowsExcuter.excute(new File("."), "cmd.exe /c start " + getFile(target.getText().trim()).getAbsolutePath());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void openFileDir(final JTextField target) {
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					WindowsExcuter.excute(new File("."), "cmd.exe /c start " + getFile(target.getText().trim()).getAbsolutePath());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 	public File getFile(String name) {
