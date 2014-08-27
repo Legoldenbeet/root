@@ -17,7 +17,7 @@ public class TestDemo {
 		// TcpConnector tcpConnector = new TcpConnector("127.0.0.1", 3003);
 
 		File file = new File("D:\\ccspace\\Business_WD_CAMS_Prj_Dev\\PayID_Business_VOB\\Business_WD_CAMS\\WD_CAMS\\Product\\应用模板\\湖北农信\\测试数据\\Native\\湖北农信金融社保卡送检数据（20121207）.rar");
-		//File file = new File("D:\\eclipse-SDK-4.2.rar");
+		// File file = new File("D:\\eclipse-SDK-4.2.rar");
 		FileInputStream fis = new FileInputStream(file);
 
 		int a = fis.available();
@@ -48,13 +48,13 @@ public class TestDemo {
 
 		// byte[] tem1p=new byte[1024];
 		String www = read.readLine();
-		System.out.println(www);
+		System.out.println(Thread.currentThread().getId()+":"+www);
 	}
-	
+
 	public void test1() throws UnknownHostException, IOException {
-		SessionClient sessionClient=new SessionClient("9000", "127.0.0.1", 9000);
-		TcpConnector tcpConnector=new TcpConnector("10.0.97.124", 5050);
-		sessionClient.addConnector("helo",tcpConnector);
+		SessionClient sessionClient = new SessionClient("9000", "127.0.0.1", 9000);
+		TcpConnector tcpConnector = new TcpConnector("10.0.97.124", 5050);
+		sessionClient.addConnector("helo", tcpConnector);
 		File file = new File("D:\\ccspace\\Business_WD_CAMS_Prj_Dev\\PayID_Business_VOB\\Business_WD_CAMS\\WD_CAMS\\Product\\应用模板\\湖北农信\\测试数据\\Native\\湖北农信金融社保卡送检数据（20121207）.rar");
 		FileInputStream fis = new FileInputStream(file);
 
@@ -72,25 +72,46 @@ public class TestDemo {
 		byte[] temp = new byte[a + 4];
 		System.arraycopy(lenth, 0, temp, 0, 4);
 		System.arraycopy(bs, 0, temp, 4, a);
-		
+
 		sessionClient.send(temp, "helo");
-		
+
 		String www = sessionClient.recive("helo");
 		System.out.println(www);
-		
+
 		sessionClient.send(temp, "9000");
-		
+
 		System.out.println(sessionClient.recive("9000"));
 
 	}
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
-		TestDemo hello = new TestDemo();
-		Socket socket = new Socket("127.0.0.1", 9000);
-		for(int i=0;i<100;i++){
-			//Socket socket = new Socket("127.0.0.1", 9000);
-			hello.test(socket);
+		for (int i = 0; i < 500; i++) {
+			System.out.println("i:" + i);
+			Thread thread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					TestDemo hello = new TestDemo();
+					Socket socket;
+					try {
+						socket = new Socket("10.0.97.124", 9000);
+
+						for (int i = 0; i < 1000; i++) {
+							// Socket socket = new Socket("127.0.0.1", 9000);
+							hello.test(socket);
+						}
+					} catch (UnknownHostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			thread.start();
+			// hello.test1();
 		}
-		hello.test1();
 	}
 }
