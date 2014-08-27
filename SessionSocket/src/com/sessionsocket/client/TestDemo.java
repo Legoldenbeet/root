@@ -49,7 +49,6 @@ public class TestDemo {
 		// byte[] tem1p=new byte[1024];
 		String www = read.readLine();
 		System.out.println(www);
-
 	}
 	
 	public void test1() throws UnknownHostException, IOException {
@@ -92,6 +91,6 @@ public class TestDemo {
 			//Socket socket = new Socket("127.0.0.1", 9000);
 			hello.test(socket);
 		}
-		//hello.test1();
+		hello.test1();
 	}
 }
