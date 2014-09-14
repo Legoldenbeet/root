@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardEditor"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.1"
 #define MyAppExeName "CardEditor.exe"
 
 [Setup]
@@ -16,9 +16,9 @@ AppVersion={#MyAppVersion}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputDir=D:\程序打包\CardEditor\setup\
-OutputBaseFilename=EE_setup
-SetupIconFile=D:\程序打包\CardEditor\setup\logo.ico
+OutputDir=E:\程序打包\CardEditor\setup\
+OutputBaseFilename=CardEditor_setup
+SetupIconFile=E:\程序打包\CardEditor\setup\logo.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -30,8 +30,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "D:\程序打包\CardEditor\dist\CardEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\程序打包\CardEditor\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "E:\程序打包\CardEditor\dist\CardEditor.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\程序打包\CardEditor\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

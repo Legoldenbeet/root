@@ -25,7 +25,7 @@
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.0.0" />
 	<property name="source-dir" location="src" />
-	<property name="root-dir" location="D:\程序打包" />
+	<property name="root-dir" location="E:\程序打包" />
 	<property name="class-dir" location="${root-dir}/CardEditor/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/CardEditor/dist" />
 	<property name="doc-dir" location="${root-dir}/CardEditor/javadoc" />
@@ -45,7 +45,7 @@
 	<target name="compile" description="Compile the source">
 		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false">
+		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
 			<classpath refid="classpath" />
 		</javac>
 	</target>
