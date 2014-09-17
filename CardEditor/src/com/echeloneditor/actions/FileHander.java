@@ -1,9 +1,13 @@
 package com.echeloneditor.actions;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Map;
 
@@ -32,6 +36,7 @@ public class FileHander {
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
 	public FontWidthRuler ruler;
+	public static String lineSeparator = System.getProperty("line.separator"); 
 
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
@@ -44,10 +49,11 @@ public class FileHander {
 		try {
 			File file = new File(filePath);
 			
-			Map<String, String> map = fileAction.open(filePath);
+			//Map<String, String> map = fileAction.open(filePath);
+			
 			// 更新状态栏文件编码信息
-			String encode = map.get("encode");
-			String fileSize = map.get("fileSize");
+			String encode = "UTF-8";//map.get("encode");
+			String fileSize = String.valueOf(file.length());//map.get("fileSize");
 
 			statusObject.getFileSize().setText("文件大小：" + fileSize);
 			statusObject.getFileEncode().setText("文件编码：" + encode);
@@ -116,15 +122,27 @@ public class FileHander {
 			tabbedPane.setSelectedComponent(sp);
 			// 设置选项卡title为打开文件的文件名
 			SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
-			textArea.setText(map.get("fileContent"));
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			
+			BufferedReader br=new BufferedReader(new InputStreamReader(fis, "UTF-8"), 4*1024*1024);
+			String line=null;
+			long i=0;
+			while ((line=br.readLine())!=null) {
+				textArea.append(line+lineSeparator);
+				System.out.println(i++);
+			}
+			fis.close();
+			br.close();
+			//textArea.setText(map.get("fileContent"));
 
 			String res = Config.getValue("CURRENT_THEME","current_font");
 
 			textArea.setFont(FontUtil.getFont(res));
 			statusObject.getSaveBtn().setEnabled(false);
 
-			textArea.setCaretPosition(0);
-			textArea.requestFocusInWindow();
+			//textArea.setCaretPosition(0);
+			//textArea.requestFocusInWindow();
 			closeableTabComponent.setModify(false);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
