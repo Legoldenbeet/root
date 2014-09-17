@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -56,30 +57,36 @@ public class FileAction {
 		String fileContent = "";
 		Map<String, String> map = new HashMap<String, String>();
 		File file = new File(filePath);
-		// 文件大小
-		map.put("fileSize", String.valueOf(file.length()));
-
-		Charset charset = detector.detectCodepage(file.toURL());
-
-		FileInputStream fis = new FileInputStream(file);
-		BufferedInputStream bis = new BufferedInputStream(fis);
-		byte[] b = new byte[bis.available()];
-		bis.read(b, 0, b.length);
-		// 文件编码
-		map.put("encode", charset.name());
-		// 文件内容
-		if (!charset.name().isEmpty() && !charset.name().equals("void")) {
-			fileContent = new String(b, charset.name());
-			log.debug("detect file's charset:" + charset.name());
-		} else {
-			log.debug("detect return void ,default charset:" + charset.name());
-			fileContent = new String(b, "UTF-8");
+		long fileSize=file.length();
+		
+		if(fileSize<=40*1024*1024){
+			Charset charset = detector.detectCodepage(file.toURL());
+			
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			byte[] b = new byte[bis.available()];
+			bis.read(b, 0, b.length);
+			// 文件内容
+			if (!charset.name().isEmpty() && !charset.name().equals("void")) {
+				fileContent = new String(b, charset.name());
+				log.debug("detect file's charset:" + charset.name());
+			} else {
+				log.debug("detect return void ,default charset:" + charset.name());
+				fileContent = new String(b, "UTF-8");
+			}
+			// 文件编码
+			map.put("encode", charset.name());
+			fis.close();
+			bis.close();
+		}else{
+			RandomAccessFile randomAccessFile=new RandomAccessFile(filePath, "r");
+			randomAccessFile.readLine();
 		}
+		// 文件大小
+		map.put("fileSize", String.valueOf(fileSize));
 
 		fileContent = fileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
 		map.put("fileContent", fileContent);
-		fis.close();
-		bis.close();
 		// log.debug("open file done.");
 		return map;
 	}

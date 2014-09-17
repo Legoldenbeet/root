@@ -42,6 +42,8 @@ public class FileHander {
 		// 打开文件
 		FileAction fileAction = new FileAction();
 		try {
+			File file = new File(filePath);
+			
 			Map<String, String> map = fileAction.open(filePath);
 			// 更新状态栏文件编码信息
 			String encode = map.get("encode");
@@ -50,7 +52,6 @@ public class FileHander {
 			statusObject.getFileSize().setText("文件大小：" + fileSize);
 			statusObject.getFileEncode().setText("文件编码：" + encode);
 
-			File file = new File(filePath);
 
 			String fileContentType = SwingUtils.getFileContentType(file.getName());
 
