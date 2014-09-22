@@ -402,15 +402,6 @@ public class CardEditor {
 		menuItem_2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 		menuItem_2.setActionCommand("save");
 		menuItem_2.addActionListener(new SimpleFileChooseListener(tabbedPane, statusObject));
-		
-		JMenuItem menuItem_18 = new JMenuItem("打开（扩展）");
-		menuItem_18.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
-		menuItem_18.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
-		menu.add(menuItem_18);
 		menuItem_2.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504114455808_easyicon_net_24.png")));
 		menu.add(menuItem_2);
 
