@@ -1,12 +1,5 @@
 package com.echeloneditor.actions;
 
-import info.monitorenter.cpdetector.io.ASCIIDetector;
-import info.monitorenter.cpdetector.io.ByteOrderMarkDetector;
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-import info.monitorenter.cpdetector.io.JChardetFacade;
-import info.monitorenter.cpdetector.io.ParsingDetector;
-import info.monitorenter.cpdetector.io.UnicodeDetector;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -18,32 +11,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.echeloneditor.utils.Config;
+
 public class FileAction {
 	private static final Logger log = Logger.getLogger(FileAction.class);
-
-	CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance(); // A singleton.
-
+	private int BUFFER_SIZE=Integer.parseInt(Config.getValue("CONFIG", "ioBuffer"))<<20;//M
 	public FileAction() {
-		// Add the implementations of info.monitorenter.cpdetector.io.ICodepageDetector:
-		// This one is quick if we deal with unicode codepages:
-		detector.add(new ByteOrderMarkDetector());
-		// The first instance delegated to tries to detect the meta charset attribut in html pages.
-		detector.add(new ParsingDetector(true)); // be verbose about parsing.
-		// This one does the tricks of exclusion and frequency detection, if first implementation is
-		// unsuccessful:
-		detector.add(JChardetFacade.getInstance()); // Another singleton.
-		detector.add(ASCIIDetector.getInstance()); // Fallback, see javadoc.
-		detector.add(UnicodeDetector.getInstance()); // Fallback, see javadoc.
 	}
 
 	/**
@@ -116,8 +97,6 @@ public class FileAction {
 		OutputStreamWriter osw = null;
 		Writer writer = null;
 		try {
-			// 修改文件的换行符统一到windows下
-			fileContent = fileContent.replaceAll("\r\n", "\n").replaceAll("\r", "\n").replaceAll("\n", "\r\n");
 			// 创建文件
 			file = new File(filePath);
 			// 文件输出流
@@ -125,7 +104,7 @@ public class FileAction {
 			// 字符流通向字节流的桥梁
 			osw = new OutputStreamWriter(os, encode);
 			// 缓冲区
-			writer = new BufferedWriter(osw);
+			writer = new BufferedWriter(osw,BUFFER_SIZE);
 			// 将字符写到文件中
 			writer.write(fileContent);
 			// 刷新缓冲区
@@ -136,11 +115,9 @@ public class FileAction {
 			if (os != null) {
 				os.close();
 			}
-
 			if (osw != null) {
 				osw.close();
 			}
-
 			if (writer != null) {
 				writer.close();
 			}

@@ -63,6 +63,8 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDByteUtil;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class CardEditor {
 
@@ -168,14 +170,15 @@ public class CardEditor {
 		fileSizeLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		panel.add(fileSizeLabel);
 
-		JLabel fileEncodeLabel = new JLabel("文件编码：");
-		fileEncodeLabel.setVerticalAlignment(SwingConstants.BOTTOM);
-		panel.add(fileEncodeLabel);
-
 		statusObject = new StatusObject();
 		statusObject.setCharNum(charNmLabel);
-		statusObject.setFileEncode(fileEncodeLabel);
 		statusObject.setFileSize(fileSizeLabel);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"文件编码"}));
+		panel.add(comboBox);
+		
+		statusObject.setFileEncode(comboBox);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);

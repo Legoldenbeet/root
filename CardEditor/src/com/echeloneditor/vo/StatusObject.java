@@ -1,13 +1,21 @@
 package com.echeloneditor.vo;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 public class StatusObject {
 	JLabel charNum;
-	JLabel fileEncode;
-	JLabel fileSize;
+	JComboBox fileEncode;
+	public JComboBox getFileEncode() {
+		return fileEncode;
+	}
 
+	public void setFileEncode(JComboBox fileEncode) {
+		this.fileEncode = fileEncode;
+	}
+
+	JLabel fileSize;
 	JButton saveBtn;
 
 	public JButton getSaveBtn() {
@@ -26,13 +34,6 @@ public class StatusObject {
 		this.charNum = charNum;
 	}
 
-	public JLabel getFileEncode() {
-		return fileEncode;
-	}
-
-	public void setFileEncode(JLabel fileEncode) {
-		this.fileEncode = fileEncode;
-	}
 
 	public JLabel getFileSize() {
 		return fileSize;

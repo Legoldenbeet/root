@@ -79,7 +79,9 @@ public class SimpleFileChooseListener implements ActionListener {
 
 				}
 				statusObject.getFileSize().setText("文件大小：" + closeableTabComponent.getFileSzie());
-				statusObject.getFileEncode().setText("文件编码：" + closeableTabComponent.getFileEncode());
+				statusObject.getFileEncode().removeAllItems();
+				statusObject.getFileEncode().addItem(closeableTabComponent.getFileEncode());
+				statusObject.getFileEncode().setSelectedItem(closeableTabComponent.getFileEncode());
 			}
 
 		} else if (command.equalsIgnoreCase("saveas")) {

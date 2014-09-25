@@ -1,5 +1,7 @@
 package com.echeloneditor.actions;
 
+import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
@@ -37,6 +38,7 @@ public class FileHander {
 	public StatusObject statusObject;
 	public FontWidthRuler ruler;
 	public static String lineSeparator = System.getProperty("line.separator"); 
+	public static String SystemFileEncode = System.getProperty("file.encoding");
 
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
@@ -45,24 +47,19 @@ public class FileHander {
 
 	public void openFileWithFilePath(String filePath) {
 		// 打开文件
-		FileAction fileAction = new FileAction();
 		try {
 			File file = new File(filePath);
 			
-			//Map<String, String> map = fileAction.open(filePath);
-			
+			long fileSize=file.length();
+			long bigFileSzie=Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));			
 			// 更新状态栏文件编码信息
-			String encode = "UTF-8";//map.get("encode");
-			String fileSize = String.valueOf(file.length());//map.get("fileSize");
 
 			statusObject.getFileSize().setText("文件大小：" + fileSize);
-			statusObject.getFileEncode().setText("文件编码：" + encode);
-
+			statusObject.getFileEncode().addItem(SystemFileEncode);
+			statusObject.getFileEncode().setSelectedItem(SystemFileEncode);
 
 			String fileContentType = SwingUtils.getFileContentType(file.getName());
-
 			RSyntaxTextArea textArea = SwingUtils.createTextArea();
-
 			
 			LanguageSupportFactory lsf = LanguageSupportFactory.get();
 			LanguageSupport support = lsf.getSupportFor(SyntaxConstants.SYNTAX_STYLE_JAVA);
@@ -113,8 +110,8 @@ public class FileHander {
 			int tabCount = tabbedPane.getTabCount();
 			CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 			closeableTabComponent.setFilePath(file.getPath());
-			closeableTabComponent.setFileEncode(encode);
-			closeableTabComponent.setFileSzie(fileSize);
+			closeableTabComponent.setFileEncode(SystemFileEncode);
+			closeableTabComponent.setFileSzie(String.valueOf(fileSize));
 
 			tabbedPane.add("New Panel", sp);
 			tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
@@ -123,26 +120,25 @@ public class FileHander {
 			// 设置选项卡title为打开文件的文件名
 			SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
 			FileInputStream fis = new FileInputStream(file);
-			BufferedInputStream bis = new BufferedInputStream(fis);
+			//BufferedInputStream bis = new BufferedInputStream(fis);
 			
-			BufferedReader br=new BufferedReader(new InputStreamReader(fis, "UTF-8"), 4*1024*1024);
+			BufferedReader br=new BufferedReader(new InputStreamReader(fis, SystemFileEncode), 10<<20);
 			String line=null;
 			long i=0;
 			while ((line=br.readLine())!=null) {
-				textArea.append(line+lineSeparator);
+				textArea.append(line +lineSeparator);
 				System.out.println(i++);
 			}
 			fis.close();
 			br.close();
-			//textArea.setText(map.get("fileContent"));
 
 			String res = Config.getValue("CURRENT_THEME","current_font");
 
 			textArea.setFont(FontUtil.getFont(res));
 			statusObject.getSaveBtn().setEnabled(false);
 
-			//textArea.setCaretPosition(0);
-			//textArea.requestFocusInWindow();
+			textArea.setCaretPosition(0);
+			textArea.requestFocusInWindow();
 			closeableTabComponent.setModify(false);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
