@@ -1,16 +1,11 @@
 package com.echeloneditor.actions;
 
-import info.monitorenter.cpdetector.io.CodepageDetectorProxy;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.UnsupportedCharsetException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
@@ -37,8 +32,10 @@ public class FileHander {
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
 	public FontWidthRuler ruler;
-	public static String lineSeparator = System.getProperty("line.separator"); 
+	public static String lineSeparator = System.getProperty("line.separator");
 	public static String SystemFileEncode = System.getProperty("file.encoding");
+
+	public RSyntaxTextArea textArea;
 
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
@@ -49,9 +46,9 @@ public class FileHander {
 		// 打开文件
 		try {
 			File file = new File(filePath);
-			
-			long fileSize=file.length();
-			long bigFileSzie=Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));			
+
+			long fileSize = file.length();
+			long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
 			// 更新状态栏文件编码信息
 
 			statusObject.getFileSize().setText("文件大小：" + fileSize);
@@ -59,33 +56,33 @@ public class FileHander {
 			statusObject.getFileEncode().setSelectedItem(SystemFileEncode);
 
 			String fileContentType = SwingUtils.getFileContentType(file.getName());
-			RSyntaxTextArea textArea = SwingUtils.createTextArea();
-			
+			textArea = SwingUtils.createTextArea();
+
 			LanguageSupportFactory lsf = LanguageSupportFactory.get();
 			LanguageSupport support = lsf.getSupportFor(SyntaxConstants.SYNTAX_STYLE_JAVA);
-			JavaLanguageSupport jls = (JavaLanguageSupport)support;
-			// TODO: This API will change!  It will be easier to do per-editor
+			JavaLanguageSupport jls = (JavaLanguageSupport) support;
+			// TODO: This API will change! It will be easier to do per-editor
 			// changes to the build path.
 			try {
 				jls.getJarManager().addCurrentJreClassFileSource();
-				//jsls.getJarManager().addClassFileSource(ji);
+				// jsls.getJarManager().addClassFileSource(ji);
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
 			}
 			jls.setShowDescWindow(true);
 			jls.setParameterAssistanceEnabled(true);
 			jls.setAutoActivationEnabled(true);
-			
+
 			lsf.register(textArea);
 
 			textArea.setSyntaxEditingStyle(fileContentType);
-			
-			EditorPaneListener editlistener=new EditorPaneListener(tabbedPane, statusObject);
+
+			EditorPaneListener editlistener = new EditorPaneListener(tabbedPane, statusObject);
 			textArea.addMouseListener(editlistener);
 			textArea.addMouseMotionListener(editlistener);
 			textArea.addKeyListener(editlistener);
 			textArea.getDocument().addDocumentListener(editlistener);
-			
+
 			RTextScrollPane sp = new RTextScrollPane(textArea);
 			sp.setFoldIndicatorEnabled(true);
 
@@ -119,68 +116,31 @@ public class FileHander {
 			tabbedPane.setSelectedComponent(sp);
 			// 设置选项卡title为打开文件的文件名
 			SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
+
 			FileInputStream fis = new FileInputStream(file);
-			//BufferedInputStream bis = new BufferedInputStream(fis);
-			
-			BufferedReader br=new BufferedReader(new InputStreamReader(fis, SystemFileEncode), 10<<20);
-			String line=null;
-			long i=0;
-			while ((line=br.readLine())!=null) {
-				textArea.append(line +lineSeparator);
-				System.out.println(i++);
-			}
-			fis.close();
-			br.close();
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis, SystemFileEncode), 10 << 20);
 
-			String res = Config.getValue("CURRENT_THEME","current_font");
-
+			try {
+				String line = null;
+				while ((line = br.readLine()) != null) {
+					textArea.append(line + lineSeparator);
+				}
+				fis.close();
+				br.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+			String res = Config.getValue("CURRENT_THEME", "current_font");
 			textArea.setFont(FontUtil.getFont(res));
 			statusObject.getSaveBtn().setEnabled(false);
 
 			textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
 			closeableTabComponent.setModify(false);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedCharsetException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
-
-	/*public void openHexFile() {
-		HexEditor hexEditor = new HexEditor();
-		hexEditor.addHexEditorListener(new SimpleHexEditorListener(tabbedPane, statusObject));
-		hexEditor.setCellEditable(true);
-
-		int tabCount = tabbedPane.getTabCount();
-		CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
-
-		CloseableTabComponent closeableTabComponent1 = new CloseableTabComponent(tabbedPane, statusObject);
-		closeableTabComponent1.setFileEncode(closeableTabComponent.getFileEncode());
-		closeableTabComponent1.setFilePath(closeableTabComponent.getFilePath());
-		closeableTabComponent1.setFileSzie(closeableTabComponent.getFileSzie());
-		closeableTabComponent1.setModify(closeableTabComponent.isModify());
-
-		try {
-			hexEditor.open(closeableTabComponent.getFilePath());
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		tabbedPane.add("New Panel", hexEditor);
-		tabbedPane.setTabComponentAt(tabCount, closeableTabComponent1);
-		tabbedPane.setSelectedComponent(hexEditor);
-
-		SwingUtils.setTabbedPaneTitle(tabbedPane, new File(closeableTabComponent1.getFilePath()).getName());
-
-		statusObject.getSaveBtn().setEnabled(false);
-	}*/
 
 	public void saveFile(String filePath, String fileEncode) {
 		// 打开文件
@@ -197,12 +157,12 @@ public class FileHander {
 		RSyntaxTextArea textArea = SwingUtils.createTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
 
-		EditorPaneListener editlistener=new EditorPaneListener(tabbedPane, statusObject);
+		EditorPaneListener editlistener = new EditorPaneListener(tabbedPane, statusObject);
 		textArea.addMouseListener(editlistener);
 		textArea.addMouseMotionListener(editlistener);
 		textArea.addKeyListener(editlistener);
 		textArea.getDocument().addDocumentListener(editlistener);
-		
+
 		RTextScrollPane sp = new RTextScrollPane(textArea);
 		sp.setFoldIndicatorEnabled(true);
 
@@ -236,7 +196,7 @@ public class FileHander {
 		// 设置选项卡title为打开文件的文件名
 		SwingUtils.setTabbedPaneTitle(tabbedPane, "New Panel");
 
-		String res = Config.getValue("CURRENT_THEME","current_font");
+		String res = Config.getValue("CURRENT_THEME", "current_font");
 
 		textArea.setFont(FontUtil.getFont(res));
 
