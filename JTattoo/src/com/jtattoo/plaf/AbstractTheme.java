@@ -12,6 +12,8 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.metal.MetalTheme;
 
+import com.echeloneditor.utils.Config;
+
 public abstract class AbstractTheme extends MetalTheme {
 
     public static final int TEXT_ANTIALIAS_DEFAULT = 0;
@@ -54,7 +56,7 @@ public abstract class AbstractTheme extends MetalTheme {
 
     protected static boolean menuOpaque = true;
     protected static float menuAlpha = 0.9f;
-    protected static String logoString = "EchelonEditor";
+    protected static String logoString = Config.getValue("CONFIG", "appName");
     protected static FontUIResource controlFont = null;
     protected static FontUIResource systemFont = null;
     protected static FontUIResource userFont = null;
@@ -198,7 +200,7 @@ public abstract class AbstractTheme extends MetalTheme {
         toolbarDecorated = true;
         menuOpaque = true;
         menuAlpha = 0.9f;
-        logoString = "EchelonEditor";
+        logoString = Config.getValue("CONFIG", "appName");
 
         controlFont = null;
         systemFont = null;

@@ -31,13 +31,21 @@
 	<property name="debug" value="true" />
 	<property name="debuglevel" value="lines,var,source" />
 	<property name="java-level" value="1.4" />
+	<property name="lib" value="lib" />
 
-
+	<path id="classpath">
+			<fileset dir="${lib}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+	
 	<!-- Compiles the classes.  -->
 	<target name="compile" description="Compile the source">
 		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" />
+		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" >
+			<classpath refid="classpath" />	
+		</javac>
 	</target>
 
 
