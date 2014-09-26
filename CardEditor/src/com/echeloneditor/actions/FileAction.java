@@ -17,7 +17,7 @@ public class FileAction {
 	public static String DEFAULT_FILE_ENCODE = System.getProperty("file.encoding");
 	public static int BUFFER_SIZE = Integer.parseInt(Config.getValue("CONFIG", "ioBuffer")) << 20;// M
 	public static String USER_DIR = System.getProperty("user.dir");
-	public static long BIG_FILE_READ_UNIT_LINE = Integer.parseInt(Config.getValue("CONFIG", "bigFileReadUnitLine"));
+	public static int BIG_FILE_READ_UNIT_SIZE = Integer.parseInt(Config.getValue("CONFIG", "bigFileReadUnitSize"));
 
 	public FileAction() {
 

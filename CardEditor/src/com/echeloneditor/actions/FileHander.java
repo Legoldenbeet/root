@@ -2,12 +2,11 @@ package com.echeloneditor.actions;
 
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
@@ -51,7 +50,6 @@ public class FileHander {
 	public void openFileWithFilePath(String filePath) {
 		// 打开文件
 		try {
-			
 			boolean isBigFile = false;
 			File file = new File(filePath);
 			long fileSize = file.length();
@@ -73,7 +71,8 @@ public class FileHander {
 				LanguageSupportFactory lsf = LanguageSupportFactory.get();
 				LanguageSupport support = lsf.getSupportFor(SyntaxConstants.SYNTAX_STYLE_JAVA);
 				JavaLanguageSupport jls = (JavaLanguageSupport) support;
-				// TODO: This API will change! It will be easier to do per-editor
+				// TODO: This API will change! It will be easier to do
+				// per-editor
 				// changes to the build path.
 				try {
 					jls.getJarManager().addCurrentJreClassFileSource();
@@ -131,45 +130,37 @@ public class FileHander {
 				SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
 			}
 			FileInputStream fis = new FileInputStream(file);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), FileAction.BUFFER_SIZE);
-			long count=0;
-			textArea.setText("");
+			BufferedInputStream bis = new BufferedInputStream(fis, FileAction.BUFFER_SIZE);
+			// BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), FileAction.BUFFER_SIZE);
 			try {
-				String line = null;
-				if (isBigFile && currentCharPos != 0) {
-					if (currentCharPos>=fileSize) {
-						JOptionPane.showMessageDialog(null, "over");
-						return;
-					} 
-					br.skip(currentCharPos);
-				}
-				while ((line = br.readLine()) != null) {
-					currentCharPos += (line.length() + FileAction.LINE_SEPARATOR_LEN);
-					count+=(line.length() + FileAction.LINE_SEPARATOR_LEN);
-					textArea.append(line + FileAction.LINE_SEPARATOR);
-					if (isBigFile&&(count>FileAction.BIG_FILE_READ_UNIT_LINE)) {
-						break;
-					} 
+				if (currentCharPos < fileSize) {
+					bis.skip(currentCharPos);
+					byte[] bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];
+					int count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
+					textArea.append(new String(bytes, 0, count - 1, FileAction.DEFAULT_FILE_ENCODE));
+					currentCharPos += count;
+				} else {
+					JOptionPane.showMessageDialog(null, "last");
 				}
 				fis.close();
-				br.close();
+				bis.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				fileDescMapBean.put(file.getName(), currentCharPos);
 				System.out.println(currentCharPos);
 			}
-				String res = Config.getValue("CURRENT_THEME", "current_font");
-				textArea.setFont(FontUtil.getFont(res));
+			String res = Config.getValue("CURRENT_THEME", "current_font");
+			textArea.setFont(FontUtil.getFont(res));
 
 			statusObject.showSaveButton(false);
-			
+
 			if (isBigFile && currentCharPos != 0) {
 				SwingUtils.getCloseableTabComponent(tabbedPane).setModify(false);
-			}else {
+			} else {
 				closeableTabComponent.setModify(false);
 			}
-			//textArea.setCaretPosition(0);
+			// textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
 		} catch (Exception e1) {
 			e1.printStackTrace();
