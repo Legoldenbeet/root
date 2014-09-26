@@ -162,6 +162,33 @@ public class CardEditor {
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
+		
+		JButton button_5 = new JButton("第一页");
+		panel.add(button_5);
+		
+		JButton button_4 = new JButton("上一页");
+		panel.add(button_4);
+		
+		JButton button_2 = new JButton("下一页");
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				FileHander fileHander=new FileHander(tabbedPane, statusObject);
+				CloseableTabComponent closeableTabComponent=SwingUtils.getCloseableTabComponent(tabbedPane);
+				String filePath=closeableTabComponent.getFilePath();
+				long fileSize=closeableTabComponent.getFileSzie();
+				
+				long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
+				if (fileSize > (bigFileSzie << 20)) {
+					fileHander.openFileWithFilePath(filePath);
+				}else {
+					JOptionPane.showMessageDialog(null, "too small!");
+				}
+			}
+		});
+		panel.add(button_2);
+		
+		JButton button_6 = new JButton("最后一页");
+		panel.add(button_6);
 
 		JLabel charNmLabel = new JLabel("字符数：");
 		charNmLabel.setVerticalAlignment(SwingConstants.BOTTOM);

@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.vo.StatusObject;
 
@@ -55,6 +56,9 @@ public class CloseableTabComponent extends JPanel {
 		closeButton.setSize(closerD);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String title=tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+				FileHander.fileDescMapBean.remove(title);
+				FileHander.currentCharPos=0;
 				tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
 				if (tabbedPane.getTabCount() <= 0) {
 					statusObject.showSaveButton(false);

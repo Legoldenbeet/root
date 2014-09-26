@@ -123,7 +123,6 @@ public class SwingUtils {
 		Component componentl = tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex());
 		((CloseableTabComponent) componentl).titleLabel.setText(fileName + "  ");
 	}
-
 	/**
 	 * 获取select编辑区内容
 	 * 
