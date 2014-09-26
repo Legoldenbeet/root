@@ -35,8 +35,6 @@ public class FileHander {
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
 	public FontWidthRuler ruler;
-	public static String lineSeparator = System.getProperty("line.separator");
-	public static String SystemFileEncode = System.getProperty("file.encoding");
 
 	public RSyntaxTextArea textArea;
 
@@ -55,7 +53,7 @@ public class FileHander {
 			// 更新状态栏文件编码信息
 
 			statusObject.showFileSize(fileSize);
-			statusObject.addItemAndSelected(SystemFileEncode, true);
+			statusObject.addItemAndSelected(FileAction.DEFAULT_FILE_ENCODE, true);
 
 			String fileContentType = SwingUtils.getFileContentType(file.getName());
 			textArea = SwingUtils.createTextArea();
@@ -110,7 +108,7 @@ public class FileHander {
 			int tabCount = tabbedPane.getTabCount();
 			CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 			closeableTabComponent.setFilePath(file.getPath());
-			closeableTabComponent.setFileEncode(SystemFileEncode);
+			closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
 			closeableTabComponent.setFileSzie(fileSize);
 
 			tabbedPane.add("New Panel", sp);
@@ -121,18 +119,18 @@ public class FileHander {
 			SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
 
 			FileInputStream fis = new FileInputStream(file);
-			BufferedReader br = new BufferedReader(new InputStreamReader(fis, SystemFileEncode), 10 << 20);
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), 10 << 20);
 
 			try {
 				String line = null;
 				while ((line = br.readLine()) != null) {
-					textArea.append(line + lineSeparator);
+					textArea.append(line + FileAction.LINE_SEPARATOR);
 				}
 				fis.close();
 				br.close();
 			} catch (Exception e) {
 				e.printStackTrace();
-			} 
+			}
 			String res = Config.getValue("CURRENT_THEME", "current_font");
 			textArea.setFont(FontUtil.getFont(res));
 			statusObject.showSaveButton(false);

@@ -18,8 +18,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -47,6 +49,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import com.echeloneditor.actions.DecryptTemplateAction;
 import com.echeloneditor.actions.EmvFormatAction;
+import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.actions.FindAndReplaceAction;
 import com.echeloneditor.actions.XmlPreettifyAction;
@@ -60,11 +63,10 @@ import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.utils.SwingUtils;
+import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.StatusObject;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDByteUtil;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 
 public class CardEditor {
 
@@ -172,11 +174,11 @@ public class CardEditor {
 		statusObject = new StatusObject();
 		statusObject.setCharNum(charNmLabel);
 		statusObject.setFileSize(fileSizeLabel);
-		
+
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"文件编码"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "文件编码" }));
 		panel.add(comboBox);
-		
+
 		statusObject.setFileEncode(comboBox);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -214,10 +216,6 @@ public class CardEditor {
 		statusObject.setSaveBtn(btnNewButton);
 		btnNewButton.addActionListener(new SimpleFileChooseListener(tabbedPane, statusObject));
 		btnNewButton.setEnabled(false);
-
-		JButton button_2 = new JButton("");
-		button_2.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504111901655_easyicon_net_24.png")));
-		toolBar.add(button_2);
 
 		JButton button_3 = new JButton("");
 		button_3.addActionListener(new ActionListener() {
@@ -299,7 +297,7 @@ public class CardEditor {
 		});
 		button_3.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504111819570_easyicon_net_24.png")));
 		toolBar.add(button_3);
-		
+
 		JButton btnNewButton_1 = new JButton("");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -315,13 +313,13 @@ public class CardEditor {
 					RSyntaxTextArea textArea = SwingUtils.createTextArea();
 
 					textArea.setSyntaxEditingStyle("text/xml");
-					
-					EditorPaneListener editlistener=new EditorPaneListener(tabbedPane, statusObject);
+
+					EditorPaneListener editlistener = new EditorPaneListener(tabbedPane, statusObject);
 					textArea.addMouseListener(editlistener);
 					textArea.addMouseMotionListener(editlistener);
 					textArea.addKeyListener(editlistener);
 					textArea.getDocument().addDocumentListener(editlistener);
-					
+
 					RTextScrollPane sp = new RTextScrollPane(textArea);
 					sp.setFoldIndicatorEnabled(true);
 
@@ -353,9 +351,9 @@ public class CardEditor {
 					tabbedPane.setSelectedComponent(sp);
 					// 设置选项卡title为打开文件的文件名
 					SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName() + "_t");
-					
-					DecryptTemplateAction.doAction(textArea,new String(bytes));
-					
+
+					DecryptTemplateAction.doAction(textArea, new String(bytes));
+
 					String res = Config.getValue("CURRENT_THEME", "current_font");
 
 					textArea.setFont(FontUtil.getFont(res));
@@ -387,6 +385,9 @@ public class CardEditor {
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 		menuItem.setActionCommand("new");
 		menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
+
+		JSeparator separator_17 = new JSeparator();
+		menu.add(separator_17);
 		menuItem.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		menu.add(menuItem);
 
@@ -460,6 +461,9 @@ public class CardEditor {
 				rSyntaxTextArea.undoLastAction();
 			}
 		});
+
+		JSeparator separator_16 = new JSeparator();
+		menu_4.add(separator_16);
 		menuItem_13.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
 		menuItem_13.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130508104933496_easyicon_net_24.png")));
 		menu_4.add(menuItem_13);
@@ -590,7 +594,77 @@ public class CardEditor {
 		JSeparator separator = new JSeparator();
 		menu_4.add(separator);
 
+		JMenu menu_3 = new JMenu("格式");
+		menuBar.add(menu_3);
+
+		JMenuItem menuItem_5 = new JMenuItem("字体设置");
+		menuItem_5.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504114104911_easyicon_net_24.png")));
+		menuItem_5.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
+		menuItem_5.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (tabbedPane.getTabCount() <= 0) {
+					return;
+				}
+				RSyntaxTextArea textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
+				Font font = textArea.getFont();
+
+				FontChooserDialog fontset = new FontChooserDialog(frmEcheloneditor, font, textArea);
+				fontset.setLocationRelativeTo(frmEcheloneditor);
+				fontset.setVisible(true);
+			}
+		});
+
+		JSeparator separator_15 = new JSeparator();
+		menu_3.add(separator_15);
+		menu_3.add(menuItem_5);
+
+		JMenuItem menuItem_18 = new JMenuItem("转为大写");
+		menuItem_18.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
+				String oldText = rSyntaxTextArea.getSelectedText();
+				rSyntaxTextArea.replaceSelection(oldText.toUpperCase());
+			}
+		});
+		menuItem_18.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20140926105354538_easyicon_net_24.png")));
+		menuItem_18.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
+		menu_3.add(menuItem_18);
+
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("转为小写");
+		mntmNewMenuItem_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
+				String oldText = rSyntaxTextArea.getSelectedText();
+				rSyntaxTextArea.replaceSelection(oldText.toLowerCase());
+			}
+		});
+		mntmNewMenuItem_4.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20140926105435448_easyicon_net_24.png")));
+		mntmNewMenuItem_4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.ALT_MASK));
+		menu_3.add(mntmNewMenuItem_4);
+
+		JSeparator separator_6 = new JSeparator();
+		menu_3.add(separator_6);
+
+		JMenuItem mntmTlv = new JMenuItem("TLV");
+		menu_3.add(mntmTlv);
+		mntmTlv.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
+				try {
+					EmvFormatAction.format(rSyntaxTextArea);
+				} catch (BadLocationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mntmTlv.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130509034342785_easyicon_net_24.png")));
+		mntmTlv.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK));
+
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("格式化");
+		menu_3.add(mntmNewMenuItem_1);
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -611,46 +685,9 @@ public class CardEditor {
 		});
 		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mntmNewMenuItem_1.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130508011341649_easyicon_net_24.png")));
-		menu_4.add(mntmNewMenuItem_1);
 
-		JMenuItem mntmTlv = new JMenuItem("TLV");
-		mntmTlv.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
-				try {
-					EmvFormatAction.format(rSyntaxTextArea);
-				} catch (BadLocationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		mntmTlv.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130509034342785_easyicon_net_24.png")));
-		mntmTlv.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK));
-		menu_4.add(mntmTlv);
-
-		JMenu menu_3 = new JMenu("格式");
-		menuBar.add(menu_3);
-
-		JMenuItem menuItem_5 = new JMenuItem("字体");
-		menuItem_5.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504114104911_easyicon_net_24.png")));
-		menuItem_5.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
-		menuItem_5.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (tabbedPane.getTabCount() <= 0) {
-					return;
-				}
-				RSyntaxTextArea textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
-				Font font = textArea.getFont();
-
-				FontChooserDialog fontset = new FontChooserDialog(frmEcheloneditor, font, textArea);
-				fontset.setLocationRelativeTo(frmEcheloneditor);
-				fontset.setVisible(true);
-			}
-		});
-		menu_3.add(menuItem_5);
+		JSeparator separator_7 = new JSeparator();
+		menu_3.add(separator_7);
 
 		JMenu menu_1 = new JMenu("工具");
 		menuBar.add(menu_1);
@@ -670,8 +707,11 @@ public class CardEditor {
 
 			}
 		});
+
+		JSeparator separator_10 = new JSeparator();
+		menu_1.add(separator_10);
 		menu_1.add(menuItem_16);
-		
+
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("密钥成分生成工具");
 		mntmNewMenuItem_2.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130729071051684_easyicon_net_24.png")));
 		mntmNewMenuItem_2.addActionListener(new ActionListener() {
@@ -681,7 +721,7 @@ public class CardEditor {
 			}
 		});
 		menu_1.add(mntmNewMenuItem_2);
-		
+
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("ZIP打包");
 		mntmNewMenuItem_3.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130926111642678_easyicon_net_24.png")));
 		mntmNewMenuItem_3.addActionListener(new ActionListener() {
@@ -691,16 +731,19 @@ public class CardEditor {
 				int ret = fileChooser.showOpenDialog(frmEcheloneditor);
 
 				if (ret == JFileChooser.APPROVE_OPTION) {
-					File selectedFile=fileChooser.getSelectedFile();
+					File selectedFile = fileChooser.getSelectedFile();
 					String filePath = selectedFile.getPath();
 					filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
-					File zipFile=new File(filePath + "/" + selectedFile.getName() + ".zip");
+					File zipFile = new File(filePath + "/" + selectedFile.getName() + ".zip");
 					ZipUtil.pack(fileChooser.getSelectedFile(), zipFile);
 					JOptionPane.showMessageDialog(frmEcheloneditor, "操作完成!");
 				}
 			}
 		});
 		menu_1.add(mntmNewMenuItem_3);
+
+		JSeparator separator_8 = new JSeparator();
+		menu_1.add(separator_8);
 
 		JMenu menu_5 = new JMenu("皮肤");
 		menuBar.add(menu_5);
@@ -715,7 +758,13 @@ public class CardEditor {
 				new FaceDialog(frmEcheloneditor);
 			}
 		});
+
+		JSeparator separator_12 = new JSeparator();
+		menu_5.add(separator_12);
 		menu_5.add(menuItem_7);
+
+		JSeparator separator_11 = new JSeparator();
+		menu_5.add(separator_11);
 
 		JMenu menu_2 = new JMenu("帮助");
 		menuBar.add(menu_2);
@@ -726,8 +775,28 @@ public class CardEditor {
 				JOptionPane.showMessageDialog(frmEcheloneditor, "EchelonEditor_赫本", "帮助", JOptionPane.WARNING_MESSAGE);
 			}
 		});
+
+		JSeparator separator_13 = new JSeparator();
+		menu_2.add(separator_13);
+
+		JMenuItem mntmReadme = new JMenuItem("README");
+		mntmReadme.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		mntmReadme.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20140926113131577_easyicon_net_24.png")));
+		menu_2.add(mntmReadme);
 		menuItem_17.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/2013050411485151_easyicon_net_24.png")));
 		menu_2.add(menuItem_17);
+
+		JSeparator separator_14 = new JSeparator();
+		menu_2.add(separator_14);
 
 		frmEcheloneditor.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		container.doLayout();

@@ -9,16 +9,18 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import org.apache.log4j.Logger;
-
 import com.echeloneditor.utils.Config;
 
 public class FileAction {
-	private static final Logger log = Logger.getLogger(FileAction.class);
-	private int BUFFER_SIZE=Integer.parseInt(Config.getValue("CONFIG", "ioBuffer"))<<20;//M
+	public static String LINE_SEPARATOR = System.getProperty("line.separator");
+	public static String DEFAULT_FILE_ENCODE = System.getProperty("file.encoding");
+	public static int BUFFER_SIZE = Integer.parseInt(Config.getValue("CONFIG", "ioBuffer")) << 20;// M
+	public static String USER_DIR=System.getProperty("user.dir");
+	
 	public FileAction() {
-		
+
 	}
+
 	/**
 	 * 
 	 * @param filePath
@@ -42,7 +44,7 @@ public class FileAction {
 			// 字符流通向字节流的桥梁
 			osw = new OutputStreamWriter(os, encode);
 			// 缓冲区
-			writer = new BufferedWriter(osw,BUFFER_SIZE);
+			writer = new BufferedWriter(osw, BUFFER_SIZE);
 			// 将字符写到文件中
 			writer.write(fileContent);
 			// 刷新缓冲区
