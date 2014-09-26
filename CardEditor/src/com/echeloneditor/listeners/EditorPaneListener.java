@@ -319,7 +319,7 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 	}
 
 	private void updateStatus(DocumentEvent e) {
-		statusObject.getSaveBtn().setEnabled(true);
+		statusObject.showSaveButton(true);
 		CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
 		closeableTabComponent.setModify(true);
 	}
@@ -333,7 +333,7 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 		}
 		selText = selText.replaceAll("\n", "").replaceAll("\r", "").replaceAll("\r\n", "");
 		int num = selText.length();
-		statusObject.getCharNum().setText("字符数：" + num);
+		statusObject.showCharNum(num);
 	}
 
 }

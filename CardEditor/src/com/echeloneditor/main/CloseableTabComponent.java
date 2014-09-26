@@ -20,7 +20,7 @@ public class CloseableTabComponent extends JPanel {
 
 	public String filePath = "";
 	public String fileEncode = "UTF-8";
-	public String fileSzie = "0";
+	public long fileSzie =0;
 	public boolean modify = false;
 
 	private static ImageIcon closerImage = ImageHelper.loadImage("closer.gif");
@@ -57,7 +57,7 @@ public class CloseableTabComponent extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
 				if (tabbedPane.getTabCount() <= 0) {
-					statusObject.getSaveBtn().setEnabled(false);
+					statusObject.showSaveButton(false);
 				}
 			}
 		});
@@ -89,12 +89,11 @@ public class CloseableTabComponent extends JPanel {
 	public void setFileEncode(String fileEncode) {
 		this.fileEncode = fileEncode;
 	}
-
-	public String getFileSzie() {
+	public long getFileSzie() {
 		return fileSzie;
 	}
 
-	public void setFileSzie(String fileSzie) {
+	public void setFileSzie(long fileSzie) {
 		this.fileSzie = fileSzie;
 	}
 }

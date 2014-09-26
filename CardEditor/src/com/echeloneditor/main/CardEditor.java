@@ -285,7 +285,7 @@ public class CardEditor {
 					String res = Config.getValue("CURRENT_THEME", "current_font");
 
 					textArea.setFont(FontUtil.getFont(res));
-					statusObject.getSaveBtn().setEnabled(false);
+					statusObject.showSaveButton(false);
 
 					closeableTabComponent.setModify(false);
 					fis.close();
@@ -360,7 +360,7 @@ public class CardEditor {
 					String res = Config.getValue("CURRENT_THEME", "current_font");
 
 					textArea.setFont(FontUtil.getFont(res));
-					statusObject.getSaveBtn().setEnabled(false);
+					statusObject.showSaveButton(false);
 
 					closeableTabComponent.setModify(false);
 					fis.close();

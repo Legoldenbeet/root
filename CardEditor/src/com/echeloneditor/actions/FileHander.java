@@ -51,9 +51,8 @@ public class FileHander {
 			long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
 			// 更新状态栏文件编码信息
 
-			statusObject.getFileSize().setText("文件大小：" + fileSize);
-			statusObject.getFileEncode().addItem(SystemFileEncode);
-			statusObject.getFileEncode().setSelectedItem(SystemFileEncode);
+			statusObject.showFileSize(fileSize);
+			statusObject.addItemAndSelected(SystemFileEncode, true);
 
 			String fileContentType = SwingUtils.getFileContentType(file.getName());
 			textArea = SwingUtils.createTextArea();
@@ -108,7 +107,7 @@ public class FileHander {
 			CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 			closeableTabComponent.setFilePath(file.getPath());
 			closeableTabComponent.setFileEncode(SystemFileEncode);
-			closeableTabComponent.setFileSzie(String.valueOf(fileSize));
+			closeableTabComponent.setFileSzie(fileSize);
 
 			tabbedPane.add("New Panel", sp);
 			tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
@@ -132,7 +131,7 @@ public class FileHander {
 			} 
 			String res = Config.getValue("CURRENT_THEME", "current_font");
 			textArea.setFont(FontUtil.getFont(res));
-			statusObject.getSaveBtn().setEnabled(false);
+			statusObject.showSaveButton(false);
 
 			textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
@@ -187,7 +186,7 @@ public class FileHander {
 		int tabCount = tabbedPane.getTabCount();
 		CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 		closeableTabComponent.setFileEncode("UTF-8");
-		closeableTabComponent.setFileSzie("0");
+		closeableTabComponent.setFileSzie(0);
 		closeableTabComponent.setModify(false);
 		tabbedPane.add("New Panel", sp);
 		tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
@@ -199,8 +198,7 @@ public class FileHander {
 		String res = Config.getValue("CURRENT_THEME", "current_font");
 
 		textArea.setFont(FontUtil.getFont(res));
-
-		statusObject.getSaveBtn().setEnabled(false);
+		statusObject.showSaveButton(false);
 
 		textArea.setCaretPosition(0);
 		textArea.requestFocusInWindow();

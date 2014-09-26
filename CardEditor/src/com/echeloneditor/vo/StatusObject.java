@@ -5,9 +5,32 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 public class StatusObject {
-	JLabel charNum;
-	JComboBox fileEncode;
-	public JComboBox getFileEncode() {
+	private JLabel charNum;
+	private JLabel fileSize;
+	private JComboBox fileEncode;
+	private JButton saveBtn;
+	
+	public void addItemAndSelected(String itemName,boolean removeOthers){
+		if (removeOthers) {
+			getFileEncode().removeAllItems();
+		}
+		getFileEncode().addItem(itemName);
+		getFileEncode().setSelectedItem(itemName);
+	}
+	
+	public void showFileSize(long size){
+		getFileSize().setText("文件大小：" + size);
+	}
+	
+	public void showSaveButton(boolean showBtn){
+		getSaveBtn().setVisible(showBtn);
+	}
+	
+	public void showCharNum(long num){
+		getCharNum().setText("字符数："+num);
+	}
+	
+	private JComboBox getFileEncode() {
 		return fileEncode;
 	}
 
@@ -15,10 +38,7 @@ public class StatusObject {
 		this.fileEncode = fileEncode;
 	}
 
-	JLabel fileSize;
-	JButton saveBtn;
-
-	public JButton getSaveBtn() {
+	private JButton getSaveBtn() {
 		return saveBtn;
 	}
 
@@ -26,7 +46,7 @@ public class StatusObject {
 		this.saveBtn = saveBtn;
 	}
 
-	public JLabel getCharNum() {
+	private JLabel getCharNum() {
 		return charNum;
 	}
 
@@ -35,7 +55,7 @@ public class StatusObject {
 	}
 
 
-	public JLabel getFileSize() {
+	private JLabel getFileSize() {
 		return fileSize;
 	}
 

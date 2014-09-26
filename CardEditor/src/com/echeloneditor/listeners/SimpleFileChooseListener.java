@@ -63,14 +63,14 @@ public class SimpleFileChooseListener implements ActionListener {
 						SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
 						closeableTabComponent.setFilePath(file.getPath());
 						closeableTabComponent.setFileEncode("utf-8");
-						closeableTabComponent.setFileSzie(String.valueOf(file.length()));
+						closeableTabComponent.setFileSzie(file.length());
 						closeableTabComponent.setModify(false);
 					}
 				} else {
 					File file = new File(filePath);
 					if (file.canWrite()) {
 						fileHander.saveFile(filePath, fileEncode);
-						closeableTabComponent.setFileSzie(String.valueOf(new File(filePath).length()));
+						closeableTabComponent.setFileSzie(new File(filePath).length());
 						closeableTabComponent.setModify(false);
 					} else {
 						JOptionPane.showMessageDialog(null, "文件为只读，保存失败！");
@@ -78,10 +78,8 @@ public class SimpleFileChooseListener implements ActionListener {
 					}
 
 				}
-				statusObject.getFileSize().setText("文件大小：" + closeableTabComponent.getFileSzie());
-				statusObject.getFileEncode().removeAllItems();
-				statusObject.getFileEncode().addItem(closeableTabComponent.getFileEncode());
-				statusObject.getFileEncode().setSelectedItem(closeableTabComponent.getFileEncode());
+				statusObject.showFileSize(closeableTabComponent.getFileSzie());
+				statusObject.addItemAndSelected(closeableTabComponent.getFileEncode(), true);
 			}
 
 		} else if (command.equalsIgnoreCase("saveas")) {
@@ -107,7 +105,7 @@ public class SimpleFileChooseListener implements ActionListener {
 				// closeableTabComponent.setModify(false);
 			}
 		}
-		statusObject.getSaveBtn().setEnabled(false);
+		statusObject.showSaveButton(false);
 	}
 
 }

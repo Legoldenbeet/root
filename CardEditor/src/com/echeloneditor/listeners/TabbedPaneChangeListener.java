@@ -32,7 +32,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.removeAll();
-				statusObject.getSaveBtn().setEnabled(false);
+				statusObject.showSaveButton(false);
 			}
 		});
 		JMenuItem closeOther = new JMenuItem("关闭其他");
@@ -80,14 +80,13 @@ public class TabbedPaneChangeListener implements MouseListener {
 		if (tabCount > 0) {
 			CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
 			String encode = closeableTabComponent.getFileEncode();
-			String fileSize = closeableTabComponent.getFileSzie();
+			long fileSize = closeableTabComponent.getFileSzie();
 			boolean modify = closeableTabComponent.isModify();
-			if (fileSize != null && !fileSize.equals("")) {
-				statusObject.getFileSize().setText("文件大小：" + fileSize);
-				statusObject.getFileEncode().removeAllItems();
-				statusObject.getFileEncode().addItem(encode);
-				statusObject.getFileEncode().setSelectedItem(encode);
-				statusObject.getSaveBtn().setEnabled(modify);
+			if (fileSize!=0) {
+				statusObject.showFileSize(fileSize);
+				statusObject.addItemAndSelected(encode, true);
+				statusObject.showCharNum(0);
+				statusObject.showSaveButton(modify);
 			}
 		}
 	}
