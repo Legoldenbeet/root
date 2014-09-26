@@ -109,7 +109,6 @@ public class CardEditor {
 					window.frmEcheloneditor.setVisible(true);
 					// window.frmEcheloneditor.pack();
 					new DropTarget(window.frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(window.tabbedPane, window.statusObject), true);
-
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
 							new FileHander(window.tabbedPane, window.statusObject).openFileWithFilePath(args[i]);

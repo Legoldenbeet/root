@@ -23,7 +23,7 @@ public class StatusObject {
 	}
 	
 	public void showSaveButton(boolean showBtn){
-		getSaveBtn().setVisible(showBtn);
+		getSaveBtn().setEnabled(showBtn);
 	}
 	
 	public void showCharNum(long num){

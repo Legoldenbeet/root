@@ -1,5 +1,7 @@
 package com.echeloneditor.actions;
 
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +22,7 @@ import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.echeloneditor.listeners.EditorPaneListener;
+import com.echeloneditor.listeners.SimpleDragFileListener;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.main.FontWidthRuler;
 import com.echeloneditor.utils.Config;
@@ -77,6 +80,7 @@ public class FileHander {
 			textArea.setSyntaxEditingStyle(fileContentType);
 
 			EditorPaneListener editlistener = new EditorPaneListener(tabbedPane, statusObject);
+			new DropTarget(textArea, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
 			textArea.addMouseListener(editlistener);
 			textArea.addMouseMotionListener(editlistener);
 			textArea.addKeyListener(editlistener);
