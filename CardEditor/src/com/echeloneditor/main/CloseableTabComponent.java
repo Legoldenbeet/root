@@ -12,7 +12,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.vo.StatusObject;
 
@@ -20,8 +22,8 @@ public class CloseableTabComponent extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public String filePath = "";
-	public String fileEncode = "UTF-8";
-	public long fileSzie =0;
+	public String fileEncode = FileAction.DEFAULT_FILE_ENCODE;
+	public long fileSzie = 0;
 	public boolean modify = false;
 
 	private static ImageIcon closerImage = ImageHelper.loadImage("closer.gif");
@@ -40,7 +42,6 @@ public class CloseableTabComponent extends JPanel {
 
 		titleLabel = new JLabel("New Panel  ");
 		titleLabel.setOpaque(false);
-
 		Dimension closerD = new Dimension(closerImage.getIconWidth(), closerImage.getIconHeight());
 
 		closeButton = new JButton(closerImage);
@@ -56,9 +57,12 @@ public class CloseableTabComponent extends JPanel {
 		closeButton.setSize(closerD);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String title=tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+				String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
 				FileHander.fileDescMapBean.remove(title);
-				FileHander.currentCharPos=0;
+				FileHander.currentCharPos = 0;
+				
+				Debug.log.debug(FileHander.fileDescMapBean);
+				
 				tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
 				if (tabbedPane.getTabCount() <= 0) {
 					statusObject.showSaveButton(false);
@@ -93,6 +97,7 @@ public class CloseableTabComponent extends JPanel {
 	public void setFileEncode(String fileEncode) {
 		this.fileEncode = fileEncode;
 	}
+
 	public long getFileSzie() {
 		return fileSzie;
 	}

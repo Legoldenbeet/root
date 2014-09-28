@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import com.echeloneditor.main.CloseableTabComponent;
+import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
 
@@ -82,7 +83,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 			String encode = closeableTabComponent.getFileEncode();
 			long fileSize = closeableTabComponent.getFileSzie();
 			boolean modify = closeableTabComponent.isModify();
-			if (fileSize!=0) {
+			if (fileSize != 0) {
 				statusObject.showFileSize(fileSize);
 				statusObject.addItemAndSelected(encode, true);
 				statusObject.showCharNum(0);
@@ -111,12 +112,12 @@ public class TabbedPaneChangeListener implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		// Debug.log.debug("mouseEntered");
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		// Debug.log.debug("mouseExited");
 	}
 }

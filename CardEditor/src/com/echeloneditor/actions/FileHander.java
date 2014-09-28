@@ -1,6 +1,5 @@
 package com.echeloneditor.actions;
 
-import java.awt.Component;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.io.BufferedInputStream;
@@ -29,6 +28,7 @@ import com.echeloneditor.listeners.SimpleDragFileListener;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.main.FontWidthRuler;
 import com.echeloneditor.utils.Config;
+import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.utils.SwingUtils;
@@ -56,7 +56,7 @@ public class FileHander {
 		try {
 			boolean isBigFile = false;
 			File file = new File(filePath);
-			String fileName=file.getName();
+			String fileName = file.getName();
 			long fileSize = file.length();
 			long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
 
@@ -66,17 +66,18 @@ public class FileHander {
 			// 更新状态栏文件编码信息
 			statusObject.showFileSize(fileSize);
 			statusObject.addItemAndSelected(FileAction.DEFAULT_FILE_ENCODE, true);
-			
-		//	SwingUtils.selectExistTabComponent(tabbedPane, filePath);
-			
-		//	ComponentSwingUtils.getExistTabComponent(tabbedPane, filePath);
-			
-			
-			if (isBigFile && fileDescMapBean.containsKey(fileName)) {
-				textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
-				currentCharPos=fileDescMapBean.get(fileName);
+
+			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
+			if (fileDescMapBean.containsKey(fileName)&&rTextScrollPane != null) {
+				tabbedPane.setSelectedComponent(rTextScrollPane);
+				if (isBigFile) {
+					textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
+					currentCharPos = fileDescMapBean.get(fileName);
+				} else {
+					return;
+				}
 			} else {
-				currentCharPos=0;
+				currentCharPos = 0;
 				String fileContentType = SwingUtils.getFileContentType(fileName);
 				textArea = SwingUtils.createTextArea();
 
@@ -141,19 +142,20 @@ public class FileHander {
 				// 设置选项卡title为打开文件的文件名
 				SwingUtils.setTabbedPaneTitle(tabbedPane, fileName);
 			}
+
 			String res = Config.getValue("CURRENT_THEME", "current_font");
 			textArea.setFont(FontUtil.getFont(res));
 
 			fis = new FileInputStream(file);
 			bis = new BufferedInputStream(fis, FileAction.BUFFER_SIZE);
 			// BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), FileAction.BUFFER_SIZE);
-			int count=0;//缓存计数器
-			byte[] bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];//缓冲区
+			int count = 0;// 缓存计数器
+			byte[] bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 			try {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
 					count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
-					tmp=new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
+					tmp = new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
 					textArea.append(tmp);
 					currentCharPos += count;
 				} else {
@@ -164,6 +166,9 @@ public class FileHander {
 				e.printStackTrace();
 			} finally {
 				fileDescMapBean.put(fileName, currentCharPos);
+				
+				Debug.log.debug(FileHander.fileDescMapBean);
+				
 				fis.close();
 				bis.close();
 			}

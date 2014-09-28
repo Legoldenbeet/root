@@ -13,28 +13,29 @@ import javax.swing.text.JTextComponent;
 
 import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.echeloneditor.main.CloseableTabComponent;
 
 public class SwingUtils {
 	private static final Logger log = Logger.getLogger(SwingUtils.class);
 
-	public static Component getExistTabComponent(JTabbedPane tabbedPane,String filePath){
-		Component com=null;
-		int tabCount=tabbedPane.getTabCount();
-		if (tabCount>0) {
+	public static RTextScrollPane getExistComponent(JTabbedPane tabbedPane, String filePath) {
+		RTextScrollPane com = null;
+		int tabCount = tabbedPane.getTabCount();
+		if (tabCount > 0) {
 			for (int i = 0; i < tabCount; i++) {
-				Component component=tabbedPane.getTabComponentAt(i);
+				Component component = tabbedPane.getTabComponentAt(i);
 				if (component instanceof CloseableTabComponent) {
-					if (((CloseableTabComponent)component).getFilePath().equals(filePath)) {
-						com=tabbedPane.getTabComponentAt(i);
+					if (((CloseableTabComponent) component).getFilePath().equals(filePath)) {
+						com = (RTextScrollPane) tabbedPane.getComponentAt(i);
 					}
 				}
 			}
 		}
 		return com;
 	}
-	
+
 	/**
 	 * get the select closeableTabComponent use the indicate by the tabbedpane
 	 * 
@@ -61,7 +62,7 @@ public class SwingUtils {
 		}
 		return target;
 	}
-	
+
 	public static Component getRowHeader(Component editorComponent) {
 		Component target = null;
 		if (editorComponent instanceof RSyntaxTextArea) {
@@ -71,7 +72,6 @@ public class SwingUtils {
 		}
 		return target;
 	}
-
 
 	/**
 	 * 获取选项卡选中的RSyntaxTextArea
@@ -84,7 +84,7 @@ public class SwingUtils {
 		if (tabbedPane.getSelectedIndex() == -1) {
 			return null;
 		}
-		//System.out.println(tabbedPane.getSelectedIndex());
+		// System.out.println(tabbedPane.getSelectedIndex());
 		Component com = tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
 		if (com instanceof JScrollPane) {
 			Component[] component = ((JScrollPane) com).getComponents();
@@ -139,6 +139,7 @@ public class SwingUtils {
 		Component componentl = tabbedPane.getTabComponentAt(tabbedPane.getSelectedIndex());
 		((CloseableTabComponent) componentl).titleLabel.setText(fileName + "  ");
 	}
+
 	/**
 	 * 获取select编辑区内容
 	 * 
@@ -150,7 +151,7 @@ public class SwingUtils {
 		RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
 		if (rSyntaxTextArea != null) {
 			text = rSyntaxTextArea.getText();
-		} 
+		}
 		return text;
 	}
 
@@ -175,10 +176,10 @@ public class SwingUtils {
 		int pos = fileName.lastIndexOf(".");
 		String fileExt = fileName.substring(pos + 1, fileName.length());
 
-		result = Config.getValue("FILE_TYPE",fileExt);
-		
-		if (result==null) {
-			result="text/plain";
+		result = Config.getValue("FILE_TYPE", fileExt);
+
+		if (result == null) {
+			result = "text/plain";
 		}
 
 		log.debug("syntaxstyle:" + result);
