@@ -79,12 +79,14 @@ public class CardEditor {
 	ReplaceDialog replaceDialog = null;
 	public static AssistantToolDialog dialog = null;
 	public static FileHander fileHander;
+
 	/**
 	 * Create the application.
 	 */
 	public CardEditor() {
 		initialize();
 	}
+
 	/**
 	 * Launch the application.
 	 */
@@ -128,6 +130,7 @@ public class CardEditor {
 			}
 		});
 	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -160,17 +163,36 @@ public class CardEditor {
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
-		
+
 		JButton button_5 = new JButton("第一页");
+		button_5.setVisible(false);
+		button_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				open(tabbedPane, -1, false, true);
+			}
+		});
 		panel.add(button_5);
-		
+
 		JButton button_4 = new JButton("上一页");
+		button_4.setVisible(false);
+		button_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				open(tabbedPane, FileAction.BIG_FILE_READ_UNIT_SIZE, false, false);
+			}
+		});
 		panel.add(button_4);
-		
+
 		JButton button_2 = new JButton("下一页");
+		button_2.setVisible(false);
 		panel.add(button_2);
-		
+
 		JButton button_6 = new JButton("最后一页");
+		button_6.setVisible(false);
+		button_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				open(tabbedPane, -1, true, true);
+			}
+		});
 		panel.add(button_6);
 
 		JLabel charNmLabel = new JLabel("字符数：");
@@ -184,30 +206,26 @@ public class CardEditor {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] { "文件编码" }));
 		panel.add(comboBox);
-		
+
 		statusObject = new StatusObject();
 		statusObject.setCharNum(charNmLabel);
 		statusObject.setFileSize(fileSizeLabel);
 		statusObject.setFileEncode(comboBox);
 
+		statusObject.setNextBtn(button_2);
+		statusObject.setPrevBtn(button_4);
+		statusObject.setLastBtn(button_6);
+		statusObject.setFirstBtn(button_5);
+
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addMouseListener(new TabbedPaneChangeListener(tabbedPane, statusObject));
-		
-		fileHander=new FileHander(tabbedPane, statusObject);
-		
+
+		fileHander = new FileHander(tabbedPane, statusObject);
+
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionevent) {
-				CloseableTabComponent closeableTabComponent=SwingUtils.getCloseableTabComponent(tabbedPane);
-				String filePath=closeableTabComponent.getFilePath();
-				long fileSize=closeableTabComponent.getFileSzie();
-				
-				long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
-				if (fileSize > (bigFileSzie << 20)) {
-					fileHander.openFileWithFilePath(filePath);
-				}else {
-					JOptionPane.showMessageDialog(null, "too small!");
-				}
+				open(tabbedPane, 0, true, false);
 			}
 		});
 		JPanel panel_1 = new JPanel();
@@ -825,4 +843,32 @@ public class CardEditor {
 		container.doLayout();
 	}
 
+	@SuppressWarnings("static-access")
+	private void open(JTabbedPane tabbedPane, long offset, boolean isForward, boolean isAbsolute) {
+		CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
+		String filePath = closeableTabComponent.getFilePath();
+		long fileSize = closeableTabComponent.getFileSzie();
+
+		if (isAbsolute) {
+			if (isForward) {
+				offset = fileSize - FileAction.BIG_FILE_READ_UNIT_SIZE;
+			} else {
+				offset = 0;
+			}
+		} else {
+			if (isForward) {
+				offset = fileHander.fileDescMapBean.get(filePath);
+			} else {
+				offset = fileHander.fileDescMapBean.get(filePath) - 2 * offset;
+			}
+		}
+		fileHander.fileDescMapBean.put(filePath, offset);
+
+		if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
+			fileHander.openFileWithFilePath(filePath);
+		} else {
+			JOptionPane.showMessageDialog(null, "too small!");
+			return;
+		}
+	}
 }

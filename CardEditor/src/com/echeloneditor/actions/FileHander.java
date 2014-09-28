@@ -59,27 +59,27 @@ public class FileHander {
 			File file = new File(filePath);
 			String fileName = file.getName();
 			long fileSize = file.length();
-			long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
 
-			if (fileSize > (bigFileSzie << 20)) {
+			if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
 				isBigFile = true;
 			}
 			// 更新状态栏文件编码信息
 			statusObject.showFileSize(fileSize);
 			statusObject.addItemAndSelected(FileAction.DEFAULT_FILE_ENCODE, true);
-			
+
 			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
-			if (fileDescMapBean.containsKey(filePath)&&rTextScrollPane != null) {
+			if (fileDescMapBean.containsKey(filePath) && rTextScrollPane != null) {
 				tabbedPane.setSelectedComponent(rTextScrollPane);
 				if (isBigFile) {
 					textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
 					currentCharPos = fileDescMapBean.get(filePath);
-					
-					if (currentCharPos>=fileSize) {
+
+					if (currentCharPos >= fileSize) {
 						JOptionPane.showMessageDialog(SwingUtilities.getRoot(tabbedPane), "已到最后一页");
 						return;
 					}
 				} else {
+					statusObject.showViewBtn(false);
 					return;
 				}
 			} else {
@@ -148,7 +148,7 @@ public class FileHander {
 				// 设置选项卡title为打开文件的文件名
 				SwingUtils.setTabbedPaneTitle(tabbedPane, fileName);
 			}
-			//清空编辑区
+			// 清空编辑区
 			textArea.setText("");
 			String res = Config.getValue("CURRENT_THEME", "current_font");
 			textArea.setFont(FontUtil.getFont(res));
@@ -165,23 +165,23 @@ public class FileHander {
 					tmp = new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
 					textArea.append(tmp);
 					currentCharPos += count;
-				} 
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
 				fileDescMapBean.put(filePath, currentCharPos);
 				Debug.log.debug(FileHander.fileDescMapBean);
-				if (fis!=null) {
+				if (fis != null) {
 					fis.close();
 				}
-				if (bis!=null) {
+				if (bis != null) {
 					bis.close();
 				}
-				if (bytes!=null) {
-					bytes=null;
+				if (bytes != null) {
+					bytes = null;
 				}
-				if (tmp!=null) {
-					tmp=null;
+				if (tmp != null) {
+					tmp = null;
 				}
 			}
 			statusObject.showSaveButton(false);
@@ -190,6 +190,7 @@ public class FileHander {
 			} else {
 				closeableTabComponent.setModify(false);
 			}
+			statusObject.showViewBtn(isBigFile);
 			// textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
 		} catch (Exception e1) {
