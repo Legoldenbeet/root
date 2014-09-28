@@ -57,8 +57,8 @@ public class CloseableTabComponent extends JPanel {
 		closeButton.setSize(closerD);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
-				FileHander.fileDescMapBean.remove(title);
+				//String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+				FileHander.fileDescMapBean.remove(getFilePath());
 				FileHander.currentCharPos = 0;
 				
 				Debug.log.debug(FileHander.fileDescMapBean);

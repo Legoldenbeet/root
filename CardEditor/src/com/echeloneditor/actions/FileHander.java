@@ -42,9 +42,10 @@ public class FileHander {
 	public FontWidthRuler ruler;
 	public CloseableTabComponent closeableTabComponent;
 	public RSyntaxTextArea textArea;
-	private FileInputStream fis;
-	private BufferedInputStream bis;
-	private String tmp;
+	private static FileInputStream fis;
+	private static BufferedInputStream bis;
+	private static String tmp;
+	private static byte[] bytes;
 
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
@@ -66,13 +67,18 @@ public class FileHander {
 			// 更新状态栏文件编码信息
 			statusObject.showFileSize(fileSize);
 			statusObject.addItemAndSelected(FileAction.DEFAULT_FILE_ENCODE, true);
-
+			
 			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
-			if (fileDescMapBean.containsKey(fileName)&&rTextScrollPane != null) {
+			if (fileDescMapBean.containsKey(filePath)&&rTextScrollPane != null) {
 				tabbedPane.setSelectedComponent(rTextScrollPane);
 				if (isBigFile) {
 					textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
-					currentCharPos = fileDescMapBean.get(fileName);
+					currentCharPos = fileDescMapBean.get(filePath);
+					
+					if (currentCharPos>=fileSize) {
+						JOptionPane.showMessageDialog(SwingUtilities.getRoot(tabbedPane), "已到最后一页");
+						return;
+					}
 				} else {
 					return;
 				}
@@ -142,7 +148,8 @@ public class FileHander {
 				// 设置选项卡title为打开文件的文件名
 				SwingUtils.setTabbedPaneTitle(tabbedPane, fileName);
 			}
-
+			//清空编辑区
+			textArea.setText("");
 			String res = Config.getValue("CURRENT_THEME", "current_font");
 			textArea.setFont(FontUtil.getFont(res));
 
@@ -150,7 +157,7 @@ public class FileHander {
 			bis = new BufferedInputStream(fis, FileAction.BUFFER_SIZE);
 			// BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), FileAction.BUFFER_SIZE);
 			int count = 0;// 缓存计数器
-			byte[] bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
+			bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 			try {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
@@ -158,19 +165,24 @@ public class FileHander {
 					tmp = new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
 					textArea.append(tmp);
 					currentCharPos += count;
-				} else {
-					JOptionPane.showMessageDialog(SwingUtilities.getRoot(tabbedPane), "已到最后一页");
-					return;
-				}
+				} 
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				fileDescMapBean.put(fileName, currentCharPos);
-				
+				fileDescMapBean.put(filePath, currentCharPos);
 				Debug.log.debug(FileHander.fileDescMapBean);
-				
-				fis.close();
-				bis.close();
+				if (fis!=null) {
+					fis.close();
+				}
+				if (bis!=null) {
+					bis.close();
+				}
+				if (bytes!=null) {
+					bytes=null;
+				}
+				if (tmp!=null) {
+					tmp=null;
+				}
 			}
 			statusObject.showSaveButton(false);
 			if (isBigFile && currentCharPos != 0) {

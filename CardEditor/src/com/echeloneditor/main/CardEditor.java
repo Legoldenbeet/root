@@ -78,7 +78,13 @@ public class CardEditor {
 	FindDialog findDialog = null;
 	ReplaceDialog replaceDialog = null;
 	public static AssistantToolDialog dialog = null;
-
+	public static FileHander fileHander;
+	/**
+	 * Create the application.
+	 */
+	public CardEditor() {
+		initialize();
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -113,7 +119,7 @@ public class CardEditor {
 					new DropTarget(window.frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(window.tabbedPane, window.statusObject), true);
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
-							new FileHander(window.tabbedPane, window.statusObject).openFileWithFilePath(args[i]);
+							fileHander.openFileWithFilePath(args[i]);
 						}
 					}
 				} catch (Exception e) {
@@ -122,14 +128,6 @@ public class CardEditor {
 			}
 		});
 	}
-
-	/**
-	 * Create the application.
-	 */
-	public CardEditor() {
-		initialize();
-	}
-
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -170,21 +168,6 @@ public class CardEditor {
 		panel.add(button_4);
 		
 		JButton button_2 = new JButton("下一页");
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionevent) {
-				FileHander fileHander=new FileHander(tabbedPane, statusObject);
-				CloseableTabComponent closeableTabComponent=SwingUtils.getCloseableTabComponent(tabbedPane);
-				String filePath=closeableTabComponent.getFilePath();
-				long fileSize=closeableTabComponent.getFileSzie();
-				
-				long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
-				if (fileSize > (bigFileSzie << 20)) {
-					fileHander.openFileWithFilePath(filePath);
-				}else {
-					JOptionPane.showMessageDialog(null, "too small!");
-				}
-			}
-		});
 		panel.add(button_2);
 		
 		JButton button_6 = new JButton("最后一页");
@@ -198,21 +181,35 @@ public class CardEditor {
 		fileSizeLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		panel.add(fileSizeLabel);
 
-		statusObject = new StatusObject();
-		statusObject.setCharNum(charNmLabel);
-		statusObject.setFileSize(fileSizeLabel);
-
 		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] { "文件编码" }));
 		panel.add(comboBox);
-
+		
+		statusObject = new StatusObject();
+		statusObject.setCharNum(charNmLabel);
+		statusObject.setFileSize(fileSizeLabel);
 		statusObject.setFileEncode(comboBox);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addMouseListener(new TabbedPaneChangeListener(tabbedPane, statusObject));
-		// frmEcheloneditor.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-
+		
+		fileHander=new FileHander(tabbedPane, statusObject);
+		
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				CloseableTabComponent closeableTabComponent=SwingUtils.getCloseableTabComponent(tabbedPane);
+				String filePath=closeableTabComponent.getFilePath();
+				long fileSize=closeableTabComponent.getFileSzie();
+				
+				long bigFileSzie = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
+				if (fileSize > (bigFileSzie << 20)) {
+					fileHander.openFileWithFilePath(filePath);
+				}else {
+					JOptionPane.showMessageDialog(null, "too small!");
+				}
+			}
+		});
 		JPanel panel_1 = new JPanel();
 		frmEcheloneditor.getContentPane().add(panel_1, BorderLayout.NORTH);
 		panel_1.setLayout(new BorderLayout(0, 0));
@@ -224,7 +221,6 @@ public class CardEditor {
 		button.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FileHander fileHander = new FileHander(tabbedPane, statusObject);
 				fileHander.newFile();
 			}
 		});
