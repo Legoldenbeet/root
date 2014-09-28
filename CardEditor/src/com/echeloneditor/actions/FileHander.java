@@ -50,6 +50,7 @@ public class FileHander {
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
+		bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 	}
 
 	public void openFileWithFilePath(String filePath) {
@@ -157,19 +158,13 @@ public class FileHander {
 			bis = new BufferedInputStream(fis, FileAction.BUFFER_SIZE);
 			// BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), FileAction.BUFFER_SIZE);
 			int count = 0;// 缓存计数器
-			bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 			try {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
-					Debug.log.debug("1:"+currentCharPos);
 					count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
-					Debug.log.debug("2:"+currentCharPos);
 					tmp = new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
-					Debug.log.debug("3:"+currentCharPos);
 					textArea.append(tmp);
-					Debug.log.debug("4:"+currentCharPos);
 					currentCharPos += count;
-					Debug.log.debug("5:"+currentCharPos);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -182,9 +177,6 @@ public class FileHander {
 				}
 				if (bis != null) {
 					bis.close();
-				}
-				if (bytes != null) {
-					bytes = null;
 				}
 				if (tmp != null) {
 					tmp = null;
