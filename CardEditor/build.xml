@@ -93,6 +93,11 @@
 				<include name="setup/*" />
 			</fileset>
 		</copy>
+		<copy todir="${dist-dir}/">
+			<fileset dir=".">
+				<include name="*.txt" />
+			</fileset>
+		</copy>
 	</target>
 
 
