@@ -19,6 +19,22 @@ import com.echeloneditor.main.CloseableTabComponent;
 public class SwingUtils {
 	private static final Logger log = Logger.getLogger(SwingUtils.class);
 
+	public static Component getExistTabComponent(JTabbedPane tabbedPane,String filePath){
+		Component com=null;
+		int tabCount=tabbedPane.getTabCount();
+		if (tabCount>0) {
+			for (int i = 0; i < tabCount; i++) {
+				Component component=tabbedPane.getTabComponentAt(i);
+				if (component instanceof CloseableTabComponent) {
+					if (((CloseableTabComponent)component).getFilePath().equals(filePath)) {
+						com=tabbedPane.getTabComponentAt(i);
+					}
+				}
+			}
+		}
+		return com;
+	}
+	
 	/**
 	 * get the select closeableTabComponent use the indicate by the tabbedpane
 	 * 
