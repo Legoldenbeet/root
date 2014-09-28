@@ -13,7 +13,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import com.echeloneditor.main.CloseableTabComponent;
-import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
 
