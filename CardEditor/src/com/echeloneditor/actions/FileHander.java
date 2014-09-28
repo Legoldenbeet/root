@@ -161,16 +161,22 @@ public class FileHander {
 			try {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
+					Debug.log.debug("1:"+currentCharPos);
 					count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
+					Debug.log.debug("2:"+currentCharPos);
 					tmp = new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
+					Debug.log.debug("3:"+currentCharPos);
 					textArea.append(tmp);
+					Debug.log.debug("4:"+currentCharPos);
 					currentCharPos += count;
+					Debug.log.debug("5:"+currentCharPos);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				Debug.log.debug(e.getMessage());
 			} finally {
 				fileDescMapBean.put(filePath, currentCharPos);
-				Debug.log.debug(FileHander.fileDescMapBean);
+				Debug.log.debug(fileDescMapBean);
 				if (fis != null) {
 					fis.close();
 				}
