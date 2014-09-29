@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 public class StatusObject {
 	private JLabel charNum;
 	private JLabel fileSize;
-	private JComboBox fileEncode;
+	private JComboBox<String> fileEncode;
 	private JButton saveBtn;
 
 	private JButton nextBtn;
@@ -22,11 +22,7 @@ public class StatusObject {
 		getFirstBtn().setVisible(visible);
 	}
 
-	public void addItemAndSelected(String itemName, boolean removeOthers) {
-		if (removeOthers) {
-			getFileEncode().removeAllItems();
-		}
-		getFileEncode().addItem(itemName);
+	public void SelectEncodeItem(String itemName) {
 		getFileEncode().setSelectedItem(itemName);
 	}
 

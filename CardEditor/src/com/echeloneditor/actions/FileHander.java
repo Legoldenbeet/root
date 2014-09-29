@@ -66,7 +66,7 @@ public class FileHander {
 			}
 			// 更新状态栏文件编码信息
 			statusObject.showFileSize(fileSize);
-			statusObject.addItemAndSelected(FileAction.DEFAULT_FILE_ENCODE, true);
+			statusObject.SelectEncodeItem(FileAction.DEFAULT_FILE_ENCODE);
 
 			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
 			if (fileDescMapBean.containsKey(filePath) && rTextScrollPane != null) {
@@ -241,7 +241,7 @@ public class FileHander {
 
 		int tabCount = tabbedPane.getTabCount();
 		CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-		closeableTabComponent.setFileEncode("UTF-8");
+		closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
 		closeableTabComponent.setFileSzie(0);
 		closeableTabComponent.setModify(false);
 		tabbedPane.add("New Panel", sp);

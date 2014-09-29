@@ -85,7 +85,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 			boolean modify = closeableTabComponent.isModify();
 			if (fileSize >= 0) {
 				statusObject.showFileSize(fileSize);
-				statusObject.addItemAndSelected(encode, true);
+				statusObject.SelectEncodeItem(encode);
 				statusObject.showCharNum(0);
 				statusObject.showSaveButton(modify);
 				

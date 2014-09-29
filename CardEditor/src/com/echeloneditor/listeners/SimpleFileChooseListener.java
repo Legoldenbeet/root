@@ -79,7 +79,7 @@ public class SimpleFileChooseListener implements ActionListener {
 
 				}
 				statusObject.showFileSize(closeableTabComponent.getFileSzie());
-				statusObject.addItemAndSelected(closeableTabComponent.getFileEncode(), true);
+				statusObject.SelectEncodeItem(closeableTabComponent.getFileEncode());
 			}
 
 		} else if (command.equalsIgnoreCase("saveas")) {

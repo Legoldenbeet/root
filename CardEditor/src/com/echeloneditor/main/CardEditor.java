@@ -17,6 +17,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+
+import javafx.scene.input.ScrollEvent.VerticalTextScrollUnits;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -44,6 +47,7 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.Gutter;
+import org.fife.ui.rtextarea.RTextAreaEditorKit.VerticalPageAction;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -109,7 +113,10 @@ public class CardEditor {
 					}
 
 					UIManager.setLookAndFeel(currentLaf);
+					JFrame.setDefaultLookAndFeelDecorated(true);
 
+					Font commonFont = new Font("微软雅黑", Font.PLAIN, 14);
+					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
 					// 初始化窗体
 					CardEditor window = new CardEditor();
@@ -203,8 +210,8 @@ public class CardEditor {
 		fileSizeLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		panel.add(fileSizeLabel);
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "文件编码" }));
+		JComboBox<String> comboBox = new JComboBox<String>();
+		comboBox.setModel(new DefaultComboBoxModel(Charset.availableCharsets().keySet().toArray()));
 		panel.add(comboBox);
 
 		statusObject = new StatusObject();
@@ -813,7 +820,10 @@ public class CardEditor {
 		JMenuItem menuItem_17 = new JMenuItem("帮助");
 		menuItem_17.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmEcheloneditor, "EchelonEditor_赫本", "帮助", JOptionPane.WARNING_MESSAGE);
+				String appName = Config.getValue("CONFIG", "appName");
+				String version = Config.getValue("CONFIG", "version");
+				String versionName = Config.getValue("CONFIG", "versionName");
+				JOptionPane.showMessageDialog(frmEcheloneditor, appName + "_" + version + "_" + versionName, "帮助", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 
