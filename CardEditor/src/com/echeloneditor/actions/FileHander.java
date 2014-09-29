@@ -166,7 +166,7 @@ public class FileHander {
 					textArea.append(tmp);
 					currentCharPos += count;
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 				Debug.log.debug(e.getMessage());
 			} finally {
@@ -191,8 +191,9 @@ public class FileHander {
 			statusObject.showViewBtn(isBigFile);
 			// textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
-		} catch (Exception e1) {
+		} catch (IOException e1) {
 			e1.printStackTrace();
+			Debug.log.debug(e1.getMessage());
 		}
 	}
 
