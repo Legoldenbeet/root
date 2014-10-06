@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 public class StatusObject {
 	private JLabel charNum;
 	private JLabel fileSize;
-	private JComboBox<String> fileEncode;
+	private JComboBox fileEncode;
 	private JButton saveBtn;
 
 	private JButton nextBtn;

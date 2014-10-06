@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-import javafx.scene.input.ScrollEvent.VerticalTextScrollUnits;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -47,7 +45,6 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.Gutter;
-import org.fife.ui.rtextarea.RTextAreaEditorKit.VerticalPageAction;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.zeroturnaround.zip.ZipUtil;
 
@@ -210,7 +207,7 @@ public class CardEditor {
 		fileSizeLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		panel.add(fileSizeLabel);
 
-		JComboBox<String> comboBox = new JComboBox<String>();
+		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(Charset.availableCharsets().keySet().toArray()));
 		panel.add(comboBox);
 
