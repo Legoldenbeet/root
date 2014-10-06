@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<exe4j version="4.4.4" transformSequenceNumber="1">
+<exe4j version="4.6" transformSequenceNumber="1">
   <directoryPresets config="E:/程序打包/CardEditor/dist" />
   <application name="CardEditor" distributionSourceDir="E:/程序打包/CardEditor/dist">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="CardEditor" type="1" iconSet="true" iconFile="E:/程序打包/CardEditor/setup/logo.ico" executableDir="." redirectStderr="false" stderrFile="error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" amd64="false">
+  <executable name="CardEditor" type="1" iconSet="true" iconFile="E:/程序打包/CardEditor/setup/logo.ico" executableDir="." redirectStderr="true" stderrFile="error.log" stderrMode="append" redirectStdout="true" stdoutFile="output.log" stdoutMode="append" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="requireAdministrator" checkConsoleParameter="true" globalSingleInstance="false" amd64="false">
     <messageSet />
     <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" companyName="" productVersion="" />
   </executable>
