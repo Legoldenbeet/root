@@ -4,6 +4,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+import com.echeloneditor.actions.FileAction;
 import com.watchdata.commons.lang.WDAssert;
 
 public class StatusObject {
@@ -17,6 +18,11 @@ public class StatusObject {
 	private JButton lastBtn;
 	private JButton firstBtn;
 
+	public void reDefault(){
+		SelectEncodeItem(FileAction.DEFAULT_FILE_ENCODE);
+		showFileSize(0);
+		showCharNum(0);
+	}
 	public void showViewBtn(boolean visible) {
 		getNextBtn().setVisible(visible);
 		getPrevBtn().setVisible(visible);

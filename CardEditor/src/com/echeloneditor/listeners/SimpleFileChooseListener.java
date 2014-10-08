@@ -99,11 +99,6 @@ public class SimpleFileChooseListener implements ActionListener {
 					}
 				}
 				fileHander.saveFile(file.getPath(), fileEncode);
-				// SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName());
-				// closeableTabComponent.setFilePath(file.getPath());
-				// closeableTabComponent.setFileEncode("utf-8");
-				// closeableTabComponent.setFileSzie(String.valueOf(file.length()));
-				// closeableTabComponent.setModify(false);
 			}
 		}
 		statusObject.showSaveButton(false);
