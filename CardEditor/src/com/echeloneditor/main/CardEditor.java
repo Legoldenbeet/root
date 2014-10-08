@@ -12,13 +12,10 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import javax.swing.DefaultComboBoxModel;
@@ -45,10 +42,8 @@ import javax.swing.text.JTextComponent;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.springframework.util.Assert;
 import org.zeroturnaround.zip.ZipUtil;
 
 import com.echeloneditor.actions.DecryptTemplateAction;
@@ -64,7 +59,6 @@ import com.echeloneditor.listeners.SimpleFileChooseListener;
 import com.echeloneditor.listeners.SimpleJmenuItemListener;
 import com.echeloneditor.listeners.TabbedPaneChangeListener;
 import com.echeloneditor.utils.Config;
-import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.utils.SwingUtils;
@@ -85,6 +79,7 @@ public class CardEditor {
 	ReplaceDialog replaceDialog = null;
 	public static AssistantToolDialog dialog = null;
 	public static FileHander fileHander;
+	public FileInputStream fis;
 
 	/**
 	 * Create the application.
@@ -291,7 +286,7 @@ public class CardEditor {
 				String filepath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
 					File file = new File(filepath);
-					FileInputStream fis = new FileInputStream(file);
+					fis = new FileInputStream(file);
 
 					byte[] bytes = new byte[fis.available()];
 
@@ -368,72 +363,42 @@ public class CardEditor {
 		JButton btnNewButton_1 = new JButton("");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String filepath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
+				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					File file = new File(filepath);
-					FileInputStream fis = new FileInputStream(file);
+					File file = new File(filePath);
+					fis = new FileInputStream(file);
 
 					byte[] bytes = new byte[fis.available()];
 
 					fis.read(bytes);
 
-					RSyntaxTextArea textArea = SwingUtils.createTextArea();
-
-					textArea.setSyntaxEditingStyle("text/xml");
-
-					EditorPaneListener editlistener = new EditorPaneListener(tabbedPane, statusObject);
-					textArea.addMouseListener(editlistener);
-					textArea.addMouseMotionListener(editlistener);
-					textArea.addKeyListener(editlistener);
-					textArea.getDocument().addDocumentListener(editlistener);
-
-					RTextScrollPane sp = new RTextScrollPane(textArea);
-					sp.setFoldIndicatorEnabled(true);
-
-					Gutter gutter = sp.getGutter();
-					gutter.setBookmarkingEnabled(true);
-					ImageIcon ii = ImageHelper.loadImage("bookmark.png");
-					gutter.setBookmarkIcon(ii);
-
-					InputStream in = getClass().getResourceAsStream("/com/echeloneditor/resources/templates/eclipse.xml");
-					try {
-						Theme theme = Theme.load(in);
-						theme.apply(textArea);
-					} catch (IOException ioe) {
-						ioe.printStackTrace();
+					String plainText=DecryptTemplateAction.doAction(new String(bytes));
+					if(WDAssert.isEmpty(plainText)){
+						return;
 					}
-					// 加入标尺
-					ruler = new FontWidthRuler(FontWidthRuler.HORIZONTAL, 10, textArea);
-					ruler.addSpin(3);
-					ruler.NeedPaint = true;
-					sp.setColumnHeaderView(ruler);
-
-					int tabCount = tabbedPane.getTabCount();
-					CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-					closeableTabComponent.setFilePath(file.getPath());
-
-					tabbedPane.add("New Panel", sp);
-					tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
-
-					tabbedPane.setSelectedComponent(sp);
-					// 设置选项卡title为打开文件的文件名
-					SwingUtils.setTabbedPaneTitle(tabbedPane, file.getName() + "_t");
-
-					DecryptTemplateAction.doAction(textArea, new String(bytes));
-
-					String res = Config.getValue("CURRENT_THEME", "current_font");
-
-					textArea.setFont(FontUtil.getFont(res));
-					statusObject.showSaveButton(false);
-
-					closeableTabComponent.setModify(false);
-					fis.close();
-					// textArea.setCaretPosition(0);
-					textArea.requestFocusInWindow();
+					String tmp=FileAction.USER_DIR+"/tmp";
+					File fileDir= new File(tmp);
+					if (!fileDir.exists()) {
+						fileDir.mkdir();
+					}
+					
+					String newFilePath=tmp+"/"+file.getName();
+					FileAction fileAction = new FileAction();
+					fileAction.save(newFilePath, plainText, "GBK");
+					fileHander.openFileWithFilePath(newFilePath, "GBK");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, e1.getMessage());
 					e1.printStackTrace();
+				}finally{
+					if (fis!=null) {
+						try {
+							fis.close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
 				}
 
 			}
