@@ -18,12 +18,12 @@
 
 <project name="CardEditor" default="make-jar" basedir=".">
 	<description>EchelonEditor build file</description>
-	
+
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.0.0" />
 	<property name="source-dir" location="src" />
 	<property name="root-dir" location="E:\程序打包" />
-	<property name="javac-home" location="C:\Program Files\WatchData\WD-CAMSBase\jdk1.6\bin\javac" />
+	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
 	<property name="class-dir" location="${root-dir}/CardEditor/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/CardEditor/dist" />
 	<property name="doc-dir" location="${root-dir}/CardEditor/javadoc" />
@@ -43,12 +43,11 @@
 	<target name="compile" description="Compile the source">
 		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac fork="false" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
+		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
 			<compilerarg value="-Xlint:all" />
 			<classpath refid="classpath" />
 		</javac>
 	</target>
-
 
 	<!-- Creates the jar file. -->
 	<target name="make-jar" depends="compile" description="Create the jar file">
@@ -99,7 +98,6 @@
 		</copy>
 	</target>
 
-
 	<!-- Builds the source zip file. -->
 	<target name="make-source-zip" description="Builds the source zip file">
 		<zip destfile="EchelonEditor_${version}_Source.zip">
@@ -112,7 +110,6 @@
 		</zip>
 	</target>
 
-
 	<!-- Builds the javadoc.  -->
 	<target name="make-javadoc" depends="compile">
 		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}">
@@ -122,5 +119,4 @@
 			<link href="" />
 		</javadoc>
 	</target>
-
 </project>
