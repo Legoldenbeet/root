@@ -27,7 +27,7 @@
 	<property name="class-dir" location="${root-dir}/CardEditor/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/CardEditor/dist" />
 	<property name="doc-dir" location="${root-dir}/CardEditor/javadoc" />
-	<property name="zip-dir" location="${root-dir}/CardEditor/"/>
+	<property name="zip-dir" location="${root-dir}/CardEditor/src-zip"/>
 	<property name="setup-dir" location="${root-dir}/CardEditor/setup" />
 	<property name="lib" value="lib" />
 	<property name="debug" value="true" />
@@ -101,6 +101,7 @@
 
 	<!-- Builds the source zip file. -->
 	<target name="make-source-zip" description="Builds the source zip file">
+		<delete includeEmptyDirs="true" quiet="true" dir="${zip-dir}" />
 		<zip destfile="${zip-dir}/CardEditor_${version}_Source.zip">
 			<fileset dir=".">
 				<include name="src/**" />
@@ -118,6 +119,7 @@
 	
 	<!-- Builds the javadoc.  -->
 	<target name="make-javadoc" depends="compile">
+		<delete includeEmptyDirs="true" quiet="true" dir="${doc-dir}" />
 		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}" encoding="UTF-8" charset="UTF-8">
 			<packageset dir="${source-dir}" defaultexcludes="yes">
 				<include name="com/**" />
