@@ -20,13 +20,14 @@
 	<description>EchelonEditor build file</description>
 
 	<!-- Set global properties for this build. -->
-	<property name="version" value="1.0.0" />
+	<property name="version" value="1.1.0" />
 	<property name="source-dir" location="src" />
 	<property name="root-dir" location="E:\程序打包" />
 	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
 	<property name="class-dir" location="${root-dir}/CardEditor/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/CardEditor/dist" />
 	<property name="doc-dir" location="${root-dir}/CardEditor/javadoc" />
+	<property name="zip-dir" location="${root-dir}/CardEditor/"/>
 	<property name="setup-dir" location="${root-dir}/CardEditor/setup" />
 	<property name="lib" value="lib" />
 	<property name="debug" value="true" />
@@ -100,19 +101,24 @@
 
 	<!-- Builds the source zip file. -->
 	<target name="make-source-zip" description="Builds the source zip file">
-		<zip destfile="EchelonEditor_${version}_Source.zip">
+		<zip destfile="${zip-dir}/CardEditor_${version}_Source.zip">
 			<fileset dir=".">
 				<include name="src/**" />
 				<include name="build.xml" />
 				<include name=".project" />
 				<include name=".classpath" />
+			    <include name="**/*.xml" />
+				<include name="**/*.png" />
+				<include name="**/*.jpg" />
+				<include name="**/*.gif" />
+				<include name="**/*.properties" />
 			</fileset>
 		</zip>
 	</target>
-
+	
 	<!-- Builds the javadoc.  -->
 	<target name="make-javadoc" depends="compile">
-		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}">
+		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}" encoding="UTF-8" charset="UTF-8">
 			<packageset dir="${source-dir}" defaultexcludes="yes">
 				<include name="com/**" />
 			</packageset>
