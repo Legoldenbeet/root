@@ -57,11 +57,13 @@ public class SimpleDragFileListener implements DropTargetListener {
 				dtde.acceptDrop(DnDConstants.ACTION_COPY_OR_MOVE);
 				Transferable tr = dtde.getTransferable();
 				Object obj = tr.getTransferData(DataFlavor.javaFileListFlavor);
-				List<File> files = (List<File>) obj;
-				for (File file : files) {
-					fileHander.openFileWithFilePath(file.getPath());
+				if (obj instanceof List<?>) {
+					List<File> files = (List<File>) obj;
+					for (File file : files) {
+						fileHander.openFileWithFilePath(file.getPath());
+					}
+					dtde.dropComplete(true);
 				}
-				dtde.dropComplete(true);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -43,7 +43,7 @@
 	<target name="compile" description="Compile the source">
 		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
+		<javac fork="false" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
 			<compilerarg value="-Xlint:all" />
 			<classpath refid="classpath" />
 		</javac>

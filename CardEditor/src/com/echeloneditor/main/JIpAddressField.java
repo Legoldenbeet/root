@@ -342,8 +342,8 @@ public class JIpAddressField extends JComponent implements SwingConstants {
 			break;
 		case 4:
 			txtDigital2.requestFocus(true);
-		default:
 			break;
+		default:
 		}
 	}
 
@@ -422,7 +422,7 @@ public class JIpAddressField extends JComponent implements SwingConstants {
 	private int isChangeTextFocus(DigitalText text, KeyEvent e) {
 		int length = text.getText().length();
 		String selectText = text.getSelectedText();
-		if (length == 0 && e.getKeyCode() == 8) {// 8代表�?��
+		if (length == 0 && e.getKeyCode() == 8) {// 8代表退格
 			if (text.getSelectionStart() == 0)
 				return 2;
 			else

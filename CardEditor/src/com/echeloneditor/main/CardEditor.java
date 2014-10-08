@@ -266,7 +266,7 @@ public class CardEditor {
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				String filepath = ((CloseableTabComponent) SwingUtils.getCloseableTabComponent(tabbedPane)).getFilePath();
+				String filepath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
 					File file = new File(filepath);
 					FileInputStream fis = new FileInputStream(file);
@@ -346,7 +346,7 @@ public class CardEditor {
 		JButton btnNewButton_1 = new JButton("");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String filepath = ((CloseableTabComponent) SwingUtils.getCloseableTabComponent(tabbedPane)).getFilePath();
+				String filepath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
 					File file = new File(filepath);
 					FileInputStream fis = new FileInputStream(file);
