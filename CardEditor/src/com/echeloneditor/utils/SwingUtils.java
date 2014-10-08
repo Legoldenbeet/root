@@ -49,6 +49,7 @@ public class SwingUtils {
 		return (CloseableTabComponent) component;
 	}
 
+	
 	/**
 	 * get columnHeader with the textcomponent
 	 * 

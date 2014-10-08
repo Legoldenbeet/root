@@ -46,6 +46,7 @@ public class FileHander {
 	private static BufferedInputStream bis;
 	private static String tmp;
 	private static byte[] bytes;
+	public static String currentEncode;
 
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
@@ -53,9 +54,10 @@ public class FileHander {
 		bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 	}
 
-	public void openFileWithFilePath(String filePath) {
+	public void openFileWithFilePath(String filePath,String fileEncode) {
 		// 打开文件
 		try {
+			currentEncode=fileEncode;
 			boolean isBigFile = false;
 			File file = new File(filePath);
 			String fileName = file.getName();
@@ -139,7 +141,7 @@ public class FileHander {
 				int tabCount = tabbedPane.getTabCount();
 				closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 				closeableTabComponent.setFilePath(filePath);
-				closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
+				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
 
 				tabbedPane.add("New Panel", sp);
@@ -162,11 +164,12 @@ public class FileHander {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
 					count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
-					tmp = new String(bytes, 0, count, FileAction.DEFAULT_FILE_ENCODE);
+					tmp = new String(bytes, 0, count, currentEncode);
 					textArea.append(tmp);
 					currentCharPos += count;
 				}
 			} catch (IOException e) {
+				currentEncode=FileAction.DEFAULT_FILE_ENCODE;
 				e.printStackTrace();
 				Debug.log.debug(e.getMessage());
 			} finally {

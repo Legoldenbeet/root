@@ -60,6 +60,7 @@ public class CloseableTabComponent extends JPanel {
 				//String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
 				FileHander.fileDescMapBean.remove(getFilePath());
 				FileHander.currentCharPos = 0;
+				FileHander.currentEncode=FileAction.DEFAULT_FILE_ENCODE;
 				
 				Debug.log.debug(FileHander.fileDescMapBean);
 				

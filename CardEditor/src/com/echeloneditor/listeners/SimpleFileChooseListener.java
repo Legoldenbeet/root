@@ -8,6 +8,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
+import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.utils.SwingUtils;
@@ -36,7 +37,7 @@ public class SimpleFileChooseListener implements ActionListener {
 				// 获得选择的文件
 				File file = fileChooser.getSelectedFile();
 				if (file.isFile()) {
-					fileHander.openFileWithFilePath(file.getPath());
+					fileHander.openFileWithFilePath(file.getPath(),FileAction.DEFAULT_FILE_ENCODE);
 				}
 			}
 		} else if (command.equals("save")) {

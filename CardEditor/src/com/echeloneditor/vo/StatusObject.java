@@ -4,6 +4,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
+import com.watchdata.commons.lang.WDAssert;
+
 public class StatusObject {
 	private JLabel charNum;
 	private JLabel fileSize;
@@ -24,6 +26,10 @@ public class StatusObject {
 
 	public void SelectEncodeItem(String itemName) {
 		getFileEncode().setSelectedItem(itemName);
+	}
+	public String getSelectedEncodeItem() {
+		String item=getFileEncode().getSelectedItem().toString();
+		return WDAssert.isEmpty(item)==false?item:null;
 	}
 
 	public void showFileSize(long size) {

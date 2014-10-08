@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JTabbedPane;
 
+import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.vo.StatusObject;
 
@@ -60,7 +61,7 @@ public class SimpleDragFileListener implements DropTargetListener {
 				if (obj instanceof List<?>) {
 					List<File> files = (List<File>) obj;
 					for (File file : files) {
-						fileHander.openFileWithFilePath(file.getPath());
+						fileHander.openFileWithFilePath(file.getPath(),FileAction.DEFAULT_FILE_ENCODE);
 					}
 					dtde.dropComplete(true);
 				}

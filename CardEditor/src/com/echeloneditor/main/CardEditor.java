@@ -12,6 +12,8 @@ import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +48,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.springframework.util.Assert;
 import org.zeroturnaround.zip.ZipUtil;
 
 import com.echeloneditor.actions.DecryptTemplateAction;
@@ -61,12 +64,14 @@ import com.echeloneditor.listeners.SimpleFileChooseListener;
 import com.echeloneditor.listeners.SimpleJmenuItemListener;
 import com.echeloneditor.listeners.TabbedPaneChangeListener;
 import com.echeloneditor.utils.Config;
+import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.StatusObject;
 import com.watchdata.Generater;
+import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class CardEditor {
@@ -125,7 +130,7 @@ public class CardEditor {
 					new DropTarget(window.frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(window.tabbedPane, window.statusObject), true);
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
-							fileHander.openFileWithFilePath(args[i]);
+							fileHander.openFileWithFilePath(args[i],FileAction.DEFAULT_FILE_ENCODE);
 						}
 					}
 				} catch (Exception e) {
@@ -220,6 +225,23 @@ public class CardEditor {
 		statusObject.setPrevBtn(button_4);
 		statusObject.setLastBtn(button_6);
 		statusObject.setFirstBtn(button_5);
+		
+		JButton btnNewButton_2 = new JButton("reload");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tabbedPane.getTabCount()>0) {
+					String newEncode=statusObject.getSelectedEncodeItem();
+					if (newEncode==null) {
+						return;
+					}
+					String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
+					tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+					fileHander.openFileWithFilePath(filePath,newEncode);
+					statusObject.SelectEncodeItem(newEncode);
+				}
+			}
+		});
+		panel.add(btnNewButton_2);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -872,7 +894,7 @@ public class CardEditor {
 		fileHander.fileDescMapBean.put(filePath, offset);
 
 		if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
-			fileHander.openFileWithFilePath(filePath);
+			fileHander.openFileWithFilePath(filePath,fileHander.currentEncode);
 		} else {
 			JOptionPane.showMessageDialog(null, "too small!");
 			return;
