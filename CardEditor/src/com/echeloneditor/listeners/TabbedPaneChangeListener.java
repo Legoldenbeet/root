@@ -82,16 +82,19 @@ public class TabbedPaneChangeListener implements MouseListener {
 			CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
 			String encode = closeableTabComponent.getFileEncode();
 			long fileSize = closeableTabComponent.getFileSzie();
+			String filePath = closeableTabComponent.getFilePath();
 			boolean modify = closeableTabComponent.isModify();
 			if (fileSize >= 0) {
+				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
+
 				statusObject.showFileSize(fileSize);
 				statusObject.SelectEncodeItem(encode);
 				statusObject.showCharNum(0);
 				statusObject.showSaveButton(modify);
-				
-				if (fileSize>(FileAction.BIG_FILE_SIZE<<20)) {
+
+				if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
 					statusObject.showViewBtn(true);
-				}else {
+				} else {
 					statusObject.showViewBtn(false);
 				}
 			}
@@ -101,7 +104,6 @@ public class TabbedPaneChangeListener implements MouseListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -118,7 +120,6 @@ public class TabbedPaneChangeListener implements MouseListener {
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		// Debug.log.debug("mouseEntered");
 	}
 
 	@Override
