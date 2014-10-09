@@ -73,7 +73,7 @@ public class FileHander {
 			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
 			if (fileDescMapBean.containsKey(filePath) && rTextScrollPane != null) {
 				tabbedPane.setSelectedComponent(rTextScrollPane);
-				
+
 				SwingUtils.showTitleFilePath(tabbedPane);
 				if (isBigFile) {
 					textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
@@ -142,7 +142,7 @@ public class FileHander {
 
 				int tabCount = tabbedPane.getTabCount();
 				closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-				closeableTabComponent.setFilePath(filePath);
+				closeableTabComponent.setFilePath(file.getPath());
 				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
 
