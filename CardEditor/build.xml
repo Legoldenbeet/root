@@ -16,7 +16,7 @@
 
 -->
 
-<project name="CardEditor" default="make-jar" basedir=".">
+<project name="CardEditor" default="build" basedir=".">
 	<description>EchelonEditor build file</description>
 
 	<!-- Set global properties for this build. -->
