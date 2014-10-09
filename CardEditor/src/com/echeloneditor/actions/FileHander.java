@@ -54,10 +54,10 @@ public class FileHander {
 		bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 	}
 
-	public void openFileWithFilePath(String filePath,String fileEncode) {
+	public void openFileWithFilePath(String filePath, String fileEncode) {
 		// 打开文件
 		try {
-			currentEncode=fileEncode;
+			currentEncode = fileEncode;
 			boolean isBigFile = false;
 			File file = new File(filePath);
 			String fileName = file.getName();
@@ -73,6 +73,8 @@ public class FileHander {
 			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
 			if (fileDescMapBean.containsKey(filePath) && rTextScrollPane != null) {
 				tabbedPane.setSelectedComponent(rTextScrollPane);
+				
+				SwingUtils.showTitleFilePath(tabbedPane);
 				if (isBigFile) {
 					textArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
 					currentCharPos = fileDescMapBean.get(filePath);
@@ -169,7 +171,7 @@ public class FileHander {
 					currentCharPos += count;
 				}
 			} catch (IOException e) {
-				currentEncode=FileAction.DEFAULT_FILE_ENCODE;
+				currentEncode = FileAction.DEFAULT_FILE_ENCODE;
 				e.printStackTrace();
 				Debug.log.debug(e.getMessage());
 			} finally {
@@ -192,6 +194,7 @@ public class FileHander {
 				closeableTabComponent.setModify(false);
 			}
 			statusObject.showViewBtn(isBigFile);
+			SwingUtils.showTitleFilePath(tabbedPane);
 			// textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
 		} catch (IOException e1) {

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Window;
 import java.io.IOException;
 
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -21,6 +22,18 @@ import com.echeloneditor.main.CloseableTabComponent;
 
 public class SwingUtils {
 	private static final Logger log = Logger.getLogger(SwingUtils.class);
+
+	public static void showTitleFilePath(JTabbedPane tabbedPane) {
+		int tabCount = tabbedPane.getTabCount();
+		if (tabCount > 0) {
+			CloseableTabComponent closeableTabComponent = getCloseableTabComponent(tabbedPane);
+			if (closeableTabComponent == null) {
+				return;
+			}
+			String filePath = closeableTabComponent.getFilePath();
+			((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
+		}
+	}
 
 	public static RTextScrollPane getExistComponent(JTabbedPane tabbedPane, String filePath) {
 		RTextScrollPane com = null;
@@ -49,7 +62,6 @@ public class SwingUtils {
 		return (CloseableTabComponent) component;
 	}
 
-	
 	/**
 	 * get columnHeader with the textcomponent
 	 * 
@@ -220,9 +232,9 @@ public class SwingUtils {
 		System.exit(0);
 	}
 
-	public static void setLookAndFeelFont(Font commonFont){
-		//Font commonFont = new Font("微软雅黑", Font.PLAIN, 12);
-		//Font titleFont = new Font("微软雅黑", Font.PLAIN, 14);
+	public static void setLookAndFeelFont(Font commonFont) {
+		// Font commonFont = new Font("微软雅黑", Font.PLAIN, 12);
+		// Font titleFont = new Font("微软雅黑", Font.PLAIN, 14);
 		UIManager.getDefaults().put("CheckBox.font", commonFont);
 		UIManager.getDefaults().put("Tree.font", commonFont);
 		UIManager.getDefaults().put("Viewport.font", commonFont);
@@ -263,6 +275,7 @@ public class SwingUtils {
 		UIManager.getDefaults().put("TitledBorder.font", commonFont);
 		UIManager.getDefaults().put("ComboBox.font", commonFont);
 	}
+
 	/**
 	 * setTheme
 	 * 

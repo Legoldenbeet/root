@@ -125,7 +125,7 @@ public class CardEditor {
 					new DropTarget(window.frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(window.tabbedPane, window.statusObject), true);
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
-							fileHander.openFileWithFilePath(args[i],FileAction.DEFAULT_FILE_ENCODE);
+							fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
 						}
 					}
 				} catch (Exception e) {
@@ -220,18 +220,18 @@ public class CardEditor {
 		statusObject.setPrevBtn(button_4);
 		statusObject.setLastBtn(button_6);
 		statusObject.setFirstBtn(button_5);
-		
+
 		JButton btnNewButton_2 = new JButton("reload");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tabbedPane.getTabCount()>0) {
-					String newEncode=statusObject.getSelectedEncodeItem();
-					if (newEncode==null) {
+				if (tabbedPane.getTabCount() > 0) {
+					String newEncode = statusObject.getSelectedEncodeItem();
+					if (newEncode == null) {
 						return;
 					}
-					String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
+					String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 					tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
-					fileHander.openFileWithFilePath(filePath,newEncode);
+					fileHander.openFileWithFilePath(filePath, newEncode);
 					statusObject.SelectEncodeItem(newEncode);
 				}
 			}
@@ -241,7 +241,6 @@ public class CardEditor {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addMouseListener(new TabbedPaneChangeListener(tabbedPane, statusObject));
-
 		fileHander = new FileHander(tabbedPane, statusObject);
 
 		button_2.addActionListener(new ActionListener() {
@@ -372,17 +371,17 @@ public class CardEditor {
 
 					fis.read(bytes);
 
-					String plainText=DecryptTemplateAction.doAction(new String(bytes));
-					if(WDAssert.isEmpty(plainText)){
+					String plainText = DecryptTemplateAction.doAction(new String(bytes));
+					if (WDAssert.isEmpty(plainText)) {
 						return;
 					}
-					String tmp=FileAction.USER_DIR+"/tmp";
-					File fileDir= new File(tmp);
+					String tmp = FileAction.USER_DIR + "/tmp";
+					File fileDir = new File(tmp);
 					if (!fileDir.exists()) {
 						fileDir.mkdir();
 					}
-					
-					String newFilePath=tmp+"/"+file.getName();
+
+					String newFilePath = tmp + "/" + file.getName();
 					FileAction fileAction = new FileAction();
 					fileAction.save(newFilePath, plainText, "GBK");
 					fileHander.openFileWithFilePath(newFilePath, "GBK");
@@ -390,8 +389,8 @@ public class CardEditor {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, e1.getMessage());
 					e1.printStackTrace();
-				}finally{
-					if (fis!=null) {
+				} finally {
+					if (fis != null) {
 						try {
 							fis.close();
 						} catch (IOException e1) {
@@ -859,7 +858,7 @@ public class CardEditor {
 		fileHander.fileDescMapBean.put(filePath, offset);
 
 		if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
-			fileHander.openFileWithFilePath(filePath,fileHander.currentEncode);
+			fileHander.openFileWithFilePath(filePath, fileHander.currentEncode);
 		} else {
 			JOptionPane.showMessageDialog(null, "too small!");
 			return;
