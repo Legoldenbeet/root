@@ -2,17 +2,17 @@
 
 <!-- 
 
-	This is the Ant build script for PersonalizationCheckTool.jar.
+	This is the Ant build script for CardEditor.jar.
 	Available targets include:
 	
-		1. compile:         Compiles all org.fife classes into ${class-dir}.
+		1. compile:         Compiles all src classes into ${class-dir}.
 		2. make-jar:        Createqs the jar file.
 		3. make-source-zip: Creates a source zip file.
 		3. make-javadoc:    Creates the javadoc for RSyntaxTextArea.
 
-	Author:   Robert Futrell
-	Version:  1.4
-	Date:     22feb2009
+	Author:   liya.xiao
+	Version:  1.0
+	Date:     20141009
 
 -->
 
@@ -22,13 +22,13 @@
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.1.0" />
 	<property name="source-dir" location="src" />
-	<property name="root-dir" location="E:\程序打包" />
+	<property name="root-dir" location="E:/程序打包/CardEditor" />
 	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
-	<property name="class-dir" location="${root-dir}/CardEditor/ant-classes" />
-	<property name="dist-dir" location="${root-dir}/CardEditor/dist" />
-	<property name="doc-dir" location="${root-dir}/CardEditor/javadoc" />
-	<property name="zip-dir" location="${root-dir}/CardEditor/src-zip"/>
-	<property name="setup-dir" location="${root-dir}/CardEditor/setup" />
+	<property name="class-dir" location="${root-dir}/ant-classes" />
+	<property name="dist-dir" location="${root-dir}/dist" />
+	<property name="doc-dir" location="${root-dir}/javadoc" />
+	<property name="zip-dir" location="${root-dir}/src-zip" />
+	<property name="setup-dir" location="${root-dir}/setup" />
 	<property name="lib" value="lib" />
 	<property name="debug" value="true" />
 	<property name="debuglevel" value="lines,vars,source" />
@@ -40,18 +40,21 @@
 		</fileset>
 	</path>
 
+	<target name="clean">
+		<delete dir="${root-dir}" includeEmptyDirs="true" quiet="false" />
+	</target>
+
 	<!-- Compiles the classes.  -->
 	<target name="compile" description="Compile the source">
-		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
+		<javac fork="false" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
 			<compilerarg value="-Xlint:all" />
 			<classpath refid="classpath" />
 		</javac>
 	</target>
 
 	<!-- Creates the jar file. -->
-	<target name="make-jar" depends="compile" description="Create the jar file">
+	<target name="make-jar" description="Create the jar file">
 		<pathconvert property="mf.classpath" pathsep=" ">
 			<path refid="classpath" />
 			<mapper>
@@ -62,9 +65,7 @@
 					<globmapper from="*" to="CardEditor_lib/*" />
 				</chainedmapper>
 			</mapper>
-
 		</pathconvert>
-		<delete includeEmptyDirs="true" quiet="true" dir="${dist-dir}" />
 		<mkdir dir="${dist-dir}" />
 		<jar destfile="${dist-dir}/CardEditor.jar">
 			<fileset dir="${class-dir}" />
@@ -80,6 +81,10 @@
 				<attribute name="Class-Path" value="${mf.classpath}" />
 			</manifest>
 		</jar>
+	</target>
+
+	<!--move files to ${dist-dir}-->
+	<target name="move">
 		<copy todir="${dist-dir}/resources">
 			<fileset dir="resources" />
 		</copy>
@@ -101,30 +106,44 @@
 
 	<!-- Builds the source zip file. -->
 	<target name="make-source-zip" description="Builds the source zip file">
-		<delete includeEmptyDirs="true" quiet="true" dir="${zip-dir}" />
+		<mkdir dir="${zip-dir}" />
 		<zip destfile="${zip-dir}/CardEditor_${version}_Source.zip">
 			<fileset dir=".">
 				<include name="src/**" />
-				<include name="build.xml" />
+				<!--include name="build.xml" />
 				<include name=".project" />
 				<include name=".classpath" />
 			    <include name="**/*.xml" />
 				<include name="**/*.png" />
 				<include name="**/*.jpg" />
 				<include name="**/*.gif" />
-				<include name="**/*.properties" />
+				<include name="**/*.properties" /-->
 			</fileset>
 		</zip>
 	</target>
-	
+
 	<!-- Builds the javadoc.  -->
-	<target name="make-javadoc" depends="compile">
-		<delete includeEmptyDirs="true" quiet="true" dir="${doc-dir}" />
-		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}" encoding="UTF-8" charset="UTF-8">
+	<target name="make-javadoc" description="make javadoc for ${source-dir}">
+		<mkdir dir="${doc-dir}" />
+		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}" encoding="UTF-8" docencoding="UTF-8" charset="UTF-8">
 			<packageset dir="${source-dir}" defaultexcludes="yes">
 				<include name="com/**" />
 			</packageset>
-			<link href="" />
+			<!--link href="" /-->
 		</javadoc>
+	</target>
+
+	<!-- Builds all target 32bit system  -->
+	<target name="build" depends="clean">
+		<antcall target="compile">
+		</antcall>
+		<antcall target="make-jar">
+		</antcall>
+		<antcall target="move">
+		</antcall>
+		<antcall target="make-javadoc">
+		</antcall>
+		<antcall target="make-source-zip">
+		</antcall>
 	</target>
 </project>
