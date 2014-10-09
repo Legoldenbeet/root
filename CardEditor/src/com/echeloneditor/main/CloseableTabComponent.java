@@ -8,14 +8,18 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.ImageHelper;
+import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
 
 public class CloseableTabComponent extends JPanel {
@@ -57,18 +61,20 @@ public class CloseableTabComponent extends JPanel {
 		closeButton.setSize(closerD);
 		closeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
 				FileHander.fileDescMapBean.remove(getFilePath());
 				FileHander.currentCharPos = 0;
-				FileHander.currentEncode=FileAction.DEFAULT_FILE_ENCODE;
-				
+				FileHander.currentEncode = FileAction.DEFAULT_FILE_ENCODE;
+
 				Debug.log.debug(FileHander.fileDescMapBean);
-				
+
 				tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
 				if (tabbedPane.getTabCount() <= 0) {
 					statusObject.showSaveButton(false);
 					statusObject.reDefault();
+					
+					((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(Config.getValue("CONFIG", "appName"));
 				}
+				SwingUtils.showTitleFilePath(tabbedPane);
 			}
 		});
 

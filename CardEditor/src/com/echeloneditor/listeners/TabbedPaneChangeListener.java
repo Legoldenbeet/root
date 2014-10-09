@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.main.CloseableTabComponent;
+import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
 
@@ -34,6 +35,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.removeAll();
 				statusObject.showSaveButton(false);
+				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(Config.getValue("CONFIG", "appName"));
 			}
 		});
 		JMenuItem closeOther = new JMenuItem("关闭其他");
