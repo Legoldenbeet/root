@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardEditor"
-#define MyAppVersion "1.1"
+#define MyAppVersion "1.2.0"
 #define MyAppExeName "CardEditor.exe"
 
 [Setup]
@@ -17,7 +17,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=E:\程序打包\CardEditor\setup\
-OutputBaseFilename=CardEditor_setup
+OutputBaseFilename={#MyAppName}_{#MyAppVersion}_setup
 SetupIconFile=E:\程序打包\CardEditor\setup\logo.ico
 Compression=lzma2
 SolidCompression=yes
