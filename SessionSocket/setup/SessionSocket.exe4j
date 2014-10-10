@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<exe4j version="4.4.4" transformSequenceNumber="1">
+<exe4j version="4.6" transformSequenceNumber="1">
   <directoryPresets config="D:/程序打包/SessionSocket/dist" />
-  <application name="SessionSocket" distributionSourceDir="D:/程序打包/SessionSocket/dist">
+  <application name="SessionSocket" distributionSourceDir="E:/程序打包/SessionSocket/dist">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>

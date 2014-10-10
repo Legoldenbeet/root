@@ -16,7 +16,7 @@ public class TestDemo {
 		// SessionClient sessionClient = new SessionClient("hello", "127.0.0.1", 9000);
 		// TcpConnector tcpConnector = new TcpConnector("127.0.0.1", 3003);
 
-		File file = new File("D:\\ccspace\\Business_WD_CAMS_Prj_Dev\\PayID_Business_VOB\\Business_WD_CAMS\\WD_CAMS\\Product\\应用模板\\湖北农信\\测试数据\\Native\\湖北农信金融社保卡送检数据（20121207）.rar");
+		File file = new File("G:\\1000_hotel_data.txt");
 		// File file = new File("D:\\eclipse-SDK-4.2.rar");
 		FileInputStream fis = new FileInputStream(file);
 
@@ -85,8 +85,8 @@ public class TestDemo {
 	}
 
 	public static void main(String[] args) throws UnknownHostException, IOException {
-		for (int i = 0; i < 500; i++) {
-			System.out.println("i:" + i);
+		//for (int i = 0; i < 500; i++) {
+			//System.out.println("i:" + i);
 			Thread thread = new Thread(new Runnable() {
 
 				@Override
@@ -95,12 +95,12 @@ public class TestDemo {
 					TestDemo hello = new TestDemo();
 					Socket socket;
 					try {
-						socket = new Socket("10.0.97.124", 9000);
+						socket = new Socket("127.0.0.1", 9000);
 
-						for (int i = 0; i < 1000; i++) {
+						//for (int i = 0; i < 1000; i++) {
 							// Socket socket = new Socket("127.0.0.1", 9000);
 							hello.test(socket);
-						}
+						//}
 					} catch (UnknownHostException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -112,6 +112,6 @@ public class TestDemo {
 			});
 			thread.start();
 			// hello.test1();
-		}
+		//}
 	}
 }
