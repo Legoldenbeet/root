@@ -25,11 +25,12 @@
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.0.0" />
 	<property name="source-dir" location="src" />
-	<property name="root-dir" location="D:\程序打包" />
+	<property name="root-dir" location="E:\程序打包" />
 	<property name="class-dir" location="${root-dir}/SessionSocket/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/SessionSocket/dist" />
 	<property name="doc-dir" location="${root-dir}/SessionSocket/javadoc" />
 	<property name="setup-dir" location="${root-dir}/SessionSocket/setup" />
+	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
 	<property name="lib" value="lib" />
 	<property name="debug" value="true" />
 	<property name="debuglevel" value="lines,vars,source" />
@@ -45,7 +46,7 @@
 	<target name="compile" description="Compile the source">
 		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false">
+		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
 			<classpath refid="classpath" />
 		</javac>
 	</target>
@@ -76,7 +77,7 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="com.sessionsocket.server.ServerListener" />
-				<attribute name="Class-Path" value="${mf.classpath}"/>
+				<attribute name="Class-Path" value="${mf.classpath}" />
 			</manifest>
 		</jar>
 		<copy todir="${dist-dir}/resource">
@@ -90,18 +91,18 @@
 		</copy>
 		<delete includeEmptyDirs="true" quiet="true" dir="${setup-dir}" />
 		<copy todir="${dist-dir}/..">
-			<fileset dir="." >
+			<fileset dir=".">
 				<include name="setup/*" />
 			</fileset>
 		</copy>
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${dist-dir}/log">
-				<include name="**/*"/>
+				<include name="**/*" />
 			</fileset>
 		</delete>
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${dist-dir}/report">
-				<include name="**/*"/>
+				<include name="**/*" />
 			</fileset>
 		</delete>
 	</target>
