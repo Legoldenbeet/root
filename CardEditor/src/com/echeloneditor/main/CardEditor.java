@@ -44,7 +44,6 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.zeroturnaround.zip.ZipUtil;
 
 import com.echeloneditor.actions.DecryptTemplateAction;
 import com.echeloneditor.actions.EmvFormatAction;
@@ -63,6 +62,7 @@ import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
+import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
@@ -766,7 +766,12 @@ public class CardEditor {
 					String filePath = selectedFile.getPath();
 					filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
 					File zipFile = new File(filePath + "/" + selectedFile.getName() + ".zip");
-					ZipUtil.pack(fileChooser.getSelectedFile(), zipFile);
+					try {
+						ZipUtil.zip(fileChooser.getSelectedFile(), zipFile);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(frmEcheloneditor, e.getMessage());
+					}
 					JOptionPane.showMessageDialog(frmEcheloneditor, "操作完成!");
 				}
 			}
