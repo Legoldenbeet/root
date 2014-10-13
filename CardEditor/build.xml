@@ -48,7 +48,6 @@
 	<target name="compile" description="Compile the source">
 		<mkdir dir="${class-dir}" />
 		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
-			<compilerarg value="-Xlint:all" />
 			<classpath refid="classpath" />
 		</javac>
 	</target>

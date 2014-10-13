@@ -22,14 +22,17 @@ public class ZipUtil {
 		ZipOutputStream output = null;
 		try {
 			output = new ZipOutputStream(new FileOutputStream(zipFile));
+			output.setEncoding("utf-8");
+			output.setFallbackToUTF8(true);
+			output.setLevel(-1);
 			// 顶层目录开始
 			zipFile(output, file, "");
-			output.flush();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
 			// 关闭流
 			if (output != null) {
+				output.flush();
 				output.close();
 			}
 		}
@@ -60,13 +63,14 @@ public class ZipUtil {
 			} else {
 				// 压缩文件
 				basePath = (basePath.length() == 0 ? "" : basePath + "/") + file.getName();
-				// System.out.println(basePath);
+				Debug.log.debug(basePath);
 				output.putNextEntry(new ZipEntry(basePath));
 				input = new FileInputStream(file);
 				int readLen = 0;
 				byte[] buffer = new byte[1024 * 8];
-				while ((readLen = input.read(buffer, 0, 1024 * 8)) != -1)
+				while ((readLen = input.read(buffer, 0, buffer.length)) != -1)
 					output.write(buffer, 0, readLen);
+				output.closeEntry();
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
