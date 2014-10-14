@@ -133,13 +133,7 @@
 	</target>
 
 	<!-- Builds all target 32bit system  -->
-	<target name="build" depends="clean">
-		<antcall target="compile">
-		</antcall>
-		<antcall target="make-jar">
-		</antcall>
-		<antcall target="move">
-		</antcall>
+	<target name="build" depends="clean,compile,make-jar,move">
 		<antcall target="make-javadoc">
 		</antcall>
 		<antcall target="make-source-zip">
