@@ -5,6 +5,7 @@ import java.awt.dnd.DropTarget;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +23,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.mozilla.universalchardet.UniversalDetector;
 
 import com.echeloneditor.listeners.EditorPaneListener;
 import com.echeloneditor.listeners.SimpleDragFileListener;
@@ -47,11 +49,14 @@ public class FileHander {
 	private static String tmp;
 	private static byte[] bytes;
 	public static String currentEncode;
+	public UniversalDetector detector;
 
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
 		bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
+
+		detector = new UniversalDetector(null);
 	}
 
 	public void openFileWithFilePath(String filePath, String fileEncode) {
@@ -68,8 +73,6 @@ public class FileHander {
 			}
 			// 更新状态栏文件编码信息
 			statusObject.showFileSize(fileSize);
-			statusObject.SelectEncodeItem(FileAction.DEFAULT_FILE_ENCODE);
-
 			RTextScrollPane rTextScrollPane = SwingUtils.getExistComponent(tabbedPane, filePath);
 			if (fileDescMapBean.containsKey(filePath) && rTextScrollPane != null) {
 				tabbedPane.setSelectedComponent(rTextScrollPane);
@@ -166,6 +169,23 @@ public class FileHander {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
 					count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
+
+					if (currentCharPos == 0) {
+						detector.handleData(bytes, 0, count);
+						detector.dataEnd();
+						String encoding = detector.getDetectedCharset();
+						if (encoding != null) {
+							if (encoding.equalsIgnoreCase("UTF-8") || encoding.startsWith("GB")) {
+								currentEncode = encoding;
+							}
+							statusObject.SelectEncodeItem(currentEncode);
+							System.out.println("Detected encoding = " + encoding);
+						} else {
+							currentEncode = FileAction.DEFAULT_FILE_ENCODE;
+							System.out.println("No encoding detected. use default charset：" + currentEncode);
+						}
+					}
+
 					tmp = new String(bytes, 0, count, currentEncode);
 					textArea.append(tmp);
 					currentCharPos += count;
@@ -186,6 +206,7 @@ public class FileHander {
 				if (tmp != null) {
 					tmp = null;
 				}
+				detector.reset();
 			}
 			statusObject.showSaveButton(false);
 			if (isBigFile && currentCharPos != 0) {
@@ -264,5 +285,24 @@ public class FileHander {
 
 		textArea.setCaretPosition(0);
 		textArea.requestFocusInWindow();
+	}
+
+	public static void main(String[] args) throws IOException {
+		byte[] buf = new byte[4096];
+		java.io.FileInputStream fis = new java.io.FileInputStream("G:\\1000_hotel_csv.csv");
+		UniversalDetector detector = new UniversalDetector(null);
+		int nread;
+		while ((nread = fis.read(buf)) > 0 && !detector.isDone()) {
+			detector.handleData(buf, 0, nread);
+		}
+		detector.dataEnd();
+		String encoding = detector.getDetectedCharset();
+		if (encoding != null) {
+			System.out.println("Detected encoding = " + encoding);
+		} else {
+			System.out.println("No encoding detected.");
+		}
+		detector.reset();
+
 	}
 }
