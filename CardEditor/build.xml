@@ -90,7 +90,6 @@
 		<copy todir="${dist-dir}/CardEditor_lib">
 			<fileset dir="lib" />
 		</copy>
-		<delete includeEmptyDirs="true" quiet="true" dir="${setup-dir}" />
 		<copy todir="${dist-dir}/..">
 			<fileset dir=".">
 				<include name="setup/*" />
