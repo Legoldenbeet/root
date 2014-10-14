@@ -25,7 +25,7 @@
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.0.0" />
 	<property name="source-dir" location="src" />
-	<property name="root-dir" location="D:\程序打包\CardPersonalizationAssistantTool" />
+	<property name="root-dir" location="E:\程序打包\CardPersonalizationAssistantTool" />
 	<property name="class-dir" location="${root-dir}/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/dist" />
 	<property name="doc-dir" location="${root-dir}/javadoc" />
