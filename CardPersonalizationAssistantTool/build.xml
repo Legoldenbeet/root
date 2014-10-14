@@ -17,7 +17,7 @@
 -->
 
 
-<project name="CardPersonalizationAssistantTool" default="make-jar" basedir=".">
+<project name="CardPersonalizationAssistantTool" default="build" basedir=".">
 
 	<description>CardPersonalizationAssistantTool build file</description>
 
@@ -25,11 +25,11 @@
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.0.0" />
 	<property name="source-dir" location="src" />
-	<property name="root-dir" location="D:\程序打包" />
-	<property name="class-dir" location="${root-dir}/CardPersonalizationAssistantTool/ant-classes" />
-	<property name="dist-dir" location="${root-dir}/CardPersonalizationAssistantTool/dist" />
-	<property name="doc-dir" location="${root-dir}/CardPersonalizationAssistantTool/javadoc" />
-	<property name="setup-dir" location="${root-dir}/CardPersonalizationAssistantTool/setup" />
+	<property name="root-dir" location="D:\程序打包\CardPersonalizationAssistantTool" />
+	<property name="class-dir" location="${root-dir}/ant-classes" />
+	<property name="dist-dir" location="${root-dir}/dist" />
+	<property name="doc-dir" location="${root-dir}/javadoc" />
+	<property name="setup-dir" location="${root-dir}/setup" />
 	<property name="lib" value="lib" />
 	<property name="debug" value="true" />
 	<property name="debuglevel" value="lines,vars,source" />
@@ -41,15 +41,18 @@
 		</fileset>
 	</path>
 
+	<!-- clean root-dir. -->
+	<target name="clean">
+		<delete dir="${root-dir}" includeEmptyDirs="true" quiet="false" />
+	</target>
+
 	<!-- Compiles the classes.  -->
 	<target name="compile" description="Compile the source">
-		<delete includeEmptyDirs="true" quiet="true" dir="${class-dir}" />
 		<mkdir dir="${class-dir}" />
-		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false">
+		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="UTF-8">
 			<classpath refid="classpath" />
 		</javac>
 	</target>
-
 
 	<!-- Creates the jar file. -->
 	<target name="make-jar" depends="compile" description="Create the jar file">
@@ -65,7 +68,6 @@
 			</mapper>
 
 		</pathconvert>
-		<delete includeEmptyDirs="true" quiet="true" dir="${dist-dir}" />
 		<mkdir dir="${dist-dir}" />
 		<jar destfile="${dist-dir}/CardPAT.jar">
 			<fileset dir="${class-dir}" />
@@ -76,9 +78,13 @@
 			</fileset>
 			<manifest>
 				<attribute name="Main-Class" value="com.gerenhua.tool.app.Application" />
-				<attribute name="Class-Path" value="${mf.classpath}"/>
+				<attribute name="Class-Path" value="${mf.classpath}" />
 			</manifest>
 		</jar>
+	</target>
+
+	<!--move files to ${dist-dir}-->
+	<target name="move">
 		<copy todir="${dist-dir}/resources">
 			<fileset dir="resources" />
 		</copy>
@@ -92,51 +98,27 @@
 			<fileset dir="report" />
 		</copy>
 		<copy todir="${dist-dir}">
-			<fileset dir="." >
+			<fileset dir=".">
 				<include name="*.dll" />
 			</fileset>
 		</copy>
-		<delete includeEmptyDirs="true" quiet="true" dir="${setup-dir}" />
 		<copy todir="${dist-dir}/..">
-			<fileset dir="." >
+			<fileset dir=".">
 				<include name="setup/*" />
 			</fileset>
 		</copy>
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${dist-dir}/log">
-				<include name="**/*"/>
+				<include name="**/*" />
 			</fileset>
 		</delete>
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${dist-dir}/report">
-				<include name="**/*"/>
+				<include name="**/*" />
 			</fileset>
 		</delete>
 	</target>
 
-
-	<!-- Builds the source zip file. -->
-	<target name="make-source-zip" description="Builds the source zip file">
-		<zip destfile="CardPersonalizationAssistantTool_${version}_Source.zip">
-			<fileset dir=".">
-				<include name="src/**" />
-				<include name="build.xml" />
-				<include name=".project" />
-				<include name=".classpath" />
-			</fileset>
-		</zip>
+	<target name="build" depends="clean,compile,make-jar,move">
 	</target>
-
-
-	<!-- Builds the javadoc.  -->
-	<target name="make-javadoc" depends="compile">
-		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}">
-			<packageset dir="${source-dir}" defaultexcludes="yes">
-				<include name="com/**" />
-			</packageset>
-			<link href="" />
-		</javadoc>
-	</target>
-
-
 </project>
