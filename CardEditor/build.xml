@@ -20,7 +20,7 @@
 	<description>EchelonEditor build file</description>
 
 	<!-- Set global properties for this build. -->
-	<property name="version" value="1.2.0" />
+	<property name="version" value="1.2.0.1" />
 	<property name="source-dir" location="src" />
 	<property name="root-dir" location="E:/程序打包/CardEditor" />
 	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
@@ -47,7 +47,7 @@
 	<!-- Compiles the classes.  -->
 	<target name="compile" description="Compile the source">
 		<mkdir dir="${class-dir}" />
-		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
+		<javac fork="false" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
 			<classpath refid="classpath" />
 		</javac>
 	</target>
