@@ -64,6 +64,7 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
+import com.sepp.server.ServerListener;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
@@ -133,6 +134,8 @@ public class CardEditor {
 				}
 			}
 		});
+		
+		new ServerListener().startService(9000,tabbedPane);
 	}
 
 	/**
