@@ -55,14 +55,11 @@ public class ServiceSocket extends AbstractSessionSocket {
 
 	@Override
 	public void onDataArrived(byte[] data, Socket socket, Thread thread) {
-		if (data==null) {
+		if (data == null) {
 			return;
 		}
-		//byte[] cmdHeader=new byte[8];
-		//System.arraycopy(data, 0, cmdHeader, 0, 8);
 		sepp.process(data);
 		try {
-
 			log.debug("注意:有消息到达:socketID:" + socket.hashCode() + "[" + socket.toString() + "]【接收：" + data.length + "字节数据】");
 			sendMessage("success.\n".getBytes());
 
