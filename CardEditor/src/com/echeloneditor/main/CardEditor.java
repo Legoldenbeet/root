@@ -73,7 +73,7 @@ public class CardEditor {
 
 	public JFrame frmEcheloneditor;
 	public static JTabbedPane tabbedPane;
-	public StatusObject statusObject;
+	public static StatusObject statusObject;
 	public FontWidthRuler ruler;
 
 	FindDialog findDialog = null;
@@ -135,7 +135,7 @@ public class CardEditor {
 			}
 		});
 		
-		new ServerListener().startService(9000,tabbedPane);
+		new ServerListener().startService(9000,tabbedPane,statusObject);
 	}
 
 	/**

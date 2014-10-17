@@ -4,19 +4,22 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.vo.StatusObject;
 import com.sepp.interfaces.Sepp;
 import com.sepp.vo.Cmd;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class SeppImpl implements Sepp {
 	public JTabbedPane tabbedPane;
+	public StatusObject statusObject;
 
-	public SeppImpl(JTabbedPane tabbedPane) {
+	public SeppImpl(JTabbedPane tabbedPane,StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
+		this.statusObject=statusObject;
 	}
 
 	@Override
@@ -81,14 +84,16 @@ public class SeppImpl implements Sepp {
 		
 		File file=new File(FileAction.USER_DIR+"/tmp/"+fileName);
 		FileOutputStream fos=new FileOutputStream(file);
-		BufferedOutputStream bw=new BufferedOutputStream(fos, FileAction.BUFFER_SIZE);
+		BufferedOutputStream bw=new BufferedOutputStream(fos);
 		offset+=fileNameLen;
 		bw.write(data, offset, data.length-offset);
-		
+		bw.flush();
 		fos.close();
 		bw.close();
 
-		JOptionPane.showMessageDialog(null, "ok");
+		FileHander fileHander=new FileHander(tabbedPane, statusObject);
+		fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+		//JOptionPane.showMessageDialog(null, "ok");
 	}
 
 	@Override
