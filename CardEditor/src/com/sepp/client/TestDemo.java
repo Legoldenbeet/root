@@ -124,9 +124,9 @@ public class TestDemo {
 			
 			fileInputStream.close();
 			
-			
 			sessionClient.send(data, "test");
-			sessionClient.recive("test");
+			String res=sessionClient.recive("test");
+			System.out.println(res);
 		}
 	}
 }

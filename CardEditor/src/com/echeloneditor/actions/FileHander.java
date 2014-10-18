@@ -5,7 +5,6 @@ import java.awt.dnd.DropTarget;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
@@ -148,7 +147,7 @@ public class FileHander {
 				closeableTabComponent.setFilePath(file.getPath());
 				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
-
+				Debug.log.debug("fuckmany");
 				tabbedPane.add("New Panel", sp);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
@@ -185,16 +184,21 @@ public class FileHander {
 							System.out.println("No encoding detected. use default charset：" + currentEncode);
 						}
 					}
-
+					Debug.log.debug("fuck");
 					tmp = new String(bytes, 0, count, currentEncode);
-					textArea.append(tmp);
+					Debug.log.debug("tmp"+tmp);
+					Debug.log.debug(textArea.toString());
+					//textArea.append(tmp);
+					textArea.setText(tmp);
 					currentCharPos += count;
+					Debug.log.debug("tmp_ok");
 				}
 			} catch (IOException e) {
 				currentEncode = FileAction.DEFAULT_FILE_ENCODE;
 				e.printStackTrace();
 				Debug.log.debug(e.getMessage());
 			} finally {
+				Debug.log.debug("tmp_ok1");
 				fileDescMapBean.put(filePath, currentCharPos);
 				Debug.log.debug(fileDescMapBean);
 				if (fis != null) {

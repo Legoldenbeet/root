@@ -4,22 +4,17 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import javax.swing.JTabbedPane;
+import javax.smartcardio.CardChannel;
 
 import com.echeloneditor.actions.FileAction;
-import com.echeloneditor.actions.FileHander;
-import com.echeloneditor.vo.StatusObject;
+import com.echeloneditor.main.CardEditor;
 import com.sepp.interfaces.Sepp;
 import com.sepp.vo.Cmd;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class SeppImpl implements Sepp {
-	public JTabbedPane tabbedPane;
-	public StatusObject statusObject;
 
-	public SeppImpl(JTabbedPane tabbedPane,StatusObject statusObject) {
-		this.tabbedPane = tabbedPane;
-		this.statusObject=statusObject;
+	public SeppImpl() {
 	}
 
 	@Override
@@ -77,23 +72,24 @@ public class SeppImpl implements Sepp {
 	public void openFile(byte[] data, short offset) throws Exception {
 		short fileNameLen = (short) data[offset];
 		byte[] fileNameBytes = new byte[fileNameLen];
-		offset+=1;
+		offset += 1;
 		System.arraycopy(data, offset, fileNameBytes, 0, fileNameLen);
-		
+
 		String fileName = new String(fileNameBytes, "GBK");
-		
-		File file=new File(FileAction.USER_DIR+"/tmp/"+fileName);
-		FileOutputStream fos=new FileOutputStream(file);
-		BufferedOutputStream bw=new BufferedOutputStream(fos);
-		offset+=fileNameLen;
-		bw.write(data, offset, data.length-offset);
+
+		File file = new File(FileAction.USER_DIR + "/tmp/" + fileName);
+		FileOutputStream fos = new FileOutputStream(file);
+		BufferedOutputStream bw = new BufferedOutputStream(fos);
+		offset += fileNameLen;
+		bw.write(data, offset, data.length - offset);
 		bw.flush();
 		fos.close();
 		bw.close();
 
-		FileHander fileHander=new FileHander(tabbedPane, statusObject);
-		fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
-		//JOptionPane.showMessageDialog(null, "ok");
+		PooledConnectionHandler.processRequest(file);
+		//FileHander fileHander = new FileHander(tabbedPane, statusObject);
+		//fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+		// JOptionPane.showMessageDialog(null, "ok");
 	}
 
 	@Override

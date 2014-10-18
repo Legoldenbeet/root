@@ -65,6 +65,7 @@ import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
 import com.sepp.server.ServerListener;
+import com.sepp.service.PooledConnectionHandler;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
@@ -81,6 +82,8 @@ public class CardEditor {
 	public static AssistantToolDialog dialog = null;
 	public static FileHander fileHander;
 	public FileInputStream fis;
+	
+	public static Thread sysThread;
 
 	/**
 	 * Create the application.
@@ -134,8 +137,12 @@ public class CardEditor {
 				}
 			}
 		});
+		sysThread=new Thread(new PooledConnectionHandler());
+		//sysThread.setDaemon(true);
+		sysThread.start();
+		//启动同步接收和发送服务
+		new ServerListener().startService(9000);
 		
-		new ServerListener().startService(9000,tabbedPane,statusObject);
 	}
 
 	/**

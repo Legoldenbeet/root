@@ -2,16 +2,12 @@ package com.sepp.server;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import javax.swing.JTabbedPane;
-
 import org.apache.log4j.Logger;
 
-import com.echeloneditor.vo.StatusObject;
 import com.sepp.AbstractSessionSocket;
 import com.sepp.interfaces.Sepp;
 import com.sepp.service.SeppImpl;
@@ -19,15 +15,11 @@ import com.watchdata.commons.lang.WDByteUtil;
 
 public class ServiceSocket extends AbstractSessionSocket {
 	private static Logger log = Logger.getLogger(ServiceSocket.class);
-	private JTabbedPane tabbedPane;
-	private StatusObject statusObject;
-	Sepp sepp;
+	private Sepp sepp;
 
-	public ServiceSocket(Socket socket, JTabbedPane tabbedPane,StatusObject statusObject) {
+	public ServiceSocket(Socket socket) {
 		super(socket);
-		this.tabbedPane = tabbedPane;
-		this.statusObject=statusObject;
-		sepp = new SeppImpl(tabbedPane,statusObject);
+		sepp = new SeppImpl();
 	}
 
 	@Override
