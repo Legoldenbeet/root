@@ -93,7 +93,7 @@ public class TestDemo {
 		int ret=jFileChooser.showOpenDialog(null);
 		if (ret==JFileChooser.APPROVE_OPTION) {
 			File file= jFileChooser.getSelectedFile();
-			SessionClient sessionClient=new SessionClient("test", "127.0.0.1", 9000);
+			SessionClient sessionClient=new SessionClient("test", "10.0.97.68", 9000);
 			
 			//long len=file.length();
 			
