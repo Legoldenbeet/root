@@ -30,7 +30,7 @@ public class SeppImpl implements Sepp {
 				}
 				switch (cmd.getIns()) {
 				case Sepp.INS_FILE_OPEN:
-					openFile(data, Sepp.FILE_NAME_LEN_OFFSET);
+					receiveOpen(data, Sepp.FILE_NAME_LEN_OFFSET);
 					break;
 				case Sepp.INS_FILE_CLOSE:
 					closeFile();
@@ -67,7 +67,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public void openFile(byte[] data, short offset) throws Exception {
+	public void receiveOpen(byte[] data, short offset) throws Exception {
 		short fileNameLen = (short) data[offset];
 		byte[] fileNameBytes = new byte[fileNameLen];
 		offset += 1;
@@ -94,6 +94,12 @@ public class SeppImpl implements Sepp {
 	public void closeFile() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void sendOpen(byte[] data, short offset) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
