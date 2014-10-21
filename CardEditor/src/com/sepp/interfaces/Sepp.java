@@ -1,6 +1,6 @@
 package com.sepp.interfaces;
 
-import com.sepp.vo.Cmd;
+import com.echeloneditor.vo.Cmd;
 
 public interface Sepp {
 	public final byte CLA_FILE_OPERATION=0x0F;

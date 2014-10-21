@@ -1,4 +1,4 @@
-package com.sepp.vo;
+package com.echeloneditor.vo;
 
 public class Cmd {
 	private byte Cla;

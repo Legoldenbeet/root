@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 
 import javax.swing.JFileChooser;
 
-import com.sepp.vo.TcpConnector;
+import com.echeloneditor.vo.TcpConnector;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 

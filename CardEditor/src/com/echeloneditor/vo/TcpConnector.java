@@ -1,4 +1,4 @@
-package com.sepp.vo;
+package com.echeloneditor.vo;
 
 import java.net.Socket;
 
