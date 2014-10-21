@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.apache.log4j.Logger;
 
 import com.echeloneditor.actions.FileAction;
@@ -22,8 +24,15 @@ public class PooledConnectionHandler implements Runnable {
 		log.debug("get file from pool success.");
 		log.debug(Thread.currentThread().getName() + " processing...");
 		
-		FileHander fileHander=new FileHander(CardEditor.tabbedPane, CardEditor.statusObject);
-		fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				FileHander fileHander=new FileHander(CardEditor.tabbedPane, CardEditor.statusObject);
+				fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+			}
+		});
 		log.debug(Thread.currentThread().getName() + " processing...ok");
 	}
 

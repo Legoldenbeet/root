@@ -188,8 +188,7 @@ public class FileHander {
 					tmp = new String(bytes, 0, count, currentEncode);
 					Debug.log.debug("tmp"+tmp);
 					Debug.log.debug(textArea.toString());
-					//textArea.append(tmp);
-					textArea.setText(tmp);
+					textArea.append(tmp);
 					currentCharPos += count;
 					Debug.log.debug("tmp_ok");
 				}
