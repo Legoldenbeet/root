@@ -55,7 +55,7 @@ public class ServiceSocket extends AbstractSessionSocket {
 		}
 		int resp=sepp.process(data);
 		try {
-			sendMessage(WDByteUtil.HEX2Bytes(Integer.toHexString(resp)+"\n"), socket);
+			sendMessage((Integer.toHexString(resp)+"\n").getBytes(), socket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
