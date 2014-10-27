@@ -11,7 +11,7 @@ public interface Sepp {
 	public final short CMD_LEN=(byte)0x08;
 	public final short FILE_NAME_LEN_OFFSET=CMD_LEN;
 	
-	public void process(byte[] cmdHeader);
+	public int process(byte[] cmdHeader);
 	public Cmd parse(byte[] cmdHeader);
 	public void receiveOpen(byte[] data,short offset) throws Exception ;
 	public void sendOpen(byte[] data,short offset) throws Exception ;

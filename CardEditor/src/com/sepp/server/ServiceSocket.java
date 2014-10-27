@@ -53,15 +53,14 @@ public class ServiceSocket extends AbstractSessionSocket {
 		if (data == null) {
 			return;
 		}
-		sepp.process(data);
+		int resp=sepp.process(data);
 		try {
-			log.debug("注意:有消息到达:socketID:" + socket.hashCode() + "[" + socket.toString() + "]【接收：" + data.length + "字节数据】");
-			sendMessage("success.\n".getBytes());
-
+			sendMessage(WDByteUtil.HEX2Bytes(Integer.toHexString(resp)), socket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			errorHandle(e, socket, thread);
+			e.printStackTrace();
 		}
+		log.debug("注意:有消息到达:socketID:" + socket.hashCode() + "[" + socket.toString() + "]【接收：" + data.length + "字节数据】");
 	}
 
 	@Override

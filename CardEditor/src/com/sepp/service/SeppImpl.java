@@ -16,7 +16,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public void process(byte[] data) {
+	public int process(byte[] data) {
 		try {
 			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
 			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
@@ -26,7 +26,7 @@ public class SeppImpl implements Sepp {
 				if (cmd.getCla() != 0x0F) {
 					// 发送错误指令给对方
 
-					return;
+					return 0x6982;
 				}
 				switch (cmd.getIns()) {
 				case Sepp.INS_FILE_OPEN:
@@ -42,7 +42,7 @@ public class SeppImpl implements Sepp {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-
+		return 0x9000;
 	}
 
 	/**
