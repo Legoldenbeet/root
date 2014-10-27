@@ -53,9 +53,10 @@ public class ServiceSocket extends AbstractSessionSocket {
 		if (data == null) {
 			return;
 		}
-		int resp=sepp.process(data);
+		String resp="";
+		short sw=sepp.process(data,resp);
 		try {
-			sendMessage((Integer.toHexString(resp)+"\n").getBytes(), socket);
+			sendMessage((sw+resp+"\n").getBytes(), socket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

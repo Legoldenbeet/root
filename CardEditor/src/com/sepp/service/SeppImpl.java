@@ -16,7 +16,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public int process(byte[] data) {
+	public short process(byte[] data,String resp) {
 		try {
 			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
 			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
@@ -26,7 +26,7 @@ public class SeppImpl implements Sepp {
 				if (cmd.getCla() != 0x0F) {
 					// 发送错误指令给对方
 
-					return 0x6982;
+					return EXCEPTION_INS_NOT_SUPPORT;
 				}
 				switch (cmd.getIns()) {
 				case Sepp.INS_FILE_OPEN:
@@ -35,14 +35,20 @@ public class SeppImpl implements Sepp {
 				case Sepp.INS_FILE_CLOSE:
 					closeFile();
 					break;
+				case Sepp.INS_TERM_INFO_NAME:
+					resp+=getTermUserName();
+					break;
 				default:
 					break;
 				}
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			resp+=e.getMessage();
 		}
-		return 0x9000;
+		String lc=Integer.toHexString(resp.length()/2);
+		resp=lc+resp;
+		return SUCCESSFUL_DONE_WITHOUT_ERROR;
 	}
 
 	/**
@@ -102,4 +108,11 @@ public class SeppImpl implements Sepp {
 		
 	}
 
+	@Override
+	public String getTermUserName() {
+		return System.getProperty("user.name");
+	}
+	public static void main(String[] args) {
+		System.out.println(System.getProperty("user.name"));
+	}
 }
