@@ -53,8 +53,8 @@ public class ServiceSocket extends AbstractSessionSocket {
 		if (data == null) {
 			return;
 		}
-		String resp="";
-		short sw=sepp.process(data,resp);
+		byte[] resp=new byte[256];
+		int sw=sepp.process(data,resp);
 		try {
 			sendMessage((sw+resp+"\n").getBytes(), socket);
 		} catch (IOException e) {
