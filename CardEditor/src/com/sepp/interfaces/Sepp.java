@@ -13,10 +13,10 @@ public interface Sepp {
 	public final short CMD_LEN=(byte)0x08;
 	public final short FILE_NAME_LEN_OFFSET=CMD_LEN;
 	
-	public final short EXCEPTION_INS_NOT_SUPPORT=(short)0x6982;
-	public final short SUCCESSFUL_DONE_WITHOUT_ERROR=(short)0x9000;
+	public final byte[] EXCEPTION_INS_NOT_SUPPORT={(byte)0x69,(byte)0x82};
+	public final byte[] SUCCESSFUL_DONE_WITHOUT_ERROR={(byte)0x90,(byte)0x00};
 	
-	public int process(byte[] cmdHeader,byte[] resp);
+	public byte[] process(byte[] cmdHeader,byte[] resp);
 	public Cmd parse(byte[] cmdHeader);
 	public void receiveOpen(byte[] data,short offset) throws Exception ;
 	public void sendOpen(byte[] data,short offset) throws Exception ;

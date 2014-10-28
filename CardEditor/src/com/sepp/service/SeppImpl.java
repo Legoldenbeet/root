@@ -16,7 +16,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public int process(byte[] data,byte[] resp) {
+	public byte[] process(byte[] data,byte[] resp) {
 		try {
 			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
 			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
@@ -45,7 +45,7 @@ public class SeppImpl implements Sepp {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.getMessage();
+			return e.getMessage().getBytes();
 		}
 		//String lc=Integer.toHexString(resp.length()/2);
 		//resp=lc+resp;
