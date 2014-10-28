@@ -16,7 +16,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public byte[] process(byte[] data,byte[] resp) {
+	public byte[] process(byte[] data, byte[] resp, byte len) {
 		try {
 			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
 			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
@@ -36,19 +36,19 @@ public class SeppImpl implements Sepp {
 					closeFile();
 					break;
 				case Sepp.INS_TERM_INFO_NAME:
-					byte[] termName=getTermUserName().getBytes();
+					byte[] termName = getTermUserName().getBytes();
 					System.arraycopy(termName, 0, resp, 0, termName.length);
+					len += termName.length;
 					break;
 				default:
 					break;
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			return e.getMessage().getBytes();
+			byte[] errorOut = e.getMessage().getBytes();
+			len += errorOut.length;
+			return errorOut;
 		}
-		//String lc=Integer.toHexString(resp.length()/2);
-		//resp=lc+resp;
 		return SUCCESSFUL_DONE_WITHOUT_ERROR;
 	}
 
@@ -92,8 +92,8 @@ public class SeppImpl implements Sepp {
 		bw.close();
 
 		PooledConnectionHandler.processRequest(file);
-		//FileHander fileHander = new FileHander(tabbedPane, statusObject);
-		//fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+		// FileHander fileHander = new FileHander(tabbedPane, statusObject);
+		// fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
 		// JOptionPane.showMessageDialog(null, "ok");
 	}
 
@@ -106,13 +106,14 @@ public class SeppImpl implements Sepp {
 	@Override
 	public void sendOpen(byte[] data, short offset) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getTermUserName() {
 		return System.getProperty("user.name");
 	}
+
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.name"));
 	}
