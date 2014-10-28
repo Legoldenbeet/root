@@ -53,15 +53,20 @@ public class ServiceSocket extends AbstractSessionSocket {
 		if (data == null) {
 			return;
 		}
+		byte offset=0;
 		byte[] resp = new byte[256];
 		byte len = 0;
 		byte[] sw = sepp.process(data, resp, len);
 		byte[] out = new byte[len + sw.length];
 		byte[] wrapLine="\n".getBytes();
 
-		System.arraycopy(sw, 0, out, 0, sw.length);
-		System.arraycopy(resp, 0, out, sw.length, len);
-		System.arraycopy(wrapLine, 0, out, len+sw.length, 2);
+		System.arraycopy(sw, 0, out, offset, sw.length);
+		offset+=2;
+		if (len>0) {
+			System.arraycopy(resp, 0, out, offset, len);
+			offset+=len;
+		}
+		System.arraycopy(wrapLine, 0, out, offset, 2);
 
 		try {
 			sendMessage(out, socket);
