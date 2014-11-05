@@ -22,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -75,6 +76,7 @@ public class CardInfoDetectPanel extends JPanel {
 	private static JMenuItem mntmCardinfo;
 	private static JMenuItem mntmLoad;
 	private static JMenuItem deleteObj;
+	private static JMenuItem mntmCardStatus;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -88,6 +90,28 @@ public class CardInfoDetectPanel extends JPanel {
 				commonAPDU = new CommonAPDU();
 				CardInfoThread thread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
 				thread.start();
+			}
+		});
+
+		mntmCardStatus = new JMenuItem("CARD STATUS");
+		mntmCardStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// PersionalizationDialog persionalizationDialog=new PersionalizationDialog();
+				// persionalizationDialog.setVisible(true);
+				RightPanel.configPanel.setVisible(true);
+				Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
+				RightPanel.cardInfoDetectPanel.setVisible(false);
+				RightPanel.facePanel.setVisible(false);
+				RightPanel.testDataConfigPanel.setVisible(false);
+				RightPanel.terminalTypeConfigPanel.setVisible(false);
+				RightPanel.terminalPerformanceConfigPanel.setVisible(false);
+				RightPanel.terminalLimitConfigPanel.setVisible(false);
+				RightPanel.issuerKeyConfigPanel.setVisible(false);
+				RightPanel.caPublicKeyConfigPanel.setVisible(false);
+				RightPanel.aidConfigPanel.setVisible(false);
+				RightPanel.logoPanel.setVisible(false);
+				RightPanel.tradePanel.setVisible(false);
+				RightPanel.cardReaderPanel.setVisible(false);
 			}
 		});
 
@@ -435,31 +459,10 @@ public class CardInfoDetectPanel extends JPanel {
 		splitPane_2.setLeftComponent(panel_1);
 		splitPane_2.setRightComponent(panel_4);
 
-		JButton button_1 = new JButton("数据处理");
-		button_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				// PersionalizationDialog persionalizationDialog=new PersionalizationDialog();
-				// persionalizationDialog.setVisible(true);
-				RightPanel.configPanel.setVisible(true);
-				Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
-				RightPanel.cardInfoDetectPanel.setVisible(false);
-				RightPanel.facePanel.setVisible(false);
-				RightPanel.testDataConfigPanel.setVisible(false);
-				RightPanel.terminalTypeConfigPanel.setVisible(false);
-				RightPanel.terminalPerformanceConfigPanel.setVisible(false);
-				RightPanel.terminalLimitConfigPanel.setVisible(false);
-				RightPanel.issuerKeyConfigPanel.setVisible(false);
-				RightPanel.caPublicKeyConfigPanel.setVisible(false);
-				RightPanel.aidConfigPanel.setVisible(false);
-				RightPanel.logoPanel.setVisible(false);
-				RightPanel.tradePanel.setVisible(false);
-				RightPanel.cardReaderPanel.setVisible(false);
-			}
-		});
-		button_1.setFocusPainted(false);
-		button_1.setBorderPainted(false);
-		button_1.setBounds(0, 109, 120, 23);
-		panel_4.add(button_1);
+		/*
+		 * JButton button_1 = new JButton("数据处理"); button_1.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent arg0) { // PersionalizationDialog persionalizationDialog=new PersionalizationDialog(); // persionalizationDialog.setVisible(true); RightPanel.configPanel.setVisible(true); Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER); RightPanel.cardInfoDetectPanel.setVisible(false); RightPanel.facePanel.setVisible(false); RightPanel.testDataConfigPanel.setVisible(false); RightPanel.terminalTypeConfigPanel.setVisible(false); RightPanel.terminalPerformanceConfigPanel.setVisible(false); RightPanel.terminalLimitConfigPanel.setVisible(false); RightPanel.issuerKeyConfigPanel.setVisible(false); RightPanel.caPublicKeyConfigPanel.setVisible(false); RightPanel.aidConfigPanel.setVisible(false); RightPanel.logoPanel.setVisible(false); RightPanel.tradePanel.setVisible(false); RightPanel.cardReaderPanel.setVisible(false); } });
+		 * button_1.setFocusPainted(false); button_1.setBorderPainted(false); button_1.setBounds(0, 109, 120, 23); panel_4.add(button_1);
+		 */
 		// splitPane_2.setBounds(0, 0, 125, 27);
 
 		JSplitPane splitPane_4 = new JSplitPane();
@@ -583,15 +586,21 @@ public class CardInfoDetectPanel extends JPanel {
 							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
 								String parentNodeName = node.getParent().toString().trim();
 								if (parentNodeName.equalsIgnoreCase("Load Files")) {
+									popup.removeAll();
 									addMenu(deleteObj, e);
+									showMenu(e);
 								}
 							}
 							if (nodeName.equalsIgnoreCase("CardInfo")) {
+								popup.removeAll();
 								addMenu(mntmCardinfo, e);
+								addMenu(mntmCardStatus, e);
+								showMenu(e);
 							} else if (nodeName.equalsIgnoreCase("Load Files")) {
+								popup.removeAll();
 								addMenu(mntmLoad, e);
+								showMenu(e);
 							}
-
 						}
 					}
 				}
@@ -602,9 +611,10 @@ public class CardInfoDetectPanel extends JPanel {
 			}
 
 			private void addMenu(JMenuItem menuItem, MouseEvent e) {
-				popup.removeAll();
+				JSeparator jSeparator = new JSeparator(JSeparator.HORIZONTAL);
+				popup.add(jSeparator);
 				popup.add(menuItem);
-				showMenu(e);
+				// showMenu(e);
 			}
 		});
 
