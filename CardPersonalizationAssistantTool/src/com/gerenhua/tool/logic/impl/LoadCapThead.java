@@ -14,6 +14,7 @@ import java.util.zip.ZipFile;
 import javax.swing.JTextPane;
 
 import com.gerenhua.tool.log.Log;
+import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
@@ -41,22 +42,27 @@ public class LoadCapThead extends Thread {
 				apduCommand += "00000000";
 				apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(apduCommand.length() / 2), 2) + apduCommand;
 				apduCommand = "80E60200" + apduCommand;
-				commonAPDU.send(apduCommand);
-				for (int j = 1; j < loadFileInfo.size(); j++) {
-					String p1 = "";
-					if (j == loadFileInfo.size() - 1) {
-						p1 = "80";
-					} else {
-						p1 = "00";
+				String resp = commonAPDU.send(apduCommand);
+				if (resp.endsWith(Constants.SW_SUCCESS)) {
+					for (int j = 1; j < loadFileInfo.size(); j++) {
+						String p1 = "";
+						if (j == loadFileInfo.size() - 1) {
+							p1 = "80";
+						} else {
+							p1 = "00";
+						}
+						String p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j - 1), 2);
+						String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(loadFileInfo.get(j).length() / 2), 2);
+						String temp = "80E8" + p1 + p2 + lc;
+						temp += loadFileInfo.get(j);
+						resp = commonAPDU.send(temp);
+						if (!resp.endsWith(Constants.SW_SUCCESS)) {
+							break;
+						}
 					}
-					String p2=WDStringUtil.paddingHeadZero(Integer.toHexString(j - 1), 2);
-					String lc=WDStringUtil.paddingHeadZero(Integer.toHexString(loadFileInfo.get(j).length() / 2),2);
-					String temp = "80E8" + p1 +p2+lc;
-					temp += loadFileInfo.get(j);
-					commonAPDU.send(temp);
+					String msg = "load " + file.getName() + " complete.";
+					log.info(msg);
 				}
-				String msg = "load " + file.getName() + " complete.";
-				log.info(msg);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -96,7 +102,7 @@ public class LoadCapThead extends Thread {
 		for (int i = 0; i < count; i++) {
 			if (pos + 320 > capFileInfo.length()) {
 				loadFileInfo.add(capFileInfo.substring(pos, capFileInfo.length()));
-				pos += capFileInfo.length()-pos;
+				pos += capFileInfo.length() - pos;
 			} else {
 				loadFileInfo.add(capFileInfo.substring(pos, pos + 320));
 				pos += 320;
