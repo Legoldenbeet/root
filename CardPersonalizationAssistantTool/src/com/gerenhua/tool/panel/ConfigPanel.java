@@ -10,9 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-import org.apache.log4j.Logger;
-
-//import com.watchdata.numanag.dao.INumberDao;
+import com.gerenhua.tool.log.Log;
 
 /**
  * @author landon E-mail:landonyongwen@126.com
@@ -24,7 +22,7 @@ public class ConfigPanel extends AbstractPanle {
 	private JEditorPane ep = new JEditorPane();
 	private JScrollPane dlgscrollPane = new JScrollPane(ep);
 
-	private static Logger log = Logger.getLogger(ConfigPanel.class);
+	private static Log log = new Log();
 	/**
 	 * 
 	 */
@@ -32,8 +30,7 @@ public class ConfigPanel extends AbstractPanle {
 
 	public ConfigPanel() {
 		super();
-		setPreferredSize(new Dimension(843, 460));
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setPreferredSize(new Dimension(899, 718));
 		// String[] ruleArray = new String[] { "固定值", "动态增长数", "校检位", "随机数" };
 		// final SimpleDateFormat sf=new
 		// SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -41,11 +38,12 @@ public class ConfigPanel extends AbstractPanle {
 		final BorderLayout borderLayout = new BorderLayout();
 		borderLayout.setHgap(10);
 		borderLayout.setVgap(10);
+		setLayout(new BorderLayout(0, 0));
 		final JPanel ruleListPanel = new JPanel();
 		ruleListPanel.setSize(780, 200);
 		ruleListPanel.setPreferredSize(new Dimension(780, 220));
 		// ruleListPanel.setBackground(new Color(193, 210, 240));
-		add(ruleListPanel);
+		add(ruleListPanel, BorderLayout.CENTER);
 		ruleListPanel.setLayout(new BorderLayout(0, 0));
 
 		final JPanel logPanel_wrap = new JPanel();
@@ -58,11 +56,11 @@ public class ConfigPanel extends AbstractPanle {
 		logPanel.setBorder(new TitledBorder(null, "数据", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
 		// logPanel.setBackground(new Color(193, 210, 240));
 		logPanel_wrap.add(logPanel);
-		add(logPanel_wrap);
+		add(logPanel_wrap, BorderLayout.SOUTH);
 
 		JScrollPane jScrollPane = new JScrollPane(logTextArea);
 		logPanel.add(jScrollPane);
-
+		log.setLogArea(logTextArea);
 		dialog.setSize(400, 200);
 		dialog.getContentPane().add(dlgscrollPane);
 	}
