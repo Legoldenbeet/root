@@ -18,9 +18,9 @@ AppPublisher={#MyAppPublisher}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputDir=D:\程序打包\CardPersonalizationAssistantTool\setup
+OutputDir=E:\程序打包\CardPersonalizationAssistantTool\setup
 OutputBaseFilename=CardPAT_setup
-SetupIconFile=D:\程序打包\CardPersonalizationAssistantTool\setup\logo_72.ico
+SetupIconFile=E:\程序打包\CardPersonalizationAssistantTool\setup\logo_72.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -32,8 +32,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "D:\程序打包\CardPersonalizationAssistantTool\dist\CardPAT.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\程序打包\CardPersonalizationAssistantTool\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "E:\程序打包\CardPersonalizationAssistantTool\dist\CardPAT.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\程序打包\CardPersonalizationAssistantTool\dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
