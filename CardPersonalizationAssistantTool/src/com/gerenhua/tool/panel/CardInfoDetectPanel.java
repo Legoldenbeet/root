@@ -580,16 +580,18 @@ public class CardInfoDetectPanel extends JPanel {
 
 						String nodeName = (node != null) ? node.toString() : null;
 						if (WDAssert.isNotEmpty(nodeName)) {
-							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo") && !nodeName.equalsIgnoreCase("Application Instances") && !nodeName.equalsIgnoreCase("Load Files and Modules") && !nodeName.equalsIgnoreCase("Load Files")) {
-								addMenu(deleteObj, e);
-							} else {
-								if (nodeName.equalsIgnoreCase("CardInfo")) {
-									addMenu(mntmCardinfo, e);
-								} else if (nodeName.equalsIgnoreCase("Load Files")) {
-									addMenu(mntmLoad, e);
+							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
+								String parentNodeName = node.getParent().toString().trim();
+								if (parentNodeName.equalsIgnoreCase("Load Files")) {
+									addMenu(deleteObj, e);
 								}
-
 							}
+							if (nodeName.equalsIgnoreCase("CardInfo")) {
+								addMenu(mntmCardinfo, e);
+							} else if (nodeName.equalsIgnoreCase("Load Files")) {
+								addMenu(mntmLoad, e);
+							}
+
 						}
 					}
 				}
