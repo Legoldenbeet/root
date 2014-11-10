@@ -28,9 +28,10 @@ public class PersionalizationDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public PersionalizationDialog() {
+		setTitle("卡片状态");
 		setSize(1280, 768);
 		getContentPane().setLayout(new BorderLayout());
-		add(configPanel,BorderLayout.CENTER	);
+		getContentPane().add(configPanel,BorderLayout.CENTER	);
 	}
 
 }
