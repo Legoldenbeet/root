@@ -96,9 +96,16 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmCardStatus = new JMenuItem("CARD STATUS");
 		mntmCardStatus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// PersionalizationDialog persionalizationDialog=new PersionalizationDialog();
-				// persionalizationDialog.setVisible(true);
 				RightPanel.configPanel.setVisible(true);
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						RightPanel.configPanel.initPanel();
+					}
+				});
+
 				Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
 				RightPanel.cardInfoDetectPanel.setVisible(false);
 				RightPanel.facePanel.setVisible(false);

@@ -26,16 +26,33 @@ import com.watchdata.commons.lang.WDStringUtil;
  */
 public class CommonAPDU extends AbstractAPDU {
 	public static IAPDUChannel apduChannel;
-	private String secureityLevel = "00";
-	private String encKey;
-	private String macKey;
-	private String kekKey;
-	private String smac;
-	private String initResp;
-
+	private static String secureityLevel = "00";
+	private static String encKey;
+	private static String macKey;
+	private static String kekKey;
+	private static String smac;
+	private static String initResp;
+	private static String keyVersion;
+	private static String keyId;
 	public final String NO_SECUREITY_LEVEL = "00";
 	public final String MACONLY = "01";
 	public final String MACENC = "03";
+
+	public String getKeyVersion() {
+		return keyVersion;
+	}
+
+	public void setKeyVersion(String keyVersion) {
+		this.keyVersion = keyVersion;
+	}
+
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
 
 	public String getInitResp() {
 		return initResp;
@@ -387,7 +404,12 @@ public class CommonAPDU extends AbstractAPDU {
 		result.put("res", responseApdu);
 		return result;
 	}
-
+	/**
+	 * 重新认证
+	 */
+	public void reexternalAuthenticate(){
+		externalAuthenticate(getSecureityLevel(), getKeyVersion(), getKeyId(), getEncKey(), getMacKey(), getKekKey());
+	}
 	/**
 	 * externalAuthenticate
 	 * 
@@ -403,6 +425,8 @@ public class CommonAPDU extends AbstractAPDU {
 		String hostRandom = WDStringUtil.getRandomHexString(16);
 		// initializeUpdate
 		String strResp = apduChannel.send("8050" + keyVersion + keyId + "08" + hostRandom);
+		setKeyId(keyId);
+		setKeyVersion(keyVersion);
 		setInitResp(strResp);
 
 		String Rcard = strResp.substring(24, 40); // random of card
