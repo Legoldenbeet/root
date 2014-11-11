@@ -169,8 +169,7 @@ public class ConfigPanel extends AbstractPanle {
 			String resp = commonAPDU.send(Config.getValue("CardStatus", "CardCheckValue"));
 			if (resp.endsWith(Constants.SW_SUCCESS)) {
 				String space=resp.substring(0, 8);
-				label_2.setText(space.toUpperCase()+"[Byte]");
-				label_2.setToolTipText(Integer.parseInt(space, 16)/1024+"[K]");
+				label_2.setText(space.toUpperCase()+"["+Integer.parseInt(space, 16)/1024+"Kbyte]");
 				label_3.setText(resp.substring(8, resp.length() - 4).toUpperCase());
 			}
 			// get8693
