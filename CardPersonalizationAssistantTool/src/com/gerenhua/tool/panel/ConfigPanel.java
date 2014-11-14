@@ -168,21 +168,19 @@ public class ConfigPanel extends AbstractPanle {
 			}
 			String resp = commonAPDU.send(Config.getValue("CardStatus", "CardCheckValue"));
 			if (resp.endsWith(Constants.SW_SUCCESS)) {
-				String space=resp.substring(0, 8);
-				label_2.setText(space.toUpperCase()+"["+Integer.parseInt(space, 16)/1024+"Kbyte]");
+				String space = resp.substring(0, 8);
+				label_2.setText(space.toUpperCase() + "[" + Integer.parseInt(space, 16) / 1024 + "Kbyte]");
 				label_3.setText(resp.substring(8, resp.length() - 4).toUpperCase());
 			}
 			// get8693
-			HashMap<String, String> res=commonAPDU.reset();
+			HashMap<String, String> res = commonAPDU.reset();
 			if (!"9000".equals(res.get("sw"))) {
 				log.error("card reset error");
 			}
-			resp = commonAPDU.send("00A4040000");
-			commonAPDU.reexternalAuthenticate();
 			resp = "";
 			resp = commonAPDU.send(Config.getValue("CardStatus", "GetPlatFormVersion"));
 			if (resp.endsWith(Constants.SW_SUCCESS)) {
-				resp=resp.substring(6);
+				resp = resp.substring(6);
 				lblNewLabel_5.setText(resp.substring(0, 4));
 				lblNewLabel_7.setText(resp.substring(4, 6));
 				lblNewLabel_9.setText(resp.substring(6, 8));
