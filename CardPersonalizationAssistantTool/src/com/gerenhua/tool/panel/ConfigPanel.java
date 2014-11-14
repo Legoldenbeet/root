@@ -159,6 +159,7 @@ public class ConfigPanel extends AbstractPanle {
 	}
 
 	public void initPanel() {
+		log.setLogArea(logTextArea);
 		try {
 			CommonAPDU commonAPDU = new CommonAPDU();
 			// getcheckvalue
