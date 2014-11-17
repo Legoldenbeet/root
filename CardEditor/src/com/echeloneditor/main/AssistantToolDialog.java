@@ -238,8 +238,8 @@ public class AssistantToolDialog extends JDialog {
 		btnNewButton_1.setToolTipText("Full Triple DES MAC");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String res=WD3DesCryptoUtil.cbc_encrypt(keyField.getText(), dataField.getText(), Padding.NoPadding, "0000000000000000");
-				restultField.setText(res.substring(res.length()-16, res.length()));
+				String res = WD3DesCryptoUtil.cbc_encrypt(keyField.getText(), dataField.getText(), Padding.NoPadding, "0000000000000000");
+				restultField.setText(res.substring(res.length() - 16, res.length()));
 			}
 		});
 		btnNewButton_1.setBounds(454, 148, 95, 25);
@@ -272,7 +272,7 @@ public class AssistantToolDialog extends JDialog {
 		});
 		btnNewButton_4.setBounds(75, 219, 112, 25);
 		contentPanel.add(btnNewButton_4);
-		
+
 		JButton btnNewButton_5 = new JButton("SHA1");
 		btnNewButton_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -281,7 +281,7 @@ public class AssistantToolDialog extends JDialog {
 		});
 		btnNewButton_5.setBounds(197, 219, 112, 25);
 		contentPanel.add(btnNewButton_5);
-		
+
 		JButton btnNewButton_6 = new JButton("MD5");
 		btnNewButton_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -290,35 +290,51 @@ public class AssistantToolDialog extends JDialog {
 		});
 		btnNewButton_6.setBounds(196, 257, 112, 25);
 		contentPanel.add(btnNewButton_6);
-		
+
 		JButton btnXor = new JButton("XOR");
 		btnXor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
+				String com1 = keyField.getText();
+				String com2 = dataField.getText();
 				
-				String com1=keyField.getText();
-				String com2=dataField.getText();
-					byte[] com1Bytes = new byte[com1.length() / 2];
-					byte[] com2Bytes = new byte[com2.length() / 2];
+				if (com1.length()%2!=0||com2.length()%2!=0) {
+					JOptionPane.showMessageDialog(null, "不是整字节！");
+					return;
+				}
+				
+				byte[] com1Bytes = new byte[com1.length() / 2];
+				byte[] com2Bytes = new byte[com2.length() / 2];
 
-					com1Bytes = WDByteUtil.HEX2Bytes(com1);
-					com2Bytes = WDByteUtil.HEX2Bytes(com2);
+				com1Bytes = WDByteUtil.HEX2Bytes(com1);
+				com2Bytes = WDByteUtil.HEX2Bytes(com2);
+				
+				if (com1Bytes.length!=com2Bytes.length) {
+					JOptionPane.showMessageDialog(null, "长度不一致！");
+					return;
+				}
 
-					byte[] xorBytes = new byte[16];
-					for (int i = 0; i < xorBytes.length; i++) {
-						xorBytes[i] = (byte) (com1Bytes[i] ^ com2Bytes[i]);
-					}
+				byte[] xorBytes = new byte[com1Bytes.length];
+				for (int i = 0; i < xorBytes.length; i++) {
+					xorBytes[i] = (byte) (com1Bytes[i] ^ com2Bytes[i]);
+				}
 
-					restultField.setText(WDByteUtil.bytes2HEX(xorBytes));
+				restultField.setText(WDByteUtil.bytes2HEX(xorBytes));
 
 			}
 		});
 		btnXor.setBounds(319, 219, 112, 25);
 		contentPanel.add(btnXor);
-		
+
 		JButton btnNot = new JButton("NOT");
+		btnNot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JOptionPane.showMessageDialog(null, "未实现！");
+			}
+		});
 		btnNot.setBounds(318, 257, 112, 25);
 		contentPanel.add(btnNot);
-		
+
 		JButton btnSha = new JButton("SHA256");
 		btnSha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -327,7 +343,7 @@ public class AssistantToolDialog extends JDialog {
 		});
 		btnSha.setBounds(441, 219, 112, 25);
 		contentPanel.add(btnSha);
-		
+
 		JButton btnSha_1 = new JButton("SHA512");
 		btnSha_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -336,69 +352,69 @@ public class AssistantToolDialog extends JDialog {
 		});
 		btnSha_1.setBounds(440, 257, 112, 25);
 		contentPanel.add(btnSha_1);
-		
+
 		JButton btnShafile = new JButton("File->SHA1");
 		btnShafile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser jFileChooser=new JFileChooser();
-				int ret=jFileChooser.showOpenDialog(null);
-				if (ret==JFileChooser.APPROVE_OPTION) {
-					File file=jFileChooser.getSelectedFile();
+				JFileChooser jFileChooser = new JFileChooser();
+				int ret = jFileChooser.showOpenDialog(null);
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					File file = jFileChooser.getSelectedFile();
 					try {
-						FileInputStream fis=new FileInputStream(file);
-						FileChannel fc=fis.getChannel();
-						MappedByteBuffer byteBuffer=fc.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-						MessageDigest messageDigest = MessageDigest.getInstance("SHA1");  
+						FileInputStream fis = new FileInputStream(file);
+						FileChannel fc = fis.getChannel();
+						MappedByteBuffer byteBuffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+						MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
 						messageDigest.update(byteBuffer);
-						File md5File=new File(file.getParent()+"/"+"SHA1.txt");
-						
-						FileOutputStream out=new FileOutputStream(md5File);
+						File md5File = new File(file.getParent() + "/" + "SHA1.txt");
+
+						FileOutputStream out = new FileOutputStream(md5File);
 						out.write(WDByteUtil.bytes2HEX(messageDigest.digest()).getBytes());
-						
+
 						fis.close();
 						fc.close();
 						out.close();
-						
+
 						JOptionPane.showMessageDialog(null, "计算完成！");
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			}
 		});
 		btnShafile.setBounds(75, 296, 112, 25);
 		contentPanel.add(btnShafile);
-		
+
 		JButton btnMdfile = new JButton("File->MD5");
 		btnMdfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser jFileChooser=new JFileChooser();
-				int ret=jFileChooser.showOpenDialog(null);
-				if (ret==JFileChooser.APPROVE_OPTION) {
-					File file=jFileChooser.getSelectedFile();
+				JFileChooser jFileChooser = new JFileChooser();
+				int ret = jFileChooser.showOpenDialog(null);
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					File file = jFileChooser.getSelectedFile();
 					try {
-						FileInputStream fis=new FileInputStream(file);
-						FileChannel fc=fis.getChannel();
-						MappedByteBuffer byteBuffer=fc.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
-						MessageDigest messageDigest = MessageDigest.getInstance("MD5");  
+						FileInputStream fis = new FileInputStream(file);
+						FileChannel fc = fis.getChannel();
+						MappedByteBuffer byteBuffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, file.length());
+						MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 						messageDigest.update(byteBuffer);
-						File md5File=new File(file.getParent()+"/"+"MD5.txt");
-						
-						FileOutputStream out=new FileOutputStream(md5File);
+						File md5File = new File(file.getParent() + "/" + "MD5.txt");
+
+						FileOutputStream out = new FileOutputStream(md5File);
 						out.write(WDByteUtil.bytes2HEX(messageDigest.digest()).getBytes());
-						
+
 						fis.close();
 						fc.close();
 						out.close();
-						
+
 						JOptionPane.showMessageDialog(null, "计算完成！");
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+
 				}
 			}
 		});
