@@ -23,27 +23,41 @@ import com.watchdata.commons.lang.WDStringUtil;
 public class LoadCapThead extends Thread {
 	public static CommonAPDU commonAPDU;
 	public static Log log = new Log();
-	public JTextPane textPane_1;
+	public JTextPane textPane;
 	public File[] capFiles;
+	public boolean isRealCard=false;
+	public boolean isRealCard() {
+		return isRealCard;
+	}
+
+	public void setRealCard(boolean isRealCard) {
+		this.isRealCard = isRealCard;
+	}
 
 	public LoadCapThead(File[] file, CommonAPDU commonAPDU, JTextPane textPane) {
 		this.capFiles = file;
 		this.commonAPDU = commonAPDU;
-		this.textPane_1 = textPane;
+		this.textPane = textPane;
 	}
 
 	@Override
 	public void run() {
-		log.setLogArea(textPane_1);
+		log.setLogArea(textPane);
 		for (File file : capFiles) {
 			try {
+				String resp="";
 				List<String> loadFileInfo = getCapInfo(file);
 				String pkgName = loadFileInfo.get(0);
 				String apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(pkgName.length() / 2), 2) + pkgName;
 				apduCommand += "00000000";
 				apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(apduCommand.length() / 2), 2) + apduCommand;
 				apduCommand = "80E60200" + apduCommand;
-				String resp = commonAPDU.send(apduCommand);
+				if (isRealCard) {
+					resp = commonAPDU.send(apduCommand);
+				}else {
+					log.out(formatLoadScript(apduCommand, "//INSTALL [for load]"),Log.LOG_COLOR_BLACK);
+					resp="9000";
+				}
 				if (resp.endsWith(Constants.SW_SUCCESS)) {
 					for (int j = 1; j < loadFileInfo.size(); j++) {
 						String p1 = "";
@@ -56,20 +70,29 @@ public class LoadCapThead extends Thread {
 						String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(loadFileInfo.get(j).length() / 2), 2);
 						String temp = "80E8" + p1 + p2 + lc;
 						temp += loadFileInfo.get(j);
-						resp = commonAPDU.send(temp);
+						if (isRealCard) {
+							resp = commonAPDU.send(temp);
+						}else {
+							log.out(formatLoadScript(temp, "//LOAD [for "+j+" Block]"), Log.LOG_COLOR_BLACK);
+							resp="9000";
+						}
 						if (!resp.endsWith(Constants.SW_SUCCESS)) {
 							break;
 						}
 					}
 					String msg = "load " + file.getName() + " complete.";
-					log.info(msg);
+					if (isRealCard) {
+						log.info(msg);
+					}
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		CardInfoDetectPanel.refreshTree();
+		if (isRealCard) {
+			CardInfoDetectPanel.refreshTree();
+		}
 	}
 
 	public List<String> getCapInfo(File file) throws IOException {
@@ -171,5 +194,17 @@ public class LoadCapThead extends Thread {
 
 	public String checkNull(String str) {
 		return str == null ? "" : str;
+	}
+	/**
+	 * formatLoadScript
+	 * @param apdu
+	 * @param desc
+	 * @return
+	 */
+	public String formatLoadScript(String apdu,String desc){
+		StringBuilder sb=new StringBuilder();
+		sb.append(desc).append("\n");
+		sb.append(apdu).append("\n");
+		return sb.toString();
 	}
 }

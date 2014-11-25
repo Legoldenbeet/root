@@ -17,6 +17,11 @@ public class Log {
 	private SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
 	public static JTextPane jTextPane;
 
+	public static final int LOG_COLOR_BLACK=0;
+	public static final int LOG_COLOR_GREEN=1;
+	public static final int LOG_COLOR_RED=2;
+	public static final int LOG_COLOR_BLUE=3;
+	
 	public Log() {
 	}
 
@@ -40,7 +45,7 @@ public class Log {
 
 	public void info(String info) {
 		logger.info(info);
-		out(outStrNoDate(info), 3);
+		out(outStrNoDate(info),3);
 	}
 
 	public void warn(String info) {
@@ -58,37 +63,37 @@ public class Log {
 		out(outStr("ERROR", info), 2);
 	}
 
-	public String outStr(String infoType, String info) {
+	private String outStr(String infoType, String info) {
 		return sf.format(new Date()) + " " + infoType + " " + info + "\n";
 	}
 
-	public String outStrNoDate(String info) {
+	private String outStrNoDate(String info) {
 		return " \t\t\t" + info + "\n";
 	}
 
-	private void out(String info, int command) {
+	public void out(String info,int command) {
 		if (jTextPane != null) {
 			SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
 
-			if (command == 0) {
-				jTextPane.setText("");
+			if (command == LOG_COLOR_BLACK) {
+				//jTextPane.setText("");
 				StyleConstants.setForeground(simpleAttributeSet, Color.BLACK);
-			}else if (command == 1) {
+			}else if (command == LOG_COLOR_GREEN) {
 				StyleConstants.setForeground(simpleAttributeSet, Color.GREEN);
-			} else if (command == 2) {
+			} else if (command == LOG_COLOR_RED) {
 				StyleConstants.setForeground(simpleAttributeSet, Color.RED);
-			} else if (command == 3) {
+			} else if (command == LOG_COLOR_BLUE) {
 				StyleConstants.setForeground(simpleAttributeSet, Color.BLUE);
 				StyleConstants.setBold(simpleAttributeSet, true);
 			} else {
 				StyleConstants.setForeground(simpleAttributeSet, Color.BLACK);
 			}
-			addLog(info, jTextPane, simpleAttributeSet);
+			addLog(info,simpleAttributeSet);
 		}
 	}
 
-	private void addLog(String info, JTextPane textPane, SimpleAttributeSet attr) {
-		StyledDocument doc = textPane.getStyledDocument();
+	public void addLog(String info,SimpleAttributeSet attr) {
+		StyledDocument doc = jTextPane.getStyledDocument();
 		try {
 			doc.insertString(doc.getLength(), info, attr);
 		} catch (BadLocationException e) {

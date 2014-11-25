@@ -75,8 +75,9 @@ public class CardInfoDetectPanel extends JPanel {
 
 	private static JMenuItem mntmCardinfo;
 	private static JMenuItem mntmLoad;
-	private static JMenuItem deleteObj;
+	private static JMenuItem mntmdeleteObj;
 	private static JMenuItem mntmCardStatus;
+	private static JMenuItem mntmBuildScripts;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -132,12 +133,37 @@ public class CardInfoDetectPanel extends JPanel {
 				if (i == JFileChooser.APPROVE_OPTION) {
 					File[] file = jFileChooser.getSelectedFiles();
 					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane_1);
+					loadCapThead.setRealCard(true);
 					loadCapThead.start();
 				}
 			}
 		});
-		deleteObj = new JMenuItem("Remove");
-		deleteObj.addActionListener(new ActionListener() {
+		
+		mntmBuildScripts=new JMenuItem("BUILD SCRIPTS");
+		mntmBuildScripts.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane);
+				// TODO Auto-generated method stub
+				JFileChooser jFileChooser = new JFileChooser("./resources/cap");
+				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
+				jFileChooser.setFileFilter(fileNameExtensionFilter);
+				jFileChooser.setMultiSelectionEnabled(true);
+
+				int i = jFileChooser.showOpenDialog(null);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File[] file = jFileChooser.getSelectedFiles();
+					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
+					loadCapThead.setRealCard(false);
+					loadCapThead.start();
+				}
+				log.setLogArea(textPane_1);
+			}
+		});
+		
+		mntmdeleteObj = new JMenuItem("Remove");
+		mntmdeleteObj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				DeleteObjThread deleteObjThread = new DeleteObjThread(tree, commonAPDU);
 				deleteObjThread.start();
@@ -398,6 +424,7 @@ public class CardInfoDetectPanel extends JPanel {
 		btnPutkey.setBorderPainted(false);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				if (WDAssert.isEmpty(textPane.getText())) {
 					JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -592,7 +619,7 @@ public class CardInfoDetectPanel extends JPanel {
 								String parentNodeName = node.getParent().toString().trim();
 								if (parentNodeName.equalsIgnoreCase("Load Files")||parentNodeName.equalsIgnoreCase("Application Instances")) {
 									popup.removeAll();
-									addMenu(deleteObj, e);
+									addMenu(mntmdeleteObj, e);
 									showMenu(e);
 								}
 							}
@@ -604,6 +631,7 @@ public class CardInfoDetectPanel extends JPanel {
 							} else if (nodeName.equalsIgnoreCase("Load Files")) {
 								popup.removeAll();
 								addMenu(mntmLoad, e);
+								addMenu(mntmBuildScripts, e);
 								showMenu(e);
 							}
 						}
