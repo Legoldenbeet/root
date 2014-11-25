@@ -16,6 +16,7 @@ import javax.swing.JTextPane;
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
+import com.gerenhua.tool.panel.CardInfoDetectPanel;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -68,6 +69,7 @@ public class LoadCapThead extends Thread {
 				e.printStackTrace();
 			}
 		}
+		CardInfoDetectPanel.refreshTree();
 	}
 
 	public List<String> getCapInfo(File file) throws IOException {

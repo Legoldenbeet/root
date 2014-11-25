@@ -5,6 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
+import com.gerenhua.tool.panel.CardInfoDetectPanel;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -50,6 +51,7 @@ public class DeleteObjThread extends Thread {
 				e.printStackTrace();
 			}
 		}
+		CardInfoDetectPanel.refreshTree();
 	}
 
 }

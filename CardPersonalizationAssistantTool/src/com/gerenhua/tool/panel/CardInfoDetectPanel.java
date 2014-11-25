@@ -59,17 +59,17 @@ public class CardInfoDetectPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private static JTextField textField;
+	private static JTextField textField_1;
+	private static JTextField textField_2;
 	private JTextField textField_3;
-	private JTree tree;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private static JTree tree;
+	private static JTextField textField_4;
+	private static JTextField textField_5;
 	public static CommonAPDU commonAPDU;
 	public JTextPane textPane;
-	public JTextPane textPane_1;
-	public JComboBox comboBox;
+	public static JTextPane textPane_1;
+	public static JComboBox comboBox;
 	private static Log log = new Log();
 	private static ConfigIpDialog dialog = null;
 
@@ -87,9 +87,7 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmCardinfo = new JMenuItem("CARD INFO");
 		mntmCardinfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				commonAPDU = new CommonAPDU();
-				CardInfoThread thread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
-				thread.start();
+				refreshTree();
 			}
 		});
 
@@ -592,7 +590,7 @@ public class CardInfoDetectPanel extends JPanel {
 						if (WDAssert.isNotEmpty(nodeName)) {
 							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
 								String parentNodeName = node.getParent().toString().trim();
-								if (parentNodeName.equalsIgnoreCase("Load Files")) {
+								if (parentNodeName.equalsIgnoreCase("Load Files")||parentNodeName.equalsIgnoreCase("Application Instances")) {
 									popup.removeAll();
 									addMenu(deleteObj, e);
 									showMenu(e);
@@ -626,7 +624,15 @@ public class CardInfoDetectPanel extends JPanel {
 		});
 
 	}
-
+	/**
+	 * 更新tree变化
+	 */
+	public static void refreshTree(){
+		commonAPDU = new CommonAPDU();
+		CardInfoThread thread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
+		thread.start();
+	}
+	
 	public int calPos(int pos1, int pos2) {
 		int pos = -1;
 		if (pos1 != -1 && pos2 != -1) {
