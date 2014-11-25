@@ -51,7 +51,7 @@ public class LoadCapThead extends Thread {
 				String apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(pkgName.length() / 2), 2) + pkgName;
 				apduCommand += "00000000";
 				apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(apduCommand.length() / 2), 2) + apduCommand;
-				apduCommand = "80E60200" + apduCommand;
+				apduCommand = "80E60200" + apduCommand.toUpperCase();
 				if (isRealCard) {
 					resp = commonAPDU.send(apduCommand);
 				}else {
@@ -70,6 +70,7 @@ public class LoadCapThead extends Thread {
 						String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(loadFileInfo.get(j).length() / 2), 2);
 						String temp = "80E8" + p1 + p2 + lc;
 						temp += loadFileInfo.get(j);
+						temp=temp.toUpperCase();
 						if (isRealCard) {
 							resp = commonAPDU.send(temp);
 						}else {
