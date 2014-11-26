@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -36,6 +38,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -47,6 +52,7 @@ import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.logic.impl.CardInfoThread;
 import com.gerenhua.tool.logic.impl.DeleteObjThread;
 import com.gerenhua.tool.logic.impl.LoadCapThead;
+import com.gerenhua.tool.logic.impl.RunPrgThread;
 import com.gerenhua.tool.utils.Config;
 import com.watchdata.commons.crypto.WD3DesCryptoUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
@@ -54,7 +60,7 @@ import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.kms.kmsi.IKms;
 
-public class CardInfoDetectPanel extends JPanel {
+public class CardInfoDetectPanel extends JPanel implements Observer{
 	/**
 	 * 
 	 */
@@ -67,7 +73,7 @@ public class CardInfoDetectPanel extends JPanel {
 	private static JTextField textField_4;
 	private static JTextField textField_5;
 	public static CommonAPDU commonAPDU;
-	public JTextPane textPane;
+	public static JTextPane textPane;
 	public static JTextPane textPane_1;
 	public static JComboBox comboBox;
 	private static Log log = new Log();
@@ -78,6 +84,8 @@ public class CardInfoDetectPanel extends JPanel {
 	private static JMenuItem mntmdeleteObj;
 	private static JMenuItem mntmCardStatus;
 	private static JMenuItem mntmBuildScripts;
+
+	private static Thread runPrgThread = null;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -90,6 +98,9 @@ public class CardInfoDetectPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
 				refreshTree();
+				if (RunPrgThread.mapBean != null) {
+					RunPrgThread.mapBean.clear();
+				}
 			}
 		});
 
@@ -141,10 +152,10 @@ public class CardInfoDetectPanel extends JPanel {
 				}
 			}
 		});
-		
-		mntmBuildScripts=new JMenuItem("BUILD SCRIPTS");
+
+		mntmBuildScripts = new JMenuItem("BUILD SCRIPTS");
 		mntmBuildScripts.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane);
@@ -164,7 +175,7 @@ public class CardInfoDetectPanel extends JPanel {
 				log.setLogArea(textPane_1);
 			}
 		});
-		
+
 		mntmdeleteObj = new JMenuItem("Remove");
 		mntmdeleteObj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -433,35 +444,13 @@ public class CardInfoDetectPanel extends JPanel {
 					JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				Runnable runnable = new Runnable() {
-					public void run() {
-						try {
-							String prg = textPane.getText().replaceAll("\r\n", "\n").replaceAll("\r", "\n");
-							String[] apdus = prg.split("\n");
-
-							for (String apdu : apdus) {
-								if (!apdu.startsWith("//") && WDAssert.isNotEmpty(apdu.trim())) {
-									apdu = apdu.trim();
-									int commentPos = apdu.indexOf("//");
-									int swPos = apdu.indexOf("SW");
-									int pos = calPos(commentPos, swPos);
-									if (pos != -1) {
-										apdu = apdu.substring(0, pos).trim();
-										commonAPDU.send(apdu);
-									} else {
-										// apdu=apdu.substring(0, commentPos);
-										commonAPDU.send(apdu);
-									}
-								}
-							}
-						} catch (Exception e) {
-							// TODO: handle exception
-							log.error(e.getMessage());
-						}
-					}
-				};
-				Thread thread = new Thread(runnable);
-				thread.start();
+				RunPrgThread rpt= new RunPrgThread(textPane, commonAPDU);
+				runPrgThread = new Thread(rpt);
+				if (RunPrgThread.mapBean != null) {
+					RunPrgThread.mapBean.clear();
+				}
+				rpt.addObserver(RightPanel.cardInfoDetectPanel);
+				runPrgThread.start();
 			}
 		});
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -481,6 +470,7 @@ public class CardInfoDetectPanel extends JPanel {
 						fis.read(fileContent);
 
 						textPane.setText(new String(fileContent));
+						//textPane.setCaretPosition(0);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, e.getMessage());
@@ -495,15 +485,49 @@ public class CardInfoDetectPanel extends JPanel {
 		splitPane_2.setLeftComponent(panel_1);
 		splitPane_2.setRightComponent(panel_4);
 
-		/*
-		 * JButton button_1 = new JButton("数据处理"); button_1.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent arg0) { // PersionalizationDialog persionalizationDialog=new PersionalizationDialog(); // persionalizationDialog.setVisible(true); RightPanel.configPanel.setVisible(true); Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER); RightPanel.cardInfoDetectPanel.setVisible(false); RightPanel.facePanel.setVisible(false); RightPanel.testDataConfigPanel.setVisible(false); RightPanel.terminalTypeConfigPanel.setVisible(false); RightPanel.terminalPerformanceConfigPanel.setVisible(false); RightPanel.terminalLimitConfigPanel.setVisible(false); RightPanel.issuerKeyConfigPanel.setVisible(false); RightPanel.caPublicKeyConfigPanel.setVisible(false); RightPanel.aidConfigPanel.setVisible(false); RightPanel.logoPanel.setVisible(false); RightPanel.tradePanel.setVisible(false); RightPanel.cardReaderPanel.setVisible(false); } });
-		 * button_1.setFocusPainted(false); button_1.setBorderPainted(false); button_1.setBounds(0, 109, 120, 23); panel_4.add(button_1);
-		 */
-		// splitPane_2.setBounds(0, 0, 125, 27);
+		JButton btnStop = new JButton("STOP");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "stop");
+			}
+		});
+		btnStop.setFocusPainted(false);
+		btnStop.setBorderPainted(false);
+		btnStop.setBounds(0, 109, 120, 23);
+		panel_4.add(btnStop);
+
+		JButton btnContinue = new JButton("CONTINUE");
+		btnContinue.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				RunPrgThread.mapBean.clear();
+				synchronized (RunPrgThread.mapBean) {
+					RunPrgThread.mapBean.notifyAll();
+				}
+			}
+		});
+		btnContinue.setFocusPainted(false);
+		btnContinue.setBorderPainted(false);
+		btnContinue.setBounds(0, 142, 120, 23);
+		panel_4.add(btnContinue);
+
+		JButton btnStep = new JButton("STEP");
+		btnStep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "step");
+				synchronized (RunPrgThread.mapBean) {
+					RunPrgThread.mapBean.notifyAll();
+				}
+			}
+		});
+		btnStep.setFocusPainted(false);
+		btnStep.setBorderPainted(false);
+		btnStep.setBounds(0, 175, 120, 23);
+		panel_4.add(btnStep);
 
 		JSplitPane splitPane_4 = new JSplitPane();
 		splitPane_4.setEnabled(false);
-		// add(splitPane_4, BorderLayout.CENTER);
 		splitPane_4.setResizeWeight(0.6);
 		splitPane_4.setTopComponent(splitPane_2);
 		splitPane_4.setBottomComponent(panel_2);
@@ -621,7 +645,7 @@ public class CardInfoDetectPanel extends JPanel {
 						if (WDAssert.isNotEmpty(nodeName)) {
 							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
 								String parentNodeName = node.getParent().toString().trim();
-								if (parentNodeName.equalsIgnoreCase("Load Files")||parentNodeName.equalsIgnoreCase("Application Instances")) {
+								if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
 									popup.removeAll();
 									addMenu(mntmdeleteObj, e);
 									showMenu(e);
@@ -656,24 +680,27 @@ public class CardInfoDetectPanel extends JPanel {
 		});
 
 	}
+
 	/**
 	 * 更新tree变化
 	 */
-	public static void refreshTree(){
+	public static void refreshTree() {
 		commonAPDU = new CommonAPDU();
 		CardInfoThread thread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
 		thread.start();
 	}
-	
-	public int calPos(int pos1, int pos2) {
-		int pos = -1;
-		if (pos1 != -1 && pos2 != -1) {
-			pos = Math.min(pos1, pos2);
-		} else if (pos1 == -1 && pos2 != -1) {
-			pos = pos2;
-		} else if (pos1 != -1 && pos2 == -1) {
-			pos = pos1;
-		}
-		return pos;
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		String temp=arg1.toString();
+		String[] tmp=temp.split("\\|");
+		int pos1=Integer.parseInt(tmp[0]);
+		int pos2=Integer.parseInt(tmp[1]);
+		//textPane.setCaretPosition(pos2);
+		
+		//SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
+		//StyleConstants.setBackground(simpleAttributeSet, Color.RED);
+		//StyledDocument doc = textPane.getStyledDocument();
+		//doc.setCharacterAttributes(pos1, pos2, simpleAttributeSet, false);
 	}
 }

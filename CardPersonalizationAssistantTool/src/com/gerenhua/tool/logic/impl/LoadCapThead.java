@@ -43,6 +43,7 @@ public class LoadCapThead extends Thread {
 	@Override
 	public void run() {
 		log.setLogArea(textPane);
+		textPane.setText("");
 		for (File file : capFiles) {
 			try {
 				String resp="";
