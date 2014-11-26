@@ -88,6 +88,7 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmCardinfo = new JMenuItem("CARD INFO");
 		mntmCardinfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				refreshTree();
 			}
 		});
@@ -95,6 +96,7 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmCardStatus = new JMenuItem("CARD STATUS");
 		mntmCardStatus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				RightPanel.configPanel.setVisible(true);
 				SwingUtilities.invokeLater(new Runnable() {
 
@@ -124,6 +126,7 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmLoad = new JMenuItem("LOAD CAP");
 		mntmLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				JFileChooser jFileChooser = new JFileChooser("./resources/cap");
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
 				jFileChooser.setFileFilter(fileNameExtensionFilter);
@@ -165,6 +168,7 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmdeleteObj = new JMenuItem("Remove");
 		mntmdeleteObj.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				DeleteObjThread deleteObjThread = new DeleteObjThread(tree, commonAPDU);
 				deleteObjThread.start();
 			}
