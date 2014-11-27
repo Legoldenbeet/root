@@ -35,7 +35,7 @@ public class RunPrgThread extends Observable implements Runnable {
 					if (mapBean.size() > 0) {
 						String cmd = mapBean.get("debug");
 						if (cmd.equalsIgnoreCase("stop") || oneStep) {
-							//oneStep = false;
+							oneStep = false;
 							mapBean.wait();
 						} else if (cmd.equalsIgnoreCase("step")) {
 							oneStep = true;
@@ -52,17 +52,17 @@ public class RunPrgThread extends Observable implements Runnable {
 						apdu = apdu.substring(0, pos).trim();
 					}
 					commonAPDU.send(apdu);
-					if (oneStep) {
-						oneStep=false;
-					}
+										
+					String temp=pos+"|";
+					pos+=apdu.length();
+					pos+=2;
+					temp+=pos;
+					this.notifyObservers(temp);
+					this.setChanged();
+				}else {
+					oneStep = false;
+					continue;
 				}
-				String temp=pos+"|";
-				//System.out.println("hellohello:"+prg.substring(pos, pos+apdu.length()+2));
-				pos+=apdu.length();
-				pos+=2;
-				temp+=pos;
-				this.notifyObservers(temp);
-				this.setChanged();
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
