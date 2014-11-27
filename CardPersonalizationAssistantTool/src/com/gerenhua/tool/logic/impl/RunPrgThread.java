@@ -7,6 +7,7 @@ import javax.swing.JTextPane;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
+import com.gerenhua.tool.panel.CardInfoDetectPanel;
 import com.gerenhua.tool.utils.FileUtil;
 import com.watchdata.commons.lang.WDAssert;
 
@@ -34,7 +35,7 @@ public class RunPrgThread extends Observable implements Runnable {
 					if (mapBean.size() > 0) {
 						String cmd = mapBean.get("debug");
 						if (cmd.equalsIgnoreCase("stop") || oneStep) {
-							oneStep = false;
+							//oneStep = false;
 							mapBean.wait();
 						} else if (cmd.equalsIgnoreCase("step")) {
 							oneStep = true;
@@ -51,6 +52,9 @@ public class RunPrgThread extends Observable implements Runnable {
 						apdu = apdu.substring(0, pos).trim();
 					}
 					commonAPDU.send(apdu);
+					if (oneStep) {
+						oneStep=false;
+					}
 				}
 				String temp=pos+"|";
 				//System.out.println("hellohello:"+prg.substring(pos, pos+apdu.length()+2));
@@ -63,6 +67,8 @@ public class RunPrgThread extends Observable implements Runnable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error(e.getMessage());
+		}finally{
+			CardInfoDetectPanel.rpt=null;
 		}
 	}
 

@@ -38,9 +38,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -60,7 +57,7 @@ import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.kms.kmsi.IKms;
 
-public class CardInfoDetectPanel extends JPanel implements Observer{
+public class CardInfoDetectPanel extends JPanel implements Observer {
 	/**
 	 * 
 	 */
@@ -86,6 +83,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 	private static JMenuItem mntmBuildScripts;
 
 	private static Thread runPrgThread = null;
+	public static RunPrgThread rpt = null;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -440,17 +438,10 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
-				if (WDAssert.isEmpty(textPane.getText())) {
-					JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				RunPrgThread rpt= new RunPrgThread(textPane, commonAPDU);
-				runPrgThread = new Thread(rpt);
 				if (RunPrgThread.mapBean != null) {
 					RunPrgThread.mapBean.clear();
 				}
-				rpt.addObserver(RightPanel.cardInfoDetectPanel);
-				runPrgThread.start();
+				runPrgInThread();
 			}
 		});
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -470,7 +461,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 						fis.read(fileContent);
 
 						textPane.setText(new String(fileContent));
-						//textPane.setCaretPosition(0);
+						// textPane.setCaretPosition(0);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, e.getMessage());
@@ -488,6 +479,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 		JButton btnStop = new JButton("STOP");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				RunPrgThread.mapBean.clear();
 				RunPrgThread.mapBean.put("debug", "stop");
 			}
@@ -500,6 +492,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 		JButton btnContinue = new JButton("CONTINUE");
 		btnContinue.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionevent) {
+				log.setLogArea(textPane_1);
 				RunPrgThread.mapBean.clear();
 				synchronized (RunPrgThread.mapBean) {
 					RunPrgThread.mapBean.notifyAll();
@@ -514,10 +507,17 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 		JButton btnStep = new JButton("STEP");
 		btnStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				RunPrgThread.mapBean.clear();
-				RunPrgThread.mapBean.put("debug", "step");
-				synchronized (RunPrgThread.mapBean) {
-					RunPrgThread.mapBean.notifyAll();
+				log.setLogArea(textPane_1);
+				if (RunPrgThread.mapBean.size() > 0 && (RunPrgThread.mapBean.get("debug").equalsIgnoreCase("stop") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("step"))) {
+					RunPrgThread.mapBean.clear();
+					RunPrgThread.mapBean.put("debug", "step");
+					synchronized (RunPrgThread.mapBean) {
+						RunPrgThread.mapBean.notifyAll();
+					}
+				} else {
+					RunPrgThread.mapBean.clear();
+					RunPrgThread.mapBean.put("debug", "step");
+					runPrgInThread();
 				}
 			}
 		});
@@ -690,17 +690,33 @@ public class CardInfoDetectPanel extends JPanel implements Observer{
 		thread.start();
 	}
 
+	/**
+	 * runPrgInThread
+	 */
+	public void runPrgInThread() {
+		if (WDAssert.isEmpty(textPane.getText())) {
+			JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (rpt==null) {
+			rpt = new RunPrgThread(textPane, commonAPDU);
+			runPrgThread = new Thread(rpt);
+			rpt.addObserver(RightPanel.cardInfoDetectPanel);
+			runPrgThread.start();
+		}
+	}
+
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		String temp=arg1.toString();
-		String[] tmp=temp.split("\\|");
-		int pos1=Integer.parseInt(tmp[0]);
-		int pos2=Integer.parseInt(tmp[1]);
-		//textPane.setCaretPosition(pos2);
-		
-		//SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
-		//StyleConstants.setBackground(simpleAttributeSet, Color.RED);
-		//StyledDocument doc = textPane.getStyledDocument();
-		//doc.setCharacterAttributes(pos1, pos2, simpleAttributeSet, false);
+		String temp = arg1.toString();
+		String[] tmp = temp.split("\\|");
+		int pos1 = Integer.parseInt(tmp[0]);
+		int pos2 = Integer.parseInt(tmp[1]);
+		// textPane.setCaretPosition(pos2);
+
+		// SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
+		// StyleConstants.setBackground(simpleAttributeSet, Color.RED);
+		// StyledDocument doc = textPane.getStyledDocument();
+		// doc.setCharacterAttributes(pos1, pos2, simpleAttributeSet, false);
 	}
 }
