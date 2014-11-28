@@ -16,7 +16,7 @@ public class RunPrgThread extends Observable implements Runnable {
 	public CommonAPDU commonAPDU;
 	public static Log logger = new Log();
 	public static boolean oneStep = false;
-	public static int pos=0;
+	public static int pos = 0;
 	public static HashMap<String, String> mapBean = new HashMap<String, String>();
 
 	public RunPrgThread(JTextPane textPane, CommonAPDU commonAPDU) {
@@ -34,11 +34,14 @@ public class RunPrgThread extends Observable implements Runnable {
 				synchronized (mapBean) {
 					if (mapBean.size() > 0) {
 						String cmd = mapBean.get("debug");
-						if (cmd.equalsIgnoreCase("stop") || oneStep) {
+						if (cmd.equalsIgnoreCase("pause") || oneStep) {
 							oneStep = false;
 							mapBean.wait();
 						} else if (cmd.equalsIgnoreCase("step")) {
 							oneStep = true;
+						} else if (cmd.equalsIgnoreCase("stop")) {
+							oneStep = false;
+							break;
 						}
 					}
 				}
@@ -52,14 +55,14 @@ public class RunPrgThread extends Observable implements Runnable {
 						apdu = apdu.substring(0, pos).trim();
 					}
 					commonAPDU.send(apdu);
-										
-					String temp=pos+"|";
-					pos+=apdu.length();
-					pos+=2;
-					temp+=pos;
+
+					String temp = pos + "|";
+					pos += apdu.length();
+					pos += 2;
+					temp += pos;
 					this.notifyObservers(temp);
 					this.setChanged();
-				}else {
+				} else {
 					oneStep = false;
 					continue;
 				}
@@ -67,8 +70,8 @@ public class RunPrgThread extends Observable implements Runnable {
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error(e.getMessage());
-		}finally{
-			CardInfoDetectPanel.rpt=null;
+		} finally {
+			CardInfoDetectPanel.rpt = null;
 		}
 	}
 

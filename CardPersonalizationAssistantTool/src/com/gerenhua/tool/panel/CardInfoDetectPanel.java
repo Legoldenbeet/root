@@ -494,6 +494,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			public void actionPerformed(ActionEvent actionevent) {
 				log.setLogArea(textPane_1);
 				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "continue");
 				synchronized (RunPrgThread.mapBean) {
 					RunPrgThread.mapBean.notifyAll();
 				}
@@ -501,14 +502,14 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		});
 		btnContinue.setFocusPainted(false);
 		btnContinue.setBorderPainted(false);
-		btnContinue.setBounds(0, 142, 120, 23);
+		btnContinue.setBounds(0, 174, 120, 23);
 		panel_4.add(btnContinue);
 
 		JButton btnStep = new JButton("STEP");
 		btnStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
-				if (RunPrgThread.mapBean.size() > 0 && (RunPrgThread.mapBean.get("debug").equalsIgnoreCase("stop") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("step"))) {
+				if (RunPrgThread.mapBean.size() > 0 && (RunPrgThread.mapBean.get("debug").equalsIgnoreCase("pause") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("step")||RunPrgThread.mapBean.get("debug").equalsIgnoreCase("continue"))) {
 					RunPrgThread.mapBean.clear();
 					RunPrgThread.mapBean.put("debug", "step");
 					synchronized (RunPrgThread.mapBean) {
@@ -523,8 +524,21 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		});
 		btnStep.setFocusPainted(false);
 		btnStep.setBorderPainted(false);
-		btnStep.setBounds(0, 175, 120, 23);
+		btnStep.setBounds(0, 207, 120, 23);
 		panel_4.add(btnStep);
+		
+		JButton btnPause = new JButton("PAUSE");
+		btnPause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "pause");
+			}
+		});
+		btnPause.setFocusPainted(false);
+		btnPause.setBorderPainted(false);
+		btnPause.setBounds(0, 141, 120, 23);
+		panel_4.add(btnPause);
 
 		JSplitPane splitPane_4 = new JSplitPane();
 		splitPane_4.setEnabled(false);
