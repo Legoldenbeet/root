@@ -18,6 +18,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -48,7 +49,6 @@ import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.logic.impl.CardInfoThread;
 import com.gerenhua.tool.logic.impl.DeleteObjThread;
-import com.gerenhua.tool.logic.impl.InstallAppletThread;
 import com.gerenhua.tool.logic.impl.LoadCapThead;
 import com.gerenhua.tool.logic.impl.RunPrgThread;
 import com.gerenhua.tool.utils.Config;
@@ -180,10 +180,16 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		mntmInstallApplet.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent e) {
 				log.setLogArea(textPane_1);
-				InstallAppletThread installAppletThread=new InstallAppletThread(tree, commonAPDU);
-				installAppletThread.start();
+				Component component = SwingUtilities.getRoot(tree);
+				JFrame root = (JFrame) component;
+				InstallDialog installDialog = null;
+				installDialog = new InstallDialog(root, tree, commonAPDU);
+				int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
+				int y = (int) (root.getLocation().getY() + 40);
+				installDialog.setLocation(x, y);
+				installDialog.setVisible(true);
 			}
 		});
 
@@ -674,15 +680,15 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 						}
 						if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
 							String parentNodeName = node.getParent().toString().trim();
-							String grandFather=null;
-							if (node.getParent().getParent()!=null) {
-								grandFather=node.getParent().getParent().toString().trim();
+							String grandFather = null;
+							if (node.getParent().getParent() != null) {
+								grandFather = node.getParent().getParent().toString().trim();
 							}
 							if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
 								popup.removeAll();
 								addMenu(mntmdeleteObj, e);
 								showMenu(e);
-							}else if (grandFather!=null&&grandFather.equalsIgnoreCase("Load Files and Modules")) {
+							} else if (grandFather != null && grandFather.equalsIgnoreCase("Load Files and Modules")) {
 								popup.removeAll();
 								addMenu(mntmInstallApplet, e);
 								showMenu(e);

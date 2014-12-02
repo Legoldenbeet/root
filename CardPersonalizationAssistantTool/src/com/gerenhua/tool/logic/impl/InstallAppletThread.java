@@ -5,13 +5,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
-import com.gerenhua.tool.panel.CardInfoDetectPanel;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 
 public class InstallAppletThread extends Thread {
 	public JTree tree;
 	public CommonAPDU commonAPDU;
+	public static String aid = "";
+	public static String privilege = "";
+	public static String param = "";
 	public static Log logger = new Log();
 
 	public InstallAppletThread(JTree tree, CommonAPDU commonAPDU) {
@@ -31,9 +33,9 @@ public class InstallAppletThread extends Thread {
 			}
 			String loadFileName = selNode.getParent().toString();
 			loadFileName = loadFileName.substring(0, loadFileName.indexOf(";"));
-			String aid = "A000000333010101";
-			String privilege = "04";
-			String param = "";
+			//String aid = "A000000333010101";
+			//String privilege = "04";
+			//String param = "";
 
 			String p1 = "0C";
 			String p2 = "00";
