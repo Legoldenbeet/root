@@ -497,12 +497,8 @@ public class CommonAPDU extends AbstractAPDU {
 	public String send(String apdu) throws Exception {
 		String classByte = apdu.substring(0, 2);
 		String insByte = apdu.substring(2, 4);
-		if (!classByte.equalsIgnoreCase("80") || (classByte.equalsIgnoreCase("80") && insByte.startsWith("0"))) {
-			// escape
-		} else {
-			if (getSecureityLevel().equalsIgnoreCase(NO_SECUREITY_LEVEL)) {
-				// escape
-			} else if (getSecureityLevel().equalsIgnoreCase(MACONLY)) {
+		if (classByte.equalsIgnoreCase("80")&&!(classByte.equalsIgnoreCase("80") && insByte.startsWith("0"))) {
+			if (getSecureityLevel().equalsIgnoreCase(MACONLY)) {
 				int cla = (Integer.parseInt(apdu.substring(0, 2), 16) & 0xF0) | 0x04;
 				apdu = Integer.toHexString(cla) + apdu.substring(2);
 				int lc = Integer.parseInt(apdu.substring(8, 10), 16);
@@ -551,7 +547,7 @@ public class CommonAPDU extends AbstractAPDU {
 				apdu = apdu.substring(0, 8) + WDStringUtil.paddingHeadZero(Integer.toHexString(lc), 2) + encResult + cMac;
 			}
 		}
-
+		
 		return apduChannel.send(apdu);
 	}
 
