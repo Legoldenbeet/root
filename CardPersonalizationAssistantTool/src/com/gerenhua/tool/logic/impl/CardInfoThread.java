@@ -17,7 +17,7 @@ import com.gerenhua.tool.utils.Config;
 public class CardInfoThread extends Thread {
 	public static CommonAPDU commonAPDU;
 	public JTree tree;
-	public static Log logger=new Log();
+	public static Log logger = new Log();
 	public JTextPane textPane;
 	public String secrityLevel;
 	public String keyVersion;
@@ -25,19 +25,20 @@ public class CardInfoThread extends Thread {
 	public String encKey;
 	public String macKey;
 	public String dekKey;
-	
-	public CardInfoThread(JTree tree,CommonAPDU commonAPDU,String secrityLevel,String keyVersion,String keyId,String encKey,String macKey,String dekKey,JTextPane textPane){
-		this.tree=tree;
-		this.commonAPDU=commonAPDU;
-		this.textPane=textPane;
-		this.secrityLevel=secrityLevel;
-		this.keyVersion=keyVersion;
-		this.keyId=keyId;
-		this.encKey=encKey;
-		this.macKey=macKey;
-		this.dekKey=dekKey;
+
+	public CardInfoThread(JTree tree, CommonAPDU commonAPDU, String secrityLevel, String keyVersion, String keyId, String encKey, String macKey, String dekKey, JTextPane textPane) {
+		this.tree = tree;
+		this.commonAPDU = commonAPDU;
+		this.textPane = textPane;
+		this.secrityLevel = secrityLevel;
+		this.keyVersion = keyVersion;
+		this.keyId = keyId;
+		this.encKey = encKey;
+		this.macKey = macKey;
+		this.dekKey = dekKey;
 		logger.setLogArea(textPane);
 	}
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -46,12 +47,12 @@ public class CardInfoThread extends Thread {
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
 		root.removeAllChildren();
 		try {
-			HashMap<String, String> res=commonAPDU.reset();
+			HashMap<String, String> res = commonAPDU.reset();
 			if (!"9000".equals(res.get("sw"))) {
 				logger.error("card reset error");
 			}
 			resp = commonAPDU.send("00A4040000");
-			commonAPDU.externalAuthenticate(secrityLevel,keyVersion,keyId,encKey,macKey,dekKey);
+			commonAPDU.externalAuthenticate(secrityLevel, keyVersion, keyId, encKey, macKey, dekKey);
 			resp = commonAPDU.send("80F28000024F00");
 
 			DefaultMutableTreeNode cardManager = null;
@@ -125,7 +126,7 @@ public class CardInfoThread extends Thread {
 							pos += 2;
 							privilegesCode = resp.substring(pos, pos + 2);
 							pos += 2;
-							String modulesNum= resp.substring(pos, pos + 2);
+							String modulesNum = resp.substring(pos, pos + 2);
 							pos += 2;
 							DefaultMutableTreeNode loadFileNode = new DefaultMutableTreeNode(loadFile + ";" + Config.getValue("App_Lifestyle", lifeStyleCode));
 							loadFilesAndModules.add(loadFileNode);
@@ -145,11 +146,12 @@ public class CardInfoThread extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			//commonAPDU.close();
+			// commonAPDU.close();
 			expandTree(tree, true);
 			tree.updateUI();
 		}
 	}
+
 	public static void expandTree(JTree tree, boolean bo) {
 		TreeNode root = (TreeNode) tree.getModel().getRoot();
 		expandAll(tree, new TreePath(root), bo);

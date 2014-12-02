@@ -48,6 +48,7 @@ import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.logic.impl.CardInfoThread;
 import com.gerenhua.tool.logic.impl.DeleteObjThread;
+import com.gerenhua.tool.logic.impl.InstallAppletThread;
 import com.gerenhua.tool.logic.impl.LoadCapThead;
 import com.gerenhua.tool.logic.impl.RunPrgThread;
 import com.gerenhua.tool.utils.Config;
@@ -81,9 +82,11 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static JMenuItem mntmdeleteObj;
 	private static JMenuItem mntmCardStatus;
 	private static JMenuItem mntmBuildScripts;
+	private static JMenuItem mntmInstallApplet;
 
 	private static Thread runPrgThread = null;
 	public static RunPrgThread rpt = null;
+	public static CardInfoThread cardInfoThread = null;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -171,6 +174,16 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 					loadCapThead.start();
 				}
 				log.setLogArea(textPane_1);
+			}
+		});
+		mntmInstallApplet = new JMenuItem("Install");
+		mntmInstallApplet.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				InstallAppletThread installAppletThread=new InstallAppletThread(tree, commonAPDU);
+				installAppletThread.start();
 			}
 		});
 
@@ -509,7 +522,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		btnStep.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
-				if (RunPrgThread.mapBean.size() > 0 && (RunPrgThread.mapBean.get("debug").equalsIgnoreCase("pause") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("step")||RunPrgThread.mapBean.get("debug").equalsIgnoreCase("continue"))) {
+				if (RunPrgThread.mapBean.size() > 0 && (RunPrgThread.mapBean.get("debug").equalsIgnoreCase("pause") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("step") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("continue"))) {
 					RunPrgThread.mapBean.clear();
 					RunPrgThread.mapBean.put("debug", "step");
 					synchronized (RunPrgThread.mapBean) {
@@ -526,7 +539,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		btnStep.setBorderPainted(false);
 		btnStep.setBounds(0, 207, 120, 23);
 		panel_4.add(btnStep);
-		
+
 		JButton btnPause = new JButton("PAUSE");
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -656,27 +669,37 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 						DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
 						String nodeName = (node != null) ? node.toString() : null;
-						if (WDAssert.isNotEmpty(nodeName)) {
-							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
-								String parentNodeName = node.getParent().toString().trim();
-								if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
-									popup.removeAll();
-									addMenu(mntmdeleteObj, e);
-									showMenu(e);
-								}
+						if (WDAssert.isEmpty(nodeName)) {
+							return;
+						}
+						if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
+							String parentNodeName = node.getParent().toString().trim();
+							String grandFather=null;
+							if (node.getParent().getParent()!=null) {
+								grandFather=node.getParent().getParent().toString().trim();
 							}
-							if (nodeName.equalsIgnoreCase("CardInfo")) {
+							if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
 								popup.removeAll();
-								addMenu(mntmCardinfo, e);
-								addMenu(mntmCardStatus, e);
+								addMenu(mntmdeleteObj, e);
 								showMenu(e);
-							} else if (nodeName.equalsIgnoreCase("Load Files")) {
+							}else if (grandFather!=null&&grandFather.equalsIgnoreCase("Load Files and Modules")) {
 								popup.removeAll();
-								addMenu(mntmLoad, e);
-								addMenu(mntmBuildScripts, e);
+								addMenu(mntmInstallApplet, e);
 								showMenu(e);
 							}
 						}
+						if (nodeName.equalsIgnoreCase("CardInfo")) {
+							popup.removeAll();
+							addMenu(mntmCardinfo, e);
+							addMenu(mntmCardStatus, e);
+							showMenu(e);
+						} else if (nodeName.equalsIgnoreCase("Load Files")) {
+							popup.removeAll();
+							addMenu(mntmLoad, e);
+							addMenu(mntmBuildScripts, e);
+							showMenu(e);
+						}
+
 					}
 				}
 			}
@@ -700,8 +723,8 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	 */
 	public static void refreshTree() {
 		commonAPDU = new CommonAPDU();
-		CardInfoThread thread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
-		thread.start();
+		cardInfoThread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
+		cardInfoThread.start();
 	}
 
 	/**
@@ -712,7 +735,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		if (rpt==null) {
+		if (rpt == null) {
 			rpt = new RunPrgThread(textPane, commonAPDU);
 			runPrgThread = new Thread(rpt);
 			rpt.addObserver(RightPanel.cardInfoDetectPanel);
