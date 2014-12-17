@@ -25,7 +25,8 @@ public class LoadCapThead extends Thread {
 	public static Log log = new Log();
 	public JTextPane textPane;
 	public File[] capFiles;
-	public boolean isRealCard=false;
+	public boolean isRealCard = false;
+
 	public boolean isRealCard() {
 		return isRealCard;
 	}
@@ -46,8 +47,9 @@ public class LoadCapThead extends Thread {
 		textPane.setText("");
 		for (File file : capFiles) {
 			try {
-				String resp="";
+				String resp = "";
 				List<String> loadFileInfo = getCapInfo(file);
+				System.out.println(loadFileInfo);
 				String pkgName = loadFileInfo.get(0);
 				String apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(pkgName.length() / 2), 2) + pkgName;
 				apduCommand += "00000000";
@@ -55,9 +57,9 @@ public class LoadCapThead extends Thread {
 				apduCommand = "80E60200" + apduCommand.toUpperCase();
 				if (isRealCard) {
 					resp = commonAPDU.send(apduCommand);
-				}else {
-					log.out(formatLoadScript(apduCommand, "//INSTALL [for load]"),Log.LOG_COLOR_BLACK);
-					resp="9000";
+				} else {
+					log.out(formatLoadScript(apduCommand, "//INSTALL [for load]"), Log.LOG_COLOR_BLACK);
+					resp = "9000";
 				}
 				if (resp.endsWith(Constants.SW_SUCCESS)) {
 					for (int j = 1; j < loadFileInfo.size(); j++) {
@@ -67,16 +69,22 @@ public class LoadCapThead extends Thread {
 						} else {
 							p1 = "00";
 						}
-						String p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j - 1), 2);
+						String p2 = "";
+						if (j <= 256) {
+							p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j - 1), 2);
+						} else {
+							p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j - 256 - 1), 2);
+						}
+
 						String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(loadFileInfo.get(j).length() / 2), 2);
 						String temp = "80E8" + p1 + p2 + lc;
 						temp += loadFileInfo.get(j);
-						temp=temp.toUpperCase();
+						temp = temp.toUpperCase();
 						if (isRealCard) {
 							resp = commonAPDU.send(temp);
-						}else {
-							log.out(formatLoadScript(temp, "//LOAD [for "+j+" Block]"), Log.LOG_COLOR_BLACK);
-							resp="9000";
+						} else {
+							log.out(formatLoadScript(temp, "//LOAD [for " + j + " Block]"), Log.LOG_COLOR_BLACK);
+							resp = "9000";
 						}
 						if (!resp.endsWith(Constants.SW_SUCCESS)) {
 							break;
@@ -108,6 +116,10 @@ public class LoadCapThead extends Thread {
 		String capFileInfo = mapBean.get("body");
 
 		int len = capFileInfo.length();
+
+		System.out.println(capFileInfo);
+		System.out.println(len);
+
 		String lenInHex = Integer.toHexString(len / 2);
 
 		capFileInfo = WDStringUtil.paddingHeadZero(lenInHex, 4) + capFileInfo;
@@ -197,14 +209,16 @@ public class LoadCapThead extends Thread {
 	public String checkNull(String str) {
 		return str == null ? "" : str;
 	}
+
 	/**
 	 * formatLoadScript
+	 * 
 	 * @param apdu
 	 * @param desc
 	 * @return
 	 */
-	public String formatLoadScript(String apdu,String desc){
-		StringBuilder sb=new StringBuilder();
+	public String formatLoadScript(String apdu, String desc) {
+		StringBuilder sb = new StringBuilder();
 		sb.append(desc).append("\n");
 		sb.append(apdu).append("\n");
 		return sb.toString();
