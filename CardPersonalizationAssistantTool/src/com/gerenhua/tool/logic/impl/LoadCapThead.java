@@ -94,6 +94,8 @@ public class LoadCapThead extends Thread {
 					String msg = "load " + file.getName() + " complete.";
 					if (isRealCard) {
 						log.info(msg);
+					}else {
+						log.info("complete.");
 					}
 				}
 			} catch (Exception e) {
