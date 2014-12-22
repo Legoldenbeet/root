@@ -17,6 +17,7 @@ import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.panel.CardInfoDetectPanel;
+import com.gerenhua.tool.utils.Config;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -98,6 +99,8 @@ public class LoadCapThead extends Thread {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}finally{
+				Config.setValue("CardInfo", "currentCap", capFiles[0].getParent());
 			}
 		}
 		if (isRealCard) {

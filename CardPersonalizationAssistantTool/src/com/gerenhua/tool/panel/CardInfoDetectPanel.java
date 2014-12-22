@@ -139,7 +139,13 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		mntmLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
-				JFileChooser jFileChooser = new JFileChooser("./resources/cap");
+				JFileChooser jFileChooser=null;
+				String capFile=Config.getValue("CardInfo", "currentCap");
+				if (WDAssert.isNotEmpty(capFile)) {
+					jFileChooser = new JFileChooser(capFile);
+				}else {
+					jFileChooser = new JFileChooser("./resources/cap");
+				}
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
 				jFileChooser.setFileFilter(fileNameExtensionFilter);
 				jFileChooser.setMultiSelectionEnabled(true);
@@ -160,8 +166,14 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane);
-				// TODO Auto-generated method stub
-				JFileChooser jFileChooser = new JFileChooser("./resources/cap");
+				JFileChooser jFileChooser=null;
+				String capFile=Config.getValue("CardInfo", "currentCap");
+				if (WDAssert.isNotEmpty(capFile)) {
+					jFileChooser = new JFileChooser(capFile);
+				}else {
+					jFileChooser = new JFileChooser("./resources/cap");
+				}
+				
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
 				jFileChooser.setFileFilter(fileNameExtensionFilter);
 				jFileChooser.setMultiSelectionEnabled(true);
