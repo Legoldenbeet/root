@@ -72,6 +72,7 @@ public class RunPrgThread extends Observable implements Runnable {
 			logger.error(e.getMessage());
 		} finally {
 			CardInfoDetectPanel.rpt = null;
+			logger.info("excute complete.");
 		}
 	}
 
