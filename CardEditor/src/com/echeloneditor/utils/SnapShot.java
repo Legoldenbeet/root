@@ -51,7 +51,7 @@ class RectD extends JFrame {
 
 	@Override
 	public void paint(Graphics g) {
-		RescaleOp ro = new RescaleOp(0.8f, 0, null);
+		RescaleOp ro = new RescaleOp(1f, 0, null);
 		tempImage = ro.filter(image, null);
 		g.drawImage(tempImage, 0, 0, this);
 	}
@@ -78,7 +78,7 @@ class RectD extends JFrame {
 				int width = Math.abs(endx - orgx) + 1;
 				int height = Math.abs(endy - orgy) + 1;
 				// 加上1，防止width或height为0
-				g.setColor(Color.BLUE);
+				//g.setColor(Color.BLUE);
 				g.drawRect(x - 1, y - 1, width + 1, height + 1);
 				// 减1，加1都是为了防止图片将矩形框覆盖掉
 				saveImage = image.getSubimage(x, y, width, height);
