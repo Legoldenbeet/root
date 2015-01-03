@@ -21,44 +21,44 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileSystemView;
+
+import com.sun.awt.AWTUtilities;
 
 /**
  * java截屏 运行后将当前屏幕截取，并最大化显示。 拖拽鼠标，选择自己需要的部分。 按Esc键保存图片到桌面，并退出程序。 点击右上角（没有可见的按钮），退出程序，不保存图片。
  * 
  * @author JinCeon
  */
-public class SnapShot extends JFrame{
+public class SnapShot extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private int orgx, orgy, endx, endy;
-	private  Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-	private BufferedImage image;
+	private static BufferedImage image;
 	private BufferedImage tempImage;
 	private BufferedImage saveImage;
 	private Graphics g;
-	public static SnapShot snapShot=null;
-	//start the app
-	public static void startApp(){
-		if (snapShot==null) {
-			snapShot=new SnapShot();
-		}
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		gd.setFullScreenWindow(snapShot);
+	public static SnapShot snapShot = null;
+
+	// start the app
+	public static void startApp() {
+		snapShot = new SnapShot();
+		snapShot.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		//gd.setFullScreenWindow(snapShot);
 	}
+
 	public SnapShot() {
-		snapshot();
-		setVisible(true);
-		setResizable(false);
-		setAlwaysOnTop(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		screenShot();
 		this.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				orgx = e.getX();
 				orgy = e.getY();
 			}
+
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
-				saveToFile();
+				saveToFile(saveImage);
 				snapShot.setVisible(false);
 				snapShot.dispose();
 			}
@@ -81,25 +81,17 @@ public class SnapShot extends JFrame{
 				g.drawImage(saveImage, x, y, snapShot);
 			}
 		});
-		/*this.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// 按Esc键退出
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					saveToFile();
-					System.exit(0);
-				}
-			}
-		});*/
+		setVisible(true);
+		setResizable(false);
 	}
-
 	@Override
 	public void paint(Graphics g) {
-		RescaleOp ro = new RescaleOp(1f, 0, null);
+		RescaleOp ro = new RescaleOp(1.0f, 0, null);
 		tempImage = ro.filter(image, null);
 		g.drawImage(tempImage, 0, 0, this);
 	}
-	public void saveToFile() {
+
+	public void saveToFile(BufferedImage saveImage) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
 		String name = sdf.format(new Date());
 		File path = FileSystemView.getFileSystemView().getHomeDirectory();
@@ -112,9 +104,10 @@ public class SnapShot extends JFrame{
 		}
 	}
 
-	public void snapshot() {
+	public static void screenShot() {
 		try {
 			Robot robot = new Robot();
+			Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 			image = robot.createScreenCapture(new Rectangle(0, 0, d.width, d.height));
 		} catch (AWTException e) {
 			e.printStackTrace();
@@ -122,7 +115,6 @@ public class SnapShot extends JFrame{
 	}
 	
 	public static void main(String[] args) {
-		// 全屏运行
 		startApp();
 	}
 }

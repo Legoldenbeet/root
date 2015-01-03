@@ -60,6 +60,7 @@ import com.echeloneditor.listeners.TabbedPaneChangeListener;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
+import com.echeloneditor.utils.SnapShot;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
@@ -72,7 +73,7 @@ import com.watchdata.commons.lang.WDByteUtil;
 
 public class CardEditor {
 
-	public JFrame frmEcheloneditor;
+	public static JFrame frmEcheloneditor;
 	public static JTabbedPane tabbedPane;
 	public static StatusObject statusObject;
 	public FontWidthRuler ruler;
@@ -120,13 +121,13 @@ public class CardEditor {
 					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
 					// 初始化窗体
-					CardEditor window = new CardEditor();
+					new CardEditor();
 					// 框体屏幕居中显示
-					window.frmEcheloneditor.setLocationRelativeTo(null);
+					frmEcheloneditor.setLocationRelativeTo(null);
 					// 显示窗体
-					window.frmEcheloneditor.setVisible(true);
+					frmEcheloneditor.setVisible(true);
 					// window.frmEcheloneditor.pack();
-					new DropTarget(window.frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(window.tabbedPane, window.statusObject), true);
+					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
 							fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
@@ -791,6 +792,17 @@ public class CardEditor {
 			}
 		});
 		menu_1.add(mntmNewMenuItem_3);
+		
+		JMenuItem mntmSnapshot = new JMenuItem("SnapShot");
+		mntmSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
+		mntmSnapshot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
+				SnapShot.startApp();
+			}
+		});
+		mntmSnapshot.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150103103702829_easyicon_net_24.png")));
+		menu_1.add(mntmSnapshot);
 
 		JSeparator separator_8 = new JSeparator();
 		menu_1.add(separator_8);
