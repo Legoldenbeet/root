@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<exe4j version="4.6" transformSequenceNumber="1">
-  <directoryPresets config="E:/程序打包" />
+<exe4j version="4.0" transformSequenceNumber="1">
+  <directoryPresets config="E:/程序打包/CardEditor/setup" />
   <application name="ScreenShot" distributionSourceDir="E:/程序打包/CardEditor/dist">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="ScreenShot" type="1" iconSet="true" iconFile="E:/程序打包/CardEditor/setup/logo.ico" executableDir="." redirectStderr="true" stderrFile="error.log" stderrMode="append" redirectStdout="true" stdoutFile="output.log" stdoutMode="append" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" amd64="true">
+  <executable name="ScreenShot" type="1" iconSet="true" iconFile="E:/程序打包/CardEditor/setup/screenshot.ico" executableDir="." redirectStderr="true" stderrFile="error.log" redirectStdout="true" stdoutFile="output.log" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" amd64="true">
     <messageSet />
-    <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" companyName="" productVersion="" />
+    <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" companyName="" productVersion="" />
   </executable>
-  <splashScreen show="false" autoOff="true" alwaysOnTop="true" width="0" height="0" bitmapFile="E:/程序打包/trade.png" java6SplashScreen="false">
+  <splashScreen show="false" autoOff="true" alwaysOnTop="true" width="0" height="0" bitmapFile="E:/程序打包/trade.png">
     <text>
       <statusLine x="20" y="20" text="" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
       <versionLine x="20" y="40" text="version %VERSION%" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
     </text>
   </splashScreen>
-  <java mainClass="com.echeloneditor.utils.SnapShot" vmParameters="-J-Xms64m -Xmx800m" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true" minVersion="1.6" maxVersion="1.9" allowBetaVM="true" jdkOnly="false">
+  <java mainClass="com.echeloneditor.utils.SnapShot" vmParameters="-J-Xms64m -Xmx128m" arguments="" allowVMPassthroughParameters="true" preferredVM="" minVersion="1.6" maxVersion="1.9" allowBetaVM="true" jdkOnly="false">
     <searchSequence>
       <registry />
       <envVar name="JAVA_HOME" />
