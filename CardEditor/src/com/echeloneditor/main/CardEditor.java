@@ -6,7 +6,9 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
@@ -60,7 +62,6 @@ import com.echeloneditor.listeners.TabbedPaneChangeListener;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
-import com.echeloneditor.utils.SnapShot;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
@@ -798,7 +799,12 @@ public class CardEditor {
 		mntmSnapshot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
-				SnapShot.startApp();
+				try {
+					WindowsExcuter.excute(new File(FileAction.USER_DIR), "ScreenShot.exe");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		mntmSnapshot.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150103103702829_easyicon_net_24.png")));
