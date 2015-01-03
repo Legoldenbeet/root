@@ -43,9 +43,9 @@ public class SnapShot extends JFrame {
 	// start the app
 	public static void startApp() {
 		snapShot = new SnapShot();
-		snapShot.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		//GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		//gd.setFullScreenWindow(snapShot);
+		//snapShot.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		gd.setFullScreenWindow(snapShot);
 	}
 
 	public SnapShot() {
@@ -59,8 +59,9 @@ public class SnapShot extends JFrame {
 			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 				saveToFile(saveImage);
-				snapShot.setVisible(false);
-				snapShot.dispose();
+				System.exit(0);
+				//snapShot.setVisible(false);
+				//snapShot.dispose();
 			}
 		});
 		this.addMouseMotionListener(new MouseMotionAdapter() {
