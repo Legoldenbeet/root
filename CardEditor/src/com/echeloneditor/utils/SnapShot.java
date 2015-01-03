@@ -9,8 +9,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -30,41 +28,39 @@ import javax.swing.filechooser.FileSystemView;
  * 
  * @author JinCeon
  */
-public class SnapShot {
-
-	public static void main(String[] args) {
-		// 全屏运行
-		RectD rd = new RectD();
-		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-		gd.setFullScreenWindow(rd);
-	}
-}
-
-class RectD extends JFrame {
+public class SnapShot extends JFrame{
 	private static final long serialVersionUID = 1L;
-	int orgx, orgy, endx, endy;
-	Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-	BufferedImage image;
-	BufferedImage tempImage;
-	BufferedImage saveImage;
-	Graphics g;
-
-	@Override
-	public void paint(Graphics g) {
-		RescaleOp ro = new RescaleOp(1f, 0, null);
-		tempImage = ro.filter(image, null);
-		g.drawImage(tempImage, 0, 0, this);
+	private int orgx, orgy, endx, endy;
+	private  Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+	private BufferedImage image;
+	private BufferedImage tempImage;
+	private BufferedImage saveImage;
+	private Graphics g;
+	public static SnapShot snapShot=null;
+	//start the app
+	public static void startApp(){
+		if (snapShot==null) {
+			snapShot=new SnapShot();
+		}
+		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		gd.setFullScreenWindow(snapShot);
 	}
-
-	public RectD() {
+	public SnapShot() {
 		snapshot();
 		setVisible(true);
-		// setSize(d);//最大化窗口
+		setResizable(false);
+		setAlwaysOnTop(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				orgx = e.getX();
 				orgy = e.getY();
+			}
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				saveToFile();
+				snapShot.setVisible(false);
+				snapShot.dispose();
 			}
 		});
 		this.addMouseMotionListener(new MouseMotionAdapter() {
@@ -72,31 +68,37 @@ class RectD extends JFrame {
 				endx = e.getX();
 				endy = e.getY();
 				g = getGraphics();
-				g.drawImage(tempImage, 0, 0, RectD.this);
+				g.drawImage(tempImage, 0, 0, snapShot);
 				int x = Math.min(orgx, endx);
 				int y = Math.min(orgy, endy);
 				int width = Math.abs(endx - orgx) + 1;
 				int height = Math.abs(endy - orgy) + 1;
 				// 加上1，防止width或height为0
-				//g.setColor(Color.BLUE);
+				g.setColor(Color.RED);
 				g.drawRect(x - 1, y - 1, width + 1, height + 1);
 				// 减1，加1都是为了防止图片将矩形框覆盖掉
 				saveImage = image.getSubimage(x, y, width, height);
-				g.drawImage(saveImage, x, y, RectD.this);
+				g.drawImage(saveImage, x, y, snapShot);
 			}
 		});
-		this.addKeyListener(new KeyAdapter() {
+		/*this.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				// 按Esc键退出
-				if (e.getKeyCode() == 27) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					saveToFile();
 					System.exit(0);
 				}
 			}
-		});
+		});*/
 	}
 
+	@Override
+	public void paint(Graphics g) {
+		RescaleOp ro = new RescaleOp(1f, 0, null);
+		tempImage = ro.filter(image, null);
+		g.drawImage(tempImage, 0, 0, this);
+	}
 	public void saveToFile() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
 		String name = sdf.format(new Date());
@@ -113,10 +115,14 @@ class RectD extends JFrame {
 	public void snapshot() {
 		try {
 			Robot robot = new Robot();
-			Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 			image = robot.createScreenCapture(new Rectangle(0, 0, d.width, d.height));
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String[] args) {
+		// 全屏运行
+		startApp();
 	}
 }
