@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <!-- 
 
@@ -53,7 +53,7 @@
 	</target>
 
 	<!-- Creates the jar file. -->
-	<target name="make-jar-main" description="Create the jar file">
+	<target name="make-jar" description="Create the jar file">
 		<pathconvert property="mf.classpath" pathsep=" ">
 			<path refid="classpath" />
 			<mapper>
@@ -81,19 +81,6 @@
 			</manifest>
 		</jar>
 	</target>
-	
-	<!-- Creates the jar file. -->
-		<target name="make-jar-screenshot" description="Create the jar file">
-			<mkdir dir="${dist-dir}" />
-			<jar destfile="${dist-dir}/ScreenShot.jar">
-				<filename />
-				<manifest>
-					<attribute name="Main-Class" value="com.echeloneditor.utils.SnapShot" />
-					<attribute name="Class-Path" value="CardEditor.jar" />
-				</manifest>
-			</jar>
-		</target>
-
 	<!--move files to ${dist-dir}-->
 	<target name="move">
 		<copy todir="${dist-dir}/resources">
@@ -144,7 +131,7 @@
 	</target>
 
 	<!-- Builds all target 32bit system  -->
-	<target name="build" depends="clean,compile,make-jar-main,make-jar-screenshot,move">
+	<target name="build" depends="clean,compile,make-jar,move">
 		<antcall target="make-javadoc">
 		</antcall>
 		<antcall target="make-source-zip">
