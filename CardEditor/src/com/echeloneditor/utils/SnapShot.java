@@ -84,7 +84,7 @@ public class SnapShot extends JFrame {
 	}
 	@Override
 	public void paint(Graphics g) {
-		RescaleOp ro = new RescaleOp(1.0f, 0, null);
+		RescaleOp ro = new RescaleOp(0.8f, 0, null);
 		tempImage = ro.filter(image, null);
 		g.drawImage(tempImage, 0, 0, this);
 	}
