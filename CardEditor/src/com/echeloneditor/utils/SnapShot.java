@@ -21,10 +21,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileSystemView;
-
-import com.sun.awt.AWTUtilities;
 
 /**
  * java截屏 运行后将当前屏幕截取，并最大化显示。 拖拽鼠标，选择自己需要的部分。 按Esc键保存图片到桌面，并退出程序。 点击右上角（没有可见的按钮），退出程序，不保存图片。

@@ -6,9 +6,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.SystemTray;
 import java.awt.Toolkit;
-import java.awt.TrayIcon;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
@@ -800,7 +798,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent arg0) {
 				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
 				try {
-					WindowsExcuter.excute(new File(FileAction.USER_DIR), "ScreenShot.exe");
+					WindowsExcuter.excute(new File(FileAction.USER_DIR), "java -jar ScreenShot.jar");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
