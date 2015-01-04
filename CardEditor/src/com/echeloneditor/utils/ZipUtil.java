@@ -76,12 +76,15 @@ public class ZipUtil {
 				// 压缩文件
 				basePath = (basePath.length() == 0 ? "" : basePath + "/") + file.getName();
 				Debug.log.debug(basePath);
-				//方案一
-				WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName()+".txt");
-				//方案二
-				//WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName());
 				
-				FileUtils.deleteQuietly(file);
+				if (!file.getName().endsWith(".exe")&&!file.getName().endsWith(".EXE")) {
+					//方案一
+					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName()+".txt");
+					//方案二
+					//WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName());
+					
+					FileUtils.deleteQuietly(file);
+				}
 			}
 		} catch (Exception ex) {
 			excuteResult=false;
