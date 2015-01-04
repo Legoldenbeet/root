@@ -82,7 +82,7 @@ public class CardEditor {
 	public static AssistantToolDialog dialog = null;
 	public static FileHander fileHander;
 	public FileInputStream fis;
-	
+
 	public static Thread sysThread;
 
 	/**
@@ -137,12 +137,12 @@ public class CardEditor {
 				}
 			}
 		});
-		sysThread=new Thread(new PooledConnectionHandler());
-		//sysThread.setDaemon(true);
+		sysThread = new Thread(new PooledConnectionHandler());
+		// sysThread.setDaemon(true);
 		sysThread.start();
-		//启动同步接收和发送服务
+		// 启动同步接收和发送服务
 		new ServerListener().startService(9000);
-		
+
 	}
 
 	/**
@@ -442,6 +442,13 @@ public class CardEditor {
 		menuItem_1.addActionListener(new SimpleFileChooseListener(tabbedPane, statusObject));
 		menuItem_1.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112148516_easyicon_net_24.png")));
 		menu.add(menuItem_1);
+
+		JMenuItem mntmex = new JMenuItem("打开(EX)");
+		mntmex.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
+		mntmex.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112148516_easyicon_net_24.png")));
+		mntmex.setActionCommand("openext");
+		mntmex.addActionListener(new SimpleFileChooseListener(tabbedPane, statusObject));
+		menu.add(mntmex);
 
 		JSeparator separator_1 = new JSeparator();
 		menu.add(separator_1);
@@ -791,7 +798,7 @@ public class CardEditor {
 			}
 		});
 		menu_1.add(mntmNewMenuItem_3);
-		
+
 		JMenuItem mntmSnapshot = new JMenuItem("SnapShot");
 		mntmSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
 		mntmSnapshot.addActionListener(new ActionListener() {
