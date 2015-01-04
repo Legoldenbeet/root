@@ -81,6 +81,8 @@ public class SnapShot extends JFrame {
 		});
 		setVisible(true);
 		setResizable(false);
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	@Override
 	public void paint(Graphics g) {
