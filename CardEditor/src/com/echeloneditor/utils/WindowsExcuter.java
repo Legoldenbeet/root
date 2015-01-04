@@ -25,6 +25,7 @@ public class WindowsExcuter {
 	 * @throws Exception
 	 */
 	public static void excute(File dir, String windowCommand) throws Exception {
+		Debug.log.info(windowCommand);
 		List<String> cmdList = new ArrayList<String>();
 		for (String cmd : windowCommand.split(" ")) {
 			cmdList.add(cmd);

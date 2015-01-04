@@ -5,10 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 
+import com.watchdata.commons.lang.WDStringUtil;
+
 public class ZipUtil {
+	public static String tmpFileDir;
 	/**
 	 * 压缩文件file成zip文件zipFile
 	 * 
@@ -20,13 +24,26 @@ public class ZipUtil {
 	 */
 	public static void zip(File file, File zipFile) throws Exception {
 		ZipOutputStream output = null;
+		File tmpFile=null;
 		try {
-			output = new ZipOutputStream(new FileOutputStream(zipFile));
+			//创建缓存文件夹
+			tmpFileDir=zipFile.getPath()+"_"+WDStringUtil.getRandomHexString(8);
+			tmpFile=new File(tmpFileDir);
+			if (!tmpFile.exists()) {
+				tmpFile.mkdir();
+			}
+			//拷贝原始文件夹到缓存
+			FileUtils.copyDirectory(file, tmpFile);
+			
+			preDecrypt(tmpFile, "");
+			output = new ZipOutputStream(new FileOutputStream(new File(tmpFileDir+".zip")));
 			output.setEncoding("utf-8");
 			output.setFallbackToUTF8(true);
 			output.setLevel(-1);
 			// 顶层目录开始
-			zipFile(output, file, "");
+			zipMFile(output, tmpFile, "");
+			
+			FileUtils.deleteDirectory(tmpFile);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
@@ -37,7 +54,81 @@ public class ZipUtil {
 			}
 		}
 	}
-
+	/**
+	 * 解密预处理
+	 * @param file
+	 * @param basePath
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean preDecrypt(File file, String basePath) throws IOException{
+		boolean excuteResult=false;
+		try {
+			// 文件为目录
+			if (file.isDirectory()) {
+				// 得到当前目录里面的文件列表
+				File list[] = file.listFiles();
+				basePath = basePath + (basePath.length() == 0 ? "" : "/") + file.getName();
+				// 循环递归压缩每个文件
+				for (File f : list)
+					preDecrypt(f, basePath);
+			} else {
+				// 压缩文件
+				basePath = (basePath.length() == 0 ? "" : basePath + "/") + file.getName();
+				Debug.log.debug(basePath);
+				//方案一
+				WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName()+".txt");
+				//方案二
+				//WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName());
+				
+				FileUtils.deleteQuietly(file);
+			}
+		} catch (Exception ex) {
+			excuteResult=false;
+			ex.printStackTrace();
+		} 
+		return excuteResult;
+	}
+	/**
+	 * 处理中间文件
+	 * @param output
+	 * @param file
+	 * @param basePath
+	 * @throws IOException
+	 */
+	private static void zipMFile(ZipOutputStream output, File file, String basePath) throws IOException {
+		FileInputStream input = null;
+		try {
+			// 文件为目录
+			if (file.isDirectory()) {
+				// 得到当前目录里面的文件列表
+				File list[] = file.listFiles();
+				basePath = basePath + (basePath.length() == 0 ? "" : "/") + file.getName();
+				// 循环递归压缩每个文件
+				for (File f : list)
+					zipMFile(output, f, basePath);
+			} else {
+				// 压缩文件
+				basePath = (basePath.length() == 0 ? "" : basePath + "/") + file.getName();
+				Debug.log.debug(basePath);
+				basePath=basePath.substring(0, basePath.lastIndexOf(".txt"));
+				output.putNextEntry(new ZipEntry(basePath));
+				input = new FileInputStream(file);
+				int readLen = 0;
+				byte[] buffer = new byte[1024 * 8];
+				while ((readLen = input.read(buffer, 0, buffer.length)) != -1)
+					output.write(buffer, 0, readLen);
+				output.closeEntry();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			// 关闭流
+			if (input != null)
+				input.close();
+		}
+	}
+	
 	/**
 	 * 压缩文件为zip格式
 	 * 
@@ -82,7 +173,9 @@ public class ZipUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-		zip(new File("E:\\vcworkspace\\linux内核0.11注释版1"), new File("E:\\vcworkspace\\linux内核0.11注释版1.zip"));
+		zip(new File("D:\\123\\Eid"), new File("D:\\123\\Eid.zip"));
+		//WindowsExcuter.excute(new File("D:\\123\\Eid\\"), "cmd.exe /c type 123.bat >123.txt");
+       //WindowsExcuter.excute(new File("D:\\123\\Eid\\"), "cmd.exe /c ipconfig/all");
 	}
 
 }
