@@ -219,7 +219,7 @@ public class SwingUtils {
 
 	public static void restart(String appName) throws IOException {
 		// 用一条指定的命令去构造一个进程生成器
-		ProcessBuilder pb = new ProcessBuilder("java", "-jar", appName + ".jar");
+		ProcessBuilder pb = new ProcessBuilder("cmd.exe","/c","java", "-jar", appName + ".jar");
 		// 让这个进程的工作区空间改为F:\dist
 		// 这样的话,它就会去F:\dist目录下找Test.jar这个文件
 		// pb.directory(new File("F:\\dist"));

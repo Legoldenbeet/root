@@ -805,10 +805,10 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent arg0) {
 				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
 				try {
-					WindowsExcuter.excute(new File(FileAction.USER_DIR), "java -jar ScreenShot.jar");
+					WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c java -jar ScreenShot.jar");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, e.getMessage());
 				}
 			}
 		});
