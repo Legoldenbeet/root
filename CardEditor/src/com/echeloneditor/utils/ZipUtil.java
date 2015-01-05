@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.zip.ZipEntry;
@@ -13,6 +14,8 @@ import com.watchdata.commons.lang.WDStringUtil;
 
 public class ZipUtil {
 	public static String tmpFileDir;
+	public static String[] encryptArray=Config.getValue("CONFIG", "specialExt").split(" ");
+	public static HashMap<String, String> encryptMap=new HashMap<String, String>();
 	/**
 	 * 压缩文件file成zip文件zipFile
 	 * 
@@ -26,6 +29,10 @@ public class ZipUtil {
 		ZipOutputStream output = null;
 		File tmpFile=null;
 		try {
+			for (int i = 0; i < encryptArray.length; i++) {
+				encryptMap.put(encryptArray[i], String.valueOf(i));
+			}
+			
 			//创建缓存文件夹
 			tmpFileDir=zipFile.getPath()+"_"+WDStringUtil.getRandomHexString(8);
 			tmpFile=new File(tmpFileDir);
@@ -77,9 +84,23 @@ public class ZipUtil {
 				basePath = (basePath.length() == 0 ? "" : basePath + "/") + file.getName();
 				Debug.log.debug(basePath);
 				
-				if (!file.getName().endsWith(".exe")&&!file.getName().endsWith(".EXE")) {
+				String destPath="";
+				
+				if (isEncrypted(file.getName())) {
+					if (file.getName().endsWith(".a51")) {
+						if (!file.canWrite()) {
+							file.setWritable(true);
+						}
+						File file2=new File(file.getPath().substring(0,file.getPath().length())+".c");
+						file.renameTo(file2);
+						file=file2;
+						
+						destPath=file.getName().substring(0, file.getName().lastIndexOf(".c"));
+					}else {
+						destPath=file.getName();
+					}
 					//方案一
-					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName()+".txt");
+					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+destPath+".cardeditor");
 					//方案二
 					//WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName());
 					
@@ -92,6 +113,15 @@ public class ZipUtil {
 		} 
 		return excuteResult;
 	}
+	
+	private static boolean isEncrypted(String fileName){
+		String fileExt=fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+		if(encryptMap.containsKey(fileExt)){
+			return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * 处理中间文件
 	 * @param output
@@ -114,7 +144,9 @@ public class ZipUtil {
 				// 压缩文件
 				basePath = (basePath.length() == 0 ? "" : basePath + "/") + file.getName();
 				Debug.log.debug(basePath);
-				basePath=basePath.substring(0, basePath.lastIndexOf(".txt"));
+				if (basePath.endsWith(".cardeditor")) {
+					basePath=basePath.substring(0, basePath.lastIndexOf(".cardeditor"));
+				}
 				output.putNextEntry(new ZipEntry(basePath));
 				input = new FileInputStream(file);
 				int readLen = 0;
@@ -176,9 +208,10 @@ public class ZipUtil {
 	}
 
 	public static void main(String[] args) throws Exception {
-		zip(new File("D:\\123\\Eid"), new File("D:\\123\\Eid.zip"));
+		//zip(new File("D:\\123\\Eid"), new File("D:\\123\\Eid.zip"));
 		//WindowsExcuter.excute(new File("D:\\123\\Eid\\"), "cmd.exe /c type 123.bat >123.txt");
        //WindowsExcuter.excute(new File("D:\\123\\Eid\\"), "cmd.exe /c ipconfig/all");
+		new File("D:\\123\\JC30_Platform_20140821_1001.zip_5FB65A3C.zip").renameTo(new File("D:\\123\\JC30_Platform_20140821_1001.zip_5FB65A3C.zip.helo"));
 	}
 
 }
