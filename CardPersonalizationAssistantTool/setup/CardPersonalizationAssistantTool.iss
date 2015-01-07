@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardPAT"
-#define MyAppVersion "1.2"
+#define MyAppVersion "1.0.2"
 #define MyAppPublisher "ZUNEI, Inc."
 #define MyAppExeName "CardPAT.exe"
 
@@ -19,7 +19,7 @@ DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=E:\程序打包\CardPersonalizationAssistantTool\setup
-OutputBaseFilename=CardPAT_setup
+OutputBaseFilename={#MyAppName}_{#MyAppVersion}_setup
 SetupIconFile=E:\程序打包\CardPersonalizationAssistantTool\setup\logo_72.ico
 Compression=lzma
 SolidCompression=yes
