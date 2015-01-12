@@ -1,5 +1,7 @@
 package com.sepp.interfaces;
 
+import java.util.ArrayList;
+
 import com.echeloneditor.vo.Cmd;
 
 public interface Sepp {
@@ -22,5 +24,6 @@ public interface Sepp {
 	public void sendOpen(byte[] data,short offset) throws Exception ;
 	public void closeFile();
 	
+	public ArrayList<String> ScanFriend();
 	public String getTermUserName();
 }

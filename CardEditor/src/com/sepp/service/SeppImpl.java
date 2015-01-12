@@ -4,6 +4,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.vo.Cmd;
@@ -164,5 +166,20 @@ public class SeppImpl implements Sepp {
 
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.name"));
+	}
+
+	@Override
+	public ArrayList<String> ScanFriend() {
+		Sepp sepp=new SeppImpl();
+		SessionClient sessionClient=new SessionClient(connectorName, ip, port)
+		// TODO Auto-generated method stub
+		ArrayList<String> friendList=new ArrayList<String>();
+		
+		for (int i = 0; i < 255; i++) {
+			
+			sepp
+		}
+		
+		return friendList;
 	}
 }

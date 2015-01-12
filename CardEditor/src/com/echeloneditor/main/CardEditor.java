@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -143,6 +144,7 @@ public class CardEditor {
 		// 启动同步接收和发送服务
 		new ServerListener().startService(9000);
 
+		sepp
 	}
 
 	/**
@@ -178,6 +180,20 @@ public class CardEditor {
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
 
+		JButton button_send = new JButton("Sepp：");
+		button_send.setVisible(false);
+		button_send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				//open(tabbedPane, -1, false, true);
+			}
+		});
+		panel.add(button_send);
+		
+		JComboBox comboBox_friend = new JComboBox();
+		comboBox_friend.setVisible(false);
+		comboBox_friend.setModel(new DefaultComboBoxModel(Config.getItems("FREND_LIST").toArray()));
+		panel.add(comboBox_friend);
+		
 		JButton button_5 = new JButton("第一页");
 		button_5.setVisible(false);
 		button_5.addActionListener(new ActionListener() {
@@ -230,6 +246,8 @@ public class CardEditor {
 		statusObject.setPrevBtn(button_4);
 		statusObject.setLastBtn(button_6);
 		statusObject.setFirstBtn(button_5);
+		statusObject.setBtn_send(button_send);
+		statusObject.setJcb_friend(comboBox_friend);
 
 		JButton btnNewButton_2 = new JButton("reload");
 		btnNewButton_2.addActionListener(new ActionListener() {

@@ -17,12 +17,26 @@ public class StatusObject {
 	private JButton prevBtn;
 	private JButton lastBtn;
 	private JButton firstBtn;
+	
+	private JButton btn_send;
+	private JComboBox jcb_friend;
 
 	public void reDefault(){
 		SelectEncodeItem(FileAction.DEFAULT_FILE_ENCODE);
 		showFileSize(0);
 		showCharNum(0);
 	}
+	
+	public void showSepp(){
+		getBtn_send().setVisible(true);
+		getJcb_friend().setVisible(true);
+	}
+	
+	public void hideSepp(){
+		getBtn_send().setVisible(false);
+		getJcb_friend().setVisible(false);
+	}
+	
 	public void showViewBtn(boolean visible) {
 		getNextBtn().setVisible(visible);
 		getPrevBtn().setVisible(visible);
@@ -113,5 +127,17 @@ public class StatusObject {
 	public void setFirstBtn(JButton firstBtn) {
 		this.firstBtn = firstBtn;
 	}
+	public JButton getBtn_send() {
+		return btn_send;
+	}
+	public void setBtn_send(JButton btn_send) {
+		this.btn_send = btn_send;
+	}
 
+	public JComboBox getJcb_friend() {
+		return jcb_friend;
+	}
+	public void setJcb_friend(JComboBox jcb_friend) {
+		this.jcb_friend = jcb_friend;
+	}
 }
