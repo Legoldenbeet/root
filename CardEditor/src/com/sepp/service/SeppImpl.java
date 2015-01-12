@@ -2,13 +2,16 @@ package com.sepp.service;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.vo.Cmd;
+import com.sepp.client.SessionClient;
 import com.sepp.interfaces.Sepp;
 import com.sepp.server.PooledConnectionHandler;
 import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class SeppImpl implements Sepp {
 
@@ -95,6 +98,51 @@ public class SeppImpl implements Sepp {
 		// FileHander fileHander = new FileHander(tabbedPane, statusObject);
 		// fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
 		// JOptionPane.showMessageDialog(null, "ok");
+	}
+	/**
+	 * send file to targetIp
+	 * @param file
+	 * @param targetIp
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean sendFile(File file,String targetIp) throws Exception{
+		SessionClient sessionClient=new SessionClient("sepp", targetIp, 9000);
+		
+		FileInputStream fileInputStream=new FileInputStream(file);
+		int len=fileInputStream.available();
+		byte[] data=new byte[4+8+1+file.getName().getBytes("GBK").length+len];
+		byte[] fileBytes=new byte[len];
+		
+		fileInputStream.read(fileBytes);
+		
+		String length=Integer.toHexString(len+8);
+		length=WDStringUtil.paddingHeadZero(length, 8);
+		
+		byte[] lenBytes=WDByteUtil.HEX2Bytes(length);
+		
+		int pos=0;
+		System.arraycopy(lenBytes, 0, data, 0, lenBytes.length);
+		pos+=lenBytes.length;
+		System.arraycopy(WDByteUtil.HEX2Bytes("0F00000010000000"), 0, data, pos, 8);
+		int fileNameLen=file.getName().getBytes("GBK").length;
+		pos+=8;
+		data[pos]=(byte)fileNameLen;
+		pos++;
+		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
+		pos+=fileNameLen;
+		System.arraycopy(fileBytes, 0, data, pos, len);
+		
+		fileInputStream.close();
+		
+		sessionClient.send(data, "sepp");
+		String res=sessionClient.recive("sepp");
+		System.out.println(res);
+		return false;
+	}
+	
+    private boolean sendFile(String filePath,String targetIp) throws Exception{
+		return sendFile(new File(filePath),targetIp);
 	}
 
 	@Override

@@ -87,8 +87,7 @@ public class TestDemo {
 		System.out.println(sessionClient.recive("9000"));
 
 	}
-
-	public static void main(String[] args) throws UnknownHostException, IOException {
+	public static void sendFile() throws Exception{
 		JFileChooser jFileChooser=new JFileChooser(".");
 		int ret=jFileChooser.showOpenDialog(null);
 		if (ret==JFileChooser.APPROVE_OPTION) {
@@ -128,5 +127,9 @@ public class TestDemo {
 			String res=sessionClient.recive("test");
 			System.out.println(res);
 		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		sendFile();
 	}
 }
