@@ -144,7 +144,6 @@ public class CardEditor {
 		// 启动同步接收和发送服务
 		new ServerListener().startService(9000);
 
-		sepp
 	}
 
 	/**

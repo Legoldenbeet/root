@@ -24,6 +24,6 @@ public interface Sepp {
 	public void sendOpen(byte[] data,short offset) throws Exception ;
 	public void closeFile();
 	
-	public ArrayList<String> ScanFriend();
+	public ArrayList<String> scanFriend() throws Exception;
 	public String getTermUserName();
 }
