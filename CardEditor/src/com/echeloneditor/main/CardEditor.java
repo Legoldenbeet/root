@@ -21,7 +21,6 @@ import java.nio.charset.Charset;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -65,8 +64,10 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
+import com.sepp.interfaces.Sepp;
 import com.sepp.server.PooledConnectionHandler;
 import com.sepp.server.ServerListener;
+import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
@@ -179,19 +180,25 @@ public class CardEditor {
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
 
-		JButton button_send = new JButton("Sepp：");
-		button_send.setVisible(false);
-		button_send.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionevent) {
-				//open(tabbedPane, -1, false, true);
-			}
-		});
-		panel.add(button_send);
-		
 		JComboBox comboBox_friend = new JComboBox();
 		comboBox_friend.setVisible(false);
 		comboBox_friend.setModel(new DefaultComboBoxModel(Config.getItems("FREND_LIST").toArray()));
 		panel.add(comboBox_friend);
+		
+		JButton button_send = new JButton("Sepp：");
+		button_send.setVisible(false);
+		button_send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
+				try {
+					new SeppImpl().sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		panel.add(button_send);
 		
 		JButton button_5 = new JButton("第一页");
 		button_5.setVisible(false);

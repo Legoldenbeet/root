@@ -25,16 +25,13 @@ public class StatusObject {
 		SelectEncodeItem(FileAction.DEFAULT_FILE_ENCODE);
 		showFileSize(0);
 		showCharNum(0);
+		showSepp(false);
+		showViewBtn(false);
 	}
 	
-	public void showSepp(){
-		getBtn_send().setVisible(true);
-		getJcb_friend().setVisible(true);
-	}
-	
-	public void hideSepp(){
-		getBtn_send().setVisible(false);
-		getJcb_friend().setVisible(false);
+	public void showSepp(boolean visible){
+		getBtn_send().setVisible(visible);
+		getJcb_friend().setVisible(visible);
 	}
 	
 	public void showViewBtn(boolean visible) {
@@ -49,6 +46,11 @@ public class StatusObject {
 	}
 	public String getSelectedEncodeItem() {
 		String item=getFileEncode().getSelectedItem().toString();
+		return WDAssert.isEmpty(item)==false?item:null;
+	}
+	
+	public String getSelectedSeppTartgetItem() {
+		String item=getJcb_friend().getSelectedItem().toString();
 		return WDAssert.isEmpty(item)==false?item:null;
 	}
 

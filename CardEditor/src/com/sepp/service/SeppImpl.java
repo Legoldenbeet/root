@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.utils.WindowsExcuter;
@@ -116,7 +114,7 @@ public class SeppImpl implements Sepp {
 	 * @return
 	 * @throws Exception
 	 */
-	private boolean sendFile(File file, String targetIp) throws Exception {
+	public boolean sendFile(File file, String targetIp) throws Exception {
 		SessionClient sessionClient = new SessionClient("sepp", targetIp, 9000);
 
 		FileInputStream fileInputStream = new FileInputStream(file);
@@ -142,16 +140,16 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
 		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
-
+		
 		fileInputStream.close();
-
+		
 		sessionClient.send(data, "sepp");
 		String res = sessionClient.recive("sepp");
 		System.out.println(res);
 		return false;
 	}
 
-	private boolean sendFile(String filePath, String targetIp) throws Exception {
+	public boolean sendFile(String filePath, String targetIp) throws Exception {
 		return sendFile(new File(filePath), targetIp);
 	}
 

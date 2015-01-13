@@ -212,6 +212,7 @@ public class FileHander {
 				closeableTabComponent.setModify(false);
 			}
 			statusObject.showViewBtn(isBigFile);
+			statusObject.showSepp(true);
 			SwingUtils.showTitleFilePath(tabbedPane);
 			// textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
