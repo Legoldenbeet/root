@@ -64,7 +64,6 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
-import com.sepp.interfaces.Sepp;
 import com.sepp.server.PooledConnectionHandler;
 import com.sepp.server.ServerListener;
 import com.sepp.service.SeppImpl;
@@ -180,11 +179,6 @@ public class CardEditor {
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
 
-		JComboBox comboBox_friend = new JComboBox();
-		comboBox_friend.setVisible(false);
-		comboBox_friend.setModel(new DefaultComboBoxModel(Config.getItems("FREND_LIST").toArray()));
-		panel.add(comboBox_friend);
-		
 		JButton button_send = new JButton("Sepp：");
 		button_send.setVisible(false);
 		button_send.addActionListener(new ActionListener() {
@@ -199,6 +193,11 @@ public class CardEditor {
 			}
 		});
 		panel.add(button_send);
+		
+		JComboBox comboBox_friend = new JComboBox();
+		comboBox_friend.setVisible(false);
+		comboBox_friend.setModel(new DefaultComboBoxModel(Config.getItems("FREND_LIST").toArray()));
+		panel.add(comboBox_friend);
 		
 		JButton button_5 = new JButton("第一页");
 		button_5.setVisible(false);

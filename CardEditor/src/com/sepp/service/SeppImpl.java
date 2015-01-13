@@ -4,11 +4,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
+
+import org.apache.commons.io.FileUtils;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.utils.WindowsExcuter;
@@ -92,6 +90,15 @@ public class SeppImpl implements Sepp {
 		String fileName = new String(fileNameBytes, "GBK");
 
 		File file = new File(FileAction.USER_DIR + "/tmp/" + fileName);
+		if (!file.getParentFile().exists()) {
+			file.mkdir();
+		}
+		if (file.exists()) {
+			FileUtils.deleteQuietly(file);
+		}else {
+			file.createNewFile();
+		}
+		
 		FileOutputStream fos = new FileOutputStream(file);
 		BufferedOutputStream bw = new BufferedOutputStream(fos);
 		offset += fileNameLen;
@@ -140,9 +147,9 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
 		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
-		
+
 		fileInputStream.close();
-		
+
 		sessionClient.send(data, "sepp");
 		String res = sessionClient.recive("sepp");
 		System.out.println(res);
@@ -172,43 +179,11 @@ public class SeppImpl implements Sepp {
 
 	@Override
 	public ArrayList<String> scanFriend() {
-		Sepp sepp = new SeppImpl();
-		// SessionClient sessionClient=new SessionClient(connectorName, ip, port)
-		// TODO Auto-generated method stub
-		ArrayList<String> friendList = new ArrayList<String>();
-		
-		Socket socket = null;
-		for (int i = 67; i < 254; i++) {
-			try {
-			    socket = new Socket();
-			    socket.setSoTimeout(200);
-			
-				socket.connect(new InetSocketAddress("10.0.97."+i, 9000));
-				if (socket.isConnected()) {
-					System.out.println(socket.getRemoteSocketAddress());
-				}
-
-			} catch (SocketException e) {
-				// TODO Auto-generated catch block
-				
-				continue;
-			} catch (Exception e) {
-				// TODO: handle exception
-				continue;
-			}finally{
-				try {
-					socket.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		return friendList;
+		return null;
 	}
 
 	public static void main(String[] args) throws Exception {
-		//new SeppImpl().scanFriend();
+		// new SeppImpl().scanFriend();
 		WindowsExcuter.excute(new File("."), "cmd.exe /c telnet 10.0.97.68 9000");
 	}
 }
