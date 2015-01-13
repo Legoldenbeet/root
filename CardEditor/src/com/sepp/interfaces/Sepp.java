@@ -26,4 +26,5 @@ public interface Sepp {
 	
 	public ArrayList<String> scanFriend() throws Exception;
 	public String getTermUserName();
+	public boolean sendFile(String filePath, String targetIp) throws Exception ;
 }

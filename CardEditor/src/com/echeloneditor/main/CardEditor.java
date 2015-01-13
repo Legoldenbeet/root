@@ -66,6 +66,7 @@ import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
 import com.sepp.server.PooledConnectionHandler;
 import com.sepp.server.ServerListener;
+import com.sepp.server.ServiceSocket;
 import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
@@ -185,7 +186,10 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent actionevent) {
 				String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					new SeppImpl().sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+					if (ServiceSocket.sepp==null) {
+						ServiceSocket.sepp= new SeppImpl();
+					}
+					ServiceSocket.sepp.sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

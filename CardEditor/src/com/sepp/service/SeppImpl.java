@@ -126,7 +126,8 @@ public class SeppImpl implements Sepp {
 
 		FileInputStream fileInputStream = new FileInputStream(file);
 		int len = fileInputStream.available();
-		byte[] data = new byte[4 + 8 + 1 + file.getName().getBytes("GBK").length + len];
+		byte[] wrapLine="\n".getBytes();
+		byte[] data = new byte[4 + 8 + 1 + file.getName().getBytes("GBK").length + len+1];
 		byte[] fileBytes = new byte[len];
 
 		fileInputStream.read(fileBytes);
@@ -147,9 +148,11 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
 		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
-
+		pos+=len;
 		fileInputStream.close();
-
+		//添加换行符
+		System.arraycopy(wrapLine, 0, data, pos, wrapLine.length);
+		
 		sessionClient.send(data, "sepp");
 		String res = sessionClient.recive("sepp");
 		System.out.println(res);

@@ -15,7 +15,7 @@ import com.watchdata.commons.lang.WDByteUtil;
 
 public class ServiceSocket extends AbstractSessionSocket {
 	private static Logger log = Logger.getLogger(ServiceSocket.class);
-	private static Sepp sepp;
+	public static Sepp sepp;
 
 	public ServiceSocket(Socket socket) {
 		super(socket);
