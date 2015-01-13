@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.apache.commons.io.FileUtils;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.Cmd;
 import com.sepp.client.SessionClient;
@@ -89,7 +90,7 @@ public class SeppImpl implements Sepp {
 
 		String fileName = new String(fileNameBytes, "GBK");
 
-		File file = new File(FileAction.USER_DIR + "/tmp/" + fileName);
+		File file = new File(FileAction.USER_DIR + "/"+Config.getValue("CONFIG", "debugPath")+"/" + fileName);
 		if (!file.getParentFile().exists()) {
 			file.mkdir();
 		}

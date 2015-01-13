@@ -81,17 +81,17 @@
 			</manifest>
 		</jar>
 	</target>
-	
+
 	<!-- Creates the jar file. -->
-		<target name="make-jar-ScreenShot" description="Create the jar file">
-			<jar destfile="${dist-dir}/ScreenShot.jar">
-				<manifest>
-					<attribute name="Main-Class" value="com.echeloneditor.utils.SnapShot" />
-					<attribute name="Class-Path" value="CardEditor.jar" />
-				</manifest>
-			</jar>
-		</target>
-	
+	<target name="make-jar-ScreenShot" description="Create the jar file">
+		<jar destfile="${dist-dir}/ScreenShot.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.echeloneditor.utils.SnapShot" />
+				<attribute name="Class-Path" value="CardEditor.jar" />
+			</manifest>
+		</jar>
+	</target>
+
 	<!--move files to ${dist-dir}-->
 	<target name="move">
 		<copy todir="${dist-dir}/resources">
@@ -100,6 +100,14 @@
 		<copy todir="${dist-dir}/CardEditor_lib">
 			<fileset dir="lib" />
 		</copy>
+		<copy todir="${dist-dir}/debug">
+			<fileset dir=".">
+				<include name="debug/*" />
+			</fileset>
+		</copy>
+		<delete dir="${dist-dir}/debug" includeEmptyDirs="true" quiet="false" />
+		<mkdir dir="${dist-dir}/debug" />
+		
 		<copy todir="${dist-dir}/..">
 			<fileset dir=".">
 				<include name="setup/*" />
@@ -108,6 +116,7 @@
 		<copy todir="${dist-dir}/">
 			<fileset dir=".">
 				<include name="*.txt" />
+				<include name="*.bat" />
 			</fileset>
 		</copy>
 	</target>
@@ -143,9 +152,9 @@
 
 	<!-- Builds all target 32bit system  -->
 	<target name="build" depends="clean,compile,make-jar-main,make-jar-ScreenShot,move">
-		<antcall target="make-javadoc">
+		<!--antcall target="make-javadoc">
 		</antcall>
 		<antcall target="make-source-zip">
-		</antcall>
+		</antcall-->
 	</target>
 </project>
