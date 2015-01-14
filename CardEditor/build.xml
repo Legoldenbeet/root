@@ -105,9 +105,11 @@
 				<include name="debug/*" />
 			</fileset>
 		</copy>
-		<delete dir="${dist-dir}/debug" includeEmptyDirs="true" quiet="false" />
-		<mkdir dir="${dist-dir}/debug" />
-		
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${dist-dir}/debug">
+				<include name="**/*" />
+			</fileset>
+		</delete>
 		<copy todir="${dist-dir}/..">
 			<fileset dir=".">
 				<include name="setup/*" />
