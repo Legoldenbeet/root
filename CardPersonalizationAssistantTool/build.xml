@@ -100,6 +100,8 @@
 		<copy todir="${dist-dir}">
 			<fileset dir=".">
 				<include name="*.dll" />
+				<include name="*.txt" />
+				<include name="*.bat" />
 			</fileset>
 		</copy>
 		<copy todir="${dist-dir}/..">
