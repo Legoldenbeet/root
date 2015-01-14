@@ -11,6 +11,7 @@ import javax.swing.JTabbedPane;
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CloseableTabComponent;
+import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.StatusObject;
@@ -47,16 +48,18 @@ public class SimpleFileChooseListener implements ActionListener {
 			if (ret == JFileChooser.APPROVE_OPTION) {
 				// 获得选择的文件
 				File file = fileChooser.getSelectedFile();
-				
+				String targetPath=FileAction.USER_DIR+"/"+Config.getValue("CONFIG", "debugPath")+"/"+file.getName()+".txt";
 				try {
-					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName()+".txt");
+					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >\""+targetPath+"\"");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
-				if (file.isFile()) {
-					fileHander.openFileWithFilePath(file.getPath()+".txt", FileAction.DEFAULT_FILE_ENCODE);
+				File targetFile=new File(targetPath);
+				
+				if (targetFile.isFile()) {
+					fileHander.openFileWithFilePath(targetPath, FileAction.DEFAULT_FILE_ENCODE);
 				}
 			}
 		} else if (command.equals("save")) {
