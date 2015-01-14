@@ -1,1 +1,2 @@
-java -jar CardEditor.jar
+java -version
+java -Xms64M -Xmx800M -jar CardEditor.jar
