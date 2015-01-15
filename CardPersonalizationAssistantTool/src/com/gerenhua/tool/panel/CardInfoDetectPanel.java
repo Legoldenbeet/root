@@ -78,6 +78,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static ConfigIpDialog dialog = null;
 
 	private static JMenuItem mntmCardinfo;
+	private static JMenuItem mntmChangeStatus;
 	private static JMenuItem mntmLoad;
 	private static JMenuItem mntmdeleteObj;
 	private static JMenuItem mntmCardStatus;
@@ -102,6 +103,20 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 				if (RunPrgThread.mapBean != null) {
 					RunPrgThread.mapBean.clear();
 				}
+			}
+		});
+		
+		mntmChangeStatus = new JMenuItem("CHANGE STATUS");
+		mntmChangeStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				Component component = SwingUtilities.getRoot(tree);
+				JFrame root = (JFrame) component;
+				UpdateStatusDialog updateStatusDialog=new UpdateStatusDialog(root, tree, commonAPDU);
+				int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
+				int y = (int) (root.getLocation().getY() + 40);
+				updateStatusDialog.setLocation(x, y);
+				updateStatusDialog.setVisible(true);
 			}
 		});
 
@@ -710,6 +725,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							popup.removeAll();
 							addMenu(mntmCardinfo, e);
 							addMenu(mntmCardStatus, e);
+							addMenu(mntmChangeStatus, e);
 							showMenu(e);
 						} else if (nodeName.equalsIgnoreCase("Load Files")) {
 							popup.removeAll();

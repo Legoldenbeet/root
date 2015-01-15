@@ -1,0 +1,118 @@
+package com.gerenhua.tool.panel;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import com.gerenhua.tool.log.Log;
+import com.gerenhua.tool.logic.Constants;
+import com.gerenhua.tool.logic.apdu.CommonAPDU;
+import com.gerenhua.tool.utils.Config;
+import com.watchdata.commons.lang.WDAssert;
+
+public class UpdateStatusDialog extends JDialog {
+
+	private static final long serialVersionUID = 1L;
+	private final JPanel contentPanel = new JPanel();
+
+	public JTree tree;
+	public CommonAPDU commonAPDU;
+	public static Log logger = new Log();
+
+	/**
+	 * Create the dialog.
+	 */
+	public UpdateStatusDialog(JFrame p, final JTree tree, final CommonAPDU commonAPDU) {
+		super(p, "Install", true);
+		setBounds(100, 100, 470, 199);
+
+		this.tree = tree;
+		this.commonAPDU = commonAPDU;
+
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setLayout(null);
+
+		JLabel lblNewLabel = new JLabel("卡片状态:");
+		lblNewLabel.setBounds(22, 23, 60, 15);
+		contentPanel.add(lblNewLabel);
+
+		JLabel lblNewLabel_1 = new JLabel("inital");
+		lblNewLabel_1.setBounds(86, 23, 100, 15);
+
+		try {
+			String resp = commonAPDU.send("80F28000024F00");
+			if (resp.endsWith(Constants.SW_SUCCESS)) {
+				int pos = 0;
+				int len = Integer.parseInt(resp.substring(pos, 2), 16);
+				pos += 2;
+				// String aid = resp.substring(pos, 2 * len + pos);
+				pos += 2 * len;
+				String lifeStyleCode = resp.substring(pos, pos + 2);
+
+				lblNewLabel_1.setText(Config.getValue("Card_Lifestyle", lifeStyleCode));
+			}
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		contentPanel.add(lblNewLabel_1);
+
+		JLabel lblNewLabel_2 = new JLabel("目标状态:");
+		lblNewLabel_2.setBounds(196, 23, 63, 15);
+		contentPanel.add(lblNewLabel_2);
+
+		final JComboBox comboBox = new JComboBox();
+		Collection<String> lifeStyle = Config.getItems("Card_Lifestyle");
+		for (String ls : lifeStyle) {
+			comboBox.addItem(Config.getValue("Card_Lifestyle", ls));
+		}
+		comboBox.setBounds(269, 20, 149, 21);
+		contentPanel.add(comboBox);
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		JButton okButton = new JButton("SET");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				try {
+					String desc = comboBox.getSelectedItem().toString().trim();
+					String item = Config.getItemWithValue("Card_Lifestyle", desc);
+					if (WDAssert.isNotEmpty(item)) {
+						commonAPDU.send("80F080" + item + "00");
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Component component = SwingUtilities.getRoot((Component) e.getSource());
+				component.setVisible(false);
+			}
+		});
+		cancelButton.setActionCommand("Cancel");
+		buttonPane.add(cancelButton);
+	}
+}
