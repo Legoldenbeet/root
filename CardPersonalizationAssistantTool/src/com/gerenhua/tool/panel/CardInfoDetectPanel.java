@@ -88,6 +88,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static Thread runPrgThread = null;
 	public static RunPrgThread rpt = null;
 	public static CardInfoThread cardInfoThread = null;
+	public static UpdateStatusDialog updateStatusDialog;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -112,7 +113,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 				log.setLogArea(textPane_1);
 				Component component = SwingUtilities.getRoot(tree);
 				JFrame root = (JFrame) component;
-				UpdateStatusDialog updateStatusDialog=new UpdateStatusDialog(root, tree, commonAPDU);
+				updateStatusDialog=new UpdateStatusDialog(root, tree, commonAPDU);
 				int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
 				int y = (int) (root.getLocation().getY() + 40);
 				updateStatusDialog.setLocation(x, y);
@@ -714,6 +715,8 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
 								popup.removeAll();
 								addMenu(mntmdeleteObj, e);
+								addMenu(mntmChangeStatus, e);
+								updateStatusDialog.isISD=false;
 								showMenu(e);
 							} else if (grandFather != null && grandFather.equalsIgnoreCase("Load Files and Modules")) {
 								popup.removeAll();
@@ -726,6 +729,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							addMenu(mntmCardinfo, e);
 							addMenu(mntmCardStatus, e);
 							addMenu(mntmChangeStatus, e);
+							updateStatusDialog.isISD=true;
 							showMenu(e);
 						} else if (nodeName.equalsIgnoreCase("Load Files")) {
 							popup.removeAll();

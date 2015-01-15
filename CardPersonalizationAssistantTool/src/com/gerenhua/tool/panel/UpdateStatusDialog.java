@@ -16,18 +16,20 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.utils.Config;
 import com.watchdata.commons.lang.WDAssert;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class UpdateStatusDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-
+	public static boolean isISD=true;
 	public JTree tree;
 	public CommonAPDU commonAPDU;
 	public static Log logger = new Log();
@@ -94,7 +96,18 @@ public class UpdateStatusDialog extends JDialog {
 					String desc = comboBox.getSelectedItem().toString().trim();
 					String item = Config.getItemWithValue("Card_Lifestyle", desc);
 					if (WDAssert.isNotEmpty(item)) {
-						commonAPDU.send("80F080" + item + "00");
+						if (isISD) {
+							commonAPDU.send("80F080" + item + "00");
+						}else {
+							DefaultMutableTreeNode selNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+							String selNodeName = (selNode != null) ? selNode.toString() : null;
+							if (WDAssert.isNotEmpty(selNodeName)) {
+								String aid = selNodeName.substring(0, selNodeName.indexOf(";"));
+								String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(aid.length() / 2), 2);
+								commonAPDU.send("80F070" + item + lc+aid);
+							}
+						}
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
