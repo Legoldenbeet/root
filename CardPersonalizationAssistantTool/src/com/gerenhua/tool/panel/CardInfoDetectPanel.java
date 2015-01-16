@@ -111,13 +111,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		mntmChangeStatus.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
-				Component component = SwingUtilities.getRoot(tree);
-				JFrame root = (JFrame) component;
-				updateStatusDialog = new UpdateStatusDialog(root, tree, commonAPDU);
-				int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
-				int y = (int) (root.getLocation().getY() + 40);
-				updateStatusDialog.setLocation(x, y);
-				updateStatusDialog.setVisible(true);
+				setStatusDialog(true, true);
 			}
 		});
 
@@ -692,7 +686,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 
 	}
 
-	private static void addPopup(Component component, final JPopupMenu popup) {
+	private void addPopup(Component component, final JPopupMenu popup) {
 		component.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -715,7 +709,11 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
 								popup.removeAll();
 								addMenu(mntmdeleteObj, e);
-								//addMenu(mntmChangeStatus, e);
+								if (parentNodeName.equalsIgnoreCase("Application Instances")) {
+									addMenu(mntmChangeStatus, e);
+									setStatusDialog(false, false);
+									updateStatusDialog.isISD = false;
+								}
 								showMenu(e);
 							} else if (grandFather != null && grandFather.equalsIgnoreCase("Load Files and Modules")) {
 								popup.removeAll();
@@ -728,6 +726,8 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							addMenu(mntmCardinfo, e);
 							addMenu(mntmCardStatus, e);
 							addMenu(mntmChangeStatus, e);
+							setStatusDialog(false, false);
+							updateStatusDialog.isISD = true;
 							showMenu(e);
 						} else if (nodeName.equalsIgnoreCase("Load Files")) {
 							popup.removeAll();
@@ -777,6 +777,21 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			rpt.addObserver(RightPanel.cardInfoDetectPanel);
 			runPrgThread.start();
 		}
+	}
+
+	/**
+	 * setStatusDialog
+	 * 
+	 * @param visible
+	 */
+	public void setStatusDialog(boolean visible, boolean isSend) {
+		Component component = SwingUtilities.getRoot(tree);
+		JFrame root = (JFrame) component;
+		updateStatusDialog = new UpdateStatusDialog(root, tree, commonAPDU, isSend);
+		int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
+		int y = (int) (root.getLocation().getY() + 40);
+		updateStatusDialog.setLocation(x, y);
+		updateStatusDialog.setVisible(visible);
 	}
 
 	@Override
