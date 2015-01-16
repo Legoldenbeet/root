@@ -29,7 +29,7 @@ public class UpdateStatusDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	public static boolean isISD=true;
+	public static boolean isISD = true;
 	public JTree tree;
 	public CommonAPDU commonAPDU;
 	public static Log logger = new Log();
@@ -56,21 +56,23 @@ public class UpdateStatusDialog extends JDialog {
 		JLabel lblNewLabel_1 = new JLabel("inital");
 		lblNewLabel_1.setBounds(86, 23, 100, 15);
 
-		try {
-			String resp = commonAPDU.send("80F28000024F00");
-			if (resp.endsWith(Constants.SW_SUCCESS)) {
-				int pos = 0;
-				int len = Integer.parseInt(resp.substring(pos, 2), 16);
-				pos += 2;
-				// String aid = resp.substring(pos, 2 * len + pos);
-				pos += 2 * len;
-				String lifeStyleCode = resp.substring(pos, pos + 2);
+		if (commonAPDU != null) {
+			try {
+				String resp = commonAPDU.send("80F28000024F00");
+				if (resp.endsWith(Constants.SW_SUCCESS)) {
+					int pos = 0;
+					int len = Integer.parseInt(resp.substring(pos, 2), 16);
+					pos += 2;
+					// String aid = resp.substring(pos, 2 * len + pos);
+					pos += 2 * len;
+					String lifeStyleCode = resp.substring(pos, pos + 2);
 
-				lblNewLabel_1.setText(Config.getValue("Card_Lifestyle", lifeStyleCode));
+					lblNewLabel_1.setText(Config.getValue("Card_Lifestyle", lifeStyleCode));
+				}
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 
 		contentPanel.add(lblNewLabel_1);
@@ -98,14 +100,14 @@ public class UpdateStatusDialog extends JDialog {
 					if (WDAssert.isNotEmpty(item)) {
 						if (isISD) {
 							commonAPDU.send("80F080" + item + "00");
-						}else {
+						} else {
 							DefaultMutableTreeNode selNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
 							String selNodeName = (selNode != null) ? selNode.toString() : null;
 							if (WDAssert.isNotEmpty(selNodeName)) {
 								String aid = selNodeName.substring(0, selNodeName.indexOf(";"));
 								String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(aid.length() / 2), 2);
-								commonAPDU.send("80F070" + item + lc+aid);
+								commonAPDU.send("80F070" + item + lc + aid);
 							}
 						}
 					}
