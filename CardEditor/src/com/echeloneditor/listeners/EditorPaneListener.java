@@ -194,30 +194,6 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 		mntmTlv.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK));
 		mntmTlv.setIcon(new ImageIcon(EditorPaneListener.class.getResource("/com/echeloneditor/resources/images/20130509034342785_easyicon_net_24.png")));
 		jPopupMenu.add(mntmTlv);
-
-		JSeparator separator_2 = new JSeparator();
-		jPopupMenu.add(separator_2);
-
-		JMenuItem mntmTohex = new JMenuItem("ToHex");
-		mntmTohex.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionevent) {
-				RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
-				String selStr = rSyntaxTextArea.getSelectedText();
-
-				String[] byteStr = selStr.trim().split(",");
-				byte[] byteTarget = new byte[byteStr.length];
-
-				for (int i = 0; i < byteTarget.length; i++) {
-					byteTarget[i] = (byte) Integer.parseInt(byteStr[i].trim());
-				}
-
-				if (WDAssert.isNotEmpty(selStr)) {
-					rSyntaxTextArea.append("\n\r\n"+WDByteUtil.bytes2HEX(byteTarget));
-				}
-			}
-		});
-		mntmTohex.setIcon(new ImageIcon(EditorPaneListener.class.getResource("/com/echeloneditor/resources/images/20130504111819570_easyicon_net_24.png")));
-		jPopupMenu.add(mntmTohex);
 	}
 
 	@Override
