@@ -16,4 +16,3 @@ header_component {
 		u1 name[name_length]
 	}
 }
-

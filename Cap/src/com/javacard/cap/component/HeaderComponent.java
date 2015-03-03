@@ -19,7 +19,7 @@ public class HeaderComponent extends Formatter {
 		return null;
 	}
 	public static void main(String[] args) throws IOException {
-		Map<String, String> map=Cap.readCap("pse.cap");
+		Map<String, String> map=Cap.readCap("pboc.cap");
 		String a=new HeaderComponent().format(map.get("Header.cap"));
 		System.out.println(a);
 	}

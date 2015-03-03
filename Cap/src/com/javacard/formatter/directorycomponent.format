@@ -17,7 +17,3 @@ directory_component {
 		u1 AID[AID_length]
 	}
 }
-
-
-
-

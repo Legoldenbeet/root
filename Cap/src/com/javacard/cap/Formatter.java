@@ -47,7 +47,7 @@ public abstract class Formatter {
 					String key = lineStr.substring(start + 1, end);
 					if (isNumeric(key)) {
 						// int arrayCount = getArrayCount(key, sb.toString());
-						lineStr = lineStr + ":" + readU1Array(hexReader, Integer.parseInt(key, 16)) + lineSep;
+						lineStr = lineStr + ":" + readU1Array(hexReader, Integer.parseInt(key)) + lineSep;
 					} else {
 						int arrayCount = getArrayCount(key, sb.toString());
 						lineStr = lineStr + ":" + readU1Array(hexReader, arrayCount) + lineSep;
@@ -64,7 +64,7 @@ public abstract class Formatter {
 
 					if (isNumeric(key)) {
 						// int arrayCount = getArrayCount(key, sb.toString());
-						lineStr = lineStr + ":" + readU2Array(hexReader, Integer.parseInt(key, 16)) + lineSep;
+						lineStr = lineStr + ":" + readU2Array(hexReader, Integer.parseInt(key)) + lineSep;
 					} else {
 						int arrayCount = getArrayCount(key, sb.toString());
 						lineStr = lineStr + ":" + readU2Array(hexReader, arrayCount) + lineSep;
@@ -80,7 +80,7 @@ public abstract class Formatter {
 
 					if (isNumeric(key)) {
 						// int arrayCount = getArrayCount(key, sb.toString());
-						lineStr = lineStr + ":" + readU4Array(hexReader, Integer.parseInt(key, 16)) + lineSep;
+						lineStr = lineStr + ":" + readU4Array(hexReader, Integer.parseInt(key)) + lineSep;
 					} else {
 						int arrayCount = getArrayCount(key, sb.toString());
 						lineStr = lineStr + ":" + readU4Array(hexReader, arrayCount) + lineSep;
