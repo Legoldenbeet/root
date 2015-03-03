@@ -10,7 +10,7 @@ import com.watchdata.commons.lang.WDAssert;
 public class HeaderComponent extends Formatter {
 	@Override
 	public String format(String componentInfo) throws IOException {
-		String headerFormat=read("headercomponent");
+		String headerFormat=read("HeaderComponent");
 		
 		if (WDAssert.isNotEmpty(headerFormat)) {
 			return padding(headerFormat, componentInfo);

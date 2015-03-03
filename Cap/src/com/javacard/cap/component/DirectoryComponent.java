@@ -11,7 +11,7 @@ import com.watchdata.commons.lang.WDAssert;
 public class DirectoryComponent extends Formatter{
 	@Override
 	public String format(String componentInfo) throws IOException {
-		String headerFormat=read("directorycomponent");
+		String headerFormat=read("DirectoryComponent");
 		
 		if (WDAssert.isNotEmpty(headerFormat)) {
 			return padding(headerFormat, componentInfo);
