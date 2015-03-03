@@ -30,8 +30,8 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static String padding(String formatter, String hex) throws IOException {
-		StringReader hexReader = new StringReader(hex);
+	public static String padding(String formatter, StringReader hexReader) throws IOException {
+//		StringReader hexReader = new StringReader(hex);
 
 		StringBuilder sb = new StringBuilder();
 		String[] line = formatter.split(lineSep);
@@ -157,19 +157,29 @@ public abstract class Formatter {
 		}
 		return -1;
 	}
-	
-	 public static boolean isNumeric(String str)
-     {
-           Pattern pattern = Pattern.compile("[0-9]*");
-           Matcher isNum = pattern.matcher(str);
-           if(!isNum.matches() )
-           {
-                 return false;
-           }
-           return true;
-     }
 
+	public static boolean isNumeric(String str) {
+		Pattern pattern = Pattern.compile("[0-9]*");
+		Matcher isNum = pattern.matcher(str);
+		if (!isNum.matches()) {
+			return false;
+		}
+		return true;
+	}
 
+	public static String getCacheFormatter(String formatter,int end, int starth, int endh) {
+		String res="";
+		int pos=-1;
+		if (starth > 0) {
+			pos=formatter.lastIndexOf(lineSep, starth);
+			res=formatter.substring(pos, endh);
+		} else if (endh > 0) {
+			pos=formatter.lastIndexOf("{", endh);
+			res=formatter.substring(pos, end+1);
+		}
+		System.out.println(res);
+		return res;
+	}
 
 	public static void main(String[] args) throws IOException {
 		System.out.println(Formatter.read("headercomponent"));

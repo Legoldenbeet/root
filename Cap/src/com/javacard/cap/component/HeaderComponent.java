@@ -1,6 +1,7 @@
 package com.javacard.cap.component;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Map;
 
 import com.javacard.cap.Cap;
@@ -13,7 +14,7 @@ public class HeaderComponent extends Formatter {
 		String headerFormat=read("HeaderComponent");
 		
 		if (WDAssert.isNotEmpty(headerFormat)) {
-			return padding(headerFormat, componentInfo);
+			return padding(headerFormat, new StringReader(componentInfo));
 		}
 	
 		return null;
