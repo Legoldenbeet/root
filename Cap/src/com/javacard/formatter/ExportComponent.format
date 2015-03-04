@@ -1,0 +1,12 @@
+export_component {
+	u1 tag
+	u2 size
+	u1 class_count
+	class_export_info {
+		u2 class_offset
+		u1 static_field_count
+		u1 static_method_count
+		u2 static_field_offsets[static_field_count]
+		u2 static_method_offsets[static_method_count]
+	} class_exports[class_count]
+}
