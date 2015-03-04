@@ -161,14 +161,20 @@ public abstract class Formatter {
 				} else {
 					int arrayCount = getArrayCount(key, sb.toString());
 					if (arrayCount > 0) {
-						sb.append(initArray(lineStr, 0)+ lineSep);
+						if (endh>0) {
+							sb.append(initArray(lineStr, 0)+ lineSep);
+						}
 						for (int i = 0; i < arrayCount-1; i++) {
 							if (starth > 0) {
 								cacheFormatter = getCacheFormatter(formatter, countpos + end, countpos + starth, endh);
+								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+i+"]"));
 							} else if (endh > 0) {
 								cacheFormatter = getCacheFormatter(formatter, countpos + end, starth, countpos + endh);
+								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+(i+1)+"]"));
 							}
-							sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+(i+1)+"]"));
+						}
+						if (starth>0) {
+							sb.append(initArray(lineStr, arrayCount-1)+ lineSep);
 						}
 					} else {
 						break;
@@ -249,7 +255,7 @@ public abstract class Formatter {
 	}
 
 	public static int getArrayCount(String key, String buffer) {
-		int pos = buffer.indexOf(key);
+		int pos = buffer.lastIndexOf(key);
 		pos += key.length();
 		if (pos > 0) {
 			String hex = buffer.substring(pos + 1, buffer.indexOf(lineSep, pos + 1));
@@ -274,7 +280,8 @@ public abstract class Formatter {
 		int pos=-1;
 		if (starth > 0) {
 			pos=formatter.lastIndexOf(lineSep, starth);
-			res=formatter.substring(pos, endh);
+			endh=formatter.indexOf("}", starth);
+			res=formatter.substring(pos, endh+1);
 		} else if (endh > 0) {
 			pos=formatter.lastIndexOf("{", endh);
 			res=formatter.substring(pos, end+1);

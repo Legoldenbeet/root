@@ -8,22 +8,21 @@ import com.javacard.cap.Cap;
 import com.javacard.cap.Formatter;
 import com.watchdata.commons.lang.WDAssert;
 
-public class DirectoryComponent extends Formatter{
+public class ImportComponent extends Formatter {
 	@Override
 	public String format(String componentInfo) throws IOException {
-		String headerFormat=read("DirectoryComponent");
-		
+		String headerFormat = read("ImportComponent");
 		if (WDAssert.isNotEmpty(headerFormat)) {
 			return paddingExt(headerFormat, new StringReader(componentInfo));
 		}
-	
+
 		return null;
 	}
-	
+
 	public static void main(String[] args) throws IOException {
-		Map<String, String> map=Cap.readCap("applets.cap");
-		System.out.println(map.get("Directory.cap"));
-		String a=new DirectoryComponent().format(map.get("Directory.cap"));
+		Map<String, String> map = Cap.readCap("pboc1200.cap");
+		System.out.println(map.get("Import.cap"));
+		String a = new ImportComponent().format(map.get("Import.cap"));
 		System.out.println(a);
 	}
 }
