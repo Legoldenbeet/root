@@ -1,0 +1,8 @@
+reference_location_component {
+	u1 tag
+	u2 size
+	u2 byte_index_count
+	u1 offsets_to_byte_indices[byte_index_count]
+	u2 byte2_index_count
+	u1 offsets_to_byte2_indices[byte2_index_count]
+}
