@@ -259,7 +259,7 @@ public abstract class Formatter {
 		pos += key.length();
 		if (pos > 0) {
 			String hex = buffer.substring(pos + 1, buffer.indexOf(lineSep, pos + 1));
-			hex = hex.replaceAll("0x", "");
+			hex = hex.replaceAll("0x", "").replaceAll(" ", "");
 			int count = Integer.parseInt(hex.trim(), 16);
 			return count;
 		}
