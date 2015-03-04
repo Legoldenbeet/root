@@ -61,7 +61,17 @@ class_component {
 			u1 class_name_length
 			u1 class_name[class_name_length]
 			u1 remote_interfaces_count
-			class_ref remote_interfaces[remote_interfaces_count]
+			class_ref remote_interfaces[remote_interfaces_count]{
+				u1 tag
+				union {
+					u2 internal_class_ref
+					{ 
+						u1 package_token
+						u1 class_token
+					} external_class_ref
+				} class_ref
+				 u1 padding
+			}
 		}
 	}
 }
