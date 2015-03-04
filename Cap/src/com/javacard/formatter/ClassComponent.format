@@ -34,7 +34,16 @@ class_component {
 			bit[4] flags
 			bit[4] interface_count
 		}
-		class_ref super_class_ref
+		class_ref super_class_ref{
+			u1 tag
+			union {
+				u2 internal_class_ref{ 
+					u1 package_token
+					u1 class_token
+				} external_class_ref
+			} class_ref
+			u1 padding
+		}
 		u1 declared_instance_size
 		u1 first_reference_token
 		u1 reference_count
@@ -45,7 +54,17 @@ class_component {
 		u2 public_virtual_method_table[public_method_table_count]
 		u2 package_virtual_method_table[package_method_table_count]
 		implemented_interface_info interfaces[interface_count]{
-			class_ref interface
+			class_ref interface{
+				u1 tag
+				union {
+					u2 internal_class_ref
+					{ 
+						u1 package_token
+						u1 class_token
+					} external_class_ref
+				} class_ref
+				u1 padding
+			}
 			u1 count
 			u1 index[count]
 		}
