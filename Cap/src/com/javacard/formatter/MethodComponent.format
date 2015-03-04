@@ -1,0 +1,34 @@
+method_component {
+	u1 tag
+	u2 size
+	u1 handler_count
+	exception_handler_info exception_handlers[handler_count]{
+		u2 start_offset
+		u2 bitfield {
+			bit[1] stop_bit
+			bit[15] active_length
+		}
+		u2 handler_offset
+		u2 catch_type_index
+	}
+	method_header_info method_header{
+		u1 bitfield {
+			bit[4] flags
+			bit[4] max_stack
+		}
+		u1 bitfield {
+			bit[4] nargs
+			bit[4] max_locals
+		}
+	}
+	extended_method_header_info {
+		u1 bitfield {
+			bit[4] flags
+			bit[4] padding
+		}
+		u1 max_stack
+		u1 nargs
+		u1 max_locals
+	}
+	u1 bytecodes[]
+}
