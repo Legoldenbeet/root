@@ -284,7 +284,7 @@ public abstract class Formatter {
 			res=formatter.substring(pos, endh+1);
 		} else if (endh > 0) {
 			pos=formatter.lastIndexOf("{", endh);
-			res=formatter.substring(pos, end+1);
+			res=formatter.substring(pos-1, end+1);
 		}
 //		System.out.println(res);
 		return res;
