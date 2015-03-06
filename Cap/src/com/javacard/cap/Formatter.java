@@ -31,7 +31,7 @@ public abstract class Formatter {
 	}
 
 	public static String padding(String formatter, StringReader hexReader) throws IOException {
-//		StringReader hexReader = new StringReader(hex);
+		// StringReader hexReader = new StringReader(hex);
 
 		StringBuilder sb = new StringBuilder();
 		String[] line = formatter.split(lineSep);
@@ -40,7 +40,10 @@ public abstract class Formatter {
 			int u1pos = lineStr.indexOf("u1");
 			int u2pos = lineStr.indexOf("u2");
 			int u4pos = lineStr.indexOf("u4");
-			if (u1pos > 0) {
+			int commentPos = lineStr.indexOf("//");
+			if (commentPos >= 0) {
+				continue;
+			} else if (u1pos > 0) {
 				int start = lineStr.indexOf("[");
 				int end = lineStr.indexOf("]");
 				if (start > 0 && end > 0) {
@@ -103,7 +106,7 @@ public abstract class Formatter {
 		String[] line = formatter.split(lineSep);
 		int countpos = 0;
 		for (String lineStr : line) {
-			int linecharNum=lineStr.length()+lineSep.length();
+			int linecharNum = lineStr.length() + lineSep.length();
 			int u1pos = lineStr.indexOf("u1");
 			int u2pos = lineStr.indexOf("u2");
 			int u4pos = lineStr.indexOf("u4");
@@ -111,7 +114,10 @@ public abstract class Formatter {
 			int end = lineStr.indexOf("]");
 			int starth = lineStr.indexOf("{");
 			int endh = lineStr.indexOf("}");
-			if (u1pos > 0) {
+			int commentPos = lineStr.indexOf("//");
+			if (commentPos >= 0) {
+				continue;
+			} else if (u1pos > 0) {
 				if (start > 0 && end > 0) {
 					String key = lineStr.substring(start + 1, end);
 					if (isNumeric(key)) {
@@ -161,26 +167,26 @@ public abstract class Formatter {
 				} else {
 					int arrayCount = getArrayCount(key, sb.toString());
 					if (arrayCount > 0) {
-						if (endh>0) {
-							sb.append(initArray(lineStr, 0)+ lineSep);
+						if (endh > 0) {
+							sb.append(initArray(lineStr, 0) + lineSep);
 						}
-						for (int i = 0; i < arrayCount-1; i++) {
+						for (int i = 0; i < arrayCount - 1; i++) {
 							if (starth > 0) {
 								cacheFormatter = getCacheFormatter(formatter, countpos + end, countpos + starth, endh);
-								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+i+"]"));
+								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\[" + key + "\\]", "[" + i + "]"));
 							} else if (endh > 0) {
 								cacheFormatter = getCacheFormatter(formatter, countpos + end, starth, countpos + endh);
-								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+(i+1)+"]"));
+								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\[" + key + "\\]", "[" + (i + 1) + "]"));
 							}
 						}
-						if (starth>0) {
-							sb.append(initArray(lineStr, arrayCount-1)+ lineSep);
+						if (starth > 0) {
+							sb.append(initArray(lineStr, arrayCount - 1) + lineSep);
 						}
 					} else {
 						break;
 					}
 				}
-			}else {
+			} else {
 				sb.append(lineStr + lineSep);
 			}
 
@@ -189,8 +195,7 @@ public abstract class Formatter {
 
 		return sb.toString();
 	}
-	
-	
+
 	public static String readU1(StringReader hexReader) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);
@@ -240,17 +245,17 @@ public abstract class Formatter {
 		}
 		return sb.toString();
 	}
-	
-	public static String initArray(String hex,int index) {
+
+	public static String initArray(String hex, int index) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		int start = hex.indexOf("[");
 		int end = hex.indexOf("]");
-		
-		sb.append(hex.substring(0,start));
+
+		sb.append(hex.substring(0, start));
 		sb.append("[").append(index).append("]");
-		sb.append(hex.substring(end+1));
-		
+		sb.append(hex.substring(end + 1));
+
 		return sb.toString();
 	}
 
@@ -275,18 +280,18 @@ public abstract class Formatter {
 		return true;
 	}
 
-	public static String getCacheFormatter(String formatter,int end, int starth, int endh) {
-		String res="";
-		int pos=-1;
+	public static String getCacheFormatter(String formatter, int end, int starth, int endh) {
+		String res = "";
+		int pos = -1;
 		if (starth > 0) {
-			pos=formatter.lastIndexOf(lineSep, starth);
-			endh=formatter.indexOf("}", starth);
-			res=formatter.substring(pos, endh+1);
+			pos = formatter.lastIndexOf(lineSep, starth);
+			endh = formatter.indexOf("}", starth);
+			res = formatter.substring(pos, endh + 1);
 		} else if (endh > 0) {
-			pos=formatter.lastIndexOf("{", endh);
-			res=formatter.substring(pos-1, end+1);
+			pos = formatter.lastIndexOf("{", endh);
+			res = formatter.substring(pos - 1, end + 1);
 		}
-//		System.out.println(res);
+		// System.out.println(res);
 		return res;
 	}
 

@@ -18,15 +18,15 @@ public class MethodComponent extends Formatter {
 
 		return null;
 	}
-	
+
 	public static String paddingExt(String formatter, StringReader hexReader) throws IOException {
 		String cacheFormatter = "";
 
 		StringBuilder sb = new StringBuilder();
 		String[] line = formatter.split(lineSep);
 		int countpos = 0;
-		for (String lineStr : line    ) {
-			int linecharNum=lineStr.length()+lineSep.length();
+		for (String lineStr : line) {
+			int linecharNum = lineStr.length() + lineSep.length();
 			int u1pos = lineStr.indexOf("u1");
 			int u2pos = lineStr.indexOf("u2");
 			int u4pos = lineStr.indexOf("u4");
@@ -34,7 +34,10 @@ public class MethodComponent extends Formatter {
 			int end = lineStr.indexOf("]");
 			int starth = lineStr.indexOf("{");
 			int endh = lineStr.indexOf("}");
-			if (u1pos > 0) {
+			int commentPos=lineStr.indexOf("//");
+			if (commentPos >=0) {
+				continue;
+			} else if (u1pos > 0) {
 				if (start > 0 && end > 0) {
 					String key = lineStr.substring(start + 1, end);
 					if (isNumeric(key)) {
@@ -84,26 +87,26 @@ public class MethodComponent extends Formatter {
 				} else {
 					int arrayCount = getArrayCount(key, sb.toString());
 					if (arrayCount > 0) {
-						if (endh>0) {
-							sb.append(initArray(lineStr, 0)+ lineSep);
+						if (endh > 0) {
+							sb.append(initArray(lineStr, 0) + lineSep);
 						}
-						for (int i = 0; i < arrayCount-1; i++) {
+						for (int i = 0; i < arrayCount - 1; i++) {
 							if (starth > 0) {
 								cacheFormatter = getCacheFormatter(formatter, countpos + end, countpos + starth, endh);
-								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+i+"]"));
+								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\[" + key + "\\]", "[" + i + "]"));
 							} else if (endh > 0) {
 								cacheFormatter = getCacheFormatter(formatter, countpos + end, starth, countpos + endh);
-								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\["+key+"\\]", "["+(i+1)+"]"));
+								sb.append(padding(cacheFormatter, hexReader).replaceAll("\\[" + key + "\\]", "[" + (i + 1) + "]"));
 							}
 						}
-						if (starth>0) {
-							sb.append(initArray(lineStr, arrayCount-1)+ lineSep);
+						if (starth > 0) {
+							sb.append(initArray(lineStr, arrayCount - 1) + lineSep);
 						}
 					} else {
 						break;
 					}
 				}
-			}else {
+			} else {
 				sb.append(lineStr + lineSep);
 			}
 
