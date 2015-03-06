@@ -196,6 +196,12 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
+	public static int readBit4(StringReader hexReader) throws IOException {
+		char[] u1 = new char[1];
+		hexReader.read(u1);
+		return Integer.parseInt(String.valueOf(u1));
+	}
+	
 	public static String readU1(StringReader hexReader) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);
