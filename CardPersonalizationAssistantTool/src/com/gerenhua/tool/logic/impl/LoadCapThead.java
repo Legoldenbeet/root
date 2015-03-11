@@ -20,6 +20,7 @@ import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.panel.CardInfoDetectPanel;
 import com.gerenhua.tool.utils.Config;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -57,6 +58,13 @@ public class LoadCapThead extends Thread {
 				int blockSize=Integer.parseInt(Config.getValue("CardInfo", "cap2prg_commandlen"),16);
 				List<byte[]> loadFileInfo = cap.getLoadBlocks(includeDebug, false, blockSize);
 
+				List<String> outList=new ArrayList<String>();
+				cap.dump(outList);
+				
+				for (String out : outList) {
+					log.out("//"+out+"\n", Log.LOG_COLOR_BLACK);
+				}
+				
 				String apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(cap.getPackageAID().getBytes().length), 2) + WDByteUtil.bytes2HEX(cap.getPackageAID().getBytes());
 				apduCommand += "00000000";
 				apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(apduCommand.length() / 2), 2) + apduCommand;

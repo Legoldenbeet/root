@@ -301,12 +301,11 @@ public class CapFile {
 		return result;
 	}
 
-	public void dump(PrintStream out) {
+	public void dump(List<String> out) {
 		SimpleDateFormat sf = new SimpleDateFormat(Constants.FORMAT_DATE_TIME);
 		// Print information about CAP. First try manifest.
 		if (manifest != null) {
 			Attributes mains = manifest.getMainAttributes();
-
 			// iterate all packages
 			Map<String, Attributes> ent = manifest.getEntries();
 			if (ent.keySet().size() > 1) {
@@ -338,51 +337,56 @@ public class CapFile {
 					continue;
 				}
 			}
-			out.println("CAP file [v" + cap_version + "] generated on [" + cap_creation_time + "]");
-			out.println("By [" + converter_provider + "] Converter-Version:" + converter_version + " with JDK [" + jdk_name + "]");
-			out.println("-------------------------------------------------------");
-			out.println("Java-Card-Package-Name: " + package_name);
-			out.println("Java-Card-Package-Version:" + package_version);
-			out.println("Java-Card-Package-AID:" + package_aid);
-			out.println("-------------------------------------------------------");
+			out.add("CAP file [v" + cap_version + "] generated on [" + cap_creation_time + "]");
+			out.add("By [" + converter_provider + "] Converter-Version:" + converter_version + " with JDK [" + jdk_name + "]");
+			out.add("-------------------------------------------------------");
+			out.add("Java-Card-Package-Name: " + package_name);
+			out.add("Java-Card-Package-Version:" + package_version);
+			out.add("Java-Card-Package-AID:" + package_aid);
+			out.add("-------------------------------------------------------");
 			for (int i = 1; i <= num_applets; i++) {
 				String applet_name_key = "Java-Card-Applet-" + i + "-Name";
 				String applet_aid_key = "Java-Card-Applet-" + i + "-AID";
 				String applet_name = applet_name_key + ":" + caps.getValue(applet_name_key);
 				String applet_aid = applet_aid_key + ":" + caps.getValue(applet_aid_key);
-				out.println(applet_name);
-				out.println(applet_aid);
+				out.add(applet_name);
+				out.add(applet_aid);
 			}
 			for (int i = 1; i <= num_imports; i++) {
 				String import_aid_key = "Java-Card-Imported-Package-" + i + "-AID";
 				String import_version_key = "Java-Card-Imported-Package-" + i + "-Version";
 				String import_aid = import_aid_key + ":" + caps.getValue(import_aid_key);
 				String import_version = import_version_key + ":" + caps.getValue(import_version_key);
-				out.println(import_aid);
-				out.println(import_version);
+				out.add(import_aid);
+				out.add(import_version);
 			}
 		} else {
 			String pkg_version = major_version + "." + minor_version;
-			out.println("No manifest in CAP. Information from Header and Applet components:");
-			out.println("Package:" + packageName);
-			out.println("pkg_version:" + pkg_version);
-			out.println("packageAID:" + packageAID);
+			out.add("No manifest in CAP. Information from Header and Applet components:");
+			out.add("Package:" + packageName);
+			out.add("pkg_version:" + pkg_version);
+			out.add("packageAID:" + packageAID);
 
 			for (AID applet : appletAIDs) {
-				out.println("Applet: AID " + WDByteUtil.bytes2HEX(applet.getBytes()));
+				out.add("Applet: AID " + WDByteUtil.bytes2HEX(applet.getBytes()));
 			}
 		}
-		out.println("-------------------------------------------------------");
+		out.add("-------------------------------------------------------");
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		File capfile = new File("E:/capload/com/yct/javacard/applets.cap");
 		CapFile cap = new CapFile(new FileInputStream(capfile));
-		cap.dump(System.out);
+		List<String> outList=new ArrayList<String>();
+		cap.dump(outList);
+		
+		for (String out : outList) {
+			System.out.println(out);
+		}
 		
 		List<byte[]> blocksList=cap.getLoadBlocks(false, false, 0xa0);
 		for (int i = 0; i < blocksList.size(); i++) {
-			System.out.println(WDByteUtil.bytes2HEX(blocksList.get(i)));
+//			System.out.println(WDByteUtil.bytes2HEX(blocksList.get(i)));
 		}
 	}
 }
