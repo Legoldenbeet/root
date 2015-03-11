@@ -45,6 +45,7 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import com.gerenhua.tool.logic.Constants;
 import com.watchdata.commons.lang.WDByteUtil;
 
 /**
@@ -301,7 +302,7 @@ public class CapFile {
 	}
 
 	public void dump(PrintStream out) {
-		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+		SimpleDateFormat sf = new SimpleDateFormat(Constants.FORMAT_DATE_TIME);
 		// Print information about CAP. First try manifest.
 		if (manifest != null) {
 			Attributes mains = manifest.getMainAttributes();
