@@ -53,7 +53,7 @@ public class LoadCapThead extends Thread {
 				String resp = "";
 				CapFile cap = new CapFile(new FileInputStream(file));
 				
-				boolean includeDebug=Integer.parseInt(Config.getValue("CardInfo", "cap2prg_commandlen"))==0?false:true;
+				boolean includeDebug=Integer.parseInt(Config.getValue("CardInfo", "includeDebug"))==0?false:true;
 				int blockSize=Integer.parseInt(Config.getValue("CardInfo", "cap2prg_commandlen"));
 				List<byte[]> loadFileInfo = cap.getLoadBlocks(includeDebug, false, 0xA0);
 
