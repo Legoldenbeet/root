@@ -54,8 +54,8 @@ public class LoadCapThead extends Thread {
 				CapFile cap = new CapFile(new FileInputStream(file));
 				
 				boolean includeDebug=Integer.parseInt(Config.getValue("CardInfo", "includeDebug"))==0?false:true;
-				int blockSize=Integer.parseInt(Config.getValue("CardInfo", "cap2prg_commandlen"));
-				List<byte[]> loadFileInfo = cap.getLoadBlocks(includeDebug, false, 0xA0);
+				int blockSize=Integer.parseInt(Config.getValue("CardInfo", "cap2prg_commandlen"),16);
+				List<byte[]> loadFileInfo = cap.getLoadBlocks(includeDebug, false, blockSize);
 
 				String apduCommand = WDStringUtil.paddingHeadZero(Integer.toHexString(cap.getPackageAID().getBytes().length), 2) + WDByteUtil.bytes2HEX(cap.getPackageAID().getBytes());
 				apduCommand += "00000000";
