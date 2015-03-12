@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.swing.JTextPane;
 
-import com.gerenhua.tool.cap.CapFile;
+import com.gerenhua.tool.globalplatform.CapFile;
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
