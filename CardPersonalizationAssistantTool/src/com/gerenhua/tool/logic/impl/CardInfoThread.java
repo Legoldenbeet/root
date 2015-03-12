@@ -209,7 +209,7 @@ public class CardInfoThread extends Thread {
 		for (int i = 0; i < privs.size(); i++) {
 			if (i != 0) {
 				result.append(", ");
-			}
+			} 
 			result.append(privs.get(i));
 		}
 
