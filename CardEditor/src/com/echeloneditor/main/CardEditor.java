@@ -416,8 +416,11 @@ public class CardEditor {
 					File fileDir = new File(debugPath);
 					if (!fileDir.exists()) {
 						if (!fileDir.canWrite()) {
-							JOptionPane.showMessageDialog(null, "debugdebug缓存目录不可写!");
-							return;
+							//JOptionPane.showMessageDialog(null, "debug缓存目录不可写!");
+							//return;
+							fileDir.setReadable(true);
+							fileDir.setWritable(true);
+							fileDir.setExecutable(true);
 						}
 						if (!fileDir.mkdir()) {
 							JOptionPane.showMessageDialog(null, "创建debug缓存目录失败！");
