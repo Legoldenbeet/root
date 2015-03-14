@@ -412,17 +412,20 @@ public class CardEditor {
 					if (WDAssert.isEmpty(plainText)) {
 						return;
 					}
-					String tmp = FileAction.USER_DIR + "/tmp";
-					File fileDir = new File(tmp);
+					String debugPath = FileAction.USER_DIR +Config.getValue("CONFIG", "debugPath");
+					File fileDir = new File(debugPath);
 					if (!fileDir.exists()) {
 						if (!fileDir.canWrite()) {
-							JOptionPane.showMessageDialog(null, "文件不可写");
+							JOptionPane.showMessageDialog(null, "debugdebug缓存目录不可写!");
 							return;
 						}
-						fileDir.mkdir();
+						if (!fileDir.mkdir()) {
+							JOptionPane.showMessageDialog(null, "创建debug缓存目录失败！");
+							return;
+						}
 					}
 
-					String newFilePath = tmp + "/" + file.getName();
+					String newFilePath = debugPath + "/" + file.getName();
 					FileAction fileAction = new FileAction();
 					fileAction.save(newFilePath, plainText, "GBK");
 					fileHander.openFileWithFilePath(newFilePath, "GBK");
