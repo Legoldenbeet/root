@@ -415,7 +415,7 @@ public class CardEditor {
 					String tmp = FileAction.USER_DIR + "/tmp";
 					File fileDir = new File(tmp);
 					if (!fileDir.exists()) {
-						if (fileDir.canWrite()) {
+						if (!fileDir.canWrite()) {
 							JOptionPane.showMessageDialog(null, "文件不可写");
 							return;
 						}
