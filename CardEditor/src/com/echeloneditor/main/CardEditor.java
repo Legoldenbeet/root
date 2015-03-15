@@ -412,7 +412,7 @@ public class CardEditor {
 					if (WDAssert.isEmpty(plainText)) {
 						return;
 					}
-					String debugPath = FileAction.USER_DIR +Config.getValue("CONFIG", "debugPath");
+					String debugPath = FileAction.USER_DIR +"/"+Config.getValue("CONFIG", "debugPath");
 					File fileDir = new File(debugPath);
 					if (!fileDir.exists()) {
 						if (!fileDir.canWrite()) {
