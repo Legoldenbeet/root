@@ -87,6 +87,7 @@ public class SimpleFileChooseListener implements ActionListener {
 						closeableTabComponent.setFilePath(file.getPath());
 						closeableTabComponent.setFileEncode("utf-8");
 						closeableTabComponent.setFileSzie(file.length());
+						closeableTabComponent.setLastModifyTime(file.lastModified());
 						closeableTabComponent.setModify(false);
 					}
 				} else {
@@ -94,6 +95,7 @@ public class SimpleFileChooseListener implements ActionListener {
 					if (file.canWrite()) {
 						fileHander.saveFile(filePath, fileEncode);
 						closeableTabComponent.setFileSzie(new File(filePath).length());
+						closeableTabComponent.setLastModifyTime(file.lastModified());
 						closeableTabComponent.setModify(false);
 					} else {
 						JOptionPane.showMessageDialog(null, "文件为只读，保存失败！");

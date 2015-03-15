@@ -93,6 +93,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 			String filePath = closeableTabComponent.getFilePath();
 			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
 			boolean modify = closeableTabComponent.isModify();
+			
 			if (fileSize >= 0) {
 				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
 
@@ -112,7 +113,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 						//关闭当前文档
 						tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
 						//重新打开文档
-						fileHander.openFileWithFilePath(filePath, filePath);
+						fileHander.openFileWithFilePath(filePath, encode);
 					}
 				}
 			}

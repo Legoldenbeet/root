@@ -40,13 +40,13 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 	public StatusObject statusObject;
 	public JPopupMenu jPopupMenu;
 	public RSyntaxTextArea rSyntaxTextArea;
-	public static FileHander fileHander=null;
+	public static FileHander fileHander = null;
 
 	public EditorPaneListener(final JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
-		
-		fileHander=new FileHander(tabbedPane, statusObject);
+
+		fileHander = new FileHander(tabbedPane, statusObject);
 		jPopupMenu = new JPopupMenu();
 
 		JMenuItem cutItem = new JMenuItem("剪切");
@@ -205,15 +205,18 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 		if (e.getClickCount() == 2) {
 			showCharNumOnStatusBar(e);
 		} else {
-			String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
-			long recordWhenOpenLastModiyTime=SwingUtils.getCloseableTabComponent(tabbedPane).getLastModifyTime();
+			CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
+			String filePath = closeableTabComponent.getFilePath();
+			String encode = closeableTabComponent.getFileEncode();
+			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
+			
 			if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
 				int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
 				if (ret == JOptionPane.YES_OPTION) {
 					// 关闭当前文档
 					tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
 					// 重新打开文档
-					fileHander.openFileWithFilePath(filePath, filePath);
+					fileHander.openFileWithFilePath(filePath, encode);
 				}
 			}
 		}
