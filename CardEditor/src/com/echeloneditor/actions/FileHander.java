@@ -147,6 +147,7 @@ public class FileHander {
 				closeableTabComponent.setFilePath(file.getPath());
 				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
+				closeableTabComponent.setLastModifyTime(file.lastModified());
 				tabbedPane.add("New Panel", sp);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 

@@ -28,6 +28,7 @@ public class CloseableTabComponent extends JPanel {
 	public String filePath = "";
 	public String fileEncode = FileAction.DEFAULT_FILE_ENCODE;
 	public long fileSzie = 0;
+	public long lastModifyTime=-1;
 	public boolean modify = false;
 
 	private static ImageIcon closerImage = ImageHelper.loadImage("closer.gif");
@@ -113,4 +114,12 @@ public class CloseableTabComponent extends JPanel {
 	public void setFileSzie(long fileSzie) {
 		this.fileSzie = fileSzie;
 	}
+	public long getLastModifyTime() {
+		return lastModifyTime;
+	}
+
+	public void setLastModifyTime(long lastModifyTime) {
+		this.lastModifyTime = lastModifyTime;
+	}
+
 }
