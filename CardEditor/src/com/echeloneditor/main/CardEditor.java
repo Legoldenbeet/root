@@ -839,7 +839,7 @@ public class CardEditor {
 		menu_1.add(mntmNewMenuItem_3);
 
 		JMenuItem mntmSnapshot = new JMenuItem("SnapShot");
-		mntmSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0));
+		mntmSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
 		mntmSnapshot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
