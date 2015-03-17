@@ -148,6 +148,7 @@ public class FileHander {
 				closeableTabComponent.setFilePath(file.getPath());
 				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
+				closeableTabComponent.setFileNameExt(fileName.substring(fileName.lastIndexOf(".")));
 				closeableTabComponent.setLastModifyTime(file.lastModified());
 				tabbedPane.add("New Panel", sp);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
@@ -235,7 +236,7 @@ public class FileHander {
 
 	}
 
-	public void newFile() {
+	public void newFile(String fileNameExt) {
 		RSyntaxTextArea textArea = SwingUtils.createTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
 
@@ -270,6 +271,7 @@ public class FileHander {
 		CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 		closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
 		closeableTabComponent.setFileSzie(0);
+		closeableTabComponent.setFileNameExt(fileNameExt);
 		closeableTabComponent.setModify(false);
 		tabbedPane.add("New Panel", sp);
 		tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);

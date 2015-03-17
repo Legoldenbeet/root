@@ -5,8 +5,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
@@ -48,16 +51,16 @@ public class SimpleFileChooseListener implements ActionListener {
 			if (ret == JFileChooser.APPROVE_OPTION) {
 				// 获得选择的文件
 				File file = fileChooser.getSelectedFile();
-				String targetPath=FileAction.USER_DIR+"/"+Config.getValue("CONFIG", "debugPath")+"/"+file.getName()+".txt";
+				String targetPath = FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + file.getName() + ".txt";
 				try {
-					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >\""+targetPath+"\"");
+					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type " + file.getName() + " >\"" + targetPath + "\"");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
-				File targetFile=new File(targetPath);
-				
+				File targetFile = new File(targetPath);
+
 				if (targetFile.isFile()) {
 					fileHander.openFileWithFilePath(targetPath, FileAction.DEFAULT_FILE_ENCODE);
 				}
@@ -66,19 +69,29 @@ public class SimpleFileChooseListener implements ActionListener {
 			CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
 			String filePath = closeableTabComponent.getFilePath();
 			String fileEncode = closeableTabComponent.getFileEncode();
+			String fileNameExt = closeableTabComponent.getFileNameExt();
+			String fileNameExtShort=fileNameExt.substring(fileNameExt.lastIndexOf(".")+1);
 			int tabCount = tabbedPane.getTabCount();
 			if (tabCount > 0) {
 
 				if (filePath == null || filePath.equals("")) {
+					FileNameExtensionFilter filter = new FileNameExtensionFilter(Config.getValue("FILE_TYPE", fileNameExtShort),fileNameExtShort);
+					fileChooser.setFileFilter(filter);
 					int ret = fileChooser.showSaveDialog(null);
 
 					if (ret == JFileChooser.APPROVE_OPTION) {
 						// 获得选择的文件
 						File file = fileChooser.getSelectedFile();
+						file=new File(file.getPath()+fileNameExt);
 						if (file.exists()) {
-							Object[] options = { "<html>是&nbsp;(<u>Y</u>)</html>", "<html>否&nbsp;(<u>N</u>)</html>" };
-							ret = JOptionPane.showOptionDialog(null, "文件已经存在，是否覆盖？", "信息框", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-							if (ret != JOptionPane.YES_OPTION) {
+							if (file.canWrite()) {
+								Object[] options = { "<html>是&nbsp;(<u>Y</u>)</html>", "<html>否&nbsp;(<u>N</u>)</html>" };
+								ret = JOptionPane.showOptionDialog(null, "文件已经存在，是否覆盖？", "信息框", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+								if (ret != JOptionPane.YES_OPTION) {
+									return;
+								}
+							} else {
+								JOptionPane.showMessageDialog(null, "文件已经存在，属性为只读，保存失败！");
 								return;
 							}
 						}
@@ -88,6 +101,7 @@ public class SimpleFileChooseListener implements ActionListener {
 						closeableTabComponent.setFileEncode("utf-8");
 						closeableTabComponent.setFileSzie(file.length());
 						closeableTabComponent.setLastModifyTime(file.lastModified());
+						((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(file.getPath());
 						closeableTabComponent.setModify(false);
 					}
 				} else {
@@ -98,7 +112,7 @@ public class SimpleFileChooseListener implements ActionListener {
 						closeableTabComponent.setLastModifyTime(file.lastModified());
 						closeableTabComponent.setModify(false);
 					} else {
-						JOptionPane.showMessageDialog(null, "文件为只读，保存失败！");
+						JOptionPane.showMessageDialog(null, "文件属性为只读，保存失败！");
 						return;
 					}
 

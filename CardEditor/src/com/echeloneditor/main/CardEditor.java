@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collection;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -296,7 +297,7 @@ public class CardEditor {
 		button.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				fileHander.newFile();
+				fileHander.newFile(".txt");
 			}
 		});
 		toolBar.add(button);
@@ -354,8 +355,7 @@ public class CardEditor {
 
 					int tabCount = tabbedPane.getTabCount();
 					CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-
-					tabbedPane.add("New Panel", sp);
+					tabbedPane.add("New File", sp);
 					tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
 					tabbedPane.setSelectedComponent(sp);
@@ -459,15 +459,21 @@ public class CardEditor {
 		menu.setMnemonic('F');
 		menuBar.add(menu);
 
-		JMenuItem menuItem = new JMenuItem("新建");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
-		menuItem.setActionCommand("new");
-		menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
+		JMenu newFileMenu = new JMenu("新建");
+		Collection<String> collection=Config.getItems("FILE_TYPE");
+		newFileMenu.removeAll();
+		for (String fileExt : collection) {
+			JMenuItem menuItem=new JMenuItem("."+fileExt);
+			menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
+			menuItem.setActionCommand("new");
+			newFileMenu.add(new JSeparator());
+			newFileMenu.add(menuItem);
+		}
 
 		JSeparator separator_17 = new JSeparator();
 		menu.add(separator_17);
-		menuItem.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
-		menu.add(menuItem);
+		newFileMenu.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
+		menu.add(newFileMenu);
 
 		JMenuItem menuItem_1 = new JMenuItem("打开");
 		menuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
