@@ -20,6 +20,7 @@ import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
+import com.watchdata.commons.lang.WDAssert;
 
 public class TabbedPaneChangeListener implements MouseListener {
 	public JPopupMenu jPopupMenu;
@@ -32,8 +33,8 @@ public class TabbedPaneChangeListener implements MouseListener {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
 
-		fileHander=new FileHander(tabbedPane, statusObject);
-		
+		fileHander = new FileHander(tabbedPane, statusObject);
+
 		jPopupMenu = new JPopupMenu();
 		JMenuItem closeAll = new JMenuItem("关闭所有");
 		closeAll.addActionListener(new ActionListener() {
@@ -93,8 +94,9 @@ public class TabbedPaneChangeListener implements MouseListener {
 			String filePath = closeableTabComponent.getFilePath();
 			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
 			boolean modify = closeableTabComponent.isModify();
-			
+
 			if (fileSize >= 0) {
+				filePath = filePath.isEmpty() ? "New File" : filePath;
 				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
 
 				statusObject.showFileSize(fileSize);
@@ -102,18 +104,18 @@ public class TabbedPaneChangeListener implements MouseListener {
 				statusObject.showCharNum(0);
 				statusObject.showSaveButton(modify);
 
-				if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
-					statusObject.showViewBtn(true);
-				} else {
-					statusObject.showViewBtn(false);
-				}
-				if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
-					int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
-					if (ret == JOptionPane.YES_OPTION) {
-						//关闭当前文档
-						tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
-						//重新打开文档
-						fileHander.openFileWithFilePath(filePath, encode);
+				boolean visible = fileSize > (FileAction.BIG_FILE_SIZE << 20) ? true : false;
+				statusObject.showViewBtn(visible);
+				
+				if (recordWhenOpenLastModiyTime != -1) {
+					if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
+						int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
+						if (ret == JOptionPane.YES_OPTION) {
+							// 关闭当前文档
+							tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+							// 重新打开文档
+							fileHander.openFileWithFilePath(filePath, encode);
+						}
 					}
 				}
 			}

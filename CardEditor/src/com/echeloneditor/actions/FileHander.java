@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -275,8 +276,8 @@ public class FileHander {
 
 		tabbedPane.setSelectedComponent(sp);
 		// 设置选项卡title为打开文件的文件名
-		SwingUtils.setTabbedPaneTitle(tabbedPane, "New Panel");
-
+		SwingUtils.setTabbedPaneTitle(tabbedPane, "New File");
+		((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle("New File");
 		String res = Config.getValue("CURRENT_THEME", "current_font");
 
 		textArea.setFont(FontUtil.getFont(res));

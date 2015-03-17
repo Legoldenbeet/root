@@ -45,7 +45,7 @@ public class CloseableTabComponent extends JPanel {
 		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(1, 0, 0, 0));
 
-		titleLabel = new JLabel("New Panel  ");
+		titleLabel = new JLabel("New File  ");
 		titleLabel.setOpaque(false);
 		Dimension closerD = new Dimension(closerImage.getIconWidth(), closerImage.getIconHeight());
 

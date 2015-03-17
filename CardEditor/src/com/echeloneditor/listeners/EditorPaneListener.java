@@ -32,8 +32,6 @@ import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.main.FontWidthRuler;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
-import com.watchdata.commons.lang.WDAssert;
-import com.watchdata.commons.lang.WDByteUtil;
 
 public class EditorPaneListener implements MouseListener, DocumentListener, MouseMotionListener, KeyListener {
 	public JTabbedPane tabbedPane;
@@ -209,14 +207,15 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 			String filePath = closeableTabComponent.getFilePath();
 			String encode = closeableTabComponent.getFileEncode();
 			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
-			
-			if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
-				int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
-				if (ret == JOptionPane.YES_OPTION) {
-					// 关闭当前文档
-					tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
-					// 重新打开文档
-					fileHander.openFileWithFilePath(filePath, encode);
+			if (recordWhenOpenLastModiyTime != -1) {
+				if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
+					int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
+					if (ret == JOptionPane.YES_OPTION) {
+						// 关闭当前文档
+						tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+						// 重新打开文档
+						fileHander.openFileWithFilePath(filePath, encode);
+					}
 				}
 			}
 		}
