@@ -27,7 +27,11 @@ public class CloseableTabComponent extends JPanel {
 
 	public String filePath = "";
 	public String fileEncode = FileAction.DEFAULT_FILE_ENCODE;
+	public String fileNameExt=".txt";
+
 	public long fileSzie = 0;
+	public long lastModifyTime=-1;
+	
 	public boolean modify = false;
 
 	private static ImageIcon closerImage = ImageHelper.loadImage("closer.gif");
@@ -44,7 +48,7 @@ public class CloseableTabComponent extends JPanel {
 		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(1, 0, 0, 0));
 
-		titleLabel = new JLabel("New Panel  ");
+		titleLabel = new JLabel("New File  ");
 		titleLabel.setOpaque(false);
 		Dimension closerD = new Dimension(closerImage.getIconWidth(), closerImage.getIconHeight());
 
@@ -112,5 +116,20 @@ public class CloseableTabComponent extends JPanel {
 
 	public void setFileSzie(long fileSzie) {
 		this.fileSzie = fileSzie;
+	}
+	public long getLastModifyTime() {
+		return lastModifyTime;
+	}
+
+	public void setLastModifyTime(long lastModifyTime) {
+		this.lastModifyTime = lastModifyTime;
+	}
+	
+	public String getFileNameExt() {
+		return fileNameExt;
+	}
+
+	public void setFileNameExt(String fileNameExt) {
+		this.fileNameExt = fileNameExt;
 	}
 }

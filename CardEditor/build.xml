@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <!-- 
 
@@ -20,7 +20,7 @@
 	<description>EchelonEditor build file</description>
 
 	<!-- Set global properties for this build. -->
-	<property name="version" value="1.1.0.2" />
+	<property name="version" value="1.1.6" />
 	<property name="source-dir" location="src" />
 	<property name="root-dir" location="E:/程序打包/CardEditor" />
 	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
@@ -53,7 +53,7 @@
 	</target>
 
 	<!-- Creates the jar file. -->
-	<target name="make-jar" description="Create the jar file">
+	<target name="make-jar-main" description="Create the jar file">
 		<pathconvert property="mf.classpath" pathsep=" ">
 			<path refid="classpath" />
 			<mapper>
@@ -82,6 +82,16 @@
 		</jar>
 	</target>
 
+	<!-- Creates the jar file. -->
+	<target name="make-jar-ScreenShot" description="Create the jar file">
+		<jar destfile="${dist-dir}/ScreenShot.jar">
+			<manifest>
+				<attribute name="Main-Class" value="com.echeloneditor.utils.SnapShot" />
+				<attribute name="Class-Path" value="CardEditor.jar" />
+			</manifest>
+		</jar>
+	</target>
+
 	<!--move files to ${dist-dir}-->
 	<target name="move">
 		<copy todir="${dist-dir}/resources">
@@ -90,6 +100,16 @@
 		<copy todir="${dist-dir}/CardEditor_lib">
 			<fileset dir="lib" />
 		</copy>
+		<copy todir="${dist-dir}/debug">
+			<fileset dir=".">
+				<include name="debug/*" />
+			</fileset>
+		</copy>
+		<delete includeEmptyDirs="true" quiet="true">
+			<fileset dir="${dist-dir}/debug">
+				<include name="**/*" />
+			</fileset>
+		</delete>
 		<copy todir="${dist-dir}/..">
 			<fileset dir=".">
 				<include name="setup/*" />
@@ -98,6 +118,7 @@
 		<copy todir="${dist-dir}/">
 			<fileset dir=".">
 				<include name="*.txt" />
+				<include name="*.bat" />
 			</fileset>
 		</copy>
 	</target>
@@ -132,10 +153,10 @@
 	</target>
 
 	<!-- Builds all target 32bit system  -->
-	<target name="build" depends="clean,compile,make-jar,move">
-		<antcall target="make-javadoc">
+	<target name="build" depends="clean,compile,make-jar-main,make-jar-ScreenShot,move">
+		<!--antcall target="make-javadoc">
 		</antcall>
 		<antcall target="make-source-zip">
-		</antcall>
+		</antcall-->
 	</target>
 </project>

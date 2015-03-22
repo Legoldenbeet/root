@@ -26,13 +26,12 @@ import com.watchdata.commons.lang.WDStringUtil;
  */
 public class CommonAPDU extends AbstractAPDU {
 	public static IAPDUChannel apduChannel;
-	private String secureityLevel = "00";
-	private String encKey;
-	private String macKey;
-	private String kekKey;
-	private String smac;
-	private String initResp;
-
+	private static String secureityLevel = "00";
+	private static String encKey;
+	private static String macKey;
+	private static String kekKey;
+	private static String smac;
+	private static String initResp;
 	public final String NO_SECUREITY_LEVEL = "00";
 	public final String MACONLY = "01";
 	public final String MACENC = "03";
@@ -93,9 +92,9 @@ public class CommonAPDU extends AbstractAPDU {
 	public boolean init(String readerName) {
 		if (readerName.indexOf(":") > 0) {
 			apduChannel = new BoardChannel();
-		}else if(readerName.startsWith("USB")){ 
-			apduChannel=new ReaderXChannel();
-		}else {
+		} else if (readerName.startsWith("USB")) {
+			apduChannel = new ReaderXChannel();
+		} else {
 			apduChannel = new PcscChannel();
 		}
 		return apduChannel.init(readerName);
@@ -135,7 +134,7 @@ public class CommonAPDU extends AbstractAPDU {
 			if (("9000").equals(sw)) {
 				res.put("sw", "9000");
 				res.put("atr", atr);
-			}else {
+			} else {
 				res.put("sw", sw);
 			}
 		}
@@ -498,12 +497,8 @@ public class CommonAPDU extends AbstractAPDU {
 	public String send(String apdu) throws Exception {
 		String classByte = apdu.substring(0, 2);
 		String insByte = apdu.substring(2, 4);
-		if (!classByte.equalsIgnoreCase("80") || (classByte.equalsIgnoreCase("80") && insByte.startsWith("0"))) {
-			// escape
-		} else {
-			if (getSecureityLevel().equalsIgnoreCase(NO_SECUREITY_LEVEL)) {
-				// escape
-			} else if (getSecureityLevel().equalsIgnoreCase(MACONLY)) {
+		if (classByte.equalsIgnoreCase("80")&&!(classByte.equalsIgnoreCase("80") && insByte.startsWith("0"))) {
+			if (getSecureityLevel().equalsIgnoreCase(MACONLY)) {
 				int cla = (Integer.parseInt(apdu.substring(0, 2), 16) & 0xF0) | 0x04;
 				apdu = Integer.toHexString(cla) + apdu.substring(2);
 				int lc = Integer.parseInt(apdu.substring(8, 10), 16);
@@ -552,18 +547,18 @@ public class CommonAPDU extends AbstractAPDU {
 				apdu = apdu.substring(0, 8) + WDStringUtil.paddingHeadZero(Integer.toHexString(lc), 2) + encResult + cMac;
 			}
 		}
-
+		
 		return apduChannel.send(apdu);
 	}
 
 	public void close() {
-		if (apduChannel!=null) {
+		if (apduChannel != null) {
 			apduChannel.close();
 		}
 	}
 
 	public static void main(String[] args) {
-		System.out.println();
+		System.out.println(String.format("%04x", 10000));
 		System.out.println(Integer.parseInt("01") | 0x80);
 	}
 }

@@ -9,8 +9,11 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.sepp.vo.TcpConnector;
+import javax.swing.JFileChooser;
+
+import com.echeloneditor.vo.TcpConnector;
 import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class TestDemo {
 	public void test(Socket socket) throws UnknownHostException, IOException {
@@ -84,11 +87,49 @@ public class TestDemo {
 		System.out.println(sessionClient.recive("9000"));
 
 	}
+	public static void sendFile() throws Exception{
+		JFileChooser jFileChooser=new JFileChooser(".");
+		int ret=jFileChooser.showOpenDialog(null);
+		if (ret==JFileChooser.APPROVE_OPTION) {
+			File file= jFileChooser.getSelectedFile();
+			SessionClient sessionClient=new SessionClient("test", "10.0.97.68", 9000);
+			
+			//long len=file.length();
+			
+			
+			FileInputStream fileInputStream=new FileInputStream(file);
+			int len=fileInputStream.available();
+			byte[] data=new byte[4+8+1+file.getName().getBytes("GBK").length+len];
+			byte[] fileBytes=new byte[len];
+			
+			fileInputStream.read(fileBytes);
+			
+			String length=Integer.toHexString(len+8);
+			length=WDStringUtil.paddingHeadZero(length, 8);
+			
+			byte[] lenBytes=WDByteUtil.HEX2Bytes(length);
+			
+			int pos=0;
+			System.arraycopy(lenBytes, 0, data, 0, lenBytes.length);
+			pos+=lenBytes.length;
+			System.arraycopy(WDByteUtil.HEX2Bytes("0F00000010000000"), 0, data, pos, 8);
+			int fileNameLen=file.getName().getBytes("GBK").length;
+			pos+=8;
+			data[pos]=(byte)fileNameLen;
+			pos++;
+			System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
+			pos+=fileNameLen;
+			System.arraycopy(fileBytes, 0, data, pos, len);
+			
+			fileInputStream.close();
+			
+			sessionClient.send(data, "test");
+			String res=sessionClient.recive("test");
+			System.out.println(res);
+		}
+	}
 
-	public static void main(String[] args) throws UnknownHostException, IOException {
-		SessionClient sessionClient=new SessionClient("test", "127.0.0.1", 9000);
-		
-		sessionClient.send(WDByteUtil.HEX2Bytes("000000050F00000008"), "test");
-		sessionClient.recive("test");
+	public static void main(String[] args) throws Exception {
+		sendFile();
 	}
 }

@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
@@ -25,24 +26,25 @@ import javax.swing.text.BadLocationException;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import com.echeloneditor.actions.EmvFormatAction;
+import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.actions.XmlPreettifyAction;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.main.FontWidthRuler;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
-import com.watchdata.commons.lang.WDAssert;
-import com.watchdata.commons.lang.WDByteUtil;
 
 public class EditorPaneListener implements MouseListener, DocumentListener, MouseMotionListener, KeyListener {
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
 	public JPopupMenu jPopupMenu;
 	public RSyntaxTextArea rSyntaxTextArea;
+	public static FileHander fileHander = null;
 
 	public EditorPaneListener(final JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
 
+		fileHander = new FileHander(tabbedPane, statusObject);
 		jPopupMenu = new JPopupMenu();
 
 		JMenuItem cutItem = new JMenuItem("剪切");
@@ -194,36 +196,28 @@ public class EditorPaneListener implements MouseListener, DocumentListener, Mous
 		mntmTlv.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK));
 		mntmTlv.setIcon(new ImageIcon(EditorPaneListener.class.getResource("/com/echeloneditor/resources/images/20130509034342785_easyicon_net_24.png")));
 		jPopupMenu.add(mntmTlv);
-
-		JSeparator separator_2 = new JSeparator();
-		jPopupMenu.add(separator_2);
-
-		JMenuItem mntmTohex = new JMenuItem("ToHex");
-		mntmTohex.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionevent) {
-				RSyntaxTextArea rSyntaxTextArea = SwingUtils.getRSyntaxTextArea(tabbedPane);
-				String selStr = rSyntaxTextArea.getSelectedText();
-
-				String[] byteStr = selStr.trim().split(",");
-				byte[] byteTarget = new byte[byteStr.length];
-
-				for (int i = 0; i < byteTarget.length; i++) {
-					byteTarget[i] = (byte) Integer.parseInt(byteStr[i].trim());
-				}
-
-				if (WDAssert.isNotEmpty(selStr)) {
-					rSyntaxTextArea.append("\n\r\n"+WDByteUtil.bytes2HEX(byteTarget));
-				}
-			}
-		});
-		mntmTohex.setIcon(new ImageIcon(EditorPaneListener.class.getResource("/com/echeloneditor/resources/images/20130504111819570_easyicon_net_24.png")));
-		jPopupMenu.add(mntmTohex);
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 			showCharNumOnStatusBar(e);
+		} else {
+			CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
+			String filePath = closeableTabComponent.getFilePath();
+			String encode = closeableTabComponent.getFileEncode();
+			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
+			if (recordWhenOpenLastModiyTime != -1) {
+				if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
+					int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
+					if (ret == JOptionPane.YES_OPTION) {
+						// 关闭当前文档
+						tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+						// 重新打开文档
+						fileHander.openFileWithFilePath(filePath, encode);
+					}
+				}
+			}
 		}
 	}
 

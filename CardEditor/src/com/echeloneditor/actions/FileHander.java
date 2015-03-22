@@ -5,12 +5,12 @@ import java.awt.dnd.DropTarget;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -148,7 +148,8 @@ public class FileHander {
 				closeableTabComponent.setFilePath(file.getPath());
 				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
-
+				closeableTabComponent.setFileNameExt(fileName.substring(fileName.lastIndexOf(".")));
+				closeableTabComponent.setLastModifyTime(file.lastModified());
 				tabbedPane.add("New Panel", sp);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
@@ -185,7 +186,6 @@ public class FileHander {
 							System.out.println("No encoding detected. use default charset：" + currentEncode);
 						}
 					}
-
 					tmp = new String(bytes, 0, count, currentEncode);
 					textArea.append(tmp);
 					currentCharPos += count;
@@ -215,6 +215,7 @@ public class FileHander {
 				closeableTabComponent.setModify(false);
 			}
 			statusObject.showViewBtn(isBigFile);
+			statusObject.showSepp(true);
 			SwingUtils.showTitleFilePath(tabbedPane);
 			// textArea.setCaretPosition(0);
 			textArea.requestFocusInWindow();
@@ -235,7 +236,7 @@ public class FileHander {
 
 	}
 
-	public void newFile() {
+	public void newFile(String fileNameExt) {
 		RSyntaxTextArea textArea = SwingUtils.createTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
 
@@ -270,14 +271,15 @@ public class FileHander {
 		CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 		closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
 		closeableTabComponent.setFileSzie(0);
+		closeableTabComponent.setFileNameExt(fileNameExt);
 		closeableTabComponent.setModify(false);
 		tabbedPane.add("New Panel", sp);
 		tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
 		tabbedPane.setSelectedComponent(sp);
 		// 设置选项卡title为打开文件的文件名
-		SwingUtils.setTabbedPaneTitle(tabbedPane, "New Panel");
-
+		SwingUtils.setTabbedPaneTitle(tabbedPane, "New File");
+		((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle("New File");
 		String res = Config.getValue("CURRENT_THEME", "current_font");
 
 		textArea.setFont(FontUtil.getFont(res));

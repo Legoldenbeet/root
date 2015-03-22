@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collection;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -64,16 +65,19 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
+import com.sepp.server.PooledConnectionHandler;
 import com.sepp.server.ServerListener;
+import com.sepp.server.ServiceSocket;
+import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class CardEditor {
 
-	public JFrame frmEcheloneditor;
+	public static JFrame frmEcheloneditor;
 	public static JTabbedPane tabbedPane;
-	public StatusObject statusObject;
+	public static StatusObject statusObject;
 	public FontWidthRuler ruler;
 
 	FindDialog findDialog = null;
@@ -81,6 +85,8 @@ public class CardEditor {
 	public static AssistantToolDialog dialog = null;
 	public static FileHander fileHander;
 	public FileInputStream fis;
+
+	public static Thread sysThread;
 
 	/**
 	 * Create the application.
@@ -117,13 +123,13 @@ public class CardEditor {
 					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
 					// 初始化窗体
-					CardEditor window = new CardEditor();
+					new CardEditor();
 					// 框体屏幕居中显示
-					window.frmEcheloneditor.setLocationRelativeTo(null);
+					frmEcheloneditor.setLocationRelativeTo(null);
 					// 显示窗体
-					window.frmEcheloneditor.setVisible(true);
+					frmEcheloneditor.setVisible(true);
 					// window.frmEcheloneditor.pack();
-					new DropTarget(window.frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(window.tabbedPane, window.statusObject), true);
+					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
 							fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
@@ -134,8 +140,12 @@ public class CardEditor {
 				}
 			}
 		});
-		
-		new ServerListener().startService(9000,tabbedPane);
+		sysThread = new Thread(new PooledConnectionHandler());
+		// sysThread.setDaemon(true);
+		sysThread.start();
+		// 启动同步接收和发送服务
+		new ServerListener().startService(9000);
+
 	}
 
 	/**
@@ -171,6 +181,29 @@ public class CardEditor {
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
 
+		JButton button_send = new JButton("Sepp：");
+		button_send.setVisible(false);
+		button_send.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
+				try {
+					if (ServiceSocket.sepp==null) {
+						ServiceSocket.sepp= new SeppImpl();
+					}
+					ServiceSocket.sepp.sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		panel.add(button_send);
+		
+		JComboBox comboBox_friend = new JComboBox();
+		comboBox_friend.setVisible(false);
+		comboBox_friend.setModel(new DefaultComboBoxModel(Config.getItems("FREND_LIST").toArray()));
+		panel.add(comboBox_friend);
+		
 		JButton button_5 = new JButton("第一页");
 		button_5.setVisible(false);
 		button_5.addActionListener(new ActionListener() {
@@ -223,6 +256,8 @@ public class CardEditor {
 		statusObject.setPrevBtn(button_4);
 		statusObject.setLastBtn(button_6);
 		statusObject.setFirstBtn(button_5);
+		statusObject.setBtn_send(button_send);
+		statusObject.setJcb_friend(comboBox_friend);
 
 		JButton btnNewButton_2 = new JButton("reload");
 		btnNewButton_2.addActionListener(new ActionListener() {
@@ -262,7 +297,7 @@ public class CardEditor {
 		button.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				fileHander.newFile();
+				fileHander.newFile(".txt");
 			}
 		});
 		toolBar.add(button);
@@ -320,8 +355,7 @@ public class CardEditor {
 
 					int tabCount = tabbedPane.getTabCount();
 					CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-
-					tabbedPane.add("New Panel", sp);
+					tabbedPane.add("New File", sp);
 					tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
 					tabbedPane.setSelectedComponent(sp);
@@ -378,17 +412,23 @@ public class CardEditor {
 					if (WDAssert.isEmpty(plainText)) {
 						return;
 					}
-					String tmp = FileAction.USER_DIR + "/tmp";
-					File fileDir = new File(tmp);
+					String debugPath = FileAction.USER_DIR +"/"+Config.getValue("CONFIG", "debugPath");
+					File fileDir = new File(debugPath);
 					if (!fileDir.exists()) {
-						if (fileDir.canWrite()) {
-							JOptionPane.showMessageDialog(null, "文件不可写");
+						if (!fileDir.canWrite()) {
+							//JOptionPane.showMessageDialog(null, "debug缓存目录不可写!");
+							//return;
+							fileDir.setReadable(true);
+							fileDir.setWritable(true);
+							fileDir.setExecutable(true);
+						}
+						if (!fileDir.mkdir()) {
+							JOptionPane.showMessageDialog(null, "创建debug缓存目录失败！");
 							return;
 						}
-						fileDir.mkdir();
 					}
 
-					String newFilePath = tmp + "/" + file.getName();
+					String newFilePath = debugPath + "/" + file.getName();
 					FileAction fileAction = new FileAction();
 					fileAction.save(newFilePath, plainText, "GBK");
 					fileHander.openFileWithFilePath(newFilePath, "GBK");
@@ -419,15 +459,21 @@ public class CardEditor {
 		menu.setMnemonic('F');
 		menuBar.add(menu);
 
-		JMenuItem menuItem = new JMenuItem("新建");
-		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
-		menuItem.setActionCommand("new");
-		menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
+		JMenu newFileMenu = new JMenu("新建");
+		Collection<String> collection=Config.getItems("FILE_TYPE");
+		newFileMenu.removeAll();
+		for (String fileExt : collection) {
+			JMenuItem menuItem=new JMenuItem("."+fileExt);
+			menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
+			menuItem.setActionCommand("new");
+			newFileMenu.add(new JSeparator());
+			newFileMenu.add(menuItem);
+		}
 
 		JSeparator separator_17 = new JSeparator();
 		menu.add(separator_17);
-		menuItem.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
-		menu.add(menuItem);
+		newFileMenu.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
+		menu.add(newFileMenu);
 
 		JMenuItem menuItem_1 = new JMenuItem("打开");
 		menuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
@@ -435,6 +481,13 @@ public class CardEditor {
 		menuItem_1.addActionListener(new SimpleFileChooseListener(tabbedPane, statusObject));
 		menuItem_1.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112148516_easyicon_net_24.png")));
 		menu.add(menuItem_1);
+
+		JMenuItem mntmex = new JMenuItem("打开(EX)");
+		mntmex.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
+		mntmex.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112148516_easyicon_net_24.png")));
+		mntmex.setActionCommand("openext");
+		mntmex.addActionListener(new SimpleFileChooseListener(tabbedPane, statusObject));
+		menu.add(mntmex);
 
 		JSeparator separator_1 = new JSeparator();
 		menu.add(separator_1);
@@ -784,6 +837,22 @@ public class CardEditor {
 			}
 		});
 		menu_1.add(mntmNewMenuItem_3);
+
+		JMenuItem mntmSnapshot = new JMenuItem("SnapShot");
+		mntmSnapshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
+		mntmSnapshot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
+				try {
+					WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c java -jar ScreenShot.jar");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, e.getMessage());
+				}
+			}
+		});
+		mntmSnapshot.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150103103702829_easyicon_net_24.png")));
+		menu_1.add(mntmSnapshot);
 
 		JSeparator separator_8 = new JSeparator();
 		menu_1.add(separator_8);

@@ -91,8 +91,8 @@
 		<copy todir="${dist-dir}/CardPAT_lib">
 			<fileset dir="lib" />
 		</copy>
-		<copy todir="${dist-dir}/log">
-			<fileset dir="log" />
+		<copy todir="${dist-dir}/debug">
+			<fileset dir="debug" />
 		</copy>
 		<copy todir="${dist-dir}/report">
 			<fileset dir="report" />
@@ -100,6 +100,8 @@
 		<copy todir="${dist-dir}">
 			<fileset dir=".">
 				<include name="*.dll" />
+				<include name="*.txt" />
+				<include name="*.bat" />
 			</fileset>
 		</copy>
 		<copy todir="${dist-dir}/..">
@@ -108,7 +110,7 @@
 			</fileset>
 		</copy>
 		<delete includeEmptyDirs="true" quiet="true">
-			<fileset dir="${dist-dir}/log">
+			<fileset dir="${dist-dir}/debug">
 				<include name="**/*" />
 			</fileset>
 		</delete>

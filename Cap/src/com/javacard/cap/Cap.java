@@ -13,6 +13,7 @@ import java.util.zip.ZipFile;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class Cap {
+	public static final int ACC_EXTENDED=(byte)0x8;
 	// read pkg cap
 	public static Map<String, String> readCap(String capFilePath) throws IOException {
 		Map<String, String> mapBean = new HashMap<String, String>();
@@ -56,13 +57,13 @@ public class Cap {
 	public static void main(String[] args) throws IOException {
 		Map<String, String> mapPse = Cap.readCap("pse.cap");
 		Map<String, String> mapPpse = Cap.readCap("ppse.cap");
-		Map<String, String> mapPboc = Cap.readCap("pboc.cap");
+		Map<String, String> mapPboc = Cap.readCap("pboc1200.cap");
 
 		System.out.println(mapPse);
 		System.out.println(mapPpse);
-		// System.out.println(mapPboc);
+		System.out.println(mapPboc);
 
-		Iterator<?> iterator = mapPse.entrySet().iterator();
+		Iterator<?> iterator = mapPboc.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, String> entry = (Entry<String, String>) iterator.next();
 			System.out.println(entry.getKey());

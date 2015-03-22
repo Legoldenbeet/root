@@ -5,28 +5,35 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
+import com.watchdata.commons.lang.WDAssert;
 
 public class TabbedPaneChangeListener implements MouseListener {
 	public JPopupMenu jPopupMenu;
 
 	private JTabbedPane tabbedPane;
 	public StatusObject statusObject;
+	public static FileHander fileHander = null;
 
 	public TabbedPaneChangeListener(final JTabbedPane tabbedPane, final StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
+
+		fileHander = new FileHander(tabbedPane, statusObject);
 
 		jPopupMenu = new JPopupMenu();
 		JMenuItem closeAll = new JMenuItem("关闭所有");
@@ -85,8 +92,11 @@ public class TabbedPaneChangeListener implements MouseListener {
 			String encode = closeableTabComponent.getFileEncode();
 			long fileSize = closeableTabComponent.getFileSzie();
 			String filePath = closeableTabComponent.getFilePath();
+			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
 			boolean modify = closeableTabComponent.isModify();
+
 			if (fileSize >= 0) {
+				filePath = filePath.isEmpty() ? "New File" : filePath;
 				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
 
 				statusObject.showFileSize(fileSize);
@@ -94,10 +104,19 @@ public class TabbedPaneChangeListener implements MouseListener {
 				statusObject.showCharNum(0);
 				statusObject.showSaveButton(modify);
 
-				if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
-					statusObject.showViewBtn(true);
-				} else {
-					statusObject.showViewBtn(false);
+				boolean visible = fileSize > (FileAction.BIG_FILE_SIZE << 20) ? true : false;
+				statusObject.showViewBtn(visible);
+				
+				if (recordWhenOpenLastModiyTime != -1) {
+					if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
+						int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
+						if (ret == JOptionPane.YES_OPTION) {
+							// 关闭当前文档
+							tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+							// 重新打开文档
+							fileHander.openFileWithFilePath(filePath, encode);
+						}
+					}
 				}
 			}
 		}

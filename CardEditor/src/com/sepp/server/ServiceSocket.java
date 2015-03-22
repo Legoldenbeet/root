@@ -2,12 +2,9 @@ package com.sepp.server;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-
-import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 
@@ -18,13 +15,13 @@ import com.watchdata.commons.lang.WDByteUtil;
 
 public class ServiceSocket extends AbstractSessionSocket {
 	private static Logger log = Logger.getLogger(ServiceSocket.class);
-	private JTabbedPane tabbedPane;
-	Sepp sepp;
+	public static Sepp sepp;
 
-	public ServiceSocket(Socket socket, JTabbedPane tabbedPane) {
+	public ServiceSocket(Socket socket) {
 		super(socket);
-		this.tabbedPane = tabbedPane;
-		sepp = new SeppImpl(tabbedPane);
+		if (sepp==null) {
+			sepp = new SeppImpl();
+		}
 	}
 
 	@Override
@@ -55,21 +52,32 @@ public class ServiceSocket extends AbstractSessionSocket {
 
 	@Override
 	public void onDataArrived(byte[] data, Socket socket, Thread thread) {
-		if (data==null) {
+		if (data == null) {
 			return;
 		}
-		//byte[] cmdHeader=new byte[8];
-		//System.arraycopy(data, 0, cmdHeader, 0, 8);
-		sepp.process(data);
+		byte offset=0;
+		byte[] resp = new byte[256];
+		byte len = 0;
+		byte[] wrapLine="\n".getBytes();
+		
+		byte[] sw = sepp.process(data, resp, len);
+		byte[] out = new byte[len + sw.length+wrapLine.length];
+
+		System.arraycopy(sw, 0, out, offset, sw.length);
+		offset+=sw.length;
+		if (len>0) {
+			System.arraycopy(resp, 0, out, offset, len);
+			offset+=len;
+		}
+		System.arraycopy(wrapLine, 0, out, offset, wrapLine.length);
+
 		try {
-
-			log.debug("注意:有消息到达:socketID:" + socket.hashCode() + "[" + socket.toString() + "]【接收：" + data.length + "字节数据】");
-			sendMessage("success.\n".getBytes());
-
+			sendMessage(out, socket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			errorHandle(e, socket, thread);
+			e.printStackTrace();
 		}
+		log.debug("注意:有消息到达:socketID:" + socket.hashCode() + "[" + socket.toString() + "]【接收：" + data.length + "字节数据】");
 	}
 
 	@Override

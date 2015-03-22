@@ -87,6 +87,29 @@ public class Config {
 		return iniSection.getItem(itemName).getValue();
 
 	}
+	
+	public static String getItemWithValue(String SectionName, String itemValue) {
+
+		if (!ini.hasSection(SectionName)) {
+			try {
+				throw new IOException("section is not exists.");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		IniSection iniSection = ini.getSection(SectionName);
+
+		Collection<String> items = iniSection.getItemNames();
+		if (items.size()>0) {
+			for (String item : items) {
+				if (getValue(SectionName, item).equalsIgnoreCase(itemValue)) {
+					return item;
+				}
+			}
+		}
+		return null;
+	}
 
 	public static Collection<String> getItems(String sectionName) {
 

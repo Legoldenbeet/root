@@ -1,0 +1,11 @@
+import_component {
+	u1 tag
+	u2 size
+	u1 count
+	package_info packages[count]{
+		u1 minor_version
+		u1 major_version
+		u1 AID_length
+		u1 AID[AID_length]
+	}
+}

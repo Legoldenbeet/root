@@ -11,17 +11,21 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -46,6 +50,7 @@ import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.logic.impl.CardInfoThread;
 import com.gerenhua.tool.logic.impl.DeleteObjThread;
 import com.gerenhua.tool.logic.impl.LoadCapThead;
+import com.gerenhua.tool.logic.impl.RunPrgThread;
 import com.gerenhua.tool.utils.Config;
 import com.watchdata.commons.crypto.WD3DesCryptoUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
@@ -53,28 +58,37 @@ import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.kms.kmsi.IKms;
 
-public class CardInfoDetectPanel extends JPanel {
+public class CardInfoDetectPanel extends JPanel implements Observer {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private static JTextField textField;
+	private static JTextField textField_1;
+	private static JTextField textField_2;
 	private JTextField textField_3;
-	private JTree tree;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private static JTree tree;
+	private static JTextField textField_4;
+	private static JTextField textField_5;
 	public static CommonAPDU commonAPDU;
-	public JTextPane textPane;
-	public JTextPane textPane_1;
-	public JComboBox comboBox;
+	public static JTextPane textPane;
+	public static JTextPane textPane_1;
+	public static JComboBox comboBox;
 	private static Log log = new Log();
 	private static ConfigIpDialog dialog = null;
 
 	private static JMenuItem mntmCardinfo;
+	private static JMenuItem mntmChangeStatus;
 	private static JMenuItem mntmLoad;
-	private static JMenuItem deleteObj;
+	private static JMenuItem mntmdeleteObj;
+	private static JMenuItem mntmCardStatus;
+	private static JMenuItem mntmBuildScripts;
+	private static JMenuItem mntmInstallApplet;
+
+	private static Thread runPrgThread = null;
+	public static RunPrgThread rpt = null;
+	public static CardInfoThread cardInfoThread = null;
+	public static UpdateStatusDialog updateStatusDialog = null;
 
 	public CardInfoDetectPanel() {
 		log.setLogArea(textPane_1);
@@ -85,16 +99,63 @@ public class CardInfoDetectPanel extends JPanel {
 		mntmCardinfo = new JMenuItem("CARD INFO");
 		mntmCardinfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				commonAPDU = new CommonAPDU();
-				CardInfoThread thread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
-				thread.start();
+				log.setLogArea(textPane_1);
+				refreshTree();
+				if (RunPrgThread.mapBean != null) {
+					RunPrgThread.mapBean.clear();
+				}
+			}
+		});
+
+		mntmChangeStatus = new JMenuItem("CHANGE STATUS");
+		mntmChangeStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				setStatusDialog(true, true);
+			}
+		});
+
+		mntmCardStatus = new JMenuItem("CARD STATUS");
+		mntmCardStatus.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				RightPanel.configPanel.setVisible(true);
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						RightPanel.configPanel.initPanel();
+					}
+				});
+
+				Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
+				RightPanel.cardInfoDetectPanel.setVisible(false);
+				RightPanel.facePanel.setVisible(false);
+				RightPanel.testDataConfigPanel.setVisible(false);
+				RightPanel.terminalTypeConfigPanel.setVisible(false);
+				RightPanel.terminalPerformanceConfigPanel.setVisible(false);
+				RightPanel.terminalLimitConfigPanel.setVisible(false);
+				RightPanel.issuerKeyConfigPanel.setVisible(false);
+				RightPanel.caPublicKeyConfigPanel.setVisible(false);
+				RightPanel.aidConfigPanel.setVisible(false);
+				RightPanel.logoPanel.setVisible(false);
+				RightPanel.tradePanel.setVisible(false);
+				RightPanel.cardReaderPanel.setVisible(false);
 			}
 		});
 
 		mntmLoad = new JMenuItem("LOAD CAP");
 		mntmLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser jFileChooser = new JFileChooser("./resources/cap");
+				log.setLogArea(textPane_1);
+				JFileChooser jFileChooser = null;
+				String capFile = Config.getValue("CardInfo", "currentCap");
+				if (WDAssert.isNotEmpty(capFile)) {
+					jFileChooser = new JFileChooser(capFile);
+				} else {
+					jFileChooser = new JFileChooser("./resources/cap");
+				}
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
 				jFileChooser.setFileFilter(fileNameExtensionFilter);
 				jFileChooser.setMultiSelectionEnabled(true);
@@ -103,13 +164,61 @@ public class CardInfoDetectPanel extends JPanel {
 				if (i == JFileChooser.APPROVE_OPTION) {
 					File[] file = jFileChooser.getSelectedFiles();
 					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane_1);
+					loadCapThead.setRealCard(true);
 					loadCapThead.start();
 				}
 			}
 		});
-		deleteObj = new JMenuItem("Remove");
-		deleteObj.addActionListener(new ActionListener() {
+
+		mntmBuildScripts = new JMenuItem("BUILD SCRIPTS");
+		mntmBuildScripts.addActionListener(new ActionListener() {
+
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane);
+				JFileChooser jFileChooser = null;
+				String capFile = Config.getValue("CardInfo", "currentCap");
+				if (WDAssert.isNotEmpty(capFile)) {
+					jFileChooser = new JFileChooser(capFile);
+				} else {
+					jFileChooser = new JFileChooser("./resources/cap");
+				}
+
+				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
+				jFileChooser.setFileFilter(fileNameExtensionFilter);
+				jFileChooser.setMultiSelectionEnabled(true);
+
+				int i = jFileChooser.showOpenDialog(null);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File[] file = jFileChooser.getSelectedFiles();
+					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
+					loadCapThead.setRealCard(false);
+					loadCapThead.start();
+				}
+				log.setLogArea(textPane_1);
+			}
+		});
+		mntmInstallApplet = new JMenuItem("Install");
+		mntmInstallApplet.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				log.setLogArea(textPane_1);
+				Component component = SwingUtilities.getRoot(tree);
+				JFrame root = (JFrame) component;
+				InstallDialog installDialog = null;
+				installDialog = new InstallDialog(root, tree, commonAPDU);
+				int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
+				int y = (int) (root.getLocation().getY() + 40);
+				installDialog.setLocation(x, y);
+				installDialog.setVisible(true);
+			}
+		});
+
+		mntmdeleteObj = new JMenuItem("Remove");
+		mntmdeleteObj.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
 				DeleteObjThread deleteObjThread = new DeleteObjThread(tree, commonAPDU);
 				deleteObjThread.start();
 			}
@@ -369,39 +478,11 @@ public class CardInfoDetectPanel extends JPanel {
 		btnPutkey.setBorderPainted(false);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (WDAssert.isEmpty(textPane.getText())) {
-					JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
-					return;
+				log.setLogArea(textPane_1);
+				if (RunPrgThread.mapBean != null) {
+					RunPrgThread.mapBean.clear();
 				}
-				Runnable runnable = new Runnable() {
-					public void run() {
-						try {
-							String prg = textPane.getText().replaceAll("\r\n", "\n").replaceAll("\r", "\n");
-							String[] apdus = prg.split("\n");
-
-							for (String apdu : apdus) {
-								if (!apdu.startsWith("//") && WDAssert.isNotEmpty(apdu.trim())) {
-									apdu = apdu.trim();
-									int commentPos = apdu.indexOf("//");
-									int swPos = apdu.indexOf("SW");
-									int pos = calPos(commentPos, swPos);
-									if (pos != -1) {
-										apdu = apdu.substring(0, pos).trim();
-										commonAPDU.send(apdu);
-									} else {
-										// apdu=apdu.substring(0, commentPos);
-										commonAPDU.send(apdu);
-									}
-								}
-							}
-						} catch (Exception e) {
-							// TODO: handle exception
-							log.error(e.getMessage());
-						}
-					}
-				};
-				Thread thread = new Thread(runnable);
-				thread.start();
+				runPrgInThread();
 			}
 		});
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -421,6 +502,7 @@ public class CardInfoDetectPanel extends JPanel {
 						fis.read(fileContent);
 
 						textPane.setText(new String(fileContent));
+						// textPane.setCaretPosition(0);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						JOptionPane.showMessageDialog(null, e.getMessage());
@@ -435,36 +517,72 @@ public class CardInfoDetectPanel extends JPanel {
 		splitPane_2.setLeftComponent(panel_1);
 		splitPane_2.setRightComponent(panel_4);
 
-		JButton button_1 = new JButton("数据处理");
-		button_1.addActionListener(new ActionListener() {
+		JButton btnStop = new JButton("STOP");
+		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// PersionalizationDialog persionalizationDialog=new PersionalizationDialog();
-				// persionalizationDialog.setVisible(true);
-				RightPanel.configPanel.setVisible(true);
-				Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
-				RightPanel.cardInfoDetectPanel.setVisible(false);
-				RightPanel.facePanel.setVisible(false);
-				RightPanel.testDataConfigPanel.setVisible(false);
-				RightPanel.terminalTypeConfigPanel.setVisible(false);
-				RightPanel.terminalPerformanceConfigPanel.setVisible(false);
-				RightPanel.terminalLimitConfigPanel.setVisible(false);
-				RightPanel.issuerKeyConfigPanel.setVisible(false);
-				RightPanel.caPublicKeyConfigPanel.setVisible(false);
-				RightPanel.aidConfigPanel.setVisible(false);
-				RightPanel.logoPanel.setVisible(false);
-				RightPanel.tradePanel.setVisible(false);
-				RightPanel.cardReaderPanel.setVisible(false);
+				log.setLogArea(textPane_1);
+				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "stop");
 			}
 		});
-		button_1.setFocusPainted(false);
-		button_1.setBorderPainted(false);
-		button_1.setBounds(0, 109, 120, 23);
-		panel_4.add(button_1);
-		// splitPane_2.setBounds(0, 0, 125, 27);
+		btnStop.setFocusPainted(false);
+		btnStop.setBorderPainted(false);
+		btnStop.setBounds(0, 109, 120, 23);
+		panel_4.add(btnStop);
+
+		JButton btnContinue = new JButton("CONTINUE");
+		btnContinue.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionevent) {
+				log.setLogArea(textPane_1);
+				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "continue");
+				synchronized (RunPrgThread.mapBean) {
+					RunPrgThread.mapBean.notifyAll();
+				}
+			}
+		});
+		btnContinue.setFocusPainted(false);
+		btnContinue.setBorderPainted(false);
+		btnContinue.setBounds(0, 174, 120, 23);
+		panel_4.add(btnContinue);
+
+		JButton btnStep = new JButton("STEP");
+		btnStep.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				if (RunPrgThread.mapBean.size() > 0 && (RunPrgThread.mapBean.get("debug").equalsIgnoreCase("pause") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("step") || RunPrgThread.mapBean.get("debug").equalsIgnoreCase("continue"))) {
+					RunPrgThread.mapBean.clear();
+					RunPrgThread.mapBean.put("debug", "step");
+					synchronized (RunPrgThread.mapBean) {
+						RunPrgThread.mapBean.notifyAll();
+					}
+				} else {
+					RunPrgThread.mapBean.clear();
+					RunPrgThread.mapBean.put("debug", "step");
+					runPrgInThread();
+				}
+			}
+		});
+		btnStep.setFocusPainted(false);
+		btnStep.setBorderPainted(false);
+		btnStep.setBounds(0, 207, 120, 23);
+		panel_4.add(btnStep);
+
+		JButton btnPause = new JButton("PAUSE");
+		btnPause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane_1);
+				RunPrgThread.mapBean.clear();
+				RunPrgThread.mapBean.put("debug", "pause");
+			}
+		});
+		btnPause.setFocusPainted(false);
+		btnPause.setBorderPainted(false);
+		btnPause.setBounds(0, 141, 120, 23);
+		panel_4.add(btnPause);
 
 		JSplitPane splitPane_4 = new JSplitPane();
 		splitPane_4.setEnabled(false);
-		// add(splitPane_4, BorderLayout.CENTER);
 		splitPane_4.setResizeWeight(0.6);
 		splitPane_4.setTopComponent(splitPane_2);
 		splitPane_4.setBottomComponent(panel_2);
@@ -568,7 +686,7 @@ public class CardInfoDetectPanel extends JPanel {
 
 	}
 
-	private static void addPopup(Component component, final JPopupMenu popup) {
+	private void addPopup(Component component, final JPopupMenu popup) {
 		component.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -579,18 +697,45 @@ public class CardInfoDetectPanel extends JPanel {
 						DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
 						String nodeName = (node != null) ? node.toString() : null;
-						if (WDAssert.isNotEmpty(nodeName)) {
-							if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo") && !nodeName.equalsIgnoreCase("Application Instances") && !nodeName.equalsIgnoreCase("Load Files and Modules") && !nodeName.equalsIgnoreCase("Load Files")) {
-								addMenu(deleteObj, e);
-							} else {
-								if (nodeName.equalsIgnoreCase("CardInfo")) {
-									addMenu(mntmCardinfo, e);
-								} else if (nodeName.equalsIgnoreCase("Load Files")) {
-									addMenu(mntmLoad, e);
+						if (WDAssert.isEmpty(nodeName)) {
+							return;
+						}
+						if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
+							String parentNodeName = node.getParent().toString().trim();
+							String grandFather = null;
+							if (node.getParent().getParent() != null) {
+								grandFather = node.getParent().getParent().toString().trim();
+							}
+							if (parentNodeName.equalsIgnoreCase("Load Files") || parentNodeName.equalsIgnoreCase("Application Instances")) {
+								popup.removeAll();
+								addMenu(mntmdeleteObj, e);
+								if (parentNodeName.equalsIgnoreCase("Application Instances")) {
+									addMenu(mntmChangeStatus, e);
+									setStatusDialog(false, false);
+									updateStatusDialog.isISD = false;
 								}
-
+								showMenu(e);
+							} else if (grandFather != null && grandFather.equalsIgnoreCase("Load Files and Modules")) {
+								popup.removeAll();
+								addMenu(mntmInstallApplet, e);
+								showMenu(e);
 							}
 						}
+						if (nodeName.equalsIgnoreCase("CardInfo")) {
+							popup.removeAll();
+							addMenu(mntmCardinfo, e);
+							addMenu(mntmCardStatus, e);
+							addMenu(mntmChangeStatus, e);
+							setStatusDialog(false, false);
+							updateStatusDialog.isISD = true;
+							showMenu(e);
+						} else if (nodeName.equalsIgnoreCase("Load Files")) {
+							popup.removeAll();
+							addMenu(mntmLoad, e);
+							addMenu(mntmBuildScripts, e);
+							showMenu(e);
+						}
+
 					}
 				}
 			}
@@ -600,23 +745,66 @@ public class CardInfoDetectPanel extends JPanel {
 			}
 
 			private void addMenu(JMenuItem menuItem, MouseEvent e) {
-				popup.removeAll();
+				JSeparator jSeparator = new JSeparator(JSeparator.HORIZONTAL);
+				popup.add(jSeparator);
 				popup.add(menuItem);
-				showMenu(e);
+				// showMenu(e);
 			}
 		});
 
 	}
 
-	public int calPos(int pos1, int pos2) {
-		int pos = -1;
-		if (pos1 != -1 && pos2 != -1) {
-			pos = Math.min(pos1, pos2);
-		} else if (pos1 == -1 && pos2 != -1) {
-			pos = pos2;
-		} else if (pos1 != -1 && pos2 == -1) {
-			pos = pos1;
+	/**
+	 * 更新tree变化
+	 */
+	public static void refreshTree() {
+		commonAPDU = new CommonAPDU();
+		cardInfoThread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
+		cardInfoThread.start();
+	}
+
+	/**
+	 * runPrgInThread
+	 */
+	public void runPrgInThread() {
+		if (WDAssert.isEmpty(textPane.getText())) {
+			JOptionPane.showMessageDialog(null, "请先加载脚本！", "信息框", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
-		return pos;
+		if (rpt == null) {
+			rpt = new RunPrgThread(textPane, commonAPDU);
+			runPrgThread = new Thread(rpt);
+			rpt.addObserver(RightPanel.cardInfoDetectPanel);
+			runPrgThread.start();
+		}
+	}
+
+	/**
+	 * setStatusDialog
+	 * 
+	 * @param visible
+	 */
+	public void setStatusDialog(boolean visible, boolean isSend) {
+		Component component = SwingUtilities.getRoot(tree);
+		JFrame root = (JFrame) component;
+		updateStatusDialog = new UpdateStatusDialog(root, tree, commonAPDU, isSend);
+		int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
+		int y = (int) (root.getLocation().getY() + 40);
+		updateStatusDialog.setLocation(x, y);
+		updateStatusDialog.setVisible(visible);
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		String temp = arg1.toString();
+		String[] tmp = temp.split("\\|");
+		int pos1 = Integer.parseInt(tmp[0]);
+		int pos2 = Integer.parseInt(tmp[1]);
+		// textPane.setCaretPosition(pos2);
+
+		// SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
+		// StyleConstants.setBackground(simpleAttributeSet, Color.RED);
+		// StyledDocument doc = textPane.getStyledDocument();
+		// doc.setCharacterAttributes(pos1, pos2, simpleAttributeSet, false);
 	}
 }

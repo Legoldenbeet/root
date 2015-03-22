@@ -1,0 +1,15 @@
+static_field_component {
+	u1 tag
+	u2 size
+	u2 image_size
+	u2 reference_count
+	u2 array_init_count
+	array_init_info array_init[array_init_count]{
+		u1 type
+		u2 count
+		u1 values[count]
+	}
+	u2 default_value_count
+	u2 non_default_value_count
+	u1 non_default_values[non_default_value_count]
+}

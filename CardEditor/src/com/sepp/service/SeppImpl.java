@@ -1,28 +1,30 @@
 package com.sepp.service;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
+import org.apache.commons.io.FileUtils;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.utils.Config;
+import com.echeloneditor.utils.WindowsExcuter;
+import com.echeloneditor.vo.Cmd;
+import com.sepp.client.SessionClient;
 import com.sepp.interfaces.Sepp;
-import com.sepp.vo.Cmd;
+import com.sepp.server.PooledConnectionHandler;
 import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class SeppImpl implements Sepp {
-	public JTabbedPane tabbedPane;
 
-	public SeppImpl(JTabbedPane tabbedPane) {
-		this.tabbedPane = tabbedPane;
+	public SeppImpl() {
 	}
 
 	@Override
-	public void process(byte[] data) {
+	public byte[] process(byte[] data, byte[] resp, byte len) {
 		try {
 			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
 			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
@@ -32,23 +34,30 @@ public class SeppImpl implements Sepp {
 				if (cmd.getCla() != 0x0F) {
 					// 发送错误指令给对方
 
-					return;
+					return EXCEPTION_INS_NOT_SUPPORT;
 				}
 				switch (cmd.getIns()) {
 				case Sepp.INS_FILE_OPEN:
-					openFile(data, Sepp.FILE_NAME_LEN_OFFSET);
+					receiveOpen(data, Sepp.FILE_NAME_LEN_OFFSET);
 					break;
 				case Sepp.INS_FILE_CLOSE:
 					closeFile();
+					break;
+				case Sepp.INS_TERM_INFO_NAME:
+					byte[] termName = getTermUserName().getBytes();
+					System.arraycopy(termName, 0, resp, 0, termName.length);
+					len += termName.length;
 					break;
 				default:
 					break;
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			byte[] errorOut = e.getMessage().getBytes();
+			len += errorOut.length;
+			return errorOut;
 		}
-
+		return SUCCESSFUL_DONE_WITHOUT_ERROR;
 	}
 
 	/**
@@ -73,24 +82,86 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public void openFile(byte[] data, short offset) throws Exception {
+	public void receiveOpen(byte[] data, short offset) throws Exception {
 		short fileNameLen = (short) data[offset];
 		byte[] fileNameBytes = new byte[fileNameLen];
-		offset+=1;
+		offset += 1;
 		System.arraycopy(data, offset, fileNameBytes, 0, fileNameLen);
-		
+
 		String fileName = new String(fileNameBytes, "GBK");
+
+		File file = new File(FileAction.USER_DIR + "/"+Config.getValue("CONFIG", "debugPath")+"/" + fileName);
+		if (!file.getParentFile().exists()) {
+			file.mkdir();
+		}
+		if (file.exists()) {
+			FileUtils.deleteQuietly(file);
+		}else {
+			file.createNewFile();
+		}
 		
-		File file=new File(FileAction.USER_DIR+"/tmp/"+fileName);
-		FileOutputStream fos=new FileOutputStream(file);
-		BufferedOutputStream bw=new BufferedOutputStream(fos, FileAction.BUFFER_SIZE);
-		offset+=fileNameLen;
-		bw.write(data, offset, data.length-offset);
-		
+		FileOutputStream fos = new FileOutputStream(file);
+		BufferedOutputStream bw = new BufferedOutputStream(fos);
+		offset += fileNameLen;
+		bw.write(data, offset, data.length - offset);
+		bw.flush();
 		fos.close();
 		bw.close();
 
-		JOptionPane.showMessageDialog(null, "ok");
+		PooledConnectionHandler.processRequest(file);
+		// FileHander fileHander = new FileHander(tabbedPane, statusObject);
+		// fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+		// JOptionPane.showMessageDialog(null, "ok");
+	}
+
+	/**
+	 * send file to targetIp
+	 * 
+	 * @param file
+	 * @param targetIp
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean sendFile(File file, String targetIp) throws Exception {
+		SessionClient sessionClient = new SessionClient("sepp", targetIp, 9000);
+
+		FileInputStream fileInputStream = new FileInputStream(file);
+		int len = fileInputStream.available();
+		byte[] wrapLine="\n".getBytes();
+		byte[] data = new byte[4 + 8 + 1 + file.getName().getBytes("GBK").length + len+1];
+		byte[] fileBytes = new byte[len];
+
+		fileInputStream.read(fileBytes);
+
+		String length = Integer.toHexString(len + 8);
+		length = WDStringUtil.paddingHeadZero(length, 8);
+
+		byte[] lenBytes = WDByteUtil.HEX2Bytes(length);
+
+		int pos = 0;
+		System.arraycopy(lenBytes, 0, data, 0, lenBytes.length);
+		pos += lenBytes.length;
+		System.arraycopy(WDByteUtil.HEX2Bytes("0F00000010000000"), 0, data, pos, 8);
+		int fileNameLen = file.getName().getBytes("GBK").length;
+		pos += 8;
+		data[pos] = (byte) fileNameLen;
+		pos++;
+		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
+		pos += fileNameLen;
+		System.arraycopy(fileBytes, 0, data, pos, len);
+		pos+=len;
+		fileInputStream.close();
+		//添加换行符
+		System.arraycopy(wrapLine, 0, data, pos, wrapLine.length);
+		
+		sessionClient.send(data, "sepp");
+		String res = sessionClient.recive("sepp");
+		System.out.println(res);
+		return false;
+	}
+
+	public boolean sendFile(String filePath, String targetIp) throws Exception {
+		return sendFile(new File(filePath), targetIp);
 	}
 
 	@Override
@@ -99,4 +170,24 @@ public class SeppImpl implements Sepp {
 
 	}
 
+	@Override
+	public void sendOpen(byte[] data, short offset) throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public String getTermUserName() {
+		return System.getProperty("user.name");
+	}
+
+	@Override
+	public ArrayList<String> scanFriend() {
+		return null;
+	}
+
+	public static void main(String[] args) throws Exception {
+		// new SeppImpl().scanFriend();
+		WindowsExcuter.excute(new File("."), "cmd.exe /c telnet 10.0.97.68 9000");
+	}
 }
