@@ -16,8 +16,9 @@ print(os.path.exists("G:\\1000_hotel_csv.csv"))
 print(os.path.isfile("G:\\1000_hotel_csv.csv"))
 
 name,ext=os.path.splitext("G:\\1000_hotel_csv.csv")
-print(name);
-print(ext);
+print(name)
+print(ext)
+os.system("pause")
 
 L=os.listdir("G:\\")
 print L
