@@ -898,7 +898,8 @@ public class CardEditor {
 		mntmReadme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
+					//WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
+					fileHander.openFileWithFilePath(new File(FileAction.USER_DIR+"/readme.txt").getPath(), FileAction.DEFAULT_FILE_ENCODE);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
