@@ -894,7 +894,7 @@ public class CardEditor {
 		JSeparator separator_13 = new JSeparator();
 		menu_2.add(separator_13);
 
-		JMenuItem mntmReadme = new JMenuItem("README");
+		JMenuItem mntmReadme = new JMenuItem("版本历史");
 		mntmReadme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
