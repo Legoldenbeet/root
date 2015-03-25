@@ -906,7 +906,7 @@ public class CardEditor {
 				}
 			}
 		});
-		mntmReadme.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20140926113131577_easyicon_net_24.png")));
+		mntmReadme.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/2015032508484550_easyicon_net_24.png")));
 		menu_2.add(mntmReadme);
 		menuItem_17.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/2013050411485151_easyicon_net_24.png")));
 		menu_2.add(menuItem_17);
