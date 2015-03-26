@@ -27,11 +27,11 @@ public class CloseableTabComponent extends JPanel {
 //	private static ImageIcon closerPressedImage = ImageHelper.loadImage("closer_pressed.gif");
 	public JLabel titleLabel = null;
 //	private JButton closeButton = null;
-	private JTabbedPane tabbedPane = null;
+//	private JTabbedPane tabbedPane = null;
 
 	public CloseableTabComponent(JTabbedPane aTabbedPane, final StatusObject statusObject) {
 		super(new BorderLayout());
-		tabbedPane = aTabbedPane;
+//		tabbedPane = aTabbedPane;
 
 		setOpaque(false);
 		setBorder(BorderFactory.createEmptyBorder(1, 0, 0, 0));
