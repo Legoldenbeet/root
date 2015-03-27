@@ -41,8 +41,12 @@ import org.fife.ui.rtextfilechooser.FileSystemTree;
  * @author Robert Futrell
  * @version 1.0
  */
-class Tree extends FileSystemTree {
+public class XFileSystemTree extends FileSystemTree {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private OpenAction openAction;
 	private OpenAction openInNewWindowAction;
 	private GoIntoAction goIntoAction;
@@ -55,7 +59,7 @@ class Tree extends FileSystemTree {
 	 * @param plugin
 	 *            The plugin.
 	 */
-	public Tree() {
+	public XFileSystemTree() {
 
 		Listener listener = new Listener();
 		addMouseListener(listener);
@@ -173,7 +177,7 @@ class Tree extends FileSystemTree {
 			File file = getSelectedFile();
 			if (file != null && file.isDirectory()) {
 			} else { // Should never happen
-				UIManager.getLookAndFeel().provideErrorFeedback(Tree.this);
+				UIManager.getLookAndFeel().provideErrorFeedback(XFileSystemTree.this);
 			}
 		}
 
@@ -260,10 +264,10 @@ class Tree extends FileSystemTree {
 //	}
 //	private RText owner;
 	private String name;
-	private static Tree tree;
+	private static XFileSystemTree tree;
 	
 public static void main(String[] args) {
-	tree = new Tree();
+	tree = new XFileSystemTree();
 	RScrollPane scrollPane = new DockableWindowScrollPane(tree);
 	
 	JFrame frame=new JFrame();
