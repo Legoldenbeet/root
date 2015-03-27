@@ -7,7 +7,7 @@
  * Licensed under a modified BSD license.
  * See the included license file for details.
  */
-package com.echeloneditor.filesystemtree;
+package com.echeloneditor.main;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
