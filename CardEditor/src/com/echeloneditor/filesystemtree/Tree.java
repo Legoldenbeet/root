@@ -9,7 +9,6 @@
  */
 package com.echeloneditor.filesystemtree;
 
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -24,14 +23,16 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.fife.ui.RScrollPane;
 import org.fife.ui.app.GUIApplication;
 import org.fife.ui.app.StandardAction;
+import org.fife.ui.dockablewindows.DockableWindowScrollPane;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 /**
@@ -42,7 +43,6 @@ import org.fife.ui.rtextfilechooser.FileSystemTree;
  */
 class Tree extends FileSystemTree {
 
-	private FileSystemTreePlugin plugin;
 	private OpenAction openAction;
 	private OpenAction openInNewWindowAction;
 	private GoIntoAction goIntoAction;
@@ -55,9 +55,8 @@ class Tree extends FileSystemTree {
 	 * @param plugin
 	 *            The plugin.
 	 */
-	public Tree(FileSystemTreePlugin plugin) {
+	public Tree() {
 
-		this.plugin = plugin;
 		Listener listener = new Listener();
 		addMouseListener(listener);
 		addPropertyChangeListener(listener);
@@ -173,7 +172,6 @@ class Tree extends FileSystemTree {
 		public void actionPerformed(ActionEvent e) {
 			File file = getSelectedFile();
 			if (file != null && file.isDirectory()) {
-				plugin.goInto(file);
 			} else { // Should never happen
 				UIManager.getLookAndFeel().provideErrorFeedback(Tree.this);
 			}
@@ -260,5 +258,17 @@ class Tree extends FileSystemTree {
 //		}
 //
 //	}
-
+//	private RText owner;
+	private String name;
+	private static Tree tree;
+	
+public static void main(String[] args) {
+	tree = new Tree();
+	RScrollPane scrollPane = new DockableWindowScrollPane(tree);
+	
+	JFrame frame=new JFrame();
+	frame.getContentPane().add(scrollPane);
+	frame.setSize(400, 1000);
+	frame.show();
+}
 }
