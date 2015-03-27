@@ -59,7 +59,6 @@ public class XFileSystemTree extends FileSystemTree {
 						JOptionPane.showMessageDialog(null, fileSystemTree.getSelectedFileName());
 					}
 				}
-
 			}
 		});
 		RScrollPane scrollPane = new DockableWindowScrollPane(fileSystemTree);
