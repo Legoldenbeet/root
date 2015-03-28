@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry path="src" kind="src"/>
-	<classpathentry path="D:/crypto.jar" kind="lib"/>
-	<classpathentry path="com.ibm.bluez.jcop.eclipse.containers.cardconfig/com.ibm.bluez.jcop.eclipse.cardconfigs.njcop" kind="con"/>
-	<classpathentry path="D:/Workspace/2013/KoreanSeed/2013.9.18内部测试脚本/seedtest/koreanseed.jar" kind="lib"/>
-	<classpathentry path="bin" kind="output"/>
-</classpath>
-
