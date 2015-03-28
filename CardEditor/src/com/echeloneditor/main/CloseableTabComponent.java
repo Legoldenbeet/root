@@ -26,7 +26,7 @@ public class CloseableTabComponent extends JPanel {
 	public CloseableTabComponent(JTabbedPane aTabbedPane, final StatusObject statusObject) {
 		super(new BorderLayout());
 		setOpaque(false);
-		titleLabel = new JLabel("New File  ");
+		titleLabel = new JLabel("New File"+fileNameExt);
 		titleLabel.setFont(new Font("宋体", Font.PLAIN, 12));
 		titleLabel.setOpaque(false);
 		add(titleLabel, BorderLayout.CENTER);

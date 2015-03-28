@@ -32,6 +32,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -75,8 +76,6 @@ import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
-
-import javax.swing.JSplitPane;
 
 public class CardEditor {
 

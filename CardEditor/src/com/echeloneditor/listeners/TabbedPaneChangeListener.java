@@ -14,8 +14,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import sun.swing.SwingUtilities2;
-
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CloseableTabComponent;
@@ -118,11 +116,12 @@ public class TabbedPaneChangeListener implements MouseListener {
 			String encode = closeableTabComponent.getFileEncode();
 			long fileSize = closeableTabComponent.getFileSzie();
 			String filePath = closeableTabComponent.getFilePath();
+			String fileNameExt = closeableTabComponent.getFileNameExt();
 			long recordWhenOpenLastModiyTime = closeableTabComponent.getLastModifyTime();
 			boolean modify = closeableTabComponent.isModify();
 
 			if (fileSize >= 0) {
-				filePath = filePath.isEmpty() ? "New File" : filePath;
+				filePath = filePath.isEmpty() ? "New File" + fileNameExt : filePath;
 				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
 
 				statusObject.showFileSize(fileSize);
@@ -162,7 +161,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 			int eX = e.getXOnScreen();
 			int eY = e.getYOnScreen();
 
-			jPopupMenu.show((JFrame) component, eX - frameX, eY-frameY);
+			jPopupMenu.show((JFrame) component, eX - frameX, eY - frameY);
 		}
 	}
 
