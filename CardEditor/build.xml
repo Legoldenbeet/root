@@ -119,6 +119,7 @@
 			<fileset dir=".">
 				<include name="*.txt" />
 				<include name="*.bat" />
+				<include name="*.dll" />
 			</fileset>
 		</copy>
 	</target>
