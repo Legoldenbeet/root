@@ -905,11 +905,8 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					//WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
-<<<<<<< HEAD
 					fileHander.openFileWithFilePath(new File(FileAction.USER_DIR+"/readme.txt").getPath(), FileAction.DEFAULT_FILE_ENCODE);
-=======
 					fileHander.openFileWithFilePath(new File(FileAction.USER_DIR+"/history.txt").getPath(), FileAction.DEFAULT_FILE_ENCODE);
->>>>>>> 94b4381760d63a7bfab15f3935bc64c1cfe3f30a
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
