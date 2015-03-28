@@ -14,6 +14,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
+import sun.swing.SwingUtilities2;
+
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CloseableTabComponent;
@@ -52,7 +54,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 				if (tabbedPane.getTabCount() <= 0) {
 					statusObject.showSaveButton(false);
 					statusObject.reDefault();
-					
+
 					((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(Config.getValue("CONFIG", "appName"));
 				}
 				SwingUtils.showTitleFilePath(tabbedPane);
@@ -130,7 +132,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 
 				boolean visible = fileSize > (FileAction.BIG_FILE_SIZE << 20) ? true : false;
 				statusObject.showViewBtn(visible);
-				
+
 				if (recordWhenOpenLastModiyTime != -1) {
 					if (new File(filePath).lastModified() != recordWhenOpenLastModiyTime) {
 						int ret = JOptionPane.showConfirmDialog(null, "本地文档已经被修改，是否重新加载显示文档？", "本地文档被修改", JOptionPane.YES_NO_OPTION);
@@ -156,9 +158,11 @@ public class TabbedPaneChangeListener implements MouseListener {
 		if (e.isPopupTrigger()) {
 			Component component = SwingUtilities.getRoot(e.getComponent());
 			int frameX = component.getX();
+			int frameY = component.getY();
 			int eX = e.getXOnScreen();
+			int eY = e.getYOnScreen();
 
-			jPopupMenu.show(tabbedPane, eX - frameX, e.getY());
+			jPopupMenu.show((JFrame) component, eX - frameX, eY-frameY);
 		}
 	}
 
