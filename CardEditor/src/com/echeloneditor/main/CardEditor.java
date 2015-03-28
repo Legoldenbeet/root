@@ -926,7 +926,7 @@ public class CardEditor {
 		RScrollPane scrollPane = new DockableWindowScrollPane(xFileSystemTree);
 		JSplitPane centerSplitPane = new JSplitPane();
 		
-		centerSplitPane.setDividerLocation(200);
+		centerSplitPane.setDividerLocation(150);
 		centerSplitPane.setLeftComponent(scrollPane);
 		centerSplitPane.setRightComponent(tabbedPane);
 		frmEcheloneditor.getContentPane().add(centerSplitPane, BorderLayout.WEST);
