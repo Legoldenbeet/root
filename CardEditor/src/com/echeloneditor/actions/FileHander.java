@@ -218,7 +218,7 @@ public class FileHander {
 			statusObject.showSepp(true);
 			SwingUtils.showTitleFilePath(tabbedPane);
 			textArea.setCaretPosition(0);
-			textArea.requestFocusInWindow();
+			//textArea.requestFocusInWindow();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			Debug.log.debug(e1.getMessage());

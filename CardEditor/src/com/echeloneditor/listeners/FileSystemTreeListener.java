@@ -1,5 +1,7 @@
 package com.echeloneditor.listeners;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -13,7 +15,7 @@ import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.vo.StatusObject;
 
-public class FileSystemTreeListener implements MouseListener {
+public class FileSystemTreeListener implements MouseListener,KeyListener {
 	public static FileHander fileHander;
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
@@ -30,11 +32,7 @@ public class FileSystemTreeListener implements MouseListener {
 		// TODO Auto-generated method stub
 		if (SwingUtilities.isLeftMouseButton(e)) {
 			if (e.getClickCount() == 2) {
-				FileSystemTree fileSystemTree = (FileSystemTree) e.getComponent();
-				File selectedFile = fileSystemTree.getSelectedFile();
-				if (selectedFile.exists() && selectedFile.isFile() && selectedFile.canRead()) {
-					fileHander.openFileWithFilePath(selectedFile.getPath(), FileAction.DEFAULT_FILE_ENCODE);
-				}
+				open((FileSystemTree)e.getComponent());
 			}
 		}
 	}
@@ -63,4 +61,30 @@ public class FileSystemTreeListener implements MouseListener {
 
 	}
 
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+			open((FileSystemTree)e.getComponent());
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void open(FileSystemTree fileSystemTree){
+		File selectedFile = fileSystemTree.getSelectedFile();
+		if (selectedFile.exists() && selectedFile.isFile() && selectedFile.canRead()) {
+			fileHander.openFileWithFilePath(selectedFile.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+		}
+	}
 }

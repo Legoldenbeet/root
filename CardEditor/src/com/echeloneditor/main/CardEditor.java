@@ -919,8 +919,9 @@ public class CardEditor {
 		JSeparator separator_14 = new JSeparator();
 		menu_2.add(separator_14);
 
-		XFileSystemTree xFileSystemTree=new XFileSystemTree();
+		XFileSystemTree xFileSystemTree=new XFileSystemTree(tabbedPane,statusObject);
 		xFileSystemTree.addMouseListener(new FileSystemTreeListener(tabbedPane,statusObject));
+		xFileSystemTree.addKeyListener(new FileSystemTreeListener(tabbedPane,statusObject));
 		
 		RScrollPane scrollPane = new DockableWindowScrollPane(xFileSystemTree);
 		JSplitPane centerSplitPane = new JSplitPane();
