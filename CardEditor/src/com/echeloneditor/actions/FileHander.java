@@ -273,13 +273,13 @@ public class FileHander {
 		closeableTabComponent.setFileSzie(0);
 		closeableTabComponent.setFileNameExt(fileNameExt);
 		closeableTabComponent.setModify(false);
-		tabbedPane.add("New Panel", sp);
+		tabbedPane.add("New File", sp);
 		tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
 		tabbedPane.setSelectedComponent(sp);
 		// 设置选项卡title为打开文件的文件名
-		SwingUtils.setTabbedPaneTitle(tabbedPane, "New File");
-		((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle("New File");
+		SwingUtils.setTabbedPaneTitle(tabbedPane, "New File"+fileNameExt);
+		((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle("New File"+fileNameExt);
 		String res = Config.getValue("CURRENT_THEME", "current_font");
 
 		textArea.setFont(FontUtil.getFont(res));
