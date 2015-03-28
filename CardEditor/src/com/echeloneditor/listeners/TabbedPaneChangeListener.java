@@ -18,9 +18,9 @@ import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.utils.Config;
+import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.vo.StatusObject;
-import com.watchdata.commons.lang.WDAssert;
 
 public class TabbedPaneChangeListener implements MouseListener {
 	public JPopupMenu jPopupMenu;
@@ -36,6 +36,28 @@ public class TabbedPaneChangeListener implements MouseListener {
 		fileHander = new FileHander(tabbedPane, statusObject);
 
 		jPopupMenu = new JPopupMenu();
+		JMenuItem closeCurrent = new JMenuItem("关闭当前");
+		closeCurrent.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
+				String filePath = closeableTabComponent.getFilePath();
+				FileHander.fileDescMapBean.remove(filePath);
+				FileHander.currentCharPos = 0;
+				FileHander.currentEncode = FileAction.DEFAULT_FILE_ENCODE;
+
+				Debug.log.debug(FileHander.fileDescMapBean);
+
+				tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+				if (tabbedPane.getTabCount() <= 0) {
+					statusObject.showSaveButton(false);
+					statusObject.reDefault();
+					
+					((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(Config.getValue("CONFIG", "appName"));
+				}
+				SwingUtils.showTitleFilePath(tabbedPane);
+			}
+		});
 		JMenuItem closeAll = new JMenuItem("关闭所有");
 		closeAll.addActionListener(new ActionListener() {
 			@Override
@@ -65,6 +87,8 @@ public class TabbedPaneChangeListener implements MouseListener {
 				}
 			}
 		});
+		jPopupMenu.add(closeCurrent);
+		jPopupMenu.addSeparator();
 		jPopupMenu.add(closeOther);
 		jPopupMenu.addSeparator();
 		jPopupMenu.add(closeAll);

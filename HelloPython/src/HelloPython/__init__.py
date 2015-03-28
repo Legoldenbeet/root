@@ -16,10 +16,12 @@ print(os.path.exists("G:\\1000_hotel_csv.csv"))
 print(os.path.isfile("G:\\1000_hotel_csv.csv"))
 
 name,ext=os.path.splitext("G:\\1000_hotel_csv.csv")
-print(name);
-print(ext);
+print(name)
+print(ext)
 
 L=os.listdir("G:\\")
 print L
 
-os.makedirs("G:\\1234\\456")
+if os.path.exists("G:\\1234\\456")==False:
+    os.makedirs("G:\\1234\\456")
+os.system("pause")

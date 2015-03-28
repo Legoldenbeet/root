@@ -21,5 +21,7 @@
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/juniversalchardet-1.0.3.jar"/>
+	<classpathentry kind="lib" path="lib/fife.common.jar"/>
+	<classpathentry kind="src" path="i18n"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
