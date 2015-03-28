@@ -42,6 +42,8 @@ import javax.swing.text.JTextComponent;
 
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.ui.RScrollPane;
+import org.fife.ui.dockablewindows.DockableWindowScrollPane;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -53,6 +55,7 @@ import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.actions.FindAndReplaceAction;
 import com.echeloneditor.actions.XmlPreettifyAction;
 import com.echeloneditor.listeners.EditorPaneListener;
+import com.echeloneditor.listeners.FileSystemTreeListener;
 import com.echeloneditor.listeners.FindDialogListener;
 import com.echeloneditor.listeners.SimpleDragFileListener;
 import com.echeloneditor.listeners.SimpleFileChooseListener;
@@ -72,6 +75,8 @@ import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
+
+import javax.swing.JSplitPane;
 
 public class CardEditor {
 
@@ -130,6 +135,7 @@ public class CardEditor {
 					frmEcheloneditor.setVisible(true);
 					// window.frmEcheloneditor.pack();
 					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
+					
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
 							fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
@@ -914,7 +920,18 @@ public class CardEditor {
 		JSeparator separator_14 = new JSeparator();
 		menu_2.add(separator_14);
 
-		frmEcheloneditor.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+		XFileSystemTree xFileSystemTree=new XFileSystemTree();
+		xFileSystemTree.addMouseListener(new FileSystemTreeListener(tabbedPane,statusObject));
+		
+		RScrollPane scrollPane = new DockableWindowScrollPane(xFileSystemTree);
+		JSplitPane centerSplitPane = new JSplitPane();
+		
+		centerSplitPane.setDividerLocation(200);
+		centerSplitPane.setLeftComponent(scrollPane);
+		centerSplitPane.setRightComponent(tabbedPane);
+		frmEcheloneditor.getContentPane().add(centerSplitPane, BorderLayout.WEST);
+		
+		frmEcheloneditor.getContentPane().add(centerSplitPane, BorderLayout.CENTER);
 		container.doLayout();
 	}
 
