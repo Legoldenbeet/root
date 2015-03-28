@@ -22,7 +22,8 @@ import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 public class XFileSystemTree extends FileSystemTree {
 	private static final long serialVersionUID = 1L;
-	public XFileSystemTree(){
+
+	public XFileSystemTree() {
 	}
 
 	public static void main(String[] args) {
