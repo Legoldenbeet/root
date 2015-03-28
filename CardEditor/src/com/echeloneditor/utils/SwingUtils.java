@@ -3,7 +3,9 @@ package com.echeloneditor.utils;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 
 import javax.swing.JFrame;
@@ -22,6 +24,10 @@ import com.echeloneditor.main.CloseableTabComponent;
 
 public class SwingUtils {
 	private static final Logger log = Logger.getLogger(SwingUtils.class);
+
+	public static void push2Clipboard(String content) {
+		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(content), null);
+	}
 
 	public static void showTitleFilePath(JTabbedPane tabbedPane) {
 		int tabCount = tabbedPane.getTabCount();
@@ -219,7 +225,7 @@ public class SwingUtils {
 
 	public static void restart(String appName) throws IOException {
 		// 用一条指定的命令去构造一个进程生成器
-		ProcessBuilder pb = new ProcessBuilder("cmd.exe","/c","java", "-jar", appName + ".jar");
+		ProcessBuilder pb = new ProcessBuilder("cmd.exe", "/c", "java", "-jar", appName + ".jar");
 		// 让这个进程的工作区空间改为F:\dist
 		// 这样的话,它就会去F:\dist目录下找Test.jar这个文件
 		// pb.directory(new File("F:\\dist"));
