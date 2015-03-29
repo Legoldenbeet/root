@@ -41,8 +41,6 @@ import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
-import jd.gui.App;
-
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.RScrollPane;

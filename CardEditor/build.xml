@@ -100,11 +100,13 @@
 		<copy todir="${dist-dir}/plugins">
 			<fileset dir="lib" />
 		</copy>
-		<copy todir="${dist-dir}/debug">
+		<delete dir="${dist-dir}/debug" includeEmptyDirs="true" quiet="false" />
+		<mkdir dir="${dist-dir}/debug" />
+		<!--copy todir="${dist-dir}/debug">
 			<fileset dir=".">
 				<include name="debug/*" />
 			</fileset>
-		</copy>
+		</copy-->
 		<delete includeEmptyDirs="true" quiet="true">
 			<fileset dir="${dist-dir}/debug">
 				<include name="**/*" />
