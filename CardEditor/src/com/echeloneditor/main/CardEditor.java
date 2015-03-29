@@ -41,6 +41,8 @@ import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
+import jd.gui.App;
+
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.RScrollPane;
@@ -867,6 +869,20 @@ public class CardEditor {
 
 		JSeparator separator_8 = new JSeparator();
 		menu_1.add(separator_8);
+		
+		JMenuItem mntmJava = new JMenuItem("JAVA逆向分析");
+		mntmJava.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					WindowsExcuter.excute(FileAction.fsv.getHomeDirectory(), "cmd.exe /c java -jar jd-gui-1.0.0-RC2.jar");
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		mntmJava.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150329065033745_easyicon_net_24.png")));
+		menu_1.add(mntmJava);
 
 		JMenu menu_5 = new JMenu("皮肤");
 		menuBar.add(menu_5);

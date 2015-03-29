@@ -14,8 +14,7 @@ import javax.swing.filechooser.FileSystemView;
 import com.echeloneditor.utils.Config;
 
 public class FileAction {
-	public static String LINE_SEPARATOR = System.getProperty("line.separator");
-	public static int LINE_SEPARATOR_LEN = LINE_SEPARATOR.length();
+	public static String FILE_SEPARATOR=System.getProperty("file.separator");
 	public static String DEFAULT_FILE_ENCODE =Config.getValue("CONFIG", "defaultCharset");
 	public static int BUFFER_SIZE = Integer.parseInt(Config.getValue("CONFIG", "ioBuffer")) << 20;// M
 	public static String USER_DIR = System.getProperty("user.dir");
@@ -73,5 +72,6 @@ public class FileAction {
 		System.out.println(FileAction.fsv.getSystemTypeDescription(new File(".")));
 		System.out.println(FileAction.fsv.getSystemDisplayName(new File(".")));
 		System.out.println(FileAction.fsv.getRoots()[0].getPath());
+		System.out.println(System.getProperties());
 	}
 }
