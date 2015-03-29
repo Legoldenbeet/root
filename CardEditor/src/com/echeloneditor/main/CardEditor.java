@@ -131,14 +131,14 @@ public class CardEditor {
 					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
 					// 初始化窗体
-					CardEditor cardEditor=new CardEditor();
+					CardEditor cardEditor = new CardEditor();
 					// 框体屏幕居中显示
 					frmEcheloneditor.setLocationRelativeTo(null);
 					// 显示窗体
 					frmEcheloneditor.setVisible(true);
 					cardEditor.centerSplitPaneH.setDividerLocation(0.2);
-					cardEditor.centerSplitPaneV.setDividerLocation(0.9);
-					
+					cardEditor.centerSplitPaneV.setDividerLocation(0.8);
+
 					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
 
 					if (args.length > 0) {
@@ -925,9 +925,13 @@ public class CardEditor {
 		JSeparator separator_14 = new JSeparator();
 		menu_2.add(separator_14);
 
+		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+		bottomTabbedPane.addTab("状态信息", statusPanel);
+		bottomTabbedPane.addTab("控制台", null);
+
 		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		centerSplitPaneV.setTopComponent(tabbedPane);
-		centerSplitPaneV.setBottomComponent(statusPanel);
+		centerSplitPaneV.setBottomComponent(bottomTabbedPane);
 		centerSplitPaneV.setDividerLocation(0.8);
 		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
@@ -938,8 +942,12 @@ public class CardEditor {
 		RScrollPane scrollPane = new DockableWindowScrollPane(xFileSystemTree);
 		centerSplitPaneH = new JSplitPane();
 
+		JTabbedPane leftTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
+		// leftTabbedPane.add("资源管理器", scrollPane);
+		leftTabbedPane.addTab("资源管理器", scrollPane);
+
 		centerSplitPaneH.setDividerLocation(0.2);
-		centerSplitPaneH.setLeftComponent(scrollPane);
+		centerSplitPaneH.setLeftComponent(leftTabbedPane);
 		centerSplitPaneH.setRightComponent(centerSplitPaneV);
 		frmEcheloneditor.getContentPane().add(centerSplitPaneH, BorderLayout.CENTER);
 
