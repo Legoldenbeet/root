@@ -22,6 +22,5 @@
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/juniversalchardet-1.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/fife.common.jar"/>
-	<classpathentry kind="lib" path="lib/jd-gui-1.0.0-RC2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
