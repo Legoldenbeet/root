@@ -874,7 +874,7 @@ public class CardEditor {
 		mntmJava.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					WindowsExcuter.excute(FileAction.fsv.getHomeDirectory(), "cmd.exe /c java -jar jd-gui-1.0.0-RC2.jar");
+					WindowsExcuter.excute(new File(FileAction.USER_DIR+FileAction.FILE_SEPARATOR+"/bin"), "cmd.exe /c java -jar jd-gui-1.0.0-RC2.jar");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

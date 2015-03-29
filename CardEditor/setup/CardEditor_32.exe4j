@@ -23,7 +23,7 @@
       <envVar name="JDK_HOME" />
     </searchSequence>
     <classPath>
-      <directory location="./CardEditor_lib" failOnError="false" />
+      <directory location="./plugins" failOnError="false" />
       <archive location="./CardEditor.jar" failOnError="false" />
     </classPath>
     <nativeLibraryDirectories />

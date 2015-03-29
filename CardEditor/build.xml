@@ -61,7 +61,7 @@
 				<chainedmapper>
 					<!--过滤文件，将路径去掉，只保留文件名-->
 					<flattenmapper />
-					<globmapper from="*" to="CardEditor_lib/*" />
+					<globmapper from="*" to="plugins/*" />
 				</chainedmapper>
 			</mapper>
 		</pathconvert>
@@ -97,7 +97,7 @@
 		<copy todir="${dist-dir}/resources">
 			<fileset dir="resources" />
 		</copy>
-		<copy todir="${dist-dir}/CardEditor_lib">
+		<copy todir="${dist-dir}/plugins">
 			<fileset dir="lib" />
 		</copy>
 		<copy todir="${dist-dir}/debug">
