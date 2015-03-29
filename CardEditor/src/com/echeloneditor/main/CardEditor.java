@@ -87,6 +87,10 @@ public class CardEditor {
 	FindDialog findDialog = null;
 	ReplaceDialog replaceDialog = null;
 	public static AssistantToolDialog dialog = null;
+
+	public JSplitPane centerSplitPaneH;
+	public JSplitPane centerSplitPaneV;
+
 	public static FileHander fileHander;
 	public FileInputStream fis;
 
@@ -127,14 +131,16 @@ public class CardEditor {
 					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
 					// 初始化窗体
-					new CardEditor();
+					CardEditor cardEditor=new CardEditor();
 					// 框体屏幕居中显示
 					frmEcheloneditor.setLocationRelativeTo(null);
 					// 显示窗体
 					frmEcheloneditor.setVisible(true);
-					// window.frmEcheloneditor.pack();
-					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
+					cardEditor.centerSplitPaneH.setDividerLocation(0.2);
+					cardEditor.centerSplitPaneV.setDividerLocation(0.9);
 					
+					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
+
 					if (args.length > 0) {
 						for (int i = 0; i < args.length; i++) {
 							fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
@@ -181,19 +187,19 @@ public class CardEditor {
 		// 窗口容器
 		Container container = frmEcheloneditor.getContentPane();
 
-		JPanel panel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-		flowLayout.setAlignment(FlowLayout.RIGHT);
-		frmEcheloneditor.getContentPane().add(panel, BorderLayout.SOUTH);
+		JPanel statusPanel = new JPanel();
+		FlowLayout fl_statusPanel = (FlowLayout) statusPanel.getLayout();
+		fl_statusPanel.setAlignment(FlowLayout.RIGHT);
+		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
 		JButton button_send = new JButton("Sepp：");
 		button_send.setVisible(false);
 		button_send.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionevent) {
-				String filePath=SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
+				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					if (ServiceSocket.sepp==null) {
-						ServiceSocket.sepp= new SeppImpl();
+					if (ServiceSocket.sepp == null) {
+						ServiceSocket.sepp = new SeppImpl();
 					}
 					ServiceSocket.sepp.sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
 				} catch (Exception e) {
@@ -202,13 +208,13 @@ public class CardEditor {
 				}
 			}
 		});
-		panel.add(button_send);
-		
+		statusPanel.add(button_send);
+
 		JComboBox comboBox_friend = new JComboBox();
 		comboBox_friend.setVisible(false);
 		comboBox_friend.setModel(new DefaultComboBoxModel(Config.getItems("FREND_LIST").toArray()));
-		panel.add(comboBox_friend);
-		
+		statusPanel.add(comboBox_friend);
+
 		JButton button_5 = new JButton("第一页");
 		button_5.setVisible(false);
 		button_5.addActionListener(new ActionListener() {
@@ -216,7 +222,7 @@ public class CardEditor {
 				open(tabbedPane, -1, false, true);
 			}
 		});
-		panel.add(button_5);
+		statusPanel.add(button_5);
 
 		JButton button_4 = new JButton("上一页");
 		button_4.setVisible(false);
@@ -225,11 +231,11 @@ public class CardEditor {
 				open(tabbedPane, FileAction.BIG_FILE_READ_UNIT_SIZE, false, false);
 			}
 		});
-		panel.add(button_4);
+		statusPanel.add(button_4);
 
 		JButton button_2 = new JButton("下一页");
 		button_2.setVisible(false);
-		panel.add(button_2);
+		statusPanel.add(button_2);
 
 		JButton button_6 = new JButton("最后一页");
 		button_6.setVisible(false);
@@ -238,19 +244,19 @@ public class CardEditor {
 				open(tabbedPane, -1, true, true);
 			}
 		});
-		panel.add(button_6);
+		statusPanel.add(button_6);
 
 		JLabel charNmLabel = new JLabel("字符数：");
 		charNmLabel.setVerticalAlignment(SwingConstants.BOTTOM);
-		panel.add(charNmLabel);
+		statusPanel.add(charNmLabel);
 
 		JLabel fileSizeLabel = new JLabel("文件大小：");
 		fileSizeLabel.setVerticalAlignment(SwingConstants.BOTTOM);
-		panel.add(fileSizeLabel);
+		statusPanel.add(fileSizeLabel);
 
 		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(Charset.availableCharsets().keySet().toArray()));
-		panel.add(comboBox);
+		statusPanel.add(comboBox);
 
 		statusObject = new StatusObject();
 		statusObject.setCharNum(charNmLabel);
@@ -279,7 +285,7 @@ public class CardEditor {
 				}
 			}
 		});
-		panel.add(btnNewButton_2);
+		statusPanel.add(btnNewButton_2);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -417,12 +423,12 @@ public class CardEditor {
 					if (WDAssert.isEmpty(plainText)) {
 						return;
 					}
-					String debugPath = FileAction.USER_DIR +"/"+Config.getValue("CONFIG", "debugPath");
+					String debugPath = FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath");
 					File fileDir = new File(debugPath);
 					if (!fileDir.exists()) {
 						if (!fileDir.canWrite()) {
-							//JOptionPane.showMessageDialog(null, "debug缓存目录不可写!");
-							//return;
+							// JOptionPane.showMessageDialog(null, "debug缓存目录不可写!");
+							// return;
 							fileDir.setReadable(true);
 							fileDir.setWritable(true);
 							fileDir.setExecutable(true);
@@ -465,10 +471,10 @@ public class CardEditor {
 		menuBar.add(menu);
 
 		JMenu newFileMenu = new JMenu("新建");
-		Collection<String> collection=Config.getItems("FILE_TYPE");
+		Collection<String> collection = Config.getItems("FILE_TYPE");
 		newFileMenu.removeAll();
 		for (String fileExt : collection) {
-			JMenuItem menuItem=new JMenuItem("."+fileExt);
+			JMenuItem menuItem = new JMenuItem("." + fileExt);
 			menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
 			menuItem.setActionCommand("new");
 			newFileMenu.add(new JSeparator());
@@ -903,8 +909,8 @@ public class CardEditor {
 		mntmReadme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					//WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
-					fileHander.openFileWithFilePath(new File(FileAction.USER_DIR+"/history.txt").getPath(), FileAction.DEFAULT_FILE_ENCODE);
+					// WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
+					fileHander.openFileWithFilePath(new File(FileAction.USER_DIR + "/history.txt").getPath(), FileAction.DEFAULT_FILE_ENCODE);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -919,19 +925,24 @@ public class CardEditor {
 		JSeparator separator_14 = new JSeparator();
 		menu_2.add(separator_14);
 
-		XFileSystemTree xFileSystemTree=new XFileSystemTree(tabbedPane,statusObject);
-		xFileSystemTree.addMouseListener(new FileSystemTreeListener(tabbedPane,statusObject));
-		xFileSystemTree.addKeyListener(new FileSystemTreeListener(tabbedPane,statusObject));
-		
+		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		centerSplitPaneV.setTopComponent(tabbedPane);
+		centerSplitPaneV.setBottomComponent(statusPanel);
+		centerSplitPaneV.setDividerLocation(0.8);
+		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
+
+		XFileSystemTree xFileSystemTree = new XFileSystemTree(tabbedPane, statusObject);
+		xFileSystemTree.addMouseListener(new FileSystemTreeListener(tabbedPane, statusObject));
+		xFileSystemTree.addKeyListener(new FileSystemTreeListener(tabbedPane, statusObject));
+
 		RScrollPane scrollPane = new DockableWindowScrollPane(xFileSystemTree);
-		JSplitPane centerSplitPane = new JSplitPane();
-		
-		centerSplitPane.setDividerLocation(150);
-		centerSplitPane.setLeftComponent(scrollPane);
-		centerSplitPane.setRightComponent(tabbedPane);
-		frmEcheloneditor.getContentPane().add(centerSplitPane, BorderLayout.WEST);
-		
-		frmEcheloneditor.getContentPane().add(centerSplitPane, BorderLayout.CENTER);
+		centerSplitPaneH = new JSplitPane();
+
+		centerSplitPaneH.setDividerLocation(0.2);
+		centerSplitPaneH.setLeftComponent(scrollPane);
+		centerSplitPaneH.setRightComponent(centerSplitPaneV);
+		frmEcheloneditor.getContentPane().add(centerSplitPaneH, BorderLayout.CENTER);
+
 		container.doLayout();
 	}
 

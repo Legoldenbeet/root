@@ -1,5 +1,6 @@
 package com.echeloneditor.main;
 
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -22,6 +23,10 @@ public class XFileSystemTree extends FileSystemTree {
 	private OpenAction openAction;
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
+	
+	public XFileSystemTree(){
+		
+	}
 
 	public XFileSystemTree(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
