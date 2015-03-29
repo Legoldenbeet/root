@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardEditor"
-#define MyAppVersion "1.1.6"
+#define MyAppVersion "1.2.2"
 #define MyAppExeName "CardEditor.exe"
 
 [Setup]
