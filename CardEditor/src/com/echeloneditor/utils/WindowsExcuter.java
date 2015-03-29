@@ -14,7 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 public class WindowsExcuter {
-	public final static Logger log=Logger.getLogger(WindowsExcuter.class);
+	public final static Logger log = Logger.getLogger(WindowsExcuter.class);
 	public static Process p;
 	public static ProcessBuilder pb;
 
@@ -24,13 +24,13 @@ public class WindowsExcuter {
 	 * @param windowCommand
 	 * @throws Exception
 	 */
-	public static void excute(File dir, String windowCommand) throws Exception {
+	public static void excute(File dir, String windowCommand, boolean logPrint) throws Exception {
 		Debug.log.info(windowCommand);
 		List<String> cmdList = new ArrayList<String>();
 		for (String cmd : windowCommand.split(" ")) {
 			cmdList.add(cmd);
 		}
-		excute(dir, cmdList);
+		excute(dir, cmdList, logPrint);
 	}
 
 	/**
@@ -39,18 +39,19 @@ public class WindowsExcuter {
 	 * @param cmdList
 	 * @throws Exception
 	 */
-	public static void excute(File dir, List<String> cmdList) throws Exception {
+	public static void excute(File dir, List<String> cmdList, boolean logPrint) throws Exception {
 		pb = new ProcessBuilder(cmdList);
 		pb.directory(dir);
 
 		p = pb.start();
-
-		InputStream is = p.getInputStream();
-		InputStream isErr = p.getErrorStream();
-		out(is, isErr);
 		
-		p.waitFor();
-		p.destroy();
+		if (logPrint) {
+			InputStream is = p.getInputStream();
+			InputStream isErr = p.getErrorStream();
+			out(is, isErr);
+			p.waitFor();
+			p.destroy();
+		}
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class WindowsExcuter {
 	}
 
 	private static void printLog(InputStream is) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(is,Charset.forName("GBK")));
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("GBK")));
 		String line = null;
 		while ((line = br.readLine()) != null) {
 			log.debug(line);
@@ -86,12 +87,11 @@ public class WindowsExcuter {
 	}
 
 	public static void main(String[] args) throws Exception {
-		/*List<String> cmdList = new ArrayList<String>();
-		cmdList.add("ipconfig");
-		cmdList.add("/all");
-		WindowsExcuter.excute(new File("."), cmdList);
-
-		WindowsExcuter.excute(new File("."), "cmd /c ipconfig/all");*/
+		/*
+		 * List<String> cmdList = new ArrayList<String>(); cmdList.add("ipconfig"); cmdList.add("/all"); WindowsExcuter.excute(new File("."), cmdList);
+		 * 
+		 * WindowsExcuter.excute(new File("."), "cmd /c ipconfig/all");
+		 */
 		List<String> cmdList = new ArrayList<String>();
 
 		File file = new File("D:\\SLE二代母卡工具HexGhostV0.4");
@@ -99,7 +99,7 @@ public class WindowsExcuter {
 		cmdList.add("/c");
 		cmdList.add("start");
 		cmdList.add("HexGhost.exe");
-		
-		WindowsExcuter.excute(file, cmdList);
+
+		WindowsExcuter.excute(file, cmdList,true);
 	}
 }

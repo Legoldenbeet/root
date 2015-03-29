@@ -51,7 +51,7 @@ public class SimpleFileChooseListener implements ActionListener {
 				File file = fileChooser.getSelectedFile();
 				String targetPath = FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + file.getName() + ".txt";
 				try {
-					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type " + file.getName() + " >\"" + targetPath + "\"");
+					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type " + file.getName() + " >\"" + targetPath + "\"",true);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

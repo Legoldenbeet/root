@@ -100,7 +100,7 @@ public class ZipUtil {
 						destPath=file.getName();
 					}
 					//方案一
-					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+destPath+".cardeditor");
+					WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+destPath+".cardeditor",true);
 					//方案二
 					//WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type "+file.getName()+" >"+file.getName());
 					
