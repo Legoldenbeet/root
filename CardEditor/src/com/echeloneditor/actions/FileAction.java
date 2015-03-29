@@ -9,6 +9,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import javax.swing.filechooser.FileSystemView;
+
 import com.echeloneditor.utils.Config;
 
 public class FileAction {
@@ -19,6 +21,7 @@ public class FileAction {
 	public static String USER_DIR = System.getProperty("user.dir");
 	public static int BIG_FILE_READ_UNIT_SIZE = Integer.parseInt(Config.getValue("CONFIG", "bigFileReadUnitSize"));
 	public static long BIG_FILE_SIZE = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
+	public static FileSystemView fsv=FileSystemView.getFileSystemView();
 	public FileAction() {
 
 	}
@@ -64,5 +67,11 @@ public class FileAction {
 				writer.close();
 			}
 		}
+	}
+	public static void main(String[] args) {
+		System.out.println(FileAction.fsv.getHomeDirectory().getPath());
+		System.out.println(FileAction.fsv.getSystemTypeDescription(new File(".")));
+		System.out.println(FileAction.fsv.getSystemDisplayName(new File(".")));
+		System.out.println(FileAction.fsv.getRoots()[0].getPath());
 	}
 }

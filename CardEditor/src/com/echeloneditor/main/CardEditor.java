@@ -925,9 +925,9 @@ public class CardEditor {
 		JSeparator separator_14 = new JSeparator();
 		menu_2.add(separator_14);
 
-		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
 		bottomTabbedPane.addTab("状态信息", statusPanel);
-		bottomTabbedPane.addTab("控制台", null);
+		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), null);
 
 		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		centerSplitPaneV.setTopComponent(tabbedPane);
@@ -943,8 +943,7 @@ public class CardEditor {
 		centerSplitPaneH = new JSplitPane();
 
 		JTabbedPane leftTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
-		// leftTabbedPane.add("资源管理器", scrollPane);
-		leftTabbedPane.addTab("资源管理器", scrollPane);
+		leftTabbedPane.addTab("资源管理器", FileAction.fsv.getSystemIcon(FileAction.fsv.getHomeDirectory()), scrollPane);
 
 		centerSplitPaneH.setDividerLocation(0.2);
 		centerSplitPaneH.setLeftComponent(leftTabbedPane);

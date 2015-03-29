@@ -218,7 +218,7 @@ public class FileHander {
 			statusObject.showSepp(true);
 			SwingUtils.showTitleFilePath(tabbedPane);
 			textArea.setCaretPosition(0);
-			//textArea.requestFocusInWindow();
+			// textArea.requestFocusInWindow();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			Debug.log.debug(e1.getMessage());
@@ -278,8 +278,8 @@ public class FileHander {
 
 		tabbedPane.setSelectedComponent(sp);
 		// 设置选项卡title为打开文件的文件名
-		SwingUtils.setTabbedPaneTitle(tabbedPane, "New File"+fileNameExt);
-		((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle("New File"+fileNameExt);
+		SwingUtils.setTabbedPaneTitle(tabbedPane, "New File" + fileNameExt);
+		((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle("New File" + fileNameExt);
 		String res = Config.getValue("CURRENT_THEME", "current_font");
 
 		textArea.setFont(FontUtil.getFont(res));
