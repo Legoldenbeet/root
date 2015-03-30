@@ -5,11 +5,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import javax.swing.JTextArea;
 
 import com.echeloneditor.actions.SystemShellExcuter;
 
-public class SystemShell extends RSyntaxTextArea {
+public class SystemShell extends JTextArea {
 	public static byte STATUS_ERROR = (byte) -1;
 	public static byte STATUS_OK = (byte) 0;
 	public SystemShellExcuter systemShellExcuter;
@@ -19,7 +19,6 @@ public class SystemShell extends RSyntaxTextArea {
 	public SystemShell() {
 		this.setForeground(Color.red);
 		this.setBackground(Color.BLACK);
-		this.setCurrentLineHighlightColor(Color.BLACK);
 		systemShellExcuter = new SystemShellExcuter(this);
 		this.addKeyListener(new KeyListener() {
 
@@ -45,7 +44,7 @@ public class SystemShell extends RSyntaxTextArea {
 					systemShell.append("\n");
 					if (res.equalsIgnoreCase("cls")) {
 						systemShell.setText("");
-					}else {
+					} else {
 						try {
 							systemShellExcuter.excute(new File("."), "cmd /c " + res);
 						} catch (Exception e1) {

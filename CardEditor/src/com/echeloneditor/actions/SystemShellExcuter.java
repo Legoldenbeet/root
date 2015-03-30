@@ -1,10 +1,8 @@
 package com.echeloneditor.actions;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,21 +47,25 @@ public class SystemShellExcuter {
 
 		InputStream is = p.getInputStream();
 		InputStream isErr = p.getErrorStream();
-		
+		Thread.sleep(200);
 		print(is, isErr);
 		p.waitFor();
+		if (p.exitValue() == 0) {
+			System.out.println("excute successful!");
+		} else {
+			System.out.println("excute unsuccessful!");
+		}
 		p.destroy();
 	}
 
 	public void printLog(InputStream is) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("GBK")));
-		String line = null;
-		while ((line = br.readLine()) != null) {
-			systemShell.append(line);
+		int len = is.available();
+		if (len > 0) {
+			byte[] buffer = new byte[len];
+			is.read(buffer);
+			systemShell.append(new String(buffer, Charset.forName("GBK")));
 			systemShell.append("\n");
 		}
-		is.close();
-		br.close();
 	}
 
 	private void print(InputStream in, InputStream err) throws IOException {
@@ -73,9 +75,18 @@ public class SystemShellExcuter {
 
 	/**
 	 * @param args
+	 * @throws Exception
 	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args) throws Exception {
+		List<String> cmdList = new ArrayList<String>();
 
+		File file = new File(".");
+		cmdList.add("cmd.exe");
+		cmdList.add("/c");
+		// cmdList.add("start");
+		// cmdList.add("ipconfig/all");
+		cmdList.add("javac");
+
+		new SystemShellExcuter(null).excute(file, cmdList);
 	}
 }
