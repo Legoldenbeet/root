@@ -1,5 +1,6 @@
 package com.echeloneditor.main;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -16,6 +17,9 @@ public class SystemShell extends RSyntaxTextArea {
 	private static final long serialVersionUID = 5739259834646704913L;
 
 	public SystemShell() {
+		this.setForeground(Color.red);
+		this.setBackground(Color.BLACK);
+		this.setCurrentLineHighlightColor(Color.BLACK);
 		systemShellExcuter = new SystemShellExcuter(this);
 		this.addKeyListener(new KeyListener() {
 
