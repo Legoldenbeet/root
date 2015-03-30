@@ -49,7 +49,7 @@ public class SystemShell extends JTextArea {
 							systemShellExcuter.excute(new File("."), "cmd /c " + res);
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							System.out.println(e1.getMessage());
 						}
 					}
 				}

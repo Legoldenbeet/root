@@ -42,14 +42,14 @@ public class SystemShellExcuter {
 	public void excute(File dir, List<String> cmdList) throws Exception {
 		pb = new ProcessBuilder(cmdList);
 		pb.directory(dir);
+		pb.redirectErrorStream(true);
 
 		p = pb.start();
 
 		InputStream is = p.getInputStream();
-		InputStream isErr = p.getErrorStream();
 		Thread.sleep(200);
-		print(is, isErr);
-		p.waitFor();
+		printLog(is);
+		// p.waitFor();
 		if (p.exitValue() == 0) {
 			System.out.println("excute successful!");
 		} else {
@@ -66,11 +66,6 @@ public class SystemShellExcuter {
 			systemShell.append(new String(buffer, Charset.forName("GBK")));
 			systemShell.append("\n");
 		}
-	}
-
-	private void print(InputStream in, InputStream err) throws IOException {
-		printLog(in);
-		printLog(err);
 	}
 
 	/**
