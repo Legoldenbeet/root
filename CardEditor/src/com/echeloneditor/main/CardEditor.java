@@ -38,6 +38,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
@@ -90,6 +91,8 @@ public class CardEditor {
 
 	public JSplitPane centerSplitPaneH;
 	public JSplitPane centerSplitPaneV;
+	
+	public SystemShell systemShell;
 
 	public static FileHander fileHander;
 	public FileInputStream fis;
@@ -188,6 +191,7 @@ public class CardEditor {
 		Container container = frmEcheloneditor.getContentPane();
 
 		JPanel statusPanel = new JPanel();
+		statusPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
 		FlowLayout fl_statusPanel = (FlowLayout) statusPanel.getLayout();
 		fl_statusPanel.setAlignment(FlowLayout.RIGHT);
 		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
@@ -288,6 +292,7 @@ public class CardEditor {
 		statusPanel.add(btnNewButton_2);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.addMouseListener(new TabbedPaneChangeListener(tabbedPane, statusObject));
 		fileHander = new FileHander(tabbedPane, statusObject);
@@ -941,7 +946,9 @@ public class CardEditor {
 
 		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
 		bottomTabbedPane.addTab("状态信息", statusPanel);
-		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), null);
+		systemShell=new SystemShell();
+		RScrollPane shellScrollPane = new DockableWindowScrollPane(systemShell);
+		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
 
 		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		centerSplitPaneV.setTopComponent(tabbedPane);
@@ -950,6 +957,7 @@ public class CardEditor {
 		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
 		XFileSystemTree xFileSystemTree = new XFileSystemTree(tabbedPane, statusObject);
+		xFileSystemTree.setBorder(new EmptyBorder(0, 0, 0, 0));
 		xFileSystemTree.addMouseListener(new FileSystemTreeListener(tabbedPane, statusObject));
 		xFileSystemTree.addKeyListener(new FileSystemTreeListener(tabbedPane, statusObject));
 

@@ -48,7 +48,7 @@ public class WindowsExcuter {
 		if (logPrint) {
 			InputStream is = p.getInputStream();
 			InputStream isErr = p.getErrorStream();
-			out(is, isErr);
+			print(is, isErr);
 			p.waitFor();
 			p.destroy();
 		}
@@ -66,12 +66,12 @@ public class WindowsExcuter {
 
 		InputStream is = p.getInputStream();
 		InputStream isErr = p.getErrorStream();
-		out(is, isErr);
+		print(is, isErr);
 
 		p.waitFor();
 	}
 
-	private static void printLog(InputStream is) throws IOException {
+	public static void printLog(InputStream is) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("GBK")));
 		String line = null;
 		while ((line = br.readLine()) != null) {
@@ -81,7 +81,7 @@ public class WindowsExcuter {
 		br.close();
 	}
 
-	private static void out(InputStream in, InputStream err) throws IOException {
+	private static void print(InputStream in, InputStream err) throws IOException {
 		printLog(in);
 		printLog(err);
 	}
