@@ -29,7 +29,7 @@ public class ShellAction extends AbstractAction {
 		this.fileSystemTree = fileSystemTree;
 		fileHander = new FileHander(tabbedPane, statusObject);
 
-		putValue(NAME, "SYTEM SHELL");
+		putValue(NAME, "Shell");
 		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_R&KeyEvent.ALT_MASK, 0);
 		putValue(ACCELERATOR_KEY, ks);
 
