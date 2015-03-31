@@ -41,7 +41,7 @@ public class XFileSystemTree extends FileSystemTree {
 		File selectedFile = getSelectedFile();
 		boolean enable=selectedFile.isFile()==true?true:false;
 		openAction.setEnabled(enable);
-		shellAction.setEnabled(enable);
+		shellAction.setEnabled(!enable);
 	}
 
 	@Override
