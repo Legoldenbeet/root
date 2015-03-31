@@ -1,6 +1,7 @@
 package com.echeloneditor.actions;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -30,7 +31,7 @@ public class ShellAction extends AbstractAction {
 		fileHander = new FileHander(tabbedPane, statusObject);
 
 		putValue(NAME, "Shell");
-		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_R&KeyEvent.ALT_MASK, 0);
+		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_R,InputEvent.ALT_MASK);
 		putValue(ACCELERATOR_KEY, ks);
 
 		this.setEnabled(false);
