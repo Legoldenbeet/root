@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 import org.fife.ui.RScrollPane;
 import org.fife.ui.dockablewindows.DockableWindowScrollPane;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
-import org.fife.ui.rtextfilechooser.Utilities;
 
 import com.echeloneditor.actions.OpenAction;
 import com.echeloneditor.vo.StatusObject;
