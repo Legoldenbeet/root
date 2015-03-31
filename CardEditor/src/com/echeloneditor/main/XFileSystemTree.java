@@ -2,6 +2,7 @@ package com.echeloneditor.main;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -13,6 +14,7 @@ import javax.swing.SwingUtilities;
 import org.fife.ui.RScrollPane;
 import org.fife.ui.dockablewindows.DockableWindowScrollPane;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
+import org.fife.ui.rtextfilechooser.Utilities;
 
 import com.echeloneditor.actions.OpenAction;
 import com.echeloneditor.vo.StatusObject;
@@ -31,6 +33,11 @@ public class XFileSystemTree extends FileSystemTree {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
 		openAction = new OpenAction(tabbedPane, statusObject, this);
+	}
+	protected void configurePopupMenuActions() {
+		super.configurePopupMenuActions();
+		File selectedFile = getSelectedFile();
+		openAction.setEnabled(selectedFile.isFile()==true?true:false);
 	}
 
 	@Override

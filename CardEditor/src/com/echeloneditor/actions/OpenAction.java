@@ -31,6 +31,8 @@ public class OpenAction extends AbstractAction {
 		putValue(NAME, "打开");
 		KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
 		putValue(ACCELERATOR_KEY, ks);
+		
+		this.setEnabled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {
