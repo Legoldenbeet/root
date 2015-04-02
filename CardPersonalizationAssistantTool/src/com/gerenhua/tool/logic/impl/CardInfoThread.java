@@ -52,6 +52,7 @@ public class CardInfoThread extends Thread {
 			if (!"9000".equals(res.get("sw"))) {
 				logger.error("card reset error");
 			}
+			Thread.sleep(500);
 			resp = commonAPDU.send("00A4040000");
 			commonAPDU.externalAuthenticate(secrityLevel, keyVersion, keyId, encKey, macKey, dekKey);
 			resp = commonAPDU.send("80F28000024F00");
@@ -150,6 +151,7 @@ public class CardInfoThread extends Thread {
 			// commonAPDU.close();
 			expandTree(tree, true);
 			tree.updateUI();
+			Thread.currentThread().interrupt();
 		}
 	}
 

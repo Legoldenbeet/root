@@ -87,7 +87,6 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 
 	private static Thread runPrgThread = null;
 	public static RunPrgThread rpt = null;
-	public static CardInfoThread cardInfoThread = null;
 	public static UpdateStatusDialog updateStatusDialog = null;
 
 	public CardInfoDetectPanel() {
@@ -758,8 +757,11 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	 * 更新tree变化
 	 */
 	public static void refreshTree() {
-		commonAPDU = new CommonAPDU();
-		cardInfoThread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
+		if (commonAPDU==null) {
+			commonAPDU = new CommonAPDU();
+		}
+		
+		CardInfoThread cardInfoThread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
 		cardInfoThread.start();
 	}
 

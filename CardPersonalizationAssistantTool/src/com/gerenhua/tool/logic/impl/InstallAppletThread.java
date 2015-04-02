@@ -5,6 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
+import com.gerenhua.tool.panel.CardInfoDetectPanel;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -63,6 +64,9 @@ public class InstallAppletThread extends Thread {
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 				e.printStackTrace();
+			}finally{
+				CardInfoDetectPanel.refreshTree();
+				Thread.currentThread().interrupt();
 			}
 		}
 	}
