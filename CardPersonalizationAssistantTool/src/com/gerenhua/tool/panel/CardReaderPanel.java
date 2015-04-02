@@ -7,6 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -138,27 +142,35 @@ public class CardReaderPanel extends JPanel {
 		final JButton btnNewButton_1 = new JButton("关闭");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				SwingUtilities.invokeLater(new Runnable() {
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						String reader = comboBox.getSelectedItem().toString();
-						if (reader.indexOf(':') > 0) {
-							String[] board = reader.split(":");
-							FileUtil.updateBoradFile(board[0], board[1]);
+				try {
+					ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+					Thread thread = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							String reader = comboBox.getSelectedItem().toString();
+							if (reader.indexOf(':') > 0) {
+								String[] board = reader.split(":");
+								FileUtil.updateBoradFile(board[0], board[1]);
+							}
+							commonAPDU = new CommonAPDU();
+							boolean flag = commonAPDU.init(reader);
+							if (flag) {
+								btnNewButton.setEnabled(false);
+								btnNewButton_1.setEnabled(true);
+							}
 						}
-						commonAPDU = new CommonAPDU();
-						boolean flag = commonAPDU.init(reader);
-						if (flag) {
-							btnNewButton.setEnabled(false);
-							btnNewButton_1.setEnabled(true);
-						}
-					}
-				});
-				
-				
+					});
+					Future future = executorService.submit(thread);
+					future.get(1, TimeUnit.SECONDS);
+					executorService.shutdownNow();
+				} catch (Exception e2) {
+					// TODO: handle exception
+					e2.printStackTrace();
+				}
+
 			}
 		});
 		btnNewButton.setBounds(464, 11, 60, 21);
@@ -169,7 +181,7 @@ public class CardReaderPanel extends JPanel {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SwingUtilities.invokeLater(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
