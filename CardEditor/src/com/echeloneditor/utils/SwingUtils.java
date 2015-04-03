@@ -21,6 +21,7 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.echeloneditor.main.CloseableTabComponent;
+import com.watchdata.commons.lang.WDAssert;
 
 public class SwingUtils {
 	private static final Logger log = Logger.getLogger(SwingUtils.class);
@@ -195,11 +196,12 @@ public class SwingUtils {
 		String result = "";
 
 		int pos = fileName.lastIndexOf(".");
-		String fileExt = fileName.substring(pos + 1, fileName.length());
+		if (pos>0) {
+			String fileExt = fileName.substring(pos + 1, fileName.length());
+			result = Config.getValue("FILE_TYPE", fileExt);
+		}
 
-		result = Config.getValue("FILE_TYPE", fileExt);
-
-		if (result == null) {
+		if (WDAssert.isEmpty(result)) {
 			result = "text/plain";
 		}
 

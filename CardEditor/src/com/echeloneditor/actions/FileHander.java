@@ -148,7 +148,14 @@ public class FileHander {
 				closeableTabComponent.setFilePath(file.getPath());
 				closeableTabComponent.setFileEncode(currentEncode);
 				closeableTabComponent.setFileSzie(fileSize);
-				closeableTabComponent.setFileNameExt(fileName.substring(fileName.lastIndexOf(".")));
+				
+				int dotpos = fileName.lastIndexOf(".");
+				if (dotpos > 0) {
+					closeableTabComponent.setFileNameExt(fileName.substring(dotpos));
+				} else {
+					closeableTabComponent.setFileNameExt("NONE");
+				}
+
 				closeableTabComponent.setLastModifyTime(file.lastModified());
 				tabbedPane.add("New Panel", sp);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
