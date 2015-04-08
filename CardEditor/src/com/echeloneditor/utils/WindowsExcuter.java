@@ -98,8 +98,8 @@ public class WindowsExcuter {
 		cmdList.add("cmd.exe");
 		cmdList.add("/c");
 		cmdList.add("start");
-		cmdList.add("HexGhost.exe");
+		cmdList.add("E:/KeilSpace/JC30_CUT_Platform_zhangli/SRC");
 
-		WindowsExcuter.excute(file, cmdList,true);
+		WindowsExcuter.excute(new File("."), cmdList,true);
 	}
 }
