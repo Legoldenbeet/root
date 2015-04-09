@@ -5,10 +5,18 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -28,6 +36,42 @@ public class SwingUtils {
 
 	public static void push2Clipboard(String content) {
 		Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(content), null);
+	}
+
+	public static void push2Clipboard(final File file) {
+		if (file.exists() && file.canRead()) {
+			Transferable content = new Transferable() {
+				DataFlavor[] dataFlavors = new DataFlavor[] { DataFlavor.javaFileListFlavor };
+
+				@Override
+				public boolean isDataFlavorSupported(DataFlavor flavor) {
+					for (int i = 0; i < dataFlavors.length; i++) {
+						if (dataFlavors[i].equals(flavor)) {
+							return true;
+						}
+					}
+
+					return false;
+				}
+
+				@Override
+				public DataFlavor[] getTransferDataFlavors() {
+					// TODO Auto-generated method stub
+					return dataFlavors;
+				}
+
+				@Override
+				public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+					List<File> fileList = new ArrayList<File>();
+					fileList.add(file);
+					return fileList;
+				}
+			};
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(content, null);
+		} else {
+			JOptionPane.showMessageDialog(null, "权限不足，无法操作！");
+		}
 	}
 
 	public static void showTitleFilePath(JTabbedPane tabbedPane) {
@@ -196,7 +240,7 @@ public class SwingUtils {
 		String result = "";
 
 		int pos = fileName.lastIndexOf(".");
-		if (pos>0) {
+		if (pos > 0) {
 			String fileExt = fileName.substring(pos + 1, fileName.length());
 			result = Config.getValue("FILE_TYPE", fileExt);
 		}

@@ -98,6 +98,18 @@ public class TabbedPaneChangeListener implements MouseListener {
 				SwingUtils.push2Clipboard(closeableTabComponent.getFilePath());
 			}
 		});
+		
+		JMenuItem copyFile = new JMenuItem("复制文件");
+		copyFile.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				CloseableTabComponent closeableTabComponent = SwingUtils.getCloseableTabComponent(tabbedPane);
+				SwingUtils.push2Clipboard(new File(closeableTabComponent.getFilePath()));
+			}
+		});
+		
 		jPopupMenu.add(closeCurrent);
 		jPopupMenu.addSeparator();
 		jPopupMenu.add(closeOther);
@@ -105,6 +117,8 @@ public class TabbedPaneChangeListener implements MouseListener {
 		jPopupMenu.add(closeAll);
 		jPopupMenu.addSeparator();
 		jPopupMenu.add(copyPath);
+		jPopupMenu.addSeparator();
+		jPopupMenu.add(copyFile);
 	}
 
 	@Override

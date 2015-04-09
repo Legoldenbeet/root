@@ -16,12 +16,14 @@ import org.fife.ui.dockablewindows.DockableWindowScrollPane;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 import com.echeloneditor.actions.OpenAction;
+import com.echeloneditor.actions.OpenExtAction;
 import com.echeloneditor.actions.ShellAction;
 import com.echeloneditor.vo.StatusObject;
 
 public class XFileSystemTree extends FileSystemTree {
 	private static final long serialVersionUID = 1L;
 	private OpenAction openAction;
+	private OpenExtAction openExtAction;
 	private ShellAction shellAction;
 	public JTabbedPane tabbedPane;
 	public StatusObject statusObject;
@@ -34,6 +36,7 @@ public class XFileSystemTree extends FileSystemTree {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
 		openAction = new OpenAction(tabbedPane, statusObject, this);
+		openExtAction=new OpenExtAction(tabbedPane, statusObject, this);
 		shellAction=new ShellAction(tabbedPane, statusObject, this);
 	}
 	protected void configurePopupMenuActions() {
@@ -41,6 +44,7 @@ public class XFileSystemTree extends FileSystemTree {
 		File selectedFile = getSelectedFile();
 		boolean enable=selectedFile.isFile()==true?true:false;
 		openAction.setEnabled(enable);
+		openExtAction.setEnabled(enable);
 		shellAction.setEnabled(!enable);
 	}
 
@@ -52,8 +56,11 @@ public class XFileSystemTree extends FileSystemTree {
 		popup.insert(new JMenuItem(openAction), 0);
 		popup.insert(new JPopupMenu.Separator(), 1);
 		
-		popup.insert(new JMenuItem(shellAction), 2);
+		popup.insert(new JMenuItem(openExtAction), 2);
 		popup.insert(new JPopupMenu.Separator(), 3);
+		
+		popup.insert(new JMenuItem(shellAction), 4);
+		popup.insert(new JPopupMenu.Separator(), 5);
 		// Re-do this to set orientation for new menu items.
 		popup.applyComponentOrientation(getComponentOrientation());
 		return popup;
