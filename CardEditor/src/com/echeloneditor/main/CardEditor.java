@@ -83,6 +83,7 @@ public class CardEditor {
 	public static JFrame frmEcheloneditor;
 	public static JTabbedPane tabbedPane;
 	public static StatusObject statusObject;
+	public static XFileSystemTree xFileSystemTree;
 	public FontWidthRuler ruler;
 
 	FindDialog findDialog = null;
@@ -956,7 +957,7 @@ public class CardEditor {
 		centerSplitPaneV.setDividerLocation(0.8);
 		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
-		XFileSystemTree xFileSystemTree = new XFileSystemTree(tabbedPane, statusObject);
+		xFileSystemTree = new XFileSystemTree(tabbedPane, statusObject);
 		xFileSystemTree.setBorder(new EmptyBorder(0, 0, 0, 0));
 		xFileSystemTree.addMouseListener(new FileSystemTreeListener(tabbedPane, statusObject));
 		xFileSystemTree.addKeyListener(new FileSystemTreeListener(tabbedPane, statusObject));

@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import com.echeloneditor.main.CardEditor;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.watchdata.commons.lang.WDAssert;
 
@@ -83,6 +84,7 @@ public class SwingUtils {
 			}
 			String filePath = closeableTabComponent.getFilePath();
 			((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
+			CardEditor.xFileSystemTree.setSelectedFile(new File(filePath));
 		}
 	}
 

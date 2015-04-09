@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.main.CardEditor;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
@@ -150,6 +151,8 @@ public class TabbedPaneChangeListener implements MouseListener {
 				filePath = filePath.isEmpty() ? "New File" + fileNameExt : filePath;
 				((JFrame) SwingUtilities.getRoot(tabbedPane)).setTitle(filePath);
 
+				CardEditor.xFileSystemTree.setSelectedFile(new File(filePath));
+				
 				statusObject.showFileSize(fileSize);
 				statusObject.SelectEncodeItem(encode);
 				statusObject.showCharNum(0);
