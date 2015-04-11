@@ -1,19 +1,12 @@
 package com.gp.gpscript.engine;
 
-import java.math.BigInteger;
-
-import org.bouncycastle.crypto.CryptoException;
-import org.bouncycastle.crypto.params.RSAPrivateCrtKeyParameters;
-import org.mozilla.javascript.EvaluatorException;
-
 import com.gp.gpscript.script.GPConstant;
-import com.gp.gpscript.script.GPError;
 import com.gp.gpscript.script.GPKeyCryptoEngine;
 import com.gp.gpscript.script.NativeByteString;
 import com.gp.gpscript.script.NativeCrypto;
 import com.gp.gpscript.script.NativeKey;
-import com.gp.gpscript.utils.Hex;
 import com.watchdata.commons.crypto.WD3DesCryptoUtil;
+import com.watchdata.commons.crypto.pboc.WDPBOCUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -259,42 +252,46 @@ public class Hsm implements GPKeyCryptoEngine {
 	 *            data
 	 * @return the signatrue of data
 	 */
-	
-	  public NativeByteString sign(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) { NativeByteString bstrKey = p1.getBlob(); byte[] signingkey = new byte[bstrKey.GetLength()]; for (int i = 0; i < bstrKey.GetLength(); i++) signingkey[i] = bstrKey.ByteAt(i); int signingMech = (int) p2.intValue(); byte[] data = new byte[p3.GetLength()]; for (int i = 0; i < p3.GetLength(); i++) data[i] = p3.ByteAt(i); byte[] iv = new byte[p4.GetLength()]; for (int i = 0; i < p4.GetLength(); i++) iv[i] = p4.ByteAt(i);
-	  
-	  	byte[] out = null; 
-	  	if ((signingMech == Crypto.DES_MAC) || (signingMech == Crypto.DES_MAC_EMV)) {
-	  	try { 
-	  		out = Crypto.DESsign(signingkey, signingMech, data, iv); 
-	  	} catch (CryptoException e) { 
-	  		e.printStackTrace(); 
-	  		throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
-	  		} 
-	  	} else // RSA 
-		{ try { // get component of the RSA 
-			 BigInteger mod = new BigInteger(p1.getComponent(p1.MODULUS).toString(), 16);
-			 BigInteger pubExp = new BigInteger("11", 16); 
-			 BigInteger privExp = new BigInteger(p1.getComponent(p1.EXPONENT).toString(), 16); 
-			 BigInteger p = new BigInteger(p1.getComponent(p1.CRT_P).toString(), 16);
-			 BigInteger q = new BigInteger(p1.getComponent(p1.CRT_Q).toString(), 16);
-			 BigInteger pExp = new BigInteger(p1.getComponent(p1.CRT_DP1).toString(), 16);
-			 BigInteger qExp = new BigInteger(p1.getComponent(p1.CRT_DQ1).toString(), 16); 
-			 BigInteger crtCoef = new BigInteger(p1.getComponent(p1.CRT_PQ).toString(), 16);
-		 }
-	  
-	  RSAPrivateCrtKeyParameters privParameters = new RSAPrivateCrtKeyParameters(mod, pubExp, privExp, p, q, pExp, qExp, crtCoef); 
-	  out = Crypto.RSAsign(privParameters, data);
-	  } catch (CryptoException e) { 
-		  e.printStackTrace(); 
-		  throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
-		  } 
-	  } // return
-	  String str = new String(Hex.encode(out)); 
-	  Integer ee = new Integer(GPConstant.HEX); 
-	  NativeByteString sNew = new NativeByteString(str, ee); 
-	  return sNew; 
-	  }
-	 
+
+	public NativeByteString sign(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4) {
+		NativeByteString signingkey = p1.getBlob();
+		int signingMech = (int) p2.intValue();
+		String data = p3.toString();
+		data += "80";
+		while (data.length() % 16 != 0) {
+			data += "00";
+		}
+		String out = null;
+		if (signingMech == NativeCrypto.DES_MAC) {
+			out = WD3DesCryptoUtil.cbc_encrypt(signingkey.toString(), data, Padding.NoPadding, p4.toString());
+			out = out.substring(out.length() - 16);
+		} else if (signingMech == NativeCrypto.DES_MAC_EMV) {
+			out = WDPBOCUtil.triple_des_mac(signingkey.toString(), data, Padding.NoPadding, p4.toString());
+		}
+		// else // RSA
+		// {
+		// try { // get component of the RSA
+		// BigInteger mod = new BigInteger(p1.getComponent(p1.MODULUS).toString(), 16);
+		// BigInteger pubExp = new BigInteger("11", 16);
+		// BigInteger privExp = new BigInteger(p1.getComponent(p1.EXPONENT).toString(), 16);
+		// BigInteger p = new BigInteger(p1.getComponent(p1.CRT_P).toString(), 16);
+		// BigInteger q = new BigInteger(p1.getComponent(p1.CRT_Q).toString(), 16);
+		// BigInteger pExp = new BigInteger(p1.getComponent(p1.CRT_DP1).toString(), 16);
+		// BigInteger qExp = new BigInteger(p1.getComponent(p1.CRT_DQ1).toString(), 16);
+		// BigInteger crtCoef = new BigInteger(p1.getComponent(p1.CRT_PQ).toString(), 16);
+		// }
+		//
+		// RSAPrivateCrtKeyParameters privParameters = new RSAPrivateCrtKeyParameters(mod, pubExp, privExp, p, q, pExp, qExp, crtCoef);
+		// out = Crypto.RSAsign(privParameters, data);
+		// } catch (CryptoException e) {
+		// e.printStackTrace();
+		// throw new EvaluatorException((new GPError("Crypto", 0, 0, e.getMessage())).toString());
+		// }
+		// } // return
+		Integer ee = new Integer(GPConstant.HEX);
+		NativeByteString sNew = new NativeByteString(out, ee);
+		return sNew;
+	}
 
 	/**
 	 * unwrap

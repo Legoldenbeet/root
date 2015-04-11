@@ -2262,17 +2262,20 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 		    myKey=this.key;
 
 			this.key["KMC"].setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
-            //changeRate();
-		    this.nativeDel(myObject,myKey);
-			this.install(myObject,myKey);
+           //changeRate();
+           	this.card.reset(0x05);	
+            this.securityDomain.select("A0000000030000");
+			this.openSecureChannel(NO_SECUREITY_LEVEL);
+		    //this.nativeDel(myObject,myKey);
+			//this.install(myObject,myKey);
 				
 			//CPS_Output=myObject.CPS_Output;
 			//CPS_Output_ppse = myObject.CPS_Output;
 			//CPS_Output_pse = myObject.CPS_Output;
-
+			
 			//ppse
-			this.securityDomain.select("325041592E5359532E4444463031");	
-			this.openSecureChannel(NO_SECUREITY_LEVEL);  
+			//this.securityDomain.select("325041592E5359532E4444463031");	
+			//this.openSecureChannel(NO_SECUREITY_LEVEL);  
 			/*while(CPS_Output_ppse.length>0){
 	 			tagPDI = CPS_Output_ppse.left(2);
 	 			GPSystem.trace("tagPDI_ppse: " + tagPDI);
