@@ -175,7 +175,7 @@ public class GPScriptEngine extends ScriptEngine {
 		mapBean.put("0", mapValues);
 		// GPScriptEngine gpScriptEngine=new GPScriptEngine("VSDC Data Preparation", new String(fileByte), System.getProperty("user.dir") + "/profiles/GPCardProfile.xml");
 		GPScriptEngine gpScriptEngine = new GPScriptEngine("PERSONALIZE", new String(fileByte), System.getProperty("user.dir") + "/profiles/GPCardProfile.xml");
-		gpScriptEngine.setReader("WatchData System CRW-VIuo 0");
+		gpScriptEngine.setReader("KOF_SOCKET");
 		gpScriptEngine.setVarHashMap(mapBean);
 		// gpScriptEngine.setCount(1);
 		// String[] a = gpScriptEngine.execEngineDP();
@@ -184,7 +184,7 @@ public class GPScriptEngine extends ScriptEngine {
 	}
 
 	public static void main(String[] args) throws Exception {
-		dptest();
-		// issueTest();
+		//dptest();
+		issueTest();
 	}
 }

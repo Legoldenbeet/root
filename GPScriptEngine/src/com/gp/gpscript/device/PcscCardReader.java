@@ -39,6 +39,6 @@ public class PcscCardReader implements ApduChannel {
 		return cardPcsc.SendApdu(toSendData).getBytes();
 	}
 public static void main(String[] args) {
-	System.out.println(WDStringUtil.getRandomHexString(4));
+	System.out.println(WDStringUtil.getRandomHexString(8));
 }
 }

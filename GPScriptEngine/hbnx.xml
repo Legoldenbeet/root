@@ -54,7 +54,7 @@
 
 
 
-	 <NormalParater dataTypeVersion="1" name="dataType" value="7"/> 	
+	<NormalParater dataTypeVersion="1" name="dataType" value="7"/> 	
 	<!--0:Normal DataPrepare 1:Geer Data DataPrepare 2:unionPay data DataPrepare 3:huatengdata DataPrepare 6:CMBChina-->  
 	<NormalParater name="Base64DecodeTag" value=""/>
 	<NormalParater name="BlankTo20Tag" value=""/>
@@ -63,7 +63,7 @@
 	
 	<DecryptTags>
 		<DecryptTag mech="ECB" name=""/>  
-        </DecryptTags>
+    </DecryptTags>
 
 	<!-- created in programe -->
 	<!-- the last 2 AID will be supplied as an external data element per card, used when derive CMK and replace Key -->
@@ -525,26 +525,24 @@
 		<OpenSecureChannel Param="level,isFirst">
 			<Script><![CDATA[
 
-	    derivationData = new ByteBuffer();
-	       derivationKey = new String();	
-	       endPerson =  new ByteBuffer();           
+	    		derivationData = new ByteBuffer();
+	       		derivationKey = new String();	
+	       		endPerson =  new ByteBuffer();           
 				this.securityDomain.secureChannel.initializeUpdate(0,0);
 				initResp = new ByteBuffer();  			
-  			initResp = this.card.response.bytes(4,6);  
-  		//	endPerson.append("CF0B").append(this.card.response.bytes(0,10)).append("00");   
+  				initResp = this.card.response.bytes(4,6);  
+  				//	endPerson.append("CF0B").append(this.card.response.bytes(0,10)).append("00");   
 
-/*
+				/*
 				//card enc
-       			 	derivationData.clear();		
-        			derivationData.append(initResp).append("F001").append(initResp).append("0F01");        
+       			derivationData.clear();		
+        		derivationData.append(initResp).append("F001").append(initResp).append("0F01");        
 				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKenc"]);
        
 				// card mac
 				derivationData.clear();
 				derivationData.append(initResp).append("F002").append(initResp).append("0F02");        
 				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKmac"]);
-								
-						
 
 				// card dek
 				derivationData.clear();
@@ -555,10 +553,8 @@
 				this.securityDomain.secureChannel.setEncKey(this.key["CDKenc"]);
 				this.securityDomain.secureChannel.setMacKey(this.key["CDKmac"]);
 
-*/
+				*/
 
-
-   
 				// Derive KSCenc
 				derivationData.clear();
 				derivationData.append("0182").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
@@ -572,7 +568,6 @@
 				derivationData.clear();							
 				derivationData.append("0181").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
 				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCkek"]);							
-									
 	
 				// Set the keys used by the secure channel - not sure on KEK key assignments
 		
@@ -580,7 +575,7 @@
 				this.securityDomain.secureChannel.setEncKey(this.key["KSCenc"]);
 				this.securityDomain.secureChannel.setMacKey(this.key["KSCmac"]);
 
-      				this.securityDomain.secureChannel.externalAuthenticate(level);  			 
+      			this.securityDomain.secureChannel.externalAuthenticate(level);  			 
 			    
 
 	      ]]></Script>
@@ -718,7 +713,7 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 			tag010157 = new TLV(0x57,decryptData57, TLV.EMV);
 			GPSystem.trace("tag010157: "+tag010157 );
 
-			assert("error is occured.");
+			//assert("error is occured.");
 			 
 			  
 			
@@ -2240,49 +2235,45 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 		<Key Name="key0" ProfileID="00112233440000000004"/>
 
 		<Script><![CDATA[
-                      // Constants used in this fragment
-		      NO_SECUREITY_LEVEL=0x00;
-		      MACONLY= 0x01;
-		      MACENC = 0x03;
+			NO_SECUREITY_LEVEL=0x00;
+			MACONLY= 0x01;
+			MACENC = 0x03;
 
-		      CLA    = 0x80;
-		      CLASEC = 0x84;
+			CLA    = 0x80;
+		 	CLASEC = 0x84;
 
-		      INS_SelectApplication    = 0xA4;
-		      INS_Install    = 0xE6;
+		    INS_SelectApplication    = 0xA4;
+		    INS_Install    = 0xE6;
 
-		      INS_InitializeUpdate     = 0x50;
-		      INS_ExternalAuthenticate = 0x82;
-		      INS_AppendRecord         = 0xE2;
-		      INS_PutData    = 0xDA;
-		      INS_PutKey     = 0xD8;
-		      INS_ChangePin  = 0x24;
+		    INS_InitializeUpdate     = 0x50;
+		    INS_ExternalAuthenticate = 0x82;
+		    INS_AppendRecord         = 0xE2;
+		    INS_PutData    = 0xDA;
+		    INS_PutKey     = 0xD8;
+		    INS_ChangePin  = 0x24;
 
-		      INS_EndPersonalization    =  0xF0;
+		    INS_EndPersonalization    =  0xF0;
 
-		      P1 = 0x00;
-		      P2 = 0x00;
+		    P1 = 0x00;
+		    P2 = 0x00;
 
              
-		      myObject=this.data;
-		      myKey=this.key;
+		    myObject=this.data;
+		    myKey=this.key;
 
-this.key["KMC"].setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
-                        changeRate();
+			this.key["KMC"].setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
+            //changeRate();
 		    this.nativeDel(myObject,myKey);
 			this.install(myObject,myKey);
-
-		   	
 				
-				
-		CPS_Output=myObject.CPS_Output;
-		CPS_Output_ppse = myObject.CPS_Output;
-		CPS_Output_pse = myObject.CPS_Output;
+			//CPS_Output=myObject.CPS_Output;
+			//CPS_Output_ppse = myObject.CPS_Output;
+			//CPS_Output_pse = myObject.CPS_Output;
 
-		//ppse
-		this.securityDomain.select("325041592E5359532E4444463031");	
-		this.openSecureChannel(NO_SECUREITY_LEVEL);  
-		while(CPS_Output_ppse.length>0){
+			//ppse
+			this.securityDomain.select("325041592E5359532E4444463031");	
+			this.openSecureChannel(NO_SECUREITY_LEVEL);  
+			/*while(CPS_Output_ppse.length>0){
 	 			tagPDI = CPS_Output_ppse.left(2);
 	 			GPSystem.trace("tagPDI_ppse: " + tagPDI);
 				CPS_Output_ppse = CPS_Output_ppse.right(CPS_Output_ppse.length - 2);				
@@ -2420,7 +2411,7 @@ this.key["KMC"].setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4
 				}else{
 					appendRecord(tagPDI,lICC,IccData);
 				}
-			}	
+			}*/	
 
 			//allPutKey(myKey,myObject);
 			//INITIALIZED

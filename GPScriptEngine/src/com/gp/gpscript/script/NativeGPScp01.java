@@ -373,48 +373,6 @@ public class NativeGPScp01 extends IdScriptableObject {
 		return sNew;
 	}
 
-	/**
-	 * 加密密钥采用Lmk保护的密钥
-	 * 
-	 * @param @param cx
-	 * @param @param scope
-	 * @param @param p1
-	 * @param @return
-	 * @return NativeByteString
-	 * @throws Exception
-	 */
-	public NativeByteString encryptKekLmk(Context cx, Scriptable scope, NativeByteString p1) {
-		// wrapkey is KEK
-		// NativeKey KekKey=(NativeKey)key.get("Sec_KEK",scope);//new NativeKey("Sec_KEK");//("KDCkek");
-		NativeByteString bwrapKey = kekKey.getBlob();
-		log.debug("encryted KSCkek（encrypt CDK:）" + kekKey.getBlob());
-		log.debug("LMK CDK:" + p1);
-		byte[] wrapKey = new byte[bwrapKey.GetLength()];
-		for (int i = 0; i < bwrapKey.GetLength(); i++)
-			wrapKey[i] = bwrapKey.ByteAt(i);
-
-		// mech is DES_ECB when scp01
-		int mech = 0;
-
-		byte[] dataToEncrypt = new byte[p1.GetLength()];
-		for (int i = 0; i < p1.GetLength(); i++)
-			dataToEncrypt[i] = p1.ByteAt(i);
-
-		byte[] iv = new byte[8];
-		for (int i = 0; i < 8; i++)
-			iv[i] = (byte) 0;
-
-		String out = "";
-		// out = Hex.decode(NativeCrypto.encrypt(kekKey, new Integer(mech), new NativeByteString(dataToEncrypt), new NativeByteString(iv)).toString());
-		out = NativeCrypto.wrapToLmk(mech, NativeCrypto.ZMK, NativeCrypto.LMK_DOUBLE_LENGTH_KEY, new NativeByteString(wrapKey), NativeCrypto.ZMK, NativeCrypto.LMK_DOUBLE_LENGTH_KEY, new NativeByteString(dataToEncrypt), new NativeByteString(iv)).toString();
-		// return
-		log.debug("out:" + out);
-		String str = out;
-		Integer ee = new Integer(GPConstant.HEX);
-		NativeByteString sNew = new NativeByteString(str, ee);
-		return sNew;
-	}
-
 	/*************************************************/
 	/* GP function */
 	/* throw exception according to the parameter***** */
