@@ -2,7 +2,6 @@ package com.gp.gpscript.device;
 
 import org.apache.log4j.Logger;
 
-import com.gp.gpscript.engine.ScriptEngine;
 import com.gp.gpscript.script.ApduChannel;
 import com.watchdata.cardpcsc.CardPcsc;
 import com.watchdata.commons.lang.WDByteUtil;

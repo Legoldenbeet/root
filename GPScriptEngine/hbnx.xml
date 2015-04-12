@@ -2266,6 +2266,7 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
            	this.card.reset(0x05);	
             this.securityDomain.select("A0000000030000");
 			this.openSecureChannel(NO_SECUREITY_LEVEL);
+			assert("hello error!");
 		    //this.nativeDel(myObject,myKey);
 			//this.install(myObject,myKey);
 				
