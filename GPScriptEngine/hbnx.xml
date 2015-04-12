@@ -2246,15 +2246,30 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 		    P2 = 0x00;
 
              
-		    myObject=this.data;
-		    myKey=this.key;
-
-			this.key["KMC"].setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
-           //changeRate();
-           	ATR=this.card.reset(0x05);	
-            this.securityDomain.select("A0000000030000");
-			this.openSecureChannel(NO_SECUREITY_LEVEL);
-			assert("is it go on?");
+		    //myObject=this.data;
+		    //myKey=this.key;
+			KMC=this.key["KMC"];
+			KMC.setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
+          
+           	ATR=this.card.reset(0x05);
+           	GPSystem.trace(ATR);	
+           
+           	SD=this.securityDomain;	
+            SD.select("A0000000030000");
+			SD.openSecureChannel(NO_SECUREITY_LEVEL);
+			
+			TAG00CF=SD.getData(0xCF);
+			TAG5744=SD.getData(0x5744);
+			GPSystem.trace(TAG00CF);
+			GPSystem.trace(TAG5744);
+			
+			AID=new ByteString("A0000000031010",HEX);
+			
+			//SD.deleteAID(AID);
+			SD.deleteAID(AID,0x6A80);
+			
+			
+			//assert("is it go on?");
 		    //this.nativeDel(myObject,myKey);
 			//this.install(myObject,myKey);
 				
@@ -2411,7 +2426,7 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 			//SECURED
 			//this.card.sendApdu(0X80, 0xF0, 0x80, 0x0f,0x00);
 
-   			this.closeSecureChannel();
+   			SD.closeSecureChannel();
 
 		]]></Script>
 	</ScriptFragment>
