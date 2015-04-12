@@ -2249,12 +2249,13 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 		    //myObject=this.data;
 		    //myKey=this.key;
 			KMC=this.key["KMC"];
-			KMC.setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
-          
-           	ATR=this.card.reset(0x05);
-           	GPSystem.trace(ATR);	
+			KMC.setComponent(Key.DES, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
+          	
+          	SD=this.securityDomain;
+          	
+           	ATR=SD.card.reset(Card.RESET_WARM);
+           	GPSystem.trace(ATR);
            
-           	SD=this.securityDomain;	
             SD.select("A0000000030000");
 			SD.openSecureChannel(NO_SECUREITY_LEVEL);
 			
