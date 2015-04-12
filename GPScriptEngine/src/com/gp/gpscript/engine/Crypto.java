@@ -10,7 +10,7 @@ import com.watchdata.commons.crypto.pboc.WDPBOCUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
 import com.watchdata.commons.lang.WDStringUtil;
 
-public class Hsm implements GPKeyCryptoEngine {
+public class Crypto implements GPKeyCryptoEngine {
 
 	public NativeByteString getKey(NativeKey p1) {
 		return new NativeByteString("getKey", new Integer(GPConstant.HEX));
@@ -396,8 +396,8 @@ public class Hsm implements GPKeyCryptoEngine {
 		NativeByteString keyStr = new NativeByteString("404142434445464748494a4b4c4d4e4f", GPConstant.HEX);
 		NativeKey nativeKey = new NativeKey("1");
 		nativeKey.setStrBlob(keyStr);
-		NativeByteString out = new Hsm().encrypt(nativeKey, NativeCrypto.DES_ECB, keyStr, keyStr);
+		NativeByteString out = new Crypto().encrypt(nativeKey, NativeCrypto.DES_ECB, keyStr, keyStr);
 		System.out.println(out);
-		System.out.println(new Hsm().decrypt(nativeKey, NativeCrypto.DES_ECB, out, keyStr));
+		System.out.println(new Crypto().decrypt(nativeKey, NativeCrypto.DES_ECB, out, keyStr));
 	}
 }

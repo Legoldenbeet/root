@@ -184,7 +184,7 @@ public class GPScriptEngine extends ScriptEngine {
 	}
 
 	public static void main(String[] args) throws Exception {
-		//dptest();
+		dptest();
 		issueTest();
 	}
 }

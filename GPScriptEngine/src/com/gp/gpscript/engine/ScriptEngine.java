@@ -427,7 +427,7 @@ public class ScriptEngine {
 		na.card.profile = cardProfile;
 		na.card.setApduChannel(apduChannel);
 		na.crypto = new NativeCrypto();
-		Hsm hsm = new Hsm();
+		Crypto hsm = new Crypto();
 		// cefk.setKmsi(kmsi);
 		// cefk.setKmsServer(kmsServer);
 		NativeCrypto.cryptoEngine.set(hsm);
@@ -462,7 +462,7 @@ public class ScriptEngine {
 		ngpa.card.setApduChannel(apduChannel);
 		ngpa.card.profile = cardProfile;
 		ngpa.crypto = new NativeCrypto();
-		Hsm cefk = new Hsm();
+		Crypto cefk = new Crypto();
 		// cefk.setKmsi(kmsi);
 		// cefk.setKmsServer(kmsServer);
 		NativeCrypto.cryptoEngine.set(cefk);
@@ -490,7 +490,7 @@ public class ScriptEngine {
 		sd.card.setApduChannel(apduChannel);
 		sd.card.profile = cardProfile;
 		sd.crypto = new NativeCrypto();
-		Hsm cefk = new Hsm();
+		Crypto cefk = new Crypto();
 		// cefk.setKmsi(kmsi);
 		// cefk.setKmsServer(kmsServer);
 		NativeCrypto.cryptoEngine.set(cefk);
