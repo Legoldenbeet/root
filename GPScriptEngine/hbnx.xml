@@ -142,10 +142,15 @@
 
 <Function Name="assert" Param="errmsg">
 		<Script><![CDATA[
-		 		m=new javax.swing.JOptionPane();
-			 	m.showMessageDialog(null,errmsg,"提示框",m.ERROR_MESSAGE);
-			   	GPSystem.trace(errmsg);
+			var options = ["是", "否"];
+		 	op=new javax.swing.JOptionPane();
+			ret = op.showOptionDialog(null, errmsg, "信息框", op.YES_NO_OPTION, op.QUESTION_MESSAGE, null, options, options[0]);
+			if(ret==op.YES_OPTION){
+			 	GPSystem.trace("assert pass.");
+			}else{
+			 	GPSystem.trace(errmsg);
 			   	throw Error(errmsg);
+			}
       ]]></Script>
 	</Function>
 	
@@ -2266,7 +2271,7 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
            	this.card.reset(0x05);	
             this.securityDomain.select("A0000000030000");
 			this.openSecureChannel(NO_SECUREITY_LEVEL);
-			assert("hello error!");
+			assert("is it go on?");
 		    //this.nativeDel(myObject,myKey);
 			//this.install(myObject,myKey);
 				
