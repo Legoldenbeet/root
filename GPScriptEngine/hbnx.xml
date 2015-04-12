@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by et8 (et8) -->
-<!-- edited with XML Spy v4.2 U (http://www.xmlspy.com) by Kiushan Pirzadeh (Visa) kpirzade@visa.com -->
-<ApplicationProfile Name="hbnx_double_export" ProfileVersion="1.0.0" UniqueID="00001AAAAA" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="GP ApplicationProfile.xsd">
+<ApplicationProfile Name="gp_script_engine" ProfileVersion="1.0.0" UniqueID="00001AAAAA" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="GP ApplicationProfile.xsd">
 	<Revisions>
 		<Revision By="Kiushan Pirzadeh" Date="2002-02-13" Digest="0000" ProfileID="00001AAAAA" Time="15:54:00" Version="1.0.0"/>
 	</Revisions>
@@ -40,8 +38,6 @@
 		</Codes>
 	</ApplicationInfo>
 
-
-	
 	<Key External="false" Name="KSCmac" ProfileID=""/>
 	<Key External="false" Name="KSCenc" ProfileID=""/>
 	<Key External="false" Name="KSCkek" ProfileID=""/>
@@ -52,20 +48,7 @@
 	<Key External="false" Name="BANKKEK" ProfileID=""/>
 	<Key External="false" Name="KMC" ProfileID=""/>
 
-
-
-	<NormalParater dataTypeVersion="1" name="dataType" value="7"/> 	
-	<!--0:Normal DataPrepare 1:Geer Data DataPrepare 2:unionPay data DataPrepare 3:huatengdata DataPrepare 6:CMBChina-->  
-	<NormalParater name="Base64DecodeTag" value=""/>
-	<NormalParater name="BlankTo20Tag" value=""/>
-	<NormalParater name="DgiWithoutTag" value=""/>//union data
-
-	
-	<DecryptTags>
-		<DecryptTag mech="ECB" name=""/>  
-    </DecryptTags>
-
-	<!-- created in programe -->
+	<!-- created in program -->
 	<!-- the last 2 AID will be supplied as an external data element per card, used when derive CMK and replace Key -->
 	<DataElement Encoding="HEX" External="true" FixedLength="true" Length="9" Name="AID" ReadWrite="true" Type="BYTESTRING" Update="true"/>
 	<!-- CSN will be supplied as an external data element per card, used when derive CMK and replace Key -->
@@ -2268,7 +2251,7 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 
 			this.key["KMC"].setComponent(0x80, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
            //changeRate();
-           	this.card.reset(0x05);	
+           	ATR=this.card.reset(0x05);	
             this.securityDomain.select("A0000000030000");
 			this.openSecureChannel(NO_SECUREITY_LEVEL);
 			assert("is it go on?");
