@@ -6,7 +6,6 @@ import java.util.List;
 import javax.smartcardio.ResponseAPDU;
 
 import com.gerenhua.tool.log.Log;
-import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.IAPDUChannel;
 import com.gerenhua.tool.utils.Config;
 import com.watchdata.cardpcsc.CardPcsc;
@@ -25,17 +24,17 @@ public class PcscChannel implements IAPDUChannel{
 	}
 	
 	public boolean init(String reader) {
+		CardPcsc.LOG_ENABLE=false;
 		return CardPcsc.connectReader(reader);
 	}
 	public String reset(){
-		return WDByteUtil.bytes2HEX(CardPcsc.resetCard());
+		return WDByteUtil.bytes2HEX(CardPcsc.resetCard().getBytes())+"9000";
 	}
 	
 	public String send(String commandApdu) {
-		String resp="";
 		logger.debug("send[" + commandApdu.toUpperCase() + "]");
 		ResponseAPDU responseAPDU = CardPcsc.sendApdu(WDByteUtil.HEX2Bytes(commandApdu));
-		resp=WDByteUtil.bytes2HEX(responseAPDU.getBytes());
+		String resp=WDByteUtil.bytes2HEX(responseAPDU.getBytes());
 		if (responseAPDU.getSW()==0x9000) {
 			logger.debug("recv[" +resp+ "]");
 		}else {

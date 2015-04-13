@@ -1,5 +1,6 @@
 package com.watchdata.test;
 
+import javax.smartcardio.ATR;
 import javax.smartcardio.ResponseAPDU;
 
 import com.watchdata.cardpcsc.CardPcsc;
@@ -30,11 +31,11 @@ public class TestPcsc {
 		}
 */
 		// 复位
-		byte[] data = CardPcsc.resetCard();
+		ATR data = CardPcsc.resetCard();
 		if (data == null) {
 
 		} else {
-			System.out.println(WDByteUtil.bytes2HEX(data));
+			System.out.println(WDByteUtil.bytes2HEX(data.getBytes()));
 		}
 
 		// 发送指令1

@@ -20,10 +20,11 @@ import com.watchdata.commons.lang.WDByteUtil;
 
 public class CardPcsc {
 	private static Logger log = Logger.getLogger(CardPcsc.class);
-	public static CardTerminal cardTerminal=null;
+	public static CardTerminal cardTerminal = null;
 	public static Card card = null;
-	public static CardChannel cardChannel=null;
+	public static CardChannel cardChannel = null;
 	private static boolean connected = false;
+	public static boolean LOG_ENABLE = true;
 
 	/**
 	 * Provides a list of readers already introduced to the subsystem
@@ -75,6 +76,7 @@ public class CardPcsc {
 
 	/**
 	 * connect the reader(CAD)
+	 * 
 	 * @param reader
 	 * @return true:success false:fail
 	 */
@@ -112,7 +114,7 @@ public class CardPcsc {
 	 * @return: the reset data
 	 * 
 	 */
-	public static byte[] resetCard() {
+	public static ATR resetCard() {
 		if (connected == false) {
 			log.error("please connect reader first.");
 			return null;
@@ -131,8 +133,9 @@ public class CardPcsc {
 		if (atr == null) {
 			return null;
 		} else {
-			log.debug("ATR:" +WDByteUtil.bytes2HEX(atr.getBytes()));
-			return atr.getBytes();
+			log.debug("ATR:" + WDByteUtil.bytes2HEX(atr.getBytes()));
+			log.debug("HistoricalBytes:" + WDByteUtil.bytes2HEX(atr.getHistoricalBytes()));
+			return atr;
 		}
 	}
 
@@ -163,32 +166,35 @@ public class CardPcsc {
 		}
 		try {
 			if (card != null) {
-				if (LE==0) {
-					LE=0x100;//256
+				if (LE == 0) {
+					LE = 0x100;// 256
 				}
 				// 通道默认基本逻辑通道
 				cardChannel = card.getBasicChannel();
 				// 指令
 				CommandAPDU commandAPDU;
-				if (data==null) {
-					if (LE==-1) {
-						commandAPDU=new CommandAPDU(CLA, INS, P1, P2);//case 1
-					}else {    
-						commandAPDU = new CommandAPDU(CLA, INS, P1, P2, LE);//case 2
+				if (data == null) {
+					if (LE == -1) {
+						commandAPDU = new CommandAPDU(CLA, INS, P1, P2);// case 1
+					} else {
+						commandAPDU = new CommandAPDU(CLA, INS, P1, P2, LE);// case 2
 					}
-				}else {
-					if (LE==-1) {
-						commandAPDU=new CommandAPDU(CLA, INS, P1, P2, data);//case 3
-					}else {
-						commandAPDU = new CommandAPDU(CLA, INS, P1, P2, data, LE);//case 4
+				} else {
+					if (LE == -1) {
+						commandAPDU = new CommandAPDU(CLA, INS, P1, P2, data);// case 3
+					} else {
+						commandAPDU = new CommandAPDU(CLA, INS, P1, P2, data, LE);// case 4
 					}
 				}
-				
-				log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
+				if (LOG_ENABLE) {
+					log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
+				}
 				// 发送指令，返回响应
 				responseAPDU = cardChannel.transmit(commandAPDU);
-				// 响应数据
-				log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
+				if (LOG_ENABLE) {
+					// 响应数据
+					log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -199,13 +205,14 @@ public class CardPcsc {
 	}
 
 	/**
-	 * Send data to the card terminal and get the 
-	 * response as an ResponseAPDU object
-	 * @param data send APDU command
+	 * Send data to the card terminal and get the response as an ResponseAPDU object
+	 * 
+	 * @param data
+	 *            send APDU command
 	 * @return ResponseAPDU
 	 */
 	public static ResponseAPDU sendApdu(byte[] data) {
-		ResponseAPDU responseAPDU=null;
+		ResponseAPDU responseAPDU = null;
 		if (connected == false) {
 			log.error("please connect reader first.");
 			return responseAPDU;
@@ -220,11 +227,15 @@ public class CardPcsc {
 				cardChannel = card.getBasicChannel();
 				// 指令
 				CommandAPDU commandAPDU = new CommandAPDU(data);
-				log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
+				if (LOG_ENABLE) {
+					log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
+				}
 				// 发送指令，返回响应
 				responseAPDU = cardChannel.transmit(commandAPDU);
-				// 响应数据
-				log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
+				if (LOG_ENABLE) {
+					// 响应数据
+					log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
+				}
 			}
 		} catch (Exception e) {
 			log.error("SendApdu error:" + e.getMessage());
@@ -239,6 +250,7 @@ public class CardPcsc {
 	public static void disConnectReader() {
 		disConnectReader(false);
 	}
+
 	/**
 	 * 
 	 * @param reset
@@ -254,7 +266,8 @@ public class CardPcsc {
 		}
 		log.debug("card disconnect success.");
 	}
+
 	public static void main(String[] args) {
-		System.out.println(-1&0x00ff);
+		System.out.println(-1 & 0x00ff);
 	}
 }
