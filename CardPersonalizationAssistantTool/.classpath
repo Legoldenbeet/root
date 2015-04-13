@@ -15,6 +15,5 @@
 	<classpathentry kind="lib" path="lib/jna.jar"/>
 	<classpathentry kind="lib" path="lib/ikms.jar"/>
 	<classpathentry kind="lib" path="lib/JTattoo-1.6.10.jar"/>
-	<classpathentry kind="lib" path="lib/CardPcsc.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
