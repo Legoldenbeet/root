@@ -3,7 +3,10 @@ package com.gerenhua.tool.logic.apdu.pcsc;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.smartcardio.ResponseAPDU;
+
 import com.gerenhua.tool.log.Log;
+import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.IAPDUChannel;
 import com.gerenhua.tool.utils.Config;
 import com.watchdata.cardpcsc.CardPcsc;
@@ -11,43 +14,39 @@ import com.watchdata.commons.lang.WDByteUtil;
 /**
  * 
  * @description: PCSC通道
- * @author: juan.jiang Apr 10, 2012
+ * @author: liya.xiao Apr 10, 2012
  * @version: 1.0.0
  * @modify:
  * @Copyright: watchdata
  */
 public class PcscChannel implements IAPDUChannel{
 	private static Log logger = new Log();	
-	private static CardPcsc cardPcsc;
 	public PcscChannel(){
-		if(cardPcsc==null){
-			cardPcsc = new CardPcsc();
-		}
-		//logger.setLogArea(TradePanel.textPane);
 	}
 	
 	public boolean init(String reader) {
-		return cardPcsc.connectReader(reader);
+		return CardPcsc.connectReader(reader);
 	}
 	public String reset(){
-		return WDByteUtil.bytes2HEX(cardPcsc.resetCard());
+		return WDByteUtil.bytes2HEX(CardPcsc.resetCard());
 	}
 	
 	public String send(String commandApdu) {
+		String resp="";
 		logger.debug("send[" + commandApdu.toUpperCase() + "]");
-		String recv = cardPcsc.SendApdu(WDByteUtil.HEX2Bytes(commandApdu));
-		if (recv.substring(recv.length() - 4,recv.length()).equalsIgnoreCase("9000")) {
-			logger.debug("recv[" + recv + "]");
+		ResponseAPDU responseAPDU = CardPcsc.sendApdu(WDByteUtil.HEX2Bytes(commandApdu));
+		resp=WDByteUtil.bytes2HEX(responseAPDU.getData());
+		if (responseAPDU.getSW()==0x9000) {
+			logger.debug("recv[" +resp+ "]");
 		}else {
-			logger.error("recv[" + recv + "]");
+			logger.error("recv[" + resp + "]");
 		}
-		
-		return recv;
+		return resp;
 	}
 	
 	public List<String> getReaderList(){
 		List<String> list=new ArrayList<String>();
-		String[] termList=cardPcsc.getReaderList();
+		String[] termList=CardPcsc.getReaderList();
 		
 		if(termList != null){
 			for (String term : termList) {
@@ -67,6 +66,6 @@ public class PcscChannel implements IAPDUChannel{
 	}
 	
 	public void close(){
-		cardPcsc.disConnectReader();
+		CardPcsc.disConnectReader();
 	}
 }
