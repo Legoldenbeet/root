@@ -2244,7 +2244,6 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 
 		    P1 = 0x00;
 		    P2 = 0x00;
-
              
 		    //myObject=this.data;
 		    //myKey=this.key;
