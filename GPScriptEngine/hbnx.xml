@@ -2254,15 +2254,12 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
           	SD=this.securityDomain;
           	
            	ATR=SD.card.reset(Card.RESET_WARM);
-           	GPSystem.trace(ATR);
            
             SD.select("A0000000030000");
 			SD.openSecureChannel(NO_SECUREITY_LEVEL);
 			
-			TAG00CF=SD.getData(0xCF);
+			TAG00CF=SD.getData(0x00CF);
 			TAG5744=SD.getData(0x5744);
-			GPSystem.trace(TAG00CF);
-			GPSystem.trace(TAG5744);
 			
 			AID=new ByteString("A0000000031010",HEX);
 			
