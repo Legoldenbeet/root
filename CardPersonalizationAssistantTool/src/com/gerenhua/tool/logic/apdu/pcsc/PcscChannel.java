@@ -35,7 +35,7 @@ public class PcscChannel implements IAPDUChannel{
 		String resp="";
 		logger.debug("send[" + commandApdu.toUpperCase() + "]");
 		ResponseAPDU responseAPDU = CardPcsc.sendApdu(WDByteUtil.HEX2Bytes(commandApdu));
-		resp=WDByteUtil.bytes2HEX(responseAPDU.getData());
+		resp=WDByteUtil.bytes2HEX(responseAPDU.getBytes());
 		if (responseAPDU.getSW()==0x9000) {
 			logger.debug("recv[" +resp+ "]");
 		}else {
