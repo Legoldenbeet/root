@@ -184,11 +184,11 @@ public class CardPcsc {
 					}
 				}
 				
-				//log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
+				log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
 				// 发送指令，返回响应
 				responseAPDU = cardChannel.transmit(commandAPDU);
 				// 响应数据
-				//log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
+				log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -220,11 +220,11 @@ public class CardPcsc {
 				cardChannel = card.getBasicChannel();
 				// 指令
 				CommandAPDU commandAPDU = new CommandAPDU(data);
-				//log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
+				log.debug("send:" + WDByteUtil.bytes2HEX(commandAPDU.getBytes()));
 				// 发送指令，返回响应
 				responseAPDU = cardChannel.transmit(commandAPDU);
 				// 响应数据
-				//log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
+				log.debug("resp:" + WDByteUtil.bytes2HEX(responseAPDU.getBytes()));
 			}
 		} catch (Exception e) {
 			log.error("SendApdu error:" + e.getMessage());
