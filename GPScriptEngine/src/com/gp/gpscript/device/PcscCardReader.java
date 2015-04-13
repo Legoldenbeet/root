@@ -21,7 +21,7 @@ public class PcscCardReader implements ApduChannel {
 
 	@Override
 	public byte[] reset() {
-		return CardPcsc.resetCard();
+		return CardPcsc.resetCard().getBytes();
 	}
 
 	@Override
