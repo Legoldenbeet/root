@@ -512,30 +512,29 @@
 <SecureChannel SecureChannel="SCP02" SecurityLevel="C_MAC">
 		<OpenSecureChannel Param="level,isFirst">
 			<Script><![CDATA[
-
+				SC=this.securityDomain.secureChannel;
+				CARD=this.card;
 	    		derivationData = new ByteBuffer();
-	       		derivationKey = new String();	
-	       		endPerson =  new ByteBuffer();           
-				this.securityDomain.secureChannel.initializeUpdate(0,0);
-				initResp = new ByteBuffer();  			
-  				initResp = this.card.response.bytes(4,6);  
-  				//	endPerson.append("CF0B").append(this.card.response.bytes(0,10)).append("00");   
+	    		
+				SC.initializeUpdate(0,0);
+				initResp = new ByteString();  			
+  				initResp = CARD.response.bytes(4,6);  
 
 				/*
 				//card enc
        			derivationData.clear();		
         		derivationData.append(initResp).append("F001").append(initResp).append("0F01");        
-				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKenc"]);
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKenc"]);
        
 				// card mac
 				derivationData.clear();
 				derivationData.append(initResp).append("F002").append(initResp).append("0F02");        
-				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKmac"]);
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKmac"]);
 
 				// card dek
 				derivationData.clear();
 				derivationData.append(initResp).append("F003").append(initResp).append("0F03");        
-				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKkek"]);					
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKkek"]);					
 
 				this.securityDomain.secureChannel.setKekKey(this.key["CDKkek"]);			
 				this.securityDomain.secureChannel.setEncKey(this.key["CDKenc"]);
@@ -546,24 +545,24 @@
 				// Derive KSCenc
 				derivationData.clear();
 				derivationData.append("0182").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
-				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCenc"]);
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCenc"]);
 
 				// Derive KSCmac
 				derivationData.clear();
 				derivationData.append("0101").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
-				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCmac"]);
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCmac"]);
 
 				derivationData.clear();							
 				derivationData.append("0181").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
-				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCkek"]);							
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCkek"]);							
 	
 				// Set the keys used by the secure channel - not sure on KEK key assignments
 		
-				this.securityDomain.secureChannel.setKekKey(this.key["KSCkek"]);			
-				this.securityDomain.secureChannel.setEncKey(this.key["KSCenc"]);
-				this.securityDomain.secureChannel.setMacKey(this.key["KSCmac"]);
+				SC.setKekKey(this.key["KSCkek"]);			
+				SC.setEncKey(this.key["KSCenc"]);
+				SC.setMacKey(this.key["KSCmac"]);
 
-      			this.securityDomain.secureChannel.externalAuthenticate(level);  			 
+      			SC.externalAuthenticate(level);  			 
 			    
 
 	      ]]></Script>
@@ -2251,9 +2250,11 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 			KMC.setComponent(Key.DES, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
           	
           	SD=this.securityDomain;
+          	CARD=this.card;
           	
-           	ATR=SD.card.reset(Card.RESET_WARM);
-           
+           	ATR=CARD.reset(Card.RESET_WARM);
+           	ATR=CARD.reset(Card.RESET_COLD)
+           	
             SD.select("A0000000030000");
 			SD.openSecureChannel(NO_SECUREITY_LEVEL);
 			
@@ -2265,8 +2266,8 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 			//SD.deleteAID(AID);
 			SD.deleteAID(AID,0x6A80);
 			
-			
 			//assert("is it go on?");
+			
 		    //this.nativeDel(myObject,myKey);
 			//this.install(myObject,myKey);
 				

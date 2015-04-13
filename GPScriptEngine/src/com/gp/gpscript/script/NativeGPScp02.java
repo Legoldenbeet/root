@@ -28,6 +28,10 @@ import com.gp.gpscript.utils.Hex;
  * @version 1.0
  */
 public class NativeGPScp02 extends IdScriptableObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Logger log = Logger.getLogger(NativeGPScp02.class);
 	private static final Object SCP02_TAG = new Object();
 

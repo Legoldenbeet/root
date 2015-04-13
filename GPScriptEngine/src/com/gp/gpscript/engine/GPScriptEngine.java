@@ -175,7 +175,7 @@ public class GPScriptEngine extends ScriptEngine {
 		mapBean.put("0", mapValues);
 		// GPScriptEngine gpScriptEngine=new GPScriptEngine("VSDC Data Preparation", new String(fileByte), System.getProperty("user.dir") + "/profiles/GPCardProfile.xml");
 		GPScriptEngine gpScriptEngine = new GPScriptEngine("PERSONALIZE", new String(fileByte), System.getProperty("user.dir") + "/profiles/GPCardProfile.xml");
-		gpScriptEngine.setReader("SCM Microsystems Inc. SCR3310 v2.0 USB SC Reader 0");
+		gpScriptEngine.setReader("KOF_SOCKET");
 		gpScriptEngine.setVarHashMap(mapBean);
 		// gpScriptEngine.setCount(1);
 		// String[] a = gpScriptEngine.execEngineDP();
