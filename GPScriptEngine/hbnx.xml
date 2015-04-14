@@ -2256,7 +2256,9 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
            	ATR=CARD.reset(Card.RESET_COLD)
            	
             SD.select("A0000000030000");
-			SD.openSecureChannel(NO_SECUREITY_LEVEL);
+			//SD.openSecureChannel(NO_SECUREITY_LEVEL);
+			SD.openSecureChannel(MACONLY);
+			//SD.openSecureChannel(MACENC);
 			
 			TAG00CF=SD.getData(0x00CF);
 			TAG5744=SD.getData(0x5744);
@@ -2268,161 +2270,21 @@ this.key["BANKKEK"].setComponent(0x80, new ByteString("404142434445464748494A4B4
 			
 			//assert("is it go on?");
 			
-		    //this.nativeDel(myObject,myKey);
-			//this.install(myObject,myKey);
-				
-			//CPS_Output=myObject.CPS_Output;
-			//CPS_Output_ppse = myObject.CPS_Output;
-			//CPS_Output_pse = myObject.CPS_Output;
+			GPSystem.trace("yes?");
+			GPSystem.trace("time:"+GPSystem.dateTimeByteString());
 			
-			//ppse
-			//this.securityDomain.select("325041592E5359532E4444463031");	
-			//this.openSecureChannel(NO_SECUREITY_LEVEL);  
-			/*while(CPS_Output_ppse.length>0){
-	 			tagPDI = CPS_Output_ppse.left(2);
-	 			GPSystem.trace("tagPDI_ppse: " + tagPDI);
-				CPS_Output_ppse = CPS_Output_ppse.right(CPS_Output_ppse.length - 2);				
-								
-	 			lICC = CPS_Output_ppse.left(1);
-				CPS_Output_ppse = CPS_Output_ppse.right(CPS_Output_ppse.length - 1);
-								
+			//loadFileName = new ByteString("E:\\capload\\com\\pse.cap", ASCII);
+			//SD.loadByName(loadFileName);没有实现
 			
-				IccData = CPS_Output_ppse.left(lICC.toUnsigned());
-				
-				CPS_Output_ppse = CPS_Output_ppse.right(CPS_Output_ppse.length - lICC.toUnsigned());
-				GPSystem.trace("Append record : ");
-	      		if(tagPDI=="0003"){	
-	      			GPSystem.trace("tagPDI : " + tagPDI );	
-	        		GPSystem.trace("lICC : " + lICC );
-					dgi = new ByteBuffer();
-					dgi.append(new ByteString("9102",HEX));
-					dgi.append(lICC);
-					dgi.append(IccData);			
-				 	endPersonalization(dgi.toByteString());
-				}
-		}
-
-	
-         
-        //pse
-			this.securityDomain.select("315041592E5359532E4444463031");
-			this.openSecureChannel(NO_SECUREITY_LEVEL); 
-			while(CPS_Output_pse.length>0){
-	 			tagPDI = CPS_Output_pse.left(2);
-
-				CPS_Output_pse = CPS_Output_pse.right(CPS_Output_pse.length - 2);
-	 			lICC = CPS_Output_pse.left(1);
-				CPS_Output_pse = CPS_Output_pse.right(CPS_Output_pse.length - 1);
-								
-				
-				IccData = CPS_Output_pse.left(lICC.toUnsigned());
-				
-				CPS_Output_pse = CPS_Output_pse.right(CPS_Output_pse.length - lICC.toUnsigned());
-				GPSystem.trace("Append record : ");
-	     if(tagPDI=="0001"){	
-	        	GPSystem.trace("tagPDI : " + tagPDI );	
-	        	GPSystem.trace("lICC : " + lICC );
-					 tagPDI= new ByteString("0101",HEX);		
-					appendRecord(tagPDI,lICC,IccData);
-		}else if(tagPDI=="0002"){						 
-				GPSystem.trace("tagPDI : " + tagPDI );	
-	        	GPSystem.trace("lICC : " + lICC );
-				dgi = new ByteBuffer();
-				dgi.append(new ByteString("9102",HEX));
-				dgi.append(lICC);
-				dgi.append(IccData);			
-				endPersonalization(dgi.toByteString());
-				}	
-				}	          			
-		      
-		       		//1. Select application
-	 	   this.securityDomain.select("A000000333010101");	 	  
-			//2. Open secure channel
-		      this.openSecureChannel(NO_SECUREITY_LEVEL);   
-	
-		GPSystem.trace("cps output: " + myObject.CPS_Output);
-			while(CPS_Output.length>0){
-	 			tagPDI = CPS_Output.left(2);
-
-				CPS_Output = CPS_Output.right(CPS_Output.length - 2);
-				
-				GPSystem.trace("tagPDI : " + tagPDI );	
-				//GPSystem.trace("cps output: " + CPS_Output);				
-				
-				// length of ICC data(PDI data) e.g. 0248
-	 			lICC = CPS_Output.left(1);
-				CPS_Output = CPS_Output.right(CPS_Output.length - 1);
-								
-				GPSystem.trace("lICC : " + lICC );
-				IccData = CPS_Output.left(lICC.toUnsigned());
-				
-				CPS_Output = CPS_Output.right(CPS_Output.length - lICC.toUnsigned());
-				GPSystem.trace("Append record : ");
-				
-				if(tagPDI=="8000"){
-	  		 		GPSystem.trace("IccData8000 : " + IccData );
-	  		 		GPSystem.trace("this.key: " + this.key["BANKKEK"].getBlob() );
-	  		 		//IccData = this.crypto.decrypt(this.key["BANKKEK"],this.crypto.DES_ECB,IccData);	
-					//GPSystem.trace("decrypt IccData8000 : " + IccData );
-	  		  		//GPSystem.trace("this.KSCkek: " + this.key["KSCkek"].getBlob() );
-	  		   		IccData = this.crypto.encrypt(this.key["KSCkek"],this.crypto.DES_ECB,IccData);	
-					//GPSystem.trace("encryptIccData : " + IccData );											
-					dataLen = IccData.getL();	
-					dgiTest = new ByteBuffer();
-					dgiTest.append(tagPDI);
-					dgiTest.append(dataLen.right(1));
-					dgiTest.append(IccData);	
-					encryptedBySkudek(dgiTest.toByteString());					
-				}else if( tagPDI=="8201" || tagPDI=="8202" || tagPDI=="8203" || tagPDI=="8204"||tagPDI=="8205"){
-					GPSystem.trace("tag" + tagPDI + ":" + IccData );
-	  		 		GPSystem.trace("this.key: " + this.key["BANKKEK"].getBlob() );
-	  		 		IccData = this.crypto.decrypt(this.key["BANKKEK"],this.crypto.DES_ECB,IccData);	
-					GPSystem.trace("tag" + tagPDI + ":" + IccData );
-	  		  		GPSystem.trace("this.KSCkek: " + this.key["KSCkek"].getBlob() );
-					IccData = IccData + "80";
-					while(IccData.length%16 != 0){
-						IccData = IccData + "00";
-					}
-					IccData=new ByteString(IccData,HEX);
-	  		   		IccData = this.crypto.encrypt(this.key["KSCkek"],this.crypto.DES_ECB,IccData);	
-					//GPSystem.trace("encryptIccData : " + IccData );											
-					dataLen = IccData.getL();	
-					dgiTest = new ByteBuffer();
-					dgiTest.append(tagPDI);
-					dgiTest.append(dataLen.right(1));
-					dgiTest.append(IccData);	
-					encryptedBySkudek(dgiTest.toByteString());
-				}else if(tagPDI=="8010"){
-					IccData = this.crypto.encrypt(this.key["KSCkek"],this.crypto.DES_ECB,IccData);
-					dataLen = IccData.getL();	
-					dgiTest = new ByteBuffer();
-					dgiTest.append(tagPDI);
-					dgiTest.append(dataLen.right(1));
-					dgiTest.append(IccData);	
-					encryptedBySkudek(dgiTest.toByteString());
-				}else if(tagPDI=="9207"){	
-					 dgi = new ByteBuffer();
-					 dgi.append(tagPDI);
-					 dgi.append(lICC);
-					 dgi.append(IccData);
-					 endPersonalization(dgi.toByteString());
-				}else if(tagPDI=="0001" ||tagPDI=="0002" ||tagPDI=="0003"){
-				
-				}else if(tagPDI == "7777"){
-					GPSystem.trace("encrypt kmu: " + IccData );
-					IccData = this.crypto.decrypt(this.key["BANKKEK"],this.crypto.DES_ECB,IccData);
-					GPSystem.trace("decrypt kmu: " + IccData );
-					this.key["KMU"].setComponent(0x80, IccData.bytes(0,16));
-				}else{
-					appendRecord(tagPDI,lICC,IccData);
-				}
-			}*/	
-
-			//allPutKey(myKey,myObject);
-			//INITIALIZED
-			//this.card.sendApdu(0X80, 0xF0, 0x80, 0x07,0x00);
-			//SECURED
-			//this.card.sendApdu(0X80, 0xF0, 0x80, 0x0f,0x00);
+		    SD.getStatus(CM_ONLY,new ByteString("4F00",HEX),false,0x9000);
+		    SD.getStatus(APPS_ONLY,new ByteString("4F00",HEX),false,0x6A88);
+		    SD.getStatus(LF_ONLY,new ByteString("4F00",HEX),false,0x6A88);
+		    SD.getStatus(LFE_ONLY,new ByteString("4F00",HEX),false,0x6A88);
+		    
+		    //INITIALIZED
+		    //SD.setStatus(new ByteString("",HEX), 0x07,0x6A86);
+		    //SECURED
+		    //SD.setStatus(new ByteString("",HEX), 0x0F,0x9000);
 
    			SD.closeSecureChannel();
 

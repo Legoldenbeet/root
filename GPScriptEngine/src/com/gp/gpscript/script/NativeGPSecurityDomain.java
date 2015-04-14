@@ -696,7 +696,7 @@ public class NativeGPSecurityDomain extends IdScriptableObject {
 			throw new EvaluatorException((new GPError("GPSecurityDomain", 1035)).toString());
 		}
 		NativeByteString comData = AID;
-		wrapApdu(cx, scope, new Integer(128), new Integer(240), new Integer(128), P2, comData, new Integer(-1), SW);
+		wrapApdu(cx, scope, new Integer(128), new Integer(240), new Integer(128), P2, comData, new Integer(0), SW);
 	}
 
 	private void jsFunction_storeData(Context cx, Scriptable scope, Object[] args) {
