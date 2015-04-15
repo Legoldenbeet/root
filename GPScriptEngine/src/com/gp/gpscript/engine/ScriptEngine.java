@@ -63,7 +63,6 @@ public class ScriptEngine {
 	public String secript = "";
 	public String iccdata;
 	public String selectedFragment = "";
-	public HashMap<String,HashMap<String, String>> varHashMap;
 	public ApduChannel apduChannel;
 	public Script script;
 	public ApplicationProfile appProfile;
@@ -109,14 +108,6 @@ public class ScriptEngine {
 
 	public void setCount(int count) {
 		this.count = count;
-	}
-
-	public HashMap<String, HashMap<String, String>> getVarHashMap() {
-		return varHashMap;
-	}
-
-	public void setVarHashMap(HashMap<String, HashMap<String, String>> varHashMap) {
-		this.varHashMap = varHashMap;
 	}
 
 	/**
@@ -592,10 +583,6 @@ public class ScriptEngine {
 
 	public String getKey(int index, String name) {
 		return "";
-	}
-
-	public String getValue(int index, String data) throws Exception {
-		return new DataMaping().getDataElement(index, data, varHashMap);
 	}
 
 	public ArrayList<String> getParaList() {
