@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApplicationProfile Name="gp_script_engine" ProfileVersion="1.0.0" UniqueID="00001AAAAA" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="GP ApplicationProfile.xsd">
+	<Revisions>
+		<Revision By="liya.xiao_doc_001" Date="2015-04-15" Digest="0000" ProfileID="00001AAAAA" Time="15:54:00" Version="1.0.0"/>
+	</Revisions>
+	<ConflictRules>
+		<!-- Ensure enough memory is on the card -->
+		<!-- Make sure memory units are in bytes -->
+		<ConflictRule Rule="==" Source="CardProfile.CardManufacturerProduct.Chip.ResourcesAvailable.Unit" Target="bytes"/>
+		<!-- Check amount of RAM on the card -->
+		<ConflictRule Rule="&gt;=" Source="CardProfile.CardManufacturerProduct.Chip.ResourcesAvailable.RAM" Target="0"/>
+		<!-- Check amount of EEPROM on the card -->
+		<ConflictRule Rule="&gt;=" Source="CardProfile.CardManufacturerProduct.Chip.ResourcesAvailable.EEPROM" Target="0"/>
+		<!-- Check amount of Flash on the card -->
+		<ConflictRule Rule="&gt;=" Source="CardProfile.CardManufacturerProduct.Chip.ResourcesAvailable.Flash" Target="0"/>
+		<!-- Ensure card is a Java card -->
+		<ConflictRule Rule="==" Source="CardProfile.CardManufacturerProduct.Platform.Type" Target="JAVA"/>
+		<!-- Ensure card is a GP card -->
+		<ConflictRule Rule="==" Source="CardProfile.CardManufacturerProduct.Platform.OSPlatform" Target="GP"/>
+		<ConflictRule Rule="==" Source="CardProfile.CardManufacturerProduct.Platform.OSVersion" Target="2.0.1"/>
+	</ConflictRules>
+	<ApplicationInfo Developer="LYX" Domain="Tool" NonVolatileDataSpaceMin="4096" Owner="GlobalPlatform" Provider="GP" SubType="CM" Type="OP" Version="0.0.1" VolatileDataSpaceMin="100">
+		<Privileges/>
+		<LifeCycles>
+			<LifeCycle Name="pre_PersoPrep"/>
+			<LifeCycle Name="post_PersoPrep"/>
+			<LifeCycle Name="INSTALLED" Value="01"/>
+			<LifeCycle Name="OP_READY" Value="01"/>
+			<LifeCycle Name="SELECTABLE" Value="03"/>
+			<LifeCycle Name="INITIALIZED" Value="07"/>
+			<LifeCycle Name="PERSONALIZED" Value="0F"/>
+			<LifeCycle Name="SECURED" Value="0F"/>
+			<LifeCycle Name="CARD_LOCKED" Value="7F"/>
+			<LifeCycle Name="TERMINATED" Value="FF"/>
+		</LifeCycles>
+		<Codes>
+			<Code ModuleID="0000100001"/>
+		</Codes>
+	</ApplicationInfo>
+
+	<Key External="false" Name="KSCmac" ProfileID=""/>
+	<Key External="false" Name="KSCenc" ProfileID=""/>
+	<Key External="false" Name="KSCkek" ProfileID=""/>
+	<Key External="false" Name="CDKenc" ProfileID=""/>
+	<Key External="false" Name="CDKmac" ProfileID=""/>
+	<Key External="false" Name="CDKkek" ProfileID=""/>
+	<Key External="false" Name="KMU" ProfileID=""/>
+	<Key External="false" Name="BANKKEK" ProfileID=""/>
+	<Key External="false" Name="KMC" ProfileID=""/>
+
+	<!-- the last 2 AID will be supplied as an external data element per card, used when derive CMK and replace Key -->
+	<DataElement Encoding="HEX" External="false" Name="AID" Optional="true" Type="BYTESTRING" Value="A000000333010101"/>
+	<DataElement Encoding="HEX" External="false" Name="BIN" Optional="true" Type="BYTESTRING" Value="11223344"/>	
+
+	<DataElement Encoding="HEX" External="true" Name="dgi0101" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0201" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0202" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0203" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0205" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0206" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0207" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0208" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0209" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0301" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0302" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0303" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0401" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0D01" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0E01" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8000" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8010" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8201" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8202" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8203" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8204" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8205" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9000" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9010" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9102" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9103" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9104" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9200" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9203" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9207" Optional="true" Type="BYTESTRING"/>
+	
+	<Function Name="appendRecord" Param="dgiTag,dgiLen,dgiValue">
+		<Script><![CDATA[
+			  dgi = new ByteBuffer();
+			  dgi.append(dgiTag);
+			  dgi.append(dgiLen);
+			  dgi.append(dgiValue);
+		      if(dgi!=null)
+		      {
+          	     this.storeData(dgi.toByteString(),0x00,0x9000,0x00);
+          	 }
+          	 else
+          	 {
+          	     GPSystem.trace("this DGI is null");
+          	 }
+      ]]></Script>
+	</Function>
+
+<Function Name="assert" Param="errmsg">
+		<Script><![CDATA[
+			var options = ["是", "否"];
+		 	op=new javax.swing.JOptionPane();
+			ret = op.showOptionDialog(null, errmsg, "信息框", op.YES_NO_OPTION, op.QUESTION_MESSAGE, null, options, options[0]);
+			if(ret==op.YES_OPTION){
+			 	GPSystem.trace("assert pass.");
+			}else{
+			 	GPSystem.trace(errmsg);
+			   	throw Error(errmsg);
+			}
+      ]]></Script>
+	</Function>
+	
+	<Function Name="putData" Param="dgi">
+		<Script><![CDATA[
+		if(dgi!=null)
+			{
+		         //dgi0702 and dgi0703(only for applete 1.2) are special,because it's been writen partly(TLV940C) when install application
+        		 if((dgi.getTag()==0x0702)||(dgi.getTag()==0x0703))
+		         {
+  	    		    dgiTlvList = new TLVList(dgi.getValue(),EMV);
+		  			MyTLV=dgiTlvList.find(0x82);
+					this.sendApdu(0x80, 0xDA, 0x00, 0x82, MyTLV.getValue());
+		         }
+		         else //not 0702, not 0703
+        		 {
+		         	dgiTlvList = new TLVList(dgi.getValue(),EMV);  //dgi is a byteString
+        		 	for(i=0;i< dgiTlvList.length;i++)
+		         	{
+        		    	 MyTLV=dgiTlvList.index(i);
+             			this.sendApdu(0x80, 0xDA, MyTLV.getTag()>>8, MyTLV.getTag() & 0xFF, MyTLV.getValue());
+         			}
+         		}
+         	}
+         	else
+         	{
+         	    GPSystem.trace("this DGI is null");
+         	}
+      ]]></Script>
+	</Function>
+
+	<Function Name="putDESKey" Param="myKey,dgiValue">
+		<Script><![CDATA[
+   		
+                 this.secureChannel.setKekKey(myKey.PSK);
+				 //use a special object to get the properties of the application key
+                 watchObject=GPSystem.getVendorObject("GPSupport");
+				 	version = 0x00;
+      			    index = 0x03;
+      			    newVersion= 0x01;
+      			    type = 0x81;
+      			    DES = 0x80
+
+		         if(dgiValue.bytes(0,16).toString()!="00000000000000000000000000000000")
+		         {
+		         	//UDK  Authentication Key ---"03"
+      			    index = 0x03;
+      			    myKey.UDK.setComponent(DES,dgiValue.bytes(0,16));
+      			    checkValue=myKey.UDK.getKcv();
+      			    this.putKey(version,newVersion,index,type,myKey.UDK,checkValue);
+		         }
+		         if(dgiValue.bytes(16,16).toString()!="00000000000000000000000000000000")
+		         {
+		       	    //MAC Key --- "02"
+      			    index = 0x02;
+      			    myKey.MAC.setComponent(DES,dgiValue.bytes(16,16));      			    
+      			    checkValue=myKey.MAC.getKcv();
+      			    this.putKey(version,newVersion,index,type,myKey.MAC,checkValue);
+		         }
+		         if(dgiValue.bytes(32,16).toString()!="00000000000000000000000000000000")
+		         {
+		       	    //ENC Key---"04"
+			    index = 0x04;
+      			    myKey.ENC.setComponent(DES,dgiValue.bytes(32,16));				 	
+      			    checkValue=myKey.ENC.getKcv();
+      			    this.putKey(version,newVersion,index,type,myKey.ENC,checkValue);
+		         }
+      ]]></Script>
+	</Function>
+
+	<Function Name="putRSAKey" Param="myKey,dgiTag,dgiValue">
+		<Script><![CDATA[
+	  			//DGI 8101 8103
+  				//DGI 8102 8104
+ 			  	type=new ByteString("A2",HEX);
+	      		//dgi is clear data
+    	  		clearKey=dgiValue.pad(Crypto.EMV_PAD);  //L+key+padding
+      			keyData = this.crypto.encrypt(myKey.PSK,this.crypto.DES_ECB,clearKey);
+
+	  			comData=new ByteBuffer();
+  				if( ((dgiTag & 0XFF)==0x01) || ((dgiTag & 0XFF)==0x03) )
+      				 comData.append("02").append(type).append(keyData.getL()).append(keyData);
+  				else  //here keyVersion must be 02,can't be 03
+      				 comData.append("02").append(type).append(keyData.getL()).append(keyData);
+
+	  			if((dgiTag & 0XFF) > 0x02)  //03,04 is modulus(keyIndex=0x01)
+    	  			 this.sendApdu(0X80, 0xD8, 0x00, 0x01,comData.toByteString());  //ICCSK Modulus
+  				else // 01,02 is exponent(keyIndex=0x02)
+      	 			this.sendApdu(0X80, 0xD8, 0x00, 0x02,comData.toByteString());  //ICCSK Exponent
+      ]]></Script>
+	</Function>
+
+	
+	 <Function Name="nativeDel" Param="myKey,dgiValue">
+		<Script><![CDATA[
+				     
+   			this.card.reset(0x05);	
+   			this.securityDomain.select("A0000000030000");	 	  
+   			this.openSecureChannel(NO_SECUREITY_LEVEL);	 
+ 			 this.sendApdu(0X80, 0xE4, 0x00, 0x00,new ByteString("4F0E315041592E5359532E4444463031",HEX)); 
+ 			 this.sendApdu(0X80, 0xE4, 0x00, 0x00,new ByteString("4F0E325041592E5359532E4444463031",HEX)); 
+ 			 this.sendApdu(0X80, 0xE4, 0x00, 0x00,new ByteString("4F08A000000333010101",HEX)); 			 
+ 			  			
+   		
+               ]]></Script>
+	</Function>
+	
+	 <Function Name="install" Param="myKey,dgiValue">
+		<Script><![CDATA[
+				     
+   			//this.card.reset(0x05);
+				this.openSecureChannel(NO_SECUREITY_LEVEL);	 
+ 			 this.sendApdu(0X80, 0xE6, 0x0C, 0x00,new ByteString("08A00000033310101207A00000033310100E315041592E5359532E4444463031011003C9010300",HEX)); 
+ 			 this.sendApdu(0X80, 0xE6, 0x0C, 0x00,new ByteString("08A00000033310101207A00000033310100E325041592E5359532E4444463031011003C9010300",HEX)); 
+ 			//??????????			 
+			this.sendApdu(0X80, 0xE6, 0x0C, 0x00,new ByteString("08A00000033310101207A000000333101008A000000333010101011003C9010300",HEX)); 
+			  			
+   		
+               ]]></Script>
+	</Function>
+	
+	<Function Name="changePin" Param="myKey,dgiValue">
+		<Script><![CDATA[
+			  	plainPinData = dgiValue;
+			  	out.println("plainPinData="+plainPinData);
+				retryCount = plainPinData.bytes(9,1);
+	  			encrypedPinData = this.crypto.encrypt(myKey.PSK,Crypto.DES_ECB,plainPinData.left(8));
+  				pin = new ByteBuffer(encrypedPinData.left(8));
+				this.sendApdu(0x80,0x24, 0x00, retryCount.toUnsigned(),pin.toByteString());			
+      ]]></Script>
+
+	</Function>
+	<Function Name="endPersonalization" Param="comData">
+		<Script><![CDATA[
+     		//	this.sendApdu(0x80,0xE2,0x40, 0x0F, comData);
+     			this.storeData(comData,0x01,0x9000,0x00);
+      ]]></Script>
+	</Function>
+	
+		<Function Name="encryptedBySkudek" Param="comData">
+		<Script><![CDATA[
+     		//	this.sendApdu(0x80,0xE2,0x40, 0x0F, comData);
+     			this.storeData(comData,0x02,0x9000,0x00);
+      ]]></Script>
+	</Function>
+	
+	<Function Name="putEncryptedRSA" Param="comData">
+		<Script><![CDATA[
+     			this.sendApdu(0x80,0xE2,0x60, comData.getL(), comData);
+     			//this.storeData(comData,true,0x9000,0x00);
+      ]]></Script>
+	</Function>
+
+	<Function Name="replaceKDC" Param="myKey,myObject">
+		<Script><![CDATA[
+			    derivationData = new ByteBuffer();
+	            derivationKey = new String();	            
+				this.securityDomain.secureChannel.initializeUpdate(0,0);
+                watchObject=GPSystem.getVendorObject("GPSupport");
+  			GPSystem.trace("finish initupdate ");  			
+  			initResp = new ByteBuffer();  			
+  			initResp = this.card.response.bytes(4,6);        
+        
+        //card enc
+        derivationData.append(initResp).append("F001").append(initResp).append("0F01");        
+				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["KSCenc"]);
+        GPSystem.trace("this.key:"+this.key["KSCenc"]);
+				// card mac
+				derivationData.clear();
+
+				 derivationData.append(initResp).append("F002").append(initResp).append("0F02");        
+				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["KSCmac"]);
+				 GPSystem.trace("this.key:"+this.key["KSCmac"]);
+									
+
+				// card dek
+				derivationData.clear();
+
+				 derivationData.append(initResp).append("F003").append(initResp).append("0F03");        
+				Crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["KSCkek"]);					
+	       			GPSystem.trace("this.key:"+this.key["KSCkek"]); 
+				// Set the keys used by the secure channel - not sure on KEK key assignments
+				this.securityDomain.secureChannel.setKekKey(this.key["KSCkek"]);			
+				this.securityDomain.secureChannel.setEncKey(this.key["KSCenc"]);
+				this.securityDomain.secureChannel.setMacKey(this.key["KSCmac"]);
+
+				//replace the KDC
+	      		keyVersion=0x01;
+    	  		keyNewVersion=0x01;
+      			keyIndex=0x01;
+      			//this.securityDomain.putKey(keyVersion,keyNewVersion,keyIndex,0x81,myKey.CDKenc,myKey.CDKenc.getKcv(),0x81,myKey.CDKmac,myKey.CDKmac.getKcv(),0x81,myKey.CDKkek,myKey.CDKkek.getKcv());
+      			this.putKey(keyVersion,keyNewVersion,keyIndex,0x81,myKey.CDKenc,myKey.CDKenc.getKcv(),0x81,myKey.CDKmac,myKey.CDKmac.getKcv(),0x81,myKey.CDKkek,myKey.CDKkek.getKcv());
+
+      			//Verify keyVersion and checkValue
+      			if(this.card.response.left(1).toUnsigned()!=keyNewVersion)
+      				throw Error("key version incrrect");
+      			if(!(this.card.response.bytes(1,3).toString()==myKey.CDKenc.getKcv().left(3).toString()))
+      				throw Error("CDKenc kcv incorrect");
+      			if(!(this.card.response.bytes(1+3,3).toString()==myKey.CDKmac.getKcv().left(3).toString()))
+      				throw Error("CDKmac kcv incorrect");
+      			if(!(this.card.response.bytes(1+3+3,3).toString()==myKey.CDKkek.getKcv().left(3).toString()))
+      				throw Error("CDKkek kcv incorrect");
+      ]]></Script>
+	</Function>
+
+      <Function Name="psePersonal" Param="pse,ppse">
+		<Script><![CDATA[
+
+			  NO_SECUREITY_LEVEL=0x00;
+		      MACONLY= 0x01;
+		      MACENC = 0x03;		     
+   			this.card.reset(0x05);
+		   	//1. Select application         
+			this.securityDomain.select("325041592E5359532E4444463031");	 	     
+			//2. Open secure channel		    
+		   this.openSecureChannel(NO_SECUREITY_LEVEL);    
+ 
+			 this.sendApdu(0X80, 0xE2, 0x80, 0x00,new ByteString("910232A530BF0C2D612B4F07A0000003330101500B50424F43204372656469749F120F4341524420494D4147452030303332870101",HEX));
+
+
+   			this.card.reset(0x05);
+		   	//1. Select application
+	 	    // this.securityDomain.select();
+	 	    GPSystem.trace("Application id: " + "315041592E5359532E4444463031");
+			  this.securityDomain.select("315041592E5359532E4444463031");
+	 	     
+			//2. Open secure channel
+		      //this.openSecureChannel(MACENC);
+		     this.openSecureChannel(NO_SECUREITY_LEVEL);
+   			this.sendApdu(0X80, 0xE2, 0x00, 0x00,new ByteString("010130702E612C4F08A000000333010101500B50424F43204372656469749F120F4341524420494D4147452030303031870101",HEX));
+  			 this.sendApdu(0X80, 0xE2, 0x80, 0x01,new ByteString("910214A5128801015F2D086573656E667264659F110101",HEX));
+               ]]></Script>
+	</Function>
+	
+	  <Function Name="allPutKey" Param="myKey,myObject">
+		<Script><![CDATA[
+
+			  NO_SECUREITY_LEVEL=0x00;
+		      MACONLY= 0x01;
+		      MACENC = 0x03;		     
+   		 //1. Select pse application
+		   //  this.sendApdu(0X00, 0xA4, 0x00, 0x00,new ByteString("3F00",HEX));
+			//   this.sendApdu(0XA0, 0x20, 0x00, 0x0B,new ByteString("3634373232323838",HEX));
+	 	     
+			//this.securityDomain.select("325041592E5359532E4444463031");
+			//2. put key
+		      //this.putkey(myKey,myObject,NO_SECUREITY_LEVEL);
+		   
+    		//1. Select ppse application
+	 	     //this.securityDomain.select("315041592E5359532E4444463031");
+			  //2. put key
+		      //this.putkey(myKey,myObject,NO_SECUREITY_LEVEL);
+		      
+    		//1. Select application
+			this.card.reset(0x05);
+			//this.sendApdu(0X00, 0xA4, 0x04, 0x00,new ByteString("",HEX));
+	 	     this.securityDomain.select("A000000003000000");
+			//2. put key
+		      this.putkey(myKey,myObject,NO_SECUREITY_LEVEL); 
+               ]]></Script>
+	</Function>
+	
+	<Function Name="putkey" Param="myKey,myObject,level">
+		<Script><![CDATA[			    			 
+
+				GPSystem.trace("begin KMU === " + this.key["KMU"].getComponent(0x80) );
+			    
+			   	derivationData = new ByteBuffer();
+	       			derivationKey = new String();	
+	       			endPerson =  new ByteBuffer();           
+				this.securityDomain.secureChannel.initializeUpdate(0,0);
+				initResp = new ByteBuffer();  			
+  				initResp = this.card.response.bytes(4,6);  
+  				endPerson.append("CF0B").append(this.card.response.bytes(0,10)).append("00");      
+				// Derive KSCenc
+				derivationData.clear();
+				derivationData.append("0182").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
+				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCenc"]);
+
+				// Derive KSCmac
+				derivationData.clear();
+				derivationData.append("0101").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
+				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCmac"]);
+
+				derivationData.clear();							
+				derivationData.append("0181").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
+				Crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCkek"]);							
+									
+	
+				// Set the keys used by the secure channel - not sure on KEK key assignments
+		
+				this.securityDomain.secureChannel.setKekKey(this.key["KSCkek"]);			
+				this.securityDomain.secureChannel.setEncKey(this.key["KSCenc"]);
+				this.securityDomain.secureChannel.setMacKey(this.key["KSCmac"]);
+
+      				this.securityDomain.secureChannel.externalAuthenticate(level);
+      			
+      			 
+				derivationData = new ByteBuffer();
+	     			derivationKey = new String();	      
+	     			      
+			GPSystem.trace("1111111CDKenc === " + this.key["CDKenc"].getComponent(0x80) );
+				GPSystem.trace("111111CDKmac === " + this.key["CDKmac"].getComponent(0x80) );
+				GPSystem.trace("111111CDKkek === " + this.key["CDKkek"].getComponent(0x80) );	
+
+       			 	//card enc
+       			 	derivationData.clear();		
+        			derivationData.append(initResp).append("F001").append(initResp).append("0F01");      
+        			GPSystem.trace("derivationData === " + derivationData.toByteString() );  
+				Crypto.deriveKey(this.key["KMU"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKenc"]);
+       
+				// card mac
+				derivationData.clear();
+				derivationData.append(initResp).append("F002").append(initResp).append("0F02");      
+				GPSystem.trace("derivationData === " + derivationData.toByteString() );    
+				Crypto.deriveKey(this.key["KMU"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKmac"]);
+								
+						
+
+				// card dek
+				derivationData.clear();
+				derivationData.append(initResp).append("F003").append(initResp).append("0F03");     
+				GPSystem.trace("derivationData === " + derivationData.toByteString() );     
+				Crypto.deriveKey(this.key["KMU"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKkek"]);	
+				
+				GPSystem.trace("final KMU === " + this.key["KMU"].getComponent(0x80) );
+				
+				
+
+				GPSystem.trace("CDKenc === " + this.key["CDKenc"].getComponent(0x80) );
+				GPSystem.trace("CDKmac === " + this.key["CDKmac"].getComponent(0x80) );
+				GPSystem.trace("CDKkek === " + this.key["CDKkek"].getComponent(0x80) );				
+	      
+				// Set the keys used by the secure channel - not sure on KEK key assignments
+			 			
+
+				//replace the KDC
+	      			keyVersion=0x01;
+    	  			keyNewVersion=0x01;
+      				keyIndex=0x01;
+      		 
+      				this.putKey(keyVersion,keyNewVersion,keyIndex,0x80,myKey.CDKenc,myKey.CDKenc.getKcv(),0x80,myKey.CDKmac,myKey.CDKmac.getKcv(),0x80,myKey.CDKkek,myKey.CDKkek.getKcv());
+
+         		 	//END PREPERSO
+      		//		this.sendApdu(0X80, 0xD6, 0x00, 0x00,endPerson.toByteString());
+
+      ]]></Script>
+	</Function>
+<Function Name="changeRate" Param="">
+		<Script><![CDATA[
+     		tempData=new ByteBuffer();
+		tempData.append("00");
+		this.card.sendApdu(0x00, 0x17, 0x00, 0x03,tempData.toByteString(), -1, 0xffff);
+                tempData.clear();
+		this.card.sendApdu(0x00, 0x12, 0x00, 0x00, tempData.toByteString(), -1, 0xffff);
+		tempData.append("01");
+		this.card.sendApdu(0x00, 0x17, 0x00, 0x0B,tempData.toByteString(), -1, 0xffff);
+		tempData.clear();
+		this.card.sendApdu(0x00, 0x11, 0x00, 0x96,tempData.toByteString(), -1, 0xffff);
+		tempData.append("FFFFFF08");
+		this.card.sendApdu(0x00, 0x17, 0x00, 0x24,tempData.toByteString(), -1, 0xffff);
+		tempData.clear();
+		tempData.append("02");
+		this.card.sendApdu(0x00, 0x17, 0x00, 0x10,tempData.toByteString(), -1, 0xffff);
+		tempData.clear();
+		tempData.append("D0");
+		this.card.sendApdu(0x00, 0x17, 0x00, 0x1C,tempData.toByteString(), -1, 0xffff);
+		tempData.clear();
+		tempData.append("01");
+		this.card.sendApdu(0x00, 0x17, 0x00, 0x04,tempData.toByteString(), -1, 0xffff);
+      ]]></Script>
+	</Function>
+
+
+
+<SecureChannel SecureChannel="SCP02" SecurityLevel="C_MAC">
+		<OpenSecureChannel Param="level,isFirst">
+			<Script><![CDATA[
+				SC=this.securityDomain.secureChannel;
+				CARD=this.card;
+	    		derivationData = new ByteBuffer();
+	    		
+				SC.initializeUpdate(0,0);
+				initResp = new ByteString();  			
+  				initResp = CARD.response.bytes(4,6);  
+
+				/*
+				//card enc
+       			derivationData.clear();		
+        		derivationData.append(initResp).append("F001").append(initResp).append("0F01");        
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKenc"]);
+       
+				// card mac
+				derivationData.clear();
+				derivationData.append(initResp).append("F002").append(initResp).append("0F02");        
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKmac"]);
+
+				// card dek
+				derivationData.clear();
+				derivationData.append(initResp).append("F003").append(initResp).append("0F03");        
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_ECB, derivationData.toByteString(), this.key["CDKkek"]);					
+
+				this.securityDomain.secureChannel.setKekKey(this.key["CDKkek"]);			
+				this.securityDomain.secureChannel.setEncKey(this.key["CDKenc"]);
+				this.securityDomain.secureChannel.setMacKey(this.key["CDKmac"]);
+
+				*/
+
+				// Derive KSCenc
+				derivationData.clear();
+				derivationData.append("0182").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCenc"]);
+
+				// Derive KSCmac
+				derivationData.clear();
+				derivationData.append("0101").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCmac"]);
+
+				derivationData.clear();							
+				derivationData.append("0181").append(this.card.response.bytes(12,2)).append("000000000000000000000000");
+				SC.crypto.deriveKey(this.key["KMC"], Crypto.DES_CBC, derivationData.toByteString(), this.key["KSCkek"]);							
+	
+				// Set the keys used by the secure channel - not sure on KEK key assignments
+		
+				SC.setKekKey(this.key["KSCkek"]);			
+				SC.setEncKey(this.key["KSCenc"]);
+				SC.setMacKey(this.key["KSCmac"]);
+
+      			SC.externalAuthenticate(level);  			 
+			    
+
+	      ]]></Script>
+		</OpenSecureChannel>
+	</SecureChannel>
+
+<ScriptFragment Active="true" EndLifeCycle="postPersoPrep" Name="VSDC Data Preparation" StartLifeCycle="prePersoPrep">
+<Declaration External="true" Name="dgi0101"/>
+<Declaration External="true" Name="dgi0201"/>
+<Declaration External="true" Name="dgi0202"/>
+<Declaration External="true" Name="dgi0203"/>
+<Declaration External="true" Name="dgi0205"/>
+<Declaration External="true" Name="dgi0206"/>
+<Declaration External="true" Name="dgi0207"/>
+<Declaration External="true" Name="dgi0208"/>
+<Declaration External="true" Name="dgi0209"/>
+<Declaration External="true" Name="dgi0301"/>
+<Declaration External="true" Name="dgi0302"/>
+<Declaration External="true" Name="dgi0303"/>
+<Declaration External="true" Name="dgi0401"/>
+<Declaration External="true" Name="dgi0D01"/>
+<Declaration External="true" Name="dgi0E01"/>
+<Declaration External="true" Name="dgi8000"/>
+<Declaration External="true" Name="dgi8010"/>
+<Declaration External="true" Name="dgi8201"/>
+<Declaration External="true" Name="dgi8202"/>
+<Declaration External="true" Name="dgi8203"/>
+<Declaration External="true" Name="dgi8204"/>
+<Declaration External="true" Name="dgi8205"/>
+<Declaration External="true" Name="dgi9000"/>
+<Declaration External="true" Name="dgi9010"/>
+<Declaration External="true" Name="dgi9102"/>
+<Declaration External="true" Name="dgi9103"/>
+<Declaration External="true" Name="dgi9104"/>
+<Declaration External="true" Name="dgi9200"/>
+<Declaration External="true" Name="dgi9203"/>
+<Declaration External="true" Name="dgi9207"/>
+	<Script><![CDATA[
+		BANKKEK=this.key["BANKKEK"];
+		BANKKEK.setComponent(Key.DES, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
+	
+		if (this.data.dgi0101 != "")
+		{
+			dataValue = this.data.dgi0101;
+			GPSystem.trace("dgi0101: "+dataValue );
+			dgiTlvList = new TLVList(dataValue,TLV.EMV);
+		  	TLV70=dgiTlvList.find(0x70);
+			dgiTlvList = new TLVList(TLV70.getValue(),TLV.EMV);
+			
+			//tag57
+			TLV57=dgiTlvList.find(0x57);
+		  	GPSystem.trace("MyTLV: "+TLV57.getValue());
+			decryptData57 = Crypto.decrypt(this.key["BANKKEK"],this.crypto.DES_ECB,TLV57.getValue());
+			GPSystem.trace("tag010157 before: "+decryptData57 );
+			while(decryptData57.right(1)=="20"){
+			 	decryptData57=decryptData57.bytes(0,(decryptData57.length-1));
+			}
+			//valuetemp = new ByteString(decryptData57 + "",HEX);
+			//GPSystem.trace("valuetemp: "+valuetemp );
+			//strTag010157 = valuetemp.hex2String(valuetemp);
+			tag010157 = new TLV(0x57,decryptData57, TLV.EMV);
+			GPSystem.trace("tag010157: "+tag010157 );
+
+			//assert("error is occured.");
+			 
+			  
+			
+            tempData = new ByteBuffer();
+            tempData.clear();
+			tempData.append(tag010157.getTLV());
+			//tempData.append(TLV5F20.getTLV());
+			//tempData.append(tag01019F61.getTLV());
+			//tempData.append(TLV9F62.getTLV());
+			GPSystem.trace("dgi0101: "+tempData );
+			tlvBuffer = new TLV(0x70, tempData.toByteString(), TLV.EMV);
+			tempData.clear();
+			tempData.append(tlvBuffer.getTLV());
+			dgi0101 = new TLV(0x0101,tempData.toByteString(), TLV.DGI);
+			GPSystem.trace("dgi0101: "+dgi0101.getTLV());
+			//bbICC.append(dgi0101.getTLV());                             
+		}
+	
+		if (this.data.dgi0302 != "")
+		{
+			dataValue = this.data.dgi0302;
+			GPSystem.trace("dgi0302: "+dataValue );
+			dgi0302 = new TLV(0x0302,dataValue, TLV.DGI);
+			bbICC.append(dgi0302.getTLV());  
+
+			/*dataValue = this.data.dgi0302;
+			GPSystem.trace("dgi0302: "+dataValue );
+			dgiTlvList = new TLVList(dataValue,TLV.EMV);
+		  	TLV70=dgiTlvList.find(0x70);
+			dgiTlvList = new TLVList(TLV70.getValue(),TLV.EMV);
+		
+			TLV8C=dgiTlvList.find(0x8C);
+		  	GPSystem.trace("MyTLV: "+TLV8C.getValue());
+			TLV8D=dgiTlvList.find(0x8D);
+		  	GPSystem.trace("MyTLV: "+TLV8D.getValue());
+			TLV9F08=dgiTlvList.find(0x9F08);
+		  	GPSystem.trace("MyTLV: "+TLV9F08.getValue());
+		  
+			tempData.clear();
+			tempData.append(TLV8C.getTLV());
+			tempData.append(TLV8D.getTLV());
+			tempData.append("9F631000000000000000000000000000000000");
+			tempData.append(TLV9F08.getTLV());
+			tlvBuffer = new TLV(0x70, tempData.toByteString(), TLV.EMV);
+			bbDGI.clear();
+			bbDGI.append(tlvBuffer.getTLV());
+			GPSystem.trace("dgi0302: "+bbDGI );
+			dgi0302 = new TLV(0x0302,bbDGI.toByteString(), TLV.DGI);
+			bbICC.append(dgi0302.getTLV()); */                        
+		}
+	]]></Script>
+	</ScriptFragment>	
+	
+	<ScriptFragment Active="true" EndLifeCycle="PERSONALIZED" Name="DELETEAPP" StartLifeCycle="post_PersoPrep">
+		<Script><![CDATA[
+				NO_SECUREITY_LEVEL=0x00;
+				MACONLY= 0x01;
+				MACENC = 0x03;
+
+				CLA    = 0x80;
+				CLASEC = 0x84;
+
+				INS_SelectApplication    = 0xA4;
+				INS_Install              = 0xE6;
+				INS_InitializeUpdate     = 0x50;
+				INS_ExternalAuthenticate = 0x82;
+				INS_AppendRecord         = 0xE2;
+				INS_PutData              = 0xDA;
+				INS_PutKey               = 0xD8;
+				INS_ChangePin            = 0x24;
+				INS_EndPersonalization    =  0xF0;
+
+				P1 = 0x00;
+				P2 = 0x00;
+
+				MyObject=this.data;
+				MyKey=this.key;
+
+				GPSystem.trace("The Following is the process of deleteApp");
+				GPSystem.trace("current time is: "+ GPSystem.dateTimeByteString().toString());
+
+			//1.Select the Application
+				//GP Selecting VSDC Application
+				this.securityDomain.select();
+
+		 	//2. card resetto delete the AID
+				strATR=this.card.reset(0x05);
+				out.println(strATR);
+
+			//3.intializeUpdate and externalAuthenticate,execute the SecureChannel scriptFragment
+				this.openSecureChannel(NO_SECUREITY_LEVEL,false);
+
+			//4. delete the AID
+				AID=new ByteString("A0000000031010",HEX);
+				resp=this.securityDomain.deleteAID(AID,0x9000);
+
+		]]></Script>
+	</ScriptFragment>
+	
+	<ScriptFragment Active="true" EndLifeCycle="PERSONALIZED" Name="ERASE" StartLifeCycle="post_PersoPrep">
+		<Script><![CDATA[		
+
+				//MyObject=this.data;
+				//MyKey=this.key;
+ 				//0 native 
+				this.card.reset(0x05);
+		    	//  this.nativeDel(0x01,0x02);
+			
+
+		]]></Script>
+	</ScriptFragment>
+	
+	<ScriptFragment Active="true" EndLifeCycle="PERSONALIZED" Name="INSTALL" StartLifeCycle="post_PersoPrep">
+		<Script><![CDATA[
+				this.card.reset(0x05);
+				this.openSecureChannel(NO_SECUREITY_LEVEL);	 
+ 			 this.sendApdu(0X80, 0xE6, 0x0C, 0x00,new ByteString("80E60C002708A00000033310101207A00000033310100E315041592E5359532E4444463031011003C9010300",HEX)); 
+ 			 this.sendApdu(0X80, 0xE6, 0x0C, 0x00,new ByteString("80E60C002708A00000033310101207A00000033310100E325041592E5359532E4444463031011003C9010300",HEX)); 
+ 			 this.sendApdu(0X80, 0xE6, 0x0C, 0x00,new ByteString("80E60C002108A00000033310101207A000000333101008A000000333010101011003C9010300",HEX)); 
+
+		]]></Script>
+	</ScriptFragment>
+
+
+	
+	<ScriptFragment Active="true" EndLifeCycle="PERSONALIZED" Name="PERSONALIZE" StartLifeCycle="post_PersoPrep">
+		<Script><![CDATA[
+			NO_SECUREITY_LEVEL=0x00;
+			MACONLY= 0x01;
+			MACENC = 0x03;
+
+			CLA    = 0x80;
+		 	CLASEC = 0x84;
+
+		    INS_SelectApplication    = 0xA4;
+		    INS_Install    = 0xE6;
+
+		    INS_InitializeUpdate     = 0x50;
+		    INS_ExternalAuthenticate = 0x82;
+		    INS_AppendRecord         = 0xE2;
+		    INS_PutData    = 0xDA;
+		    INS_PutKey     = 0xD8;
+		    INS_ChangePin  = 0x24;
+
+		    INS_EndPersonalization    =  0xF0;
+
+		    P1 = 0x00;
+		    P2 = 0x00;
+             
+		    //myObject=this.data;
+		    //myKey=this.key;
+			KMC=this.key["KMC"];
+			KMC.setComponent(Key.DES, new ByteString("404142434445464748494A4B4C4D4E4F",HEX));
+          	
+          	SD=this.securityDomain;
+          	CARD=this.card;
+          	
+           	ATR=CARD.reset(Card.RESET_WARM);
+           	ATR=CARD.reset(Card.RESET_COLD)
+           	
+            SD.select("A0000000030000");
+			//SD.openSecureChannel(NO_SECUREITY_LEVEL);
+			SD.openSecureChannel(MACONLY);
+			//SD.openSecureChannel(MACENC);
+			
+			TAG00CF=SD.getData(0x00CF);
+			TAG5744=SD.getData(0x5744);
+			
+			AID=new ByteString("A000000333010101",HEX);
+			PSE=new ByteString("315041592E5359532E4444463031",HEX);
+			PPSE=new ByteString("325041592E5359532E4444463031",HEX);
+			SD.deleteAID(PSE,0x6A80);
+			SD.deleteAID(PPSE,0x6A80);
+			SD.deleteAID(AID,0x6A80);
+			
+			//assert("is it go on?");
+			
+			//GPSystem.trace("yes?");
+			//GPSystem.trace("time:"+GPSystem.dateTimeByteString());
+			GPSystem.trace("this.data.aid:"+this.data.AID);
+			this.data.AID=new ByteString("HELELO",ASCII);
+			GPSystem.trace("this.data.aid:"+this.data.AID);
+			GPSystem.trace("this.data.aid:"+this.data.BIN);
+			
+			//loadFileName = new ByteString("E:\\capload\\com\\pse.cap", ASCII);
+			//SD.loadByName(loadFileName);没有实现
+			
+		    SD.getStatus(CM_ONLY,new ByteString("4F00",HEX),false,0x9000);
+		    SD.getStatus(APPS_ONLY,new ByteString("4F00",HEX),false,0x6A88);
+		    SD.getStatus(LF_ONLY,new ByteString("4F00",HEX),false,0x6A88);
+		    SD.getStatus(LFE_ONLY,new ByteString("4F00",HEX),false,0x6A88);
+		    
+		    //INITIALIZED
+		    //SD.setStatus(new ByteString("",HEX), 0x07,0x6A86);
+		    //SECURED
+		    //SD.setStatus(new ByteString("",HEX), 0x0F,0x9000);
+			
+   			SD.closeSecureChannel();
+
+		]]></Script>
+	</ScriptFragment>
+
+
+</ApplicationProfile>

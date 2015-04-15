@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
@@ -52,6 +53,7 @@ import com.gerenhua.tool.logic.impl.DeleteObjThread;
 import com.gerenhua.tool.logic.impl.LoadCapThead;
 import com.gerenhua.tool.logic.impl.RunPrgThread;
 import com.gerenhua.tool.utils.Config;
+import com.gp.gpscript.engine.GPScriptEngine;
 import com.watchdata.commons.crypto.WD3DesCryptoUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
 import com.watchdata.commons.lang.WDAssert;
@@ -725,6 +727,32 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							addMenu(mntmCardinfo, e);
 							addMenu(mntmCardStatus, e);
 							addMenu(mntmChangeStatus, e);
+							
+							Collection<String> templates=Config.getItems("Personalization_Template");
+							for (String template : templates) {
+								final JMenuItem item_tmp=new JMenuItem(template);
+								item_tmp.addActionListener(new ActionListener() {
+									
+									@Override
+									public void actionPerformed(ActionEvent e) {
+										try {
+											FileInputStream fis = new FileInputStream(new File(System.getProperty("user.dir") + Config.getValue("Personalization_Template", item_tmp.getText().trim())));
+											int len = fis.available();
+											byte[] fileByte = new byte[len];
+
+											fis.read(fileByte);
+											fis.close();
+											GPScriptEngine gpScriptEngine = new GPScriptEngine("PERSONALIZE", new String(fileByte), System.getProperty("user.dir") + "/resources/gpscripts/profiles/GPCardProfile.xml");
+											gpScriptEngine.setReader(Config.getValue("Terminal_Data", "reader"));
+											gpScriptEngine.execEngineIssue();
+										} catch (Exception e2) {
+											JOptionPane.showMessageDialog(null, e2.getMessage());
+										}
+										
+									}
+								});
+								addMenu(item_tmp, e);
+							}
 							setStatusDialog(false, false);
 							updateStatusDialog.isISD = true;
 							showMenu(e);
