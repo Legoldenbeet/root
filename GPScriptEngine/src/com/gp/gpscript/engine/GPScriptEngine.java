@@ -43,7 +43,7 @@ public class GPScriptEngine extends ScriptEngine {
 	}
 
 	public static void issueTest() throws Exception {
-		FileInputStream fis = new FileInputStream(new File(System.getProperty("user.dir") + "/hbnx.xml"));
+		FileInputStream fis = new FileInputStream(new File(System.getProperty("user.dir") + "/demo.xml"));
 		int len = fis.available();
 		byte[] fileByte = new byte[len];
 
