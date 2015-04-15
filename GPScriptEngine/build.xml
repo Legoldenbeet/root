@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+
+	This is the Ant build script for PersonalizationCheckTool.jar.
+	Available targets include:
+	
+		1. compile:         Compiles all org.fife classes into ${class-dir}.
+		2. make-jar:        Createqs the jar file.
+		3. make-source-zip: Creates a source zip file.
+		3. make-javadoc:    Creates the javadoc for RSyntaxTextArea.
+
+	Author:   Robert Futrell
+	Version:  1.4
+	Date:     22feb2009
+
+-->
+
+
+<project name="GPScriptEngine" default="build" basedir=".">
+
+	<description>GPScriptEngine build file</description>
+
+
+	<!-- Set global properties for this build. -->
+	<property name="version" value="1.0.0" />
+	<property name="source-dir" location="src" />
+	<property name="root-dir" location="E:\程序打包\GPScriptEngine" />
+	<property name="class-dir" location="${root-dir}/ant-classes" />
+	<property name="dist-dir" location="${root-dir}/dist" />
+	<property name="doc-dir" location="${root-dir}/javadoc" />
+	<property name="setup-dir" location="${root-dir}/setup" />
+	<property name="lib" value="lib" />
+	<property name="debug" value="true" />
+	<property name="debuglevel" value="lines,vars,source" />
+	<property name="java-level" value="1.6" />
+
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<!-- clean root-dir. -->
+	<target name="clean">
+		<delete dir="${root-dir}" includeEmptyDirs="true" quiet="false" />
+	</target>
+
+	<!-- Compiles the classes.  -->
+	<target name="compile" description="Compile the source">
+		<mkdir dir="${class-dir}" />
+		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="UTF-8">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!-- Creates the jar file. -->
+	<target name="make-jar" depends="compile" description="Create the jar file">
+		<pathconvert property="mf.classpath" pathsep=" ">
+			<path refid="classpath" />
+			<mapper>
+				<!--chainedmapper 作用是联合多个mapper-->
+				<chainedmapper>
+					<!--过滤文件，将路径去掉，只保留文件名-->
+					<flattenmapper />
+					<globmapper from="*" to="GPScriptEngine_lib/*" />
+				</chainedmapper>
+			</mapper>
+
+		</pathconvert>
+		<mkdir dir="${dist-dir}" />
+		<jar destfile="${dist-dir}/GPScriptEngine.jar">
+			<fileset dir="${class-dir}" />
+			<fileset dir="${source-dir}">
+				<include name="**/*.dtd" />
+				<include name="**/*.png" />
+				<include name="**/*.properties" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="com.gerenhua.tool.app.Application" />
+				<attribute name="Class-Path" value="${mf.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!--move files to ${dist-dir}-->
+	<target name="move">
+		<copy todir="${dist-dir}/GPScriptEngine_lib">
+			<fileset dir="lib" />
+		</copy>
+		<copy todir="${dist-dir}">
+			<fileset dir=".">
+				<include name="*.xml" />
+				<include name="*.txt" />
+			</fileset>
+		</copy>
+		<copy todir="${dist-dir}/..">
+			<fileset dir=".">
+				<include name="setup/*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build" depends="clean,compile,make-jar,move">
+	</target>
+</project>
