@@ -50,6 +50,8 @@
 
 	<!-- the last 2 AID will be supplied as an external data element per card, used when derive CMK and replace Key -->
 	<DataElement Encoding="HEX" External="false" Name="AID" Optional="true" Type="BYTESTRING" Value="A000000333010101"/>
+	<DataElement Encoding="HEX" External="false" Name="PSE" Optional="true" Type="BYTESTRING" Value="315041592E5359532E4444463031"/>
+	<DataElement Encoding="HEX" External="false" Name="PSE" Optional="true" Type="BYTESTRING" Value="315041592E5359532E4444463031"/>
 	<DataElement Encoding="HEX" External="false" Name="BIN" Optional="true" Type="BYTESTRING" Value="11223344"/>	
 
 	<DataElement Encoding="HEX" External="true" Name="dgi0101" Optional="true" Type="BYTESTRING"/>
