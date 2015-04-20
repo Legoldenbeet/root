@@ -96,7 +96,7 @@ public class CardReaderPanel extends JPanel {
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 				// TODO Auto-generated method stub
-				// cardReaderList = apduChannel.getReaderList();
+				cardReaderList = apduChannel.getReaderList();
 				if (cardReaderList != null && cardReaderList.size() > 0) {
 					comboBoxModel = new DefaultComboBoxModel(cardReaderList.toArray());
 					comboBox.setModel(comboBoxModel);
@@ -118,12 +118,12 @@ public class CardReaderPanel extends JPanel {
 					String reader = comboBox.getSelectedItem().toString();
 					HashMap<String, String> res = commonAPDU.reset(reader);
 					StringSelection atr = new StringSelection(res.get("atr"));
-					Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					//Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 					String atrS = "";
 
 					if ("9000".equals(res.get("sw"))) {
-						clipboard.setContents(atr, null);
+						//clipboard.setContents(atr, null);
 						atrS = res.get("atr");
 					} else {
 						atrS = "";
