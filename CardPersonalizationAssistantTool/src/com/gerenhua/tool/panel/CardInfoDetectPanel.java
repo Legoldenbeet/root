@@ -83,7 +83,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static JMenuItem mntmChangeStatus;
 	private static JMenuItem mntmLoad;
 	private static JMenuItem mntmdeleteObj;
-	private static JMenuItem mntmCardStatus;
+	// private static JMenuItem mntmCardStatus;
 	private static JMenuItem mntmBuildScripts;
 	private static JMenuItem mntmInstallApplet;
 
@@ -116,35 +116,35 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			}
 		});
 
-		mntmCardStatus = new JMenuItem("CARD STATUS");
-		mntmCardStatus.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				log.setLogArea(textPane_1);
-				RightPanel.configPanel.setVisible(true);
-				SwingUtilities.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						RightPanel.configPanel.initPanel();
-					}
-				});
-
-				Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
-				RightPanel.cardInfoDetectPanel.setVisible(false);
-				RightPanel.facePanel.setVisible(false);
-				RightPanel.testDataConfigPanel.setVisible(false);
-				RightPanel.terminalTypeConfigPanel.setVisible(false);
-				RightPanel.terminalPerformanceConfigPanel.setVisible(false);
-				RightPanel.terminalLimitConfigPanel.setVisible(false);
-				RightPanel.issuerKeyConfigPanel.setVisible(false);
-				RightPanel.caPublicKeyConfigPanel.setVisible(false);
-				RightPanel.aidConfigPanel.setVisible(false);
-				RightPanel.logoPanel.setVisible(false);
-				RightPanel.tradePanel.setVisible(false);
-				RightPanel.cardReaderPanel.setVisible(false);
-			}
-		});
+		// mntmCardStatus = new JMenuItem("CARD STATUS");
+		// mntmCardStatus.addActionListener(new ActionListener() {
+		// public void actionPerformed(ActionEvent arg0) {
+		// log.setLogArea(textPane_1);
+		// RightPanel.configPanel.setVisible(true);
+		// SwingUtilities.invokeLater(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// // TODO Auto-generated method stub
+		// RightPanel.configPanel.initPanel();
+		// }
+		// });
+		//
+		// Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
+		// RightPanel.cardInfoDetectPanel.setVisible(false);
+		// RightPanel.facePanel.setVisible(false);
+		// RightPanel.testDataConfigPanel.setVisible(false);
+		// RightPanel.terminalTypeConfigPanel.setVisible(false);
+		// RightPanel.terminalPerformanceConfigPanel.setVisible(false);
+		// RightPanel.terminalLimitConfigPanel.setVisible(false);
+		// RightPanel.issuerKeyConfigPanel.setVisible(false);
+		// RightPanel.caPublicKeyConfigPanel.setVisible(false);
+		// RightPanel.aidConfigPanel.setVisible(false);
+		// RightPanel.logoPanel.setVisible(false);
+		// RightPanel.tradePanel.setVisible(false);
+		// RightPanel.cardReaderPanel.setVisible(false);
+		// }
+		// });
 
 		mntmLoad = new JMenuItem("LOAD CAP");
 		mntmLoad.addActionListener(new ActionListener() {
@@ -725,14 +725,18 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 						if (nodeName.equalsIgnoreCase("CardInfo")) {
 							popup.removeAll();
 							addMenu(mntmCardinfo, e);
-							addMenu(mntmCardStatus, e);
+							// addMenu(mntmCardStatus, e);
 							addMenu(mntmChangeStatus, e);
-							
-							Collection<String> templates=Config.getItems("Personalization_Template");
+							setStatusDialog(false, false);
+							updateStatusDialog.isISD = true;
+							showMenu(e);
+						}else if (nodeName.equalsIgnoreCase("Application Instances")) {
+							popup.removeAll();
+							Collection<String> templates = Config.getItems("Personalization_Template");
 							for (String template : templates) {
-								final JMenuItem item_tmp=new JMenuItem(template);
+								final JMenuItem item_tmp = new JMenuItem(template);
 								item_tmp.addActionListener(new ActionListener() {
-									
+
 									@Override
 									public void actionPerformed(ActionEvent e) {
 										try {
@@ -748,20 +752,18 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 										} catch (Exception e2) {
 											JOptionPane.showMessageDialog(null, e2.getMessage());
 										}
-										
+
 									}
 								});
 								addMenu(item_tmp, e);
 							}
-							setStatusDialog(false, false);
-							updateStatusDialog.isISD = true;
 							showMenu(e);
 						} else if (nodeName.equalsIgnoreCase("Load Files")) {
 							popup.removeAll();
 							addMenu(mntmLoad, e);
 							addMenu(mntmBuildScripts, e);
 							showMenu(e);
-						}
+						} 
 
 					}
 				}
@@ -785,10 +787,10 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	 * 更新tree变化
 	 */
 	public static void refreshTree() {
-		if (commonAPDU==null) {
+		if (commonAPDU == null) {
 			commonAPDU = new CommonAPDU();
 		}
-		
+
 		CardInfoThread cardInfoThread = new CardInfoThread(tree, commonAPDU, comboBox.getSelectedItem().toString().trim(), textField_4.getText().trim(), textField_5.getText().trim(), textField.getText().trim(), textField_1.getText().trim(), textField_2.getText().trim(), textPane_1);
 		cardInfoThread.start();
 	}
