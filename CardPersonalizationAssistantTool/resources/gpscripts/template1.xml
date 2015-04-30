@@ -51,39 +51,39 @@
 	<!-- the last 2 AID will be supplied as an external data element per card, used when derive CMK and replace Key -->
 	<DataElement Encoding="HEX" External="false" Name="AID" Optional="true" Type="BYTESTRING" Value="A000000333010101"/>
 	<DataElement Encoding="HEX" External="false" Name="PSE" Optional="true" Type="BYTESTRING" Value="315041592E5359532E4444463031"/>
-	<DataElement Encoding="HEX" External="false" Name="PSE" Optional="true" Type="BYTESTRING" Value="315041592E5359532E4444463031"/>
+	<DataElement Encoding="HEX" External="false" Name="PPSE" Optional="true" Type="BYTESTRING" Value="325041592E5359532E4444463031"/>
 	<DataElement Encoding="HEX" External="false" Name="BIN" Optional="true" Type="BYTESTRING" Value="11223344"/>	
 
-	<DataElement Encoding="HEX" External="true" Name="dgi0101" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0201" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0202" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0203" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0205" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0206" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0207" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0208" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0209" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0301" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0302" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0303" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0401" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0D01" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi0E01" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8000" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8010" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8201" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8202" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8203" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8204" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi8205" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9000" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9010" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9102" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9103" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9104" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9200" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9203" Optional="true" Type="BYTESTRING"/>
-	<DataElement Encoding="HEX" External="true" Name="dgi9207" Optional="true" Type="BYTESTRING"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0101" Optional="true" Type="BYTESTRING" Value="57116228000100001117D301220101234567899F1F1630313032303330343035303630373038303930413042"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0201" Optional="true" Type="BYTESTRING" Value="5F200F46554C4C2046554E4354494F4E414C9F631011223344556677880000000000000000"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0202" Optional="true" Type="BYTESTRING" Value="5A0862280001000011175F24033012315F25039507019F08020030"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0203" Optional="true" Type="BYTESTRING" Value="9F0702FFC08E120000000000000000410342035E0343031F009F0D05F020040000"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0205" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0206" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0207" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0208" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0209" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0301" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0302" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0303" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0401" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0D01" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi0E01" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8000" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8010" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8201" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8202" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8203" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8204" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi8205" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9000" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9010" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9102" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9103" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9104" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9200" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9203" Optional="true" Type="BYTESTRING" Value="11223344"/>
+	<DataElement Encoding="HEX" External="true" Name="dgi9207" Optional="true" Type="BYTESTRING" Value="11223344"/>
 	
 	<Function Name="appendRecord" Param="dgiTag,dgiLen,dgiValue">
 		<Script><![CDATA[
