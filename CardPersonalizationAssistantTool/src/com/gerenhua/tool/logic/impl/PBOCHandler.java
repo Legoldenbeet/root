@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
@@ -56,7 +55,7 @@ public class PBOCHandler extends BaseHandler {
 	 *            判断终端性能
 	 * @return
 	 */
-	public boolean doTrade(int tradeMount, String readerName,TermSupportUtil termSupportUtil) {
+	public boolean doTrade(int tradeMount, String readerName, TermSupportUtil termSupportUtil) {
 		// 初始化交易参数，如授权金额，pin等
 		HashMap<String, String> param = new HashMap<String, String>();
 		String termRandom = WDStringUtil.getRandomHexString(8);
@@ -197,7 +196,7 @@ public class PBOCHandler extends BaseHandler {
 								logger.debug("verify pin pass!");
 								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
 							}
-						}else {
+						} else {
 							logger.error("verify pin failed,card return:" + result.get("sw"));
 						}
 					}
@@ -217,7 +216,7 @@ public class PBOCHandler extends BaseHandler {
 				String issuerPKCert = cardRecordData.get("90");
 				String issuerPKReminder = cardRecordData.get("92");
 				String issuerPKExp = cardRecordData.get("9F32");
-				// String signedStaticData = cardRecordData.get("93");
+				String signedStaticData = cardRecordData.get("93");
 				String icPKCert = cardRecordData.get("9F46");
 				String icPKExp = cardRecordData.get("9F47");
 				String icPKReminder = cardRecordData.get("9F48");
@@ -230,12 +229,22 @@ public class PBOCHandler extends BaseHandler {
 
 				DataAuthenticate dataAuthenticate = new DataAuthenticate(rid, caPKIndex, issuerPKCert, issuerPKReminder, issuerPKExp, pan, staticDataList);
 				List<String> logList = new ArrayList<String>();
-				if (!dataAuthenticate.dynamicDataAuthenticate(icPKCert, icPKReminder, icPKExp, signedDynmicData, termRandom, logList)) {
-					logger.error("DDA failed!");
-					genWordUtil.add("动态数据认证失败");
-					// genWordUtil.close();
-					return false;
+				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
+					if (!dataAuthenticate.dynamicDataAuthenticate(icPKCert, icPKReminder, icPKExp, signedDynmicData, termRandom, logList)) {
+						logger.error("DDA failed!");
+						genWordUtil.add("动态数据认证失败");
+						// genWordUtil.close();
+						return false;
+					}
+				}else if (CommonHelper.support(aip, AIP_SUPPORT_SDA)) {
+					if (!dataAuthenticate.staticDataAuthenticate(signedStaticData,logList)) {
+						logger.error("SDA failed!");
+						genWordUtil.add("静态数据认证失败");
+						// genWordUtil.close();
+						return false;
+					}
 				}
+				
 				logger.debug("DDA validate successed!");
 
 				genWordUtil.add("DDA中使用的数据");
@@ -298,7 +307,7 @@ public class PBOCHandler extends BaseHandler {
 			genWordUtil.close();
 			NDC.pop();
 			NDC.remove();
-			//apduHandler.close();
+			// apduHandler.close();
 		}
 
 	}

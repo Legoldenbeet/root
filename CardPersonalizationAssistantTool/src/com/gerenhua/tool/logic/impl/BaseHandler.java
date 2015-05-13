@@ -24,6 +24,13 @@ public class BaseHandler {
 	public static HashMap<String, String> tradeDefaultPara;
 	public static String authRespCode = "3030";
 	public CommonAPDU apduHandler;
+	public static final int AIP_SUPPORT_SDA=7;
+	public static final int AIP_SUPPORT_DDA=6;
+	public static final int AIP_SUPPORT_CARDHOLDER_VERIFY=5;
+	public static final int AIP_SUPPORT_RISK_MANAGERMENT=4;
+	public static final int AIP_SUPPORT_EXTERNAL_AUTHENTICATE=3;
+	public static final int AIP_SUPPORT_RFU=2;
+	public static final int AIP_SUPPORT_CDA=1;
 
 	public BaseHandler() {
 		apduHandler=new CommonAPDU();

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -35,11 +36,11 @@ public class CommonHelper {
 		Iterator<String> it = sourceData.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			if (WDAssert.isEmpty(deptData.get(key))) {
+//			if (WDAssert.isEmpty(deptData.get(key))) {
 				deptData.put(key, sourceData.get(key));
-			} else {
-				// throw new Exception("map data is exist of key[" + key +"]");
-			}
+//			} else {
+//				// throw new Exception("map data is exist of key[" + key +"]");
+//			}
 
 		}
 	}
@@ -243,6 +244,14 @@ public class CommonHelper {
 				com.setText(target);
 			}
 		});
+	}
+	public static boolean support(String aip,int option){
+		byte aip_byte1=WDByteUtil.HEX2Bytes(aip)[0];
+		aip_byte1=(byte)((aip_byte1>>(option-1))&0x01);
+		if (aip_byte1==1) {
+			return true;
+		}
+		return false;
 	}
 	public static void main(String[] args) {
 		int b = Integer.parseInt("b",16);
