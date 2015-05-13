@@ -212,7 +212,6 @@ public class PBOCHandler extends BaseHandler {
 				genWordUtil.add("Random Data:" + termRandom);
 				genWordUtil.add("StaticDataList:" + staticDataList);
 				// DDA,SDA
-				logger.debug("===========================DDA validate===============================");
 				String issuerPKCert = cardRecordData.get("90");
 				String issuerPKReminder = cardRecordData.get("92");
 				String issuerPKExp = cardRecordData.get("9F32");
@@ -221,7 +220,9 @@ public class PBOCHandler extends BaseHandler {
 				String icPKExp = cardRecordData.get("9F47");
 				String icPKReminder = cardRecordData.get("9F48");
 				String caPKIndex = cardRecordData.get("8F");
-				staticDataList += aip;
+				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
+					staticDataList += aip;
+				}
 				String pan = cardRecordData.get("5A");
 				pan = pan.replaceAll("F", "");
 				String panSerial = cardRecordData.get("5F34");
@@ -230,24 +231,29 @@ public class PBOCHandler extends BaseHandler {
 				DataAuthenticate dataAuthenticate = new DataAuthenticate(rid, caPKIndex, issuerPKCert, issuerPKReminder, issuerPKExp, pan, staticDataList);
 				List<String> logList = new ArrayList<String>();
 				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
+					logger.debug("===========================DDA validate===============================");
 					if (!dataAuthenticate.dynamicDataAuthenticate(icPKCert, icPKReminder, icPKExp, signedDynmicData, termRandom, logList)) {
 						logger.error("DDA failed!");
 						genWordUtil.add("动态数据认证失败");
 						// genWordUtil.close();
 						return false;
 					}
-				}else if (CommonHelper.support(aip, AIP_SUPPORT_SDA)) {
-					if (!dataAuthenticate.staticDataAuthenticate(signedStaticData,logList)) {
+
+					logger.debug("DDA validate successed!");
+					genWordUtil.add("DDA中使用的数据");
+				} else if (CommonHelper.support(aip, AIP_SUPPORT_SDA)) {
+					logger.debug("===========================SDA validate===============================");
+					if (!dataAuthenticate.staticDataAuthenticate(signedStaticData, logList)) {
 						logger.error("SDA failed!");
 						genWordUtil.add("静态数据认证失败");
 						// genWordUtil.close();
 						return false;
 					}
-				}
-				
-				logger.debug("DDA validate successed!");
 
-				genWordUtil.add("DDA中使用的数据");
+					logger.debug("SDA validate successed!");
+					genWordUtil.add("SDA中使用的数据");
+				}
+
 				for (String log : logList) {
 					genWordUtil.add(log);
 				}
