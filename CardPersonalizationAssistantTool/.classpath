@@ -15,11 +15,5 @@
 	<classpathentry kind="lib" path="lib/jna.jar"/>
 	<classpathentry kind="lib" path="lib/ikms.jar"/>
 	<classpathentry kind="lib" path="lib/JTattoo-1.6.10.jar"/>
-	<classpathentry kind="lib" path="lib/GPScriptEngine.jar"/>
-	<classpathentry kind="lib" path="lib/js.jar"/>
-	<classpathentry kind="lib" path="lib/serializer.jar"/>
-	<classpathentry kind="lib" path="lib/xalan.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

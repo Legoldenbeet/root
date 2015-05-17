@@ -53,7 +53,6 @@ import com.gerenhua.tool.logic.impl.DeleteObjThread;
 import com.gerenhua.tool.logic.impl.LoadCapThead;
 import com.gerenhua.tool.logic.impl.RunPrgThread;
 import com.gerenhua.tool.utils.Config;
-import com.gp.gpscript.engine.GPScriptEngine;
 import com.watchdata.commons.crypto.WD3DesCryptoUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
 import com.watchdata.commons.lang.WDAssert;
@@ -739,20 +738,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 
 									@Override
 									public void actionPerformed(ActionEvent e) {
-										try {
-											FileInputStream fis = new FileInputStream(new File(System.getProperty("user.dir") + Config.getValue("Personalization_Template", item_tmp.getText().trim())));
-											int len = fis.available();
-											byte[] fileByte = new byte[len];
-
-											fis.read(fileByte);
-											fis.close();
-											GPScriptEngine gpScriptEngine = new GPScriptEngine("PERSONALIZE", new String(fileByte), System.getProperty("user.dir") + "/resources/gpscripts/profiles/GPCardProfile.xml");
-											gpScriptEngine.setReader(Config.getValue("Terminal_Data", "reader"));
-											gpScriptEngine.execEngineIssue();
-										} catch (Exception e2) {
-											JOptionPane.showMessageDialog(null, e2.getMessage());
-										}
-
+										JOptionPane.showMessageDialog(null, "nook");
 									}
 								});
 								addMenu(item_tmp, e);
