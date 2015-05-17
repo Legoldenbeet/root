@@ -147,16 +147,16 @@ public class PBOCHandler extends BaseHandler {
 				}
 				result = apduHandler.gpo("83" + CommonHelper.getLVData(loadDolDataResult, 1));
 				String aip = result.get("82");
-//				字节1：
-//				位8：1=RFU
-//				位7：1=支持SDA
-//				位6：1=支持DDA
-//				位5：1=支持持卡人认证
-//				位4：1=执行终端风险管理
-//				位3：1=支持发卡行认证
-//				位2：RFU（0）
-//				位1：1=支持CDA
-//				字节2：RFU（“00”）
+				// 字节1：
+				// 位8：1=RFU
+				// 位7：1=支持SDA
+				// 位6：1=支持DDA
+				// 位5：1=支持持卡人认证
+				// 位4：1=执行终端风险管理
+				// 位3：1=支持发卡行认证
+				// 位2：RFU（0）
+				// 位1：1=支持CDA
+				// 字节2：RFU（“00”）
 
 				genWordUtil.add(result.get("apdu"), "GPO", result.get("res"), result);
 
@@ -192,7 +192,7 @@ public class PBOCHandler extends BaseHandler {
 				String icPKReminder = cardRecordData.get("9F48");
 				String caPKIndex = cardRecordData.get("8F");
 				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
-					//staticDataList += aip;
+					// staticDataList += aip;
 				}
 				String pan = cardRecordData.get("5A");
 				pan = pan.replaceAll("F", "");
@@ -268,13 +268,13 @@ public class PBOCHandler extends BaseHandler {
 				// Generate arqc
 				logger.debug("==========================Generate AC1================================");
 				String cdol1Data = loadDolData(cardRecordData.get("8C"), param);// 9F0206 9F0306 9F1A02 9505 5F2A02 9A03 9C01 9F3704 9F2103 9F4E14
-//				#######################################################
-//				控制参数 40： bit8，bit7 ：00=AAC--拒绝
-//				                           01=TC--脱机
-//				                           10=ARQC--联机
-//				                           11=RFU
-//				生成密文的数据源：第五部分附录D： 授权金额
-//				#######################################################
+				// #######################################################
+				// 控制参数 40： bit8，bit7 ：00=AAC--拒绝
+				// 01=TC--脱机
+				// 10=ARQC--联机
+				// 11=RFU
+				// 生成密文的数据源：第五部分附录D： 授权金额
+				// #######################################################
 				result = apduHandler.generateAC(cdol1Data, AbstractAPDU.P1_ARQC);
 
 				genWordUtil.add(result.get("apdu"), "Generate AC1", result.get("res"), result);
@@ -284,7 +284,38 @@ public class PBOCHandler extends BaseHandler {
 				String arqc = result.get("9F26");
 				String atc = result.get("9F36");
 				String iad = result.get("9F10");
-
+				String CVR = iad.substring(8, 14);
+//				字节1： 长度字节 03
+//				字节2：
+//				位8–7：
+//				00=第2 个GENERATE AC 返回AAC
+//				01=第2 个GENERATE AC 返回TC
+//				10=不请求第2 个GENERATE AC
+//				11=RFU
+//				位6–5：
+//				00=第1 个GENERATE AC 返回AAC
+//				01=第1 个GENERATE AC 返回TC
+//				10=第1 个GENERATE AC 返回ARQC
+//				11=不能返回11
+//				位4：1=发卡行认证执行但失败
+//				位3：1 =脱机PIN 执行
+//				位2：1=脱机PIN 认证失败
+//				位1：1 =不能联机
+//				字节3：
+//				位8：1=上次联机交易没有完成
+//				位7：1=PIN 锁定
+//				位6：1=超过频率检查
+//				位5：1=新卡
+//				位4：1=上次联机交易发卡行认证失败
+//				位3：1=联机授权后，发卡行认证没有执行
+//				位2：1=由于PIN 锁卡片锁定应用
+//				位1：1=上次交易SDA 失败交易拒绝
+//				字节4：
+//				位8–5：上次交易第2 个生成应用密文（GENERATE
+//				AC）命令后收到的带有安全报文的发卡行脚本命
+//				令
+//				位4：1 =上次交易发卡行脚本处理失败指针
+//				位3：1=上次交易DDA 失败交易拒绝
 				logger.debug("=================================ARQC=================================");
 				String arpc = issuerDao.requestArpc(pan, panSerial, cdol1Data, aip, atc, iad, arqc);
 				logger.debug("online validate successed!");
@@ -307,13 +338,16 @@ public class PBOCHandler extends BaseHandler {
 				genWordUtil.add(result.get("apdu"), "External Authenticate", result.get("res"), result);
 
 				// Generate tc
-				logger.debug("===========================Generate AC2===========================");
-				param.put("8A", authRespCode);
-				String cdol2Data = loadDolData(cardRecordData.get("8D"), param);
-				result = apduHandler.generateAC(cdol2Data, AbstractAPDU.P1_TC);
+//				if (CommonHelper.shiftRight(CVR, 22) != 2) {
+					logger.debug("===========================Generate AC2===========================");
+					param.put("8A", authRespCode);
+					String cdol2Data = loadDolData(cardRecordData.get("8D"), param);
+					result = apduHandler.generateAC(cdol2Data, AbstractAPDU.P1_TC);
 
-				genWordUtil.add(result.get("apdu"), "Generate AC2", result.get("res"), result);
-				genWordUtil.add("CDOL2 Data:" + cdol2Data);
+					genWordUtil.add(result.get("apdu"), "Generate AC2", result.get("res"), result);
+					genWordUtil.add("CDOL2 Data:" + cdol2Data);
+//				}
+
 				logger.debug("========================PBOC trade finished!=======================");
 				genWordUtil.add("PBOC交易完成!");
 				return true;

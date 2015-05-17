@@ -78,7 +78,7 @@ public class IssuerDaoImpl implements IIssuerDao{
 		IssuerKeyInfo issuerKey = issuerKeyInfo.getIssuerKeyInfo("ApplicationKey");
 		isDerive = issuerKey.getDerive()==0?false:true;
 		String sk = calcSessionKey(genCardKey(issuerKey.getAcKey(),pan,panSerial), atc);    
-		String acData =  cdolData.substring(0,58) + aip + atc + iad.substring(6, 14);//卡片验证结果
+		String acData =  cdolData.substring(0,56) + aip + atc + iad.substring(6, 14);//卡片验证结果
 		
 		String myAC = WDPBOCUtil.triple_des_mac(sk, acData + "80",Padding.ZeroBytePadding,iv);
 		

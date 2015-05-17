@@ -253,6 +253,11 @@ public class CommonHelper {
 		}
 		return false;
 	}
+	public static int shiftRight(String cvr,int option){
+		int cvr_int=Integer.parseInt(cvr, 16);
+		int res=cvr_int>>option;
+		return res;
+	}
 	public static void main(String[] args) {
 		int b = Integer.parseInt("b",16);
 		b = (b << 3) + 4;
