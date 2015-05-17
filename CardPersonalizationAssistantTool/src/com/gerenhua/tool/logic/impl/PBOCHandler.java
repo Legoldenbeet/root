@@ -221,7 +221,7 @@ public class PBOCHandler extends BaseHandler {
 				String icPKReminder = cardRecordData.get("9F48");
 				String caPKIndex = cardRecordData.get("8F");
 				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
-					staticDataList += aip;
+					//staticDataList += aip;
 				}
 				String pan = cardRecordData.get("5A");
 				pan = pan.replaceAll("F", "");
@@ -280,7 +280,7 @@ public class PBOCHandler extends BaseHandler {
 				genWordUtil.add("IAD:" + iad);
 				genWordUtil.add("ARPC:" + arpc);
 				// 请求发卡行认证AC密文
-				logger.debug("=======================external Authenticate============================");
+				logger.debug("=======================External Authenticate============================");
 				result = apduHandler.externalAuthenticate(arpc + authRespCode);
 				if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
 					logger.error("external Authenticate failed,card return:" + result.get("sw"));
