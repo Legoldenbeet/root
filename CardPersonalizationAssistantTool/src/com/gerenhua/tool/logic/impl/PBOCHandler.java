@@ -133,25 +133,6 @@ public class PBOCHandler extends BaseHandler {
 
 				// 选择aid报告内容
 				genWordUtil.add(result.get("apdu"), "Select AID", result.get("res"), result);
-
-				// get data
-				logger.debug("================================get data=============================");
-				HashMap<String, String> dataMap = new HashMap<String, String>();
-				result = apduHandler.getData("9F52");
-				dataMap.put("9F52", result.get("9F52"));
-				result = apduHandler.getData("9F54");
-				dataMap.put("9F54", result.get("9F54"));
-				result = apduHandler.getData("9F5C");
-				dataMap.put("9F5C", result.get("9F5C"));
-				result = apduHandler.getData("9F56");
-				dataMap.put("9F56", result.get("9F56"));
-				result = apduHandler.getData("9F57");
-				dataMap.put("9F57", result.get("9F57"));
-				result = apduHandler.getData("9F58");
-				dataMap.put("9F58", result.get("9F58"));
-				result = apduHandler.getData("9F59");
-				dataMap.put("9F59", result.get("9F59"));
-
 				genWordUtil.add("PDOL Data:" + pdol);
 				// gpo
 				logger.debug("==================================gpo==================================");
@@ -166,6 +147,16 @@ public class PBOCHandler extends BaseHandler {
 				}
 				result = apduHandler.gpo("83" + CommonHelper.getLVData(loadDolDataResult, 1));
 				String aip = result.get("82");
+//				字节1：
+//				位8：1=RFU
+//				位7：1=支持SDA
+//				位6：1=支持DDA
+//				位5：1=支持持卡人认证
+//				位4：1=执行终端风险管理
+//				位3：1=支持发卡行认证
+//				位2：RFU（0）
+//				位1：1=支持CDA
+//				字节2：RFU（“00”）
 
 				genWordUtil.add(result.get("apdu"), "GPO", result.get("res"), result);
 
@@ -182,26 +173,6 @@ public class PBOCHandler extends BaseHandler {
 				for (APDUSendANDRes apduSendANDRes2 : aList) {
 					genWordUtil.add(apduSendANDRes2);
 				}
-				// Verify PIN
-				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
-					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
-						logger.debug("=================================Verify PIN===========================");
-						String pin = JOptionPane.showInputDialog("请输入PIN：");
-						if (WDAssert.isNotEmpty(pin)) {
-							result = apduHandler.verifyPin(pin);
-							if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
-								logger.error("verify pin failed,card return:" + result.get("sw"));
-								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
-							} else {
-								logger.debug("verify pin pass!");
-								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
-							}
-						} else {
-							logger.error("verify pin failed,card return:" + result.get("sw"));
-						}
-					}
-				}
-
 				// Internal Authenticate
 				logger.debug("=======================internal Authenticate==============================");
 				result = apduHandler.internalAuthenticate(termRandom);
@@ -257,6 +228,43 @@ public class PBOCHandler extends BaseHandler {
 				for (String log : logList) {
 					genWordUtil.add(log);
 				}
+				// get data
+				logger.debug("================================get data=============================");
+				HashMap<String, String> dataMap = new HashMap<String, String>();
+				result = apduHandler.getData("9F52");
+				dataMap.put("9F52", result.get("9F52"));
+				result = apduHandler.getData("9F54");
+				dataMap.put("9F54", result.get("9F54"));
+				result = apduHandler.getData("9F5C");
+				dataMap.put("9F5C", result.get("9F5C"));
+				result = apduHandler.getData("9F56");
+				dataMap.put("9F56", result.get("9F56"));
+				result = apduHandler.getData("9F57");
+				dataMap.put("9F57", result.get("9F57"));
+				result = apduHandler.getData("9F58");
+				dataMap.put("9F58", result.get("9F58"));
+				result = apduHandler.getData("9F59");
+				dataMap.put("9F59", result.get("9F59"));
+				// Verify PIN
+				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
+					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
+						logger.debug("=================================Verify PIN===========================");
+						String pin = JOptionPane.showInputDialog("请输入PIN：");
+						if (WDAssert.isNotEmpty(pin)) {
+							result = apduHandler.verifyPin(pin);
+							if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
+								logger.error("verify pin failed,card return:" + result.get("sw"));
+								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
+							} else {
+								logger.debug("verify pin pass!");
+								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
+							}
+						} else {
+							logger.error("verify pin failed,card return:" + result.get("sw"));
+						}
+					}
+				}
+
 				// Generate arqc
 				logger.debug("==========================Generate AC1================================");
 				String cdol1Data = loadDolData(cardRecordData.get("8C"), param);// 9F0206 9F0306 9F1A02 9505 5F2A02 9A03 9C01 9F3704 9F2103 9F4E14
