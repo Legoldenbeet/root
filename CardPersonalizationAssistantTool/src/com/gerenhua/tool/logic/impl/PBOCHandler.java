@@ -260,6 +260,13 @@ public class PBOCHandler extends BaseHandler {
 				// Generate arqc
 				logger.debug("==========================Generate AC1================================");
 				String cdol1Data = loadDolData(cardRecordData.get("8C"), param);// 9F0206 9F0306 9F1A02 9505 5F2A02 9A03 9C01 9F3704 9F2103 9F4E14
+//				#######################################################
+//				控制参数 40： bit8，bit7 ：00=AAC--拒绝
+//				                           01=TC--脱机
+//				                           10=ARQC--联机
+//				                           11=RFU
+//				生成密文的数据源：第五部分附录D： 授权金额
+//				#######################################################
 				result = apduHandler.generateAC(cdol1Data, AbstractAPDU.P1_ARQC);
 
 				genWordUtil.add(result.get("apdu"), "Generate AC1", result.get("res"), result);
