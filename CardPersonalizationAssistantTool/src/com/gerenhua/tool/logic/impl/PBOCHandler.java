@@ -192,7 +192,7 @@ public class PBOCHandler extends BaseHandler {
 				String icPKReminder = cardRecordData.get("9F48");
 				String caPKIndex = cardRecordData.get("8F");
 				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
-					// staticDataList += aip;
+					 staticDataList += aip;
 				}
 				String pan = cardRecordData.get("5A");
 				pan = pan.replaceAll("F", "");
