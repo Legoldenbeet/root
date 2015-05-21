@@ -8,8 +8,12 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDStringUtil;
+
 public abstract class Formatter {
 	public static String lineSep = System.getProperty("line.separator");
+	public static byte session=-1;
 
 	public abstract String format(String componentInfo) throws IOException;
 
@@ -196,10 +200,17 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static int readBit4(StringReader hexReader) throws IOException {
-		char[] u1 = new char[1];
+	public static int readU1Left(StringReader hexReader,int len) throws IOException {
+		char[] u1 = new char[2];
 		hexReader.read(u1);
-		return Integer.parseInt(String.valueOf(u1));
+		session=WDByteUtil.HEX2Bytes(String.valueOf(u1))[0];
+		byte target=(byte)(session>>len);
+		target&=0x0F;
+		return target;
+	}
+	public static int readU1Right(StringReader hexReader) throws IOException {
+		byte target=(byte)(session&0x0F);;
+		return target;
 	}
 	
 	public static String readU1(StringReader hexReader) throws IOException {
@@ -250,6 +261,9 @@ public abstract class Formatter {
 			pos += 2;
 		}
 		return sb.toString();
+	}
+	public static String byteHex1(int i) {
+		return toHexStyle(WDStringUtil.paddingHeadZero(Integer.toHexString(i), 2));
 	}
 
 	public static String initArray(String hex, int index) {

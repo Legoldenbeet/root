@@ -14,6 +14,7 @@ import com.watchdata.commons.lang.WDByteUtil;
 
 public class Cap {
 	public static final int ACC_EXTENDED=(byte)0x8;
+	public static final int ACC_ABSTRACT=(byte)0x4;
 	// read pkg cap
 	public static Map<String, String> readCap(String capFilePath) throws IOException {
 		Map<String, String> mapBean = new HashMap<String, String>();
