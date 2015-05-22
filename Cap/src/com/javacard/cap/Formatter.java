@@ -13,9 +13,9 @@ import com.watchdata.commons.lang.WDStringUtil;
 
 public abstract class Formatter {
 	public static String lineSep = System.getProperty("line.separator");
-	public static byte session=-1;
+	public static byte session = -1;
 
-	public abstract String format(String componentInfo) throws IOException;
+	public abstract String format(String componentName) throws IOException;
 
 	public static String read(String fFileName) throws IOException {
 		String filePath = "/com/javacard/formatter/";
@@ -200,19 +200,21 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static int readU1Left(StringReader hexReader,int len) throws IOException {
+	public static int readU1Left(StringReader hexReader, int len) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);
-		session=WDByteUtil.HEX2Bytes(String.valueOf(u1))[0];
-		byte target=(byte)(session>>len);
-		target&=0x0F;
+		session = WDByteUtil.HEX2Bytes(String.valueOf(u1))[0];
+		byte target = (byte) (session >> len);
+		target &= 0x0F;
 		return target;
 	}
+
 	public static int readU1Right(StringReader hexReader) throws IOException {
-		byte target=(byte)(session&0x0F);;
+		byte target = (byte) (session & 0x0F);
+		;
 		return target;
 	}
-	
+
 	public static String readU1(StringReader hexReader) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);
@@ -262,6 +264,7 @@ public abstract class Formatter {
 		}
 		return sb.toString();
 	}
+
 	public static String byteHex1(int i) {
 		return toHexStyle(WDStringUtil.paddingHeadZero(Integer.toHexString(i), 2));
 	}
