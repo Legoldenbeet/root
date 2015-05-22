@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JFileChooser;
@@ -31,12 +32,15 @@ import javax.swing.tree.TreePath;
 import com.javacard.cap.Cap;
 import com.javacard.cap.Formatter;
 import com.watchdata.commons.lang.WDAssert;
+import javax.swing.JTextPane;
+import java.awt.Font;
 
 public class CapInsight extends Formatter {
 
 	private JFrame frmCapinsight;
 	private JTree tree;
-	private Map<String, String> mapBean;
+	private Map<String, Map<String, String>> sessionMap=new HashMap<String, Map<String,String>>();
+	private JTextPane textPane;
 	private JTextArea textArea;
 
 	/**
@@ -91,10 +95,16 @@ public class CapInsight extends Formatter {
 				if (WDAssert.isEmpty(nodeName)) {
 					return;
 				}
+				String parentNodeName=node.getParent().toString();
+				if (WDAssert.isEmpty(parentNodeName)) {
+					return;
+				}
 				if (node.isLeaf()) {
 					try {
+						textPane.setText("");
+						textPane.setText(sessionMap.get(parentNodeName).get(nodeName));
 						textArea.setText("");
-						textArea.setText(format(nodeName));
+						textArea.setText(format(parentNodeName,nodeName));
 					} catch (Exception e2) {
 						// TODO: handle exception
 					}
@@ -108,16 +118,21 @@ public class CapInsight extends Formatter {
 			}
 		}));
 		panel.add(tree);
-
-		JScrollPane scrollPane_1 = new JScrollPane();
-		splitPane.setRightComponent(scrollPane_1);
 		
-		JPanel panel_1 = new JPanel();
-		scrollPane_1.setViewportView(panel_1);
-		panel_1.setLayout(new BorderLayout(0, 0));
+		JSplitPane splitPane_1 = new JSplitPane();
+		splitPane_1.setResizeWeight(0.15);
+		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setRightComponent(splitPane_1);
+		
+		textPane = new JTextPane();
+		textPane.setFont(new Font("微软雅黑", Font.PLAIN, 14));
+		splitPane_1.setLeftComponent(textPane);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		splitPane_1.setRightComponent(scrollPane_1);
 		
 		textArea = new JTextArea();
-		panel_1.add(textArea);
+		scrollPane_1.setViewportView(textArea);
 		JMenuBar menuBar = new JMenuBar();
 		frmCapinsight.setJMenuBar(menuBar);
 
@@ -130,28 +145,32 @@ public class CapInsight extends Formatter {
 				JFileChooser jFileChooser = new JFileChooser(".");
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
 				jFileChooser.setFileFilter(fileNameExtensionFilter);
-				// jFileChooser.setMultiSelectionEnabled(true);
+				jFileChooser.setMultiSelectionEnabled(true);
 
 				int i = jFileChooser.showOpenDialog(null);
 				if (i == JFileChooser.APPROVE_OPTION) {
-					// /File[] file = jFileChooser.getSelectedFiles();
-					File file = jFileChooser.getSelectedFile();
+					File[] fileList = jFileChooser.getSelectedFiles();
+					//File file = jFileChooser.getSelectedFile();
 					DefaultTreeModel dtm = (DefaultTreeModel) tree.getModel();
 					DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
-					DefaultMutableTreeNode capNode = new DefaultMutableTreeNode(file.getName());
 					root.removeAllChildren();
-					root.add(capNode);
-					try {
-						mapBean = Cap.readCap(file.getPath());
-						for (String key : mapBean.keySet()) {
-							DefaultMutableTreeNode componentNode = new DefaultMutableTreeNode(key);
-							capNode.add(componentNode);
+					
+					for (File file : fileList) {
+						DefaultMutableTreeNode capNode = new DefaultMutableTreeNode(file.getName());
+						root.add(capNode);
+						try {
+							Map<String, String> mapBean = Cap.readCap(file.getPath());
+							for (String key : mapBean.keySet()) {
+								DefaultMutableTreeNode componentNode = new DefaultMutableTreeNode(key);
+								capNode.add(componentNode);
+							}
+							sessionMap.put(file.getName(), mapBean);
+						} catch (Exception e2) {
+							// TODO: handle exception
 						}
-					} catch (Exception e2) {
-						// TODO: handle exception
+						expandTree(tree, true);
+						tree.updateUI();
 					}
-					expandTree(tree, true);
-					tree.updateUI();
 				}
 			}
 		});
@@ -181,8 +200,8 @@ public class CapInsight extends Formatter {
 	}
 
 	@Override
-	public String format(String componentName) throws IOException {
-		String componentInfo = mapBean.get(componentName);
+	public String format(String pName,String componentName) throws IOException {
+		String componentInfo = sessionMap.get(pName).get(componentName);
 		componentName = componentName.substring(0, componentName.lastIndexOf('.'));
 		String headerFormat = read(componentName + "Component");
 		if (WDAssert.isNotEmpty(headerFormat)) {

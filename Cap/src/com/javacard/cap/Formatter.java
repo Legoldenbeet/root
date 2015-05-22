@@ -15,7 +15,7 @@ public abstract class Formatter {
 	public static String lineSep = System.getProperty("line.separator");
 	public static byte session = -1;
 
-	public abstract String format(String componentName) throws IOException;
+	public abstract String format(String pName,String componentName) throws IOException;
 
 	public static String read(String fFileName) throws IOException {
 		String filePath = "/com/javacard/formatter/";
