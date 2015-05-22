@@ -127,7 +127,7 @@ public class CapInsight extends Formatter {
 		JMenuItem menuItem = new JMenuItem("打开");
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser jFileChooser = new JFileChooser();
+				JFileChooser jFileChooser = new JFileChooser(".");
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
 				jFileChooser.setFileFilter(fileNameExtensionFilter);
 				// jFileChooser.setMultiSelectionEnabled(true);
