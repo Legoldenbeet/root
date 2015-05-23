@@ -21,6 +21,7 @@ public abstract class Formatter {
 		String filePath = "/com/javacard/formatter/";
 		filePath += fFileName;
 		filePath += ".format";
+		
 		InputStream is = Formatter.class.getResourceAsStream(filePath);
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);

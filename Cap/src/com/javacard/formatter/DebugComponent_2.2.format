@@ -1,0 +1,62 @@
+debug_component {
+	u1 tag
+	u2 size
+	u2 string_count
+	utf8_info strings_table[string_count]{
+		u2 length
+		u1 bytes[length]
+	}
+	u2 package_name_index
+	u2 class_count
+	class_debug_info classes[class_count]{
+		u2 name_index
+		u2 access_flags
+		u2 location
+		u2 superclass_name_index
+		u2 source_file_index
+		u1 interface_count
+		u2 field_count
+		u2 method_count
+		u2 interface_names_indexes[interface_count]
+		field_debug_info fields[field_count]{
+			u2 name_index
+			u2 descriptor_index
+			u2 access_flags
+			union {
+				{
+					u1 pad1
+					u1 pad2
+					u1 pad3
+					u1 token
+				} token_var
+				{
+					u2 pad
+					u2 location
+				} location_var
+				u4 const_value
+			} contents
+		}
+		method_debug_info methods[method_count]{
+			u2 name_index
+			u2 descriptor_index
+			u2 access_flags
+			u2 location
+			u1 header_size
+			u2 body_size
+			u2 variable_count
+			u2 line_count
+			variable_info variable_table[variable_count]{
+				u1 index
+				u2 name_index
+				u2 descriptor_index
+				u2 start_pc
+				u2 length
+			}
+			line_info line_table[line_count]{
+				u2 start_pc
+				u2 end_pc
+				u2 source_line
+			}
+		}
+	}
+}

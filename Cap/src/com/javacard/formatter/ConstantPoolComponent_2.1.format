@@ -1,0 +1,9 @@
+constant_pool_component {
+	u1 tag
+	u2 size
+	u2 count
+	cp_info constant_pool[count]{
+		u1 tag
+		u1 info[3]
+	}
+}

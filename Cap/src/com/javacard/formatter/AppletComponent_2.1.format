@@ -1,0 +1,10 @@
+applet_component {
+	u1 tag
+	u2 size
+	u1 count
+	{ 	
+		u1 AID_length
+		u1 AID[AID_length]
+		u2 install_method_offset
+	} applets[count]
+}
