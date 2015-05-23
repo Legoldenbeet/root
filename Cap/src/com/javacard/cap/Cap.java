@@ -2,6 +2,7 @@ package com.javacard.cap;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,8 +14,35 @@ import java.util.zip.ZipFile;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class Cap {
-	public static final int ACC_EXTENDED=(byte)0x8;
-	public static final int ACC_ABSTRACT=(byte)0x4;
+	// COMPONENT_Header 1
+	// COMPONENT_Directory 2
+	// COMPONENT_Applet 3
+	// COMPONENT_Import 4
+	// COMPONENT_ConstantPool 5
+	// COMPONENT_Class 6
+	// COMPONENT_Method 7
+	// COMPONENT_StaticField 8
+	// COMPONENT_ReferenceLocation 9
+	// COMPONENT_Export 10
+	// COMPONENT_Descriptor 11
+	public static final int COMPONENT_Header = 0x01;
+	public static final int COMPONENT_Directory = 0x02;
+	public static final int COMPONENT_Applet = 0x03;
+	public static final int COMPONENT_Import = 0x04;
+	public static final int COMPONENT_ConstantPool = 0x05;
+	public static final int COMPONENT_Class = 0x06;
+	public static final int COMPONENT_Method = 0x07;
+	public static final int COMPONENT_StaticField = 0x08;
+	public static final int COMPONENT_ReferenceLocation = 0x09;
+	public static final int COMPONENT_Export = 0x0A;
+	public static final int COMPONENT_Descriptor = 0x0B;
+
+	public static final String MAGIC_NUMBER="DECAFFED";
+//	public static int MAJOR_VERSION = 0x02;
+//	public static int MINOR_VERSION = 0x02;
+	public static final int ACC_EXTENDED = 0x08;
+	public static final int ACC_ABSTRACT = 0x04;
+
 	// read pkg cap
 	public static Map<String, String> readCap(String capFilePath) throws IOException {
 		Map<String, String> mapBean = new HashMap<String, String>();
@@ -48,11 +76,29 @@ public class Cap {
 		} while (true);
 		zipFile.close();
 
+		checkJavaCardVer(mapBean);
+
 		return mapBean;
 	}
 
-	public String checkNull(String str) {
-		return str == null ? "" : str;
+	private static void checkJavaCardVer(Map<String, String> mapBean) {
+		String headerInfo=mapBean.get("Header.cap");
+		try {
+			StringReader sReader=new StringReader(headerInfo);
+			String comType=Formatter.readU1(sReader).replaceAll("0x", "").replaceAll(" ", "");
+			if (Integer.parseInt(comType)!=COMPONENT_Header) {
+				return;
+			}
+			Formatter.readU2(sReader);//跳过size
+			Formatter.readU4(sReader);
+			
+			mapBean.put("MINOR_VERSION", Formatter.readU1(sReader).replaceAll("0x", "").replaceAll(" ", ""));
+			mapBean.put("MAJOR_VERSION", Formatter.readU1(sReader).replaceAll("0x", "").replaceAll(" ", ""));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return;
 	}
 
 	public static void main(String[] args) throws IOException {

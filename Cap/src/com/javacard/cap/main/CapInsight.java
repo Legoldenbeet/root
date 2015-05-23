@@ -2,6 +2,7 @@ package com.javacard.cap.main;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -20,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -32,14 +34,12 @@ import javax.swing.tree.TreePath;
 import com.javacard.cap.Cap;
 import com.javacard.cap.Formatter;
 import com.watchdata.commons.lang.WDAssert;
-import javax.swing.JTextPane;
-import java.awt.Font;
 
 public class CapInsight extends Formatter {
 
 	private JFrame frmCapinsight;
 	private JTree tree;
-	private Map<String, Map<String, String>> sessionMap=new HashMap<String, Map<String,String>>();
+	public static Map<String, Map<String, String>> sessionMap=new HashMap<String, Map<String,String>>();
 	private JTextPane textPane;
 	private JTextArea textArea;
 
@@ -107,6 +107,7 @@ public class CapInsight extends Formatter {
 						textArea.setText(format(parentNodeName,nodeName));
 					} catch (Exception e2) {
 						// TODO: handle exception
+						e2.printStackTrace();
 					}
 
 				}
@@ -205,7 +206,7 @@ public class CapInsight extends Formatter {
 		componentName = componentName.substring(0, componentName.lastIndexOf('.'));
 		String headerFormat = read(componentName + "Component");
 		if (WDAssert.isNotEmpty(headerFormat)) {
-			return paddingExt(headerFormat, new StringReader(componentInfo));
+			return paddingExt(pName,componentName,headerFormat, new StringReader(componentInfo));
 		}
 
 		return null;
