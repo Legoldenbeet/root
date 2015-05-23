@@ -333,13 +333,14 @@ public abstract class Formatter {
 				sb.append("\r\n\t\tu1 name_length:");
 				sb.append(readU1(sReader)+"\r\n");
 				int nameLength = getArrayCount("name_length", sb.toString());
-				sb.append("\t\tu1 name["+nameLength+"]：");
-				sb.append(toHexStyle(readU1Array(sReader, nameLength)));
-				sb.append("\r\n\t}\r\n");
+				sb.append("\t\tu1 name[name_length]：");
+				sb.append(readU1Array(sReader, nameLength));
+				sb.append("\r\n\t}");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		sb.append("\r\n}");
 		return sb.toString();
 	}
 	public static void main(String[] args) throws IOException {
