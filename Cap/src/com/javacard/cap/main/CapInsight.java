@@ -204,11 +204,18 @@ public class CapInsight extends Formatter {
 
 	@Override
 	public String format(String pName,String componentName) throws IOException {
-		String componentInfo = sessionMap.get(pName).get(componentName);
+		Map<String, String> capInfoMap=sessionMap.get(pName);
+		
+		int major=Integer.parseInt(capInfoMap.get("MAJOR_VERSION"));
+		int minor=Integer.parseInt(capInfoMap.get("MINOR_VERSION"));
+		
+		String componentInfo = capInfoMap.get(componentName);
 		componentName = componentName.substring(0, componentName.lastIndexOf('.'));
-		String headerFormat = read(componentName + "Component");
+		
+		String headerFormat = read(componentName + "Component"+"_"+major+"."+minor);
+		
 		if (WDAssert.isNotEmpty(headerFormat)) {
-			return paddingExt(pName,componentName,headerFormat, new StringReader(componentInfo));
+			return paddingExt(componentName,headerFormat, new StringReader(componentInfo));
 		}
 
 		return null;

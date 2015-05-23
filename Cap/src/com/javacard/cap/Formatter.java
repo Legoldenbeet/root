@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.javacard.cap.main.CapInsight;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -104,7 +103,7 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static String paddingExt(String capFileName,String componentName,String formatter, StringReader hexReader) throws IOException {
+	public static String paddingExt(String componentName,String formatter, StringReader hexReader) throws IOException {
 		String cacheFormatter = "";
 
 		StringBuilder sb = new StringBuilder();
@@ -198,10 +197,6 @@ public abstract class Formatter {
 			countpos += linecharNum;
 		}
 
-		if (componentName.equalsIgnoreCase("Header")) {
-			sb.append(headerComponentExt(capFileName,hexReader));
-		}
-		
 		return sb.toString();
 	}
 
@@ -340,26 +335,26 @@ public abstract class Formatter {
 		return res;
 	}
 
-	public static String headerComponentExt(String capFileName,StringReader sReader) {
-		StringBuilder sb=new StringBuilder();
-		int major=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MAJOR_VERSION"));
-		int minor=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MINOR_VERSION"));
-		if (major>=2&&minor>1) {
-			try {
-				sb.append("\r\n\tpackage_name_info {");
-				sb.append("\r\n\t\tu1 name_length:");
-				sb.append(readU1(sReader)+"\r\n");
-				int nameLength = getArrayCount("name_length", sb.toString());
-				sb.append("\t\tu1 name[name_length]：");
-				sb.append(readU1Array(sReader, nameLength));
-				sb.append("\r\n\t}");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		sb.append("\r\n}");
-		return sb.toString();
-	}
+//	public static String headerComponentExt(String capFileName,StringReader sReader) {
+//		StringBuilder sb=new StringBuilder();
+//		int major=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MAJOR_VERSION"));
+//		int minor=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MINOR_VERSION"));
+//		if (major>=2&&minor>1) {
+//			try {
+//				sb.append("\r\n\tpackage_name_info {");
+//				sb.append("\r\n\t\tu1 name_length:");
+//				sb.append(readU1(sReader)+"\r\n");
+//				int nameLength = getArrayCount("name_length", sb.toString());
+//				sb.append("\t\tu1 name[name_length]：");
+//				sb.append(readU1Array(sReader, nameLength));
+//				sb.append("\r\n\t}");
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		sb.append("\r\n}");
+//		return sb.toString();
+//	}
 	public static void main(String[] args) throws IOException {
 		System.out.println(Formatter.read("headercomponent"));
 		System.out.println(Formatter.toHexStyle("0021"));
