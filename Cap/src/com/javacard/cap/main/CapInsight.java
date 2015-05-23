@@ -162,8 +162,10 @@ public class CapInsight extends Formatter {
 						try {
 							Map<String, String> mapBean = Cap.readCap(file.getPath());
 							for (String key : mapBean.keySet()) {
-								DefaultMutableTreeNode componentNode = new DefaultMutableTreeNode(key);
-								capNode.add(componentNode);
+								if (key.endsWith(".cap")) {
+									DefaultMutableTreeNode componentNode = new DefaultMutableTreeNode(key);
+									capNode.add(componentNode);
+								}
 							}
 							sessionMap.put(file.getName(), mapBean);
 						} catch (Exception e2) {
