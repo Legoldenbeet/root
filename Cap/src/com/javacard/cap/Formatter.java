@@ -331,9 +331,9 @@ public abstract class Formatter {
 			try {
 				sb.append("\r\n\tpackage_name_info {");
 				sb.append("\r\n\t\tu1 name_length:");
-				sb.append(readU1(sReader));
+				sb.append(readU1(sReader)+"\r\n");
 				int nameLength = getArrayCount("name_length", sb.toString());
-				sb.append("\r\n\t\tu1 name["+nameLength+"]：");
+				sb.append("\t\tu1 name["+nameLength+"]：");
 				sb.append(toHexStyle(readU1Array(sReader, nameLength)));
 				sb.append("\r\n\t}\r\n");
 			} catch (Exception e) {
