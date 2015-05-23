@@ -85,15 +85,15 @@ public class Cap {
 		String headerInfo=mapBean.get("Header.cap");
 		try {
 			StringReader sReader=new StringReader(headerInfo);
-			String comType=Formatter.readU1(sReader).replaceAll("0x", "").replaceAll(" ", "");
+			String comType=Formatter.readU1_NOPading(sReader);
 			if (Integer.parseInt(comType)!=COMPONENT_Header) {
 				return;
 			}
 			Formatter.readU2(sReader);//跳过size
 			Formatter.readU4(sReader);
 			
-			mapBean.put("MINOR_VERSION", Formatter.readU1(sReader).replaceAll("0x", "").replaceAll(" ", ""));
-			mapBean.put("MAJOR_VERSION", Formatter.readU1(sReader).replaceAll("0x", "").replaceAll(" ", ""));
+			mapBean.put("MINOR_VERSION", Formatter.readU1_NOPading(sReader));
+			mapBean.put("MAJOR_VERSION", Formatter.readU1_NOPading(sReader));
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

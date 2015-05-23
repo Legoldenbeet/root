@@ -216,44 +216,61 @@ public abstract class Formatter {
 
 	public static int readU1Right(StringReader hexReader) throws IOException {
 		byte target = (byte) (session & 0x0F);
-		;
 		return target;
 	}
 
 	public static String readU1(StringReader hexReader) throws IOException {
+		return toHexStyle(readU1_NOPading(hexReader));
+	}
+	public static String readU1_NOPading(StringReader hexReader) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);
-		return toHexStyle(String.valueOf(u1));
+		return String.valueOf(u1);
 	}
 
 	public static String readU2(StringReader hexReader) throws IOException {
+		return toHexStyle(readU2_NOPading(hexReader));
+	}
+	public static String readU2_NOPading(StringReader hexReader) throws IOException {
 		char[] u2 = new char[4];
 		hexReader.read(u2);
-		return toHexStyle(String.valueOf(u2));
+		return String.valueOf(u2);
 	}
 
 	public static String readU4(StringReader hexReader) throws IOException {
+		return toHexStyle(readU4_NOPading(hexReader));
+	}
+	public static String readU4_NOPading(StringReader hexReader) throws IOException {
 		char[] u4 = new char[8];
 		hexReader.read(u4);
-		return toHexStyle(String.valueOf(u4));
+		return String.valueOf(u4);
 	}
 
 	public static String readU1Array(StringReader hexReader, int num) throws IOException {
+		return toHexStyle(readU1Array_NOPading(hexReader, num));
+	}
+	public static String readU1Array_NOPading(StringReader hexReader, int num) throws IOException {
 		char[] u1 = new char[2 * num];
 		hexReader.read(u1);
-		return toHexStyle(String.valueOf(u1));
+		return String.valueOf(u1);
 	}
 
 	public static String readU2Array(StringReader hexReader, int num) throws IOException {
+		return toHexStyle(readU2Array_NOPading(hexReader, num));
+	}
+	public static String readU2Array_NOPading(StringReader hexReader, int num) throws IOException {
 		char[] u2 = new char[4 * num];
 		hexReader.read(u2);
-		return toHexStyle(String.valueOf(u2));
+		return String.valueOf(u2);
 	}
 
 	public static String readU4Array(StringReader hexReader, int num) throws IOException {
+		return toHexStyle(readU4Array_NOPading(hexReader, num));
+	}
+	public static String readU4Array_NOPading(StringReader hexReader, int num) throws IOException {
 		char[] u4 = new char[8 * num];
 		hexReader.read(u4);
-		return toHexStyle(String.valueOf(u4));
+		return String.valueOf(u4);
 	}
 
 	public static String toHexStyle(String hex) {
