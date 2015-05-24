@@ -327,10 +327,11 @@ public abstract class Formatter {
 		if (starth > 0) {
 			pos = formatter.lastIndexOf(lineSep, starth);
 			endh = formatter.indexOf("}", starth);
-			res = formatter.substring(pos, endh + 1);
+			res = formatter.substring(pos, endh + lineSep.length());
 		} else if (endh > 0) {
 			pos = formatter.lastIndexOf("{", endh);
-			res = formatter.substring(pos - 1, end + 1);
+			pos = formatter.lastIndexOf(lineSep, pos);
+			res = formatter.substring(pos+lineSep.length(), end + lineSep.length());
 		}
 		// System.out.println(res);
 		return res;
