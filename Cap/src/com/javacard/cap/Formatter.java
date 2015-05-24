@@ -15,13 +15,13 @@ public abstract class Formatter {
 	public static String lineSep = System.getProperty("line.separator");
 	public static byte session = -1;
 
-	public abstract String format(String pName,String componentName) throws IOException;
+	public abstract String format(String pName, String componentName) throws IOException;
 
 	public static String read(String fFileName) throws IOException {
 		String filePath = "/com/javacard/formatter/";
 		filePath += fFileName;
 		filePath += ".format";
-		
+
 		InputStream is = Formatter.class.getResourceAsStream(filePath);
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
@@ -104,7 +104,7 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static String paddingExt(String componentName,String formatter, StringReader hexReader) throws IOException {
+	public static String paddingExt(String componentName, String formatter, StringReader hexReader) throws IOException {
 		String cacheFormatter = "";
 
 		StringBuilder sb = new StringBuilder();
@@ -115,6 +115,8 @@ public abstract class Formatter {
 			int u1pos = lineStr.indexOf("u1");
 			int u2pos = lineStr.indexOf("u2");
 			int u4pos = lineStr.indexOf("u4");
+			int bit4lpos = lineStr.indexOf("bit[4]_left");
+			int bit4rpos = lineStr.indexOf("bit[4]_right");
 			int start = lineStr.indexOf("[");
 			int end = lineStr.indexOf("]");
 			int starth = lineStr.indexOf("{");
@@ -165,8 +167,11 @@ public abstract class Formatter {
 					lineStr = lineStr + ":" + readU4(hexReader) + lineSep;
 				}
 				sb.append(lineStr + lineSep);
-			} else if ((start > 0 && end > 0) && (starth > 0 || endh > 0)) {
-
+			} else if (bit4lpos > 0) {
+				lineStr = lineStr + ":" + readU1Left(hexReader, 4) + lineSep;
+			} else if (bit4rpos > 0) {
+				lineStr = lineStr + ":" + readU1Right(hexReader) + lineSep;
+			}else if ((start > 0 && end > 0) && (starth > 0 || endh > 0)) {
 				String key = lineStr.substring(start + 1, end);
 				if (isNumeric(key)) {
 				} else {
@@ -218,6 +223,7 @@ public abstract class Formatter {
 	public static String readU1(StringReader hexReader) throws IOException {
 		return toHexStyle(readU1_NOPading(hexReader));
 	}
+
 	public static String readU1_NOPading(StringReader hexReader) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);
@@ -227,6 +233,7 @@ public abstract class Formatter {
 	public static String readU2(StringReader hexReader) throws IOException {
 		return toHexStyle(readU2_NOPading(hexReader));
 	}
+
 	public static String readU2_NOPading(StringReader hexReader) throws IOException {
 		char[] u2 = new char[4];
 		hexReader.read(u2);
@@ -236,6 +243,7 @@ public abstract class Formatter {
 	public static String readU4(StringReader hexReader) throws IOException {
 		return toHexStyle(readU4_NOPading(hexReader));
 	}
+
 	public static String readU4_NOPading(StringReader hexReader) throws IOException {
 		char[] u4 = new char[8];
 		hexReader.read(u4);
@@ -245,6 +253,7 @@ public abstract class Formatter {
 	public static String readU1Array(StringReader hexReader, int num) throws IOException {
 		return toHexStyle(readU1Array_NOPading(hexReader, num));
 	}
+
 	public static String readU1Array_NOPading(StringReader hexReader, int num) throws IOException {
 		char[] u1 = new char[2 * num];
 		hexReader.read(u1);
@@ -254,6 +263,7 @@ public abstract class Formatter {
 	public static String readU2Array(StringReader hexReader, int num) throws IOException {
 		return toHexStyle(readU2Array_NOPading(hexReader, num));
 	}
+
 	public static String readU2Array_NOPading(StringReader hexReader, int num) throws IOException {
 		char[] u2 = new char[4 * num];
 		hexReader.read(u2);
@@ -263,6 +273,7 @@ public abstract class Formatter {
 	public static String readU4Array(StringReader hexReader, int num) throws IOException {
 		return toHexStyle(readU4Array_NOPading(hexReader, num));
 	}
+
 	public static String readU4Array_NOPading(StringReader hexReader, int num) throws IOException {
 		char[] u4 = new char[8 * num];
 		hexReader.read(u4);
@@ -331,32 +342,32 @@ public abstract class Formatter {
 		} else if (endh > 0) {
 			pos = formatter.lastIndexOf("{", endh);
 			pos = formatter.lastIndexOf(lineSep, pos);
-			res = formatter.substring(pos+lineSep.length(), end + lineSep.length());
+			res = formatter.substring(pos + lineSep.length(), end + lineSep.length());
 		}
 		// System.out.println(res);
 		return res;
 	}
 
-//	public static String headerComponentExt(String capFileName,StringReader sReader) {
-//		StringBuilder sb=new StringBuilder();
-//		int major=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MAJOR_VERSION"));
-//		int minor=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MINOR_VERSION"));
-//		if (major>=2&&minor>1) {
-//			try {
-//				sb.append("\r\n\tpackage_name_info {");
-//				sb.append("\r\n\t\tu1 name_length:");
-//				sb.append(readU1(sReader)+"\r\n");
-//				int nameLength = getArrayCount("name_length", sb.toString());
-//				sb.append("\t\tu1 name[name_length]：");
-//				sb.append(readU1Array(sReader, nameLength));
-//				sb.append("\r\n\t}");
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		sb.append("\r\n}");
-//		return sb.toString();
-//	}
+	// public static String headerComponentExt(String capFileName,StringReader sReader) {
+	// StringBuilder sb=new StringBuilder();
+	// int major=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MAJOR_VERSION"));
+	// int minor=Integer.parseInt(CapInsight.sessionMap.get(capFileName).get("MINOR_VERSION"));
+	// if (major>=2&&minor>1) {
+	// try {
+	// sb.append("\r\n\tpackage_name_info {");
+	// sb.append("\r\n\t\tu1 name_length:");
+	// sb.append(readU1(sReader)+"\r\n");
+	// int nameLength = getArrayCount("name_length", sb.toString());
+	// sb.append("\t\tu1 name[name_length]：");
+	// sb.append(readU1Array(sReader, nameLength));
+	// sb.append("\r\n\t}");
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// sb.append("\r\n}");
+	// return sb.toString();
+	// }
 	public static void main(String[] args) throws IOException {
 		System.out.println(Formatter.read("headercomponent"));
 		System.out.println(Formatter.toHexStyle("0021"));

@@ -7,10 +7,11 @@ class_component {
 //		u1 type[(nibble_count+1) / 2];
 //	}
 
-	interface_info interfaces[]{
+//	interface_info interfaces[]{
+	interface_info interfaces{
 		u1 bitfield {
-			bit[4] flags
-			bit[4] interface_count
+			bit[4]_left flags
+			bitr[4]_right interface_count
 		}
 		u2 class_ref superinterfaces[interface_count]
 		interface_name_info interface_name{
@@ -19,10 +20,11 @@ class_component {
 		}	
 	}
 	
-	class_info classes[]{
+//	class_info classes[]{
+	class_info classes{
 		u1 bitfield {
-			bit[4] flags
-			bit[4] interface_count
+			bit[4]_left flags
+			bitr[4]_right interface_count
 		}
 		u2 class_ref super_class_ref
 		u1 declared_instance_size
