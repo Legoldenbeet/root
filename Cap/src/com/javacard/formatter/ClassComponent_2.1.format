@@ -2,48 +2,29 @@ class_component {
 	u1 tag
 	u2 size
 	u2 signature_pool_length
-	type_descriptor signature_pool[signature_pool_length]{
-		u1 nibble_count;
-		u1 type[(nibble_count+1) / 2];
-	}
-	
+//	type_descriptor signature_pool[signature_pool_length]{
+//		u1 nibble_count;
+//		u1 type[(nibble_count+1) / 2];
+//	}
+
 	interface_info interfaces[]{
 		u1 bitfield {
 			bit[4] flags
 			bit[4] interface_count
 		}
-		class_ref superinterfaces[interface_count]{
-			u1 tag
-			union {
-				u2 internal_class_ref
-				{ 
-					u1 package_token
-					u1 class_token
-				} external_class_ref
-			} class_ref
-			u1 padding
-		}
+		u2 class_ref superinterfaces[interface_count]
 		interface_name_info interface_name{
 			u1 interface_name_length
 			u1 interface_name[interface_name_length]
 		}	
 	}
 	
-	class_info {
+	class_info classes[]{
 		u1 bitfield {
 			bit[4] flags
 			bit[4] interface_count
 		}
-		class_ref super_class_ref{
-			u1 tag
-			union {
-				u2 internal_class_ref{ 
-					u1 package_token
-					u1 class_token
-				} external_class_ref
-			} class_ref
-			u1 padding
-		}
+		u2 class_ref super_class_ref
 		u1 declared_instance_size
 		u1 first_reference_token
 		u1 reference_count
@@ -53,21 +34,13 @@ class_component {
 		u1 package_method_table_count
 		u2 public_virtual_method_table[public_method_table_count]
 		u2 package_virtual_method_table[package_method_table_count]
+		
 		implemented_interface_info interfaces[interface_count]{
-			class_ref interface{
-				u1 tag
-				union {
-					u2 internal_class_ref
-					{ 
-						u1 package_token
-						u1 class_token
-					} external_class_ref
-				} class_ref
-				u1 padding
-			}
+			class_ref interface
 			u1 count
 			u1 index[count]
 		}
+		
 		remote_interface_info remote_interfaces{
 			u1 remote_methods_count
 			remote_method_info remote_methods[remote_methods_count]{
@@ -80,17 +53,7 @@ class_component {
 			u1 class_name_length
 			u1 class_name[class_name_length]
 			u1 remote_interfaces_count
-			class_ref remote_interfaces[remote_interfaces_count]{
-				u1 tag
-				union {
-					u2 internal_class_ref
-					{ 
-						u1 package_token
-						u1 class_token
-					} external_class_ref
-				} class_ref
-				 u1 padding
-			}
+			u2 class_ref remote_interfaces[remote_interfaces_count]
 		}
 	}
 }
