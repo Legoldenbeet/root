@@ -40,6 +40,8 @@ public class Cap {
 	public static final String MAGIC_NUMBER="DECAFFED";
 //	public static int MAJOR_VERSION = 0x02;
 //	public static int MINOR_VERSION = 0x02;
+	public static final int ACC_INTERFACE = 0x08;
+	
 	public static final int ACC_EXTENDED = 0x08;
 	public static final int ACC_ABSTRACT = 0x04;
 

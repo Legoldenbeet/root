@@ -104,7 +104,7 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static String paddingExt(String componentName, String formatter, StringReader hexReader) throws IOException {
+	public static String paddingExt(String formatter, StringReader hexReader) throws IOException {
 		String cacheFormatter = "";
 
 		StringBuilder sb = new StringBuilder();
@@ -202,8 +202,42 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
-	public static String padingClassComponent(StringReader stringReader) {
-		return null;
+	public static String padingClassComponent(String headerFormat, StringReader hexReader) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		String template1 = getTemplate(headerFormat, "$1");
+		String template2 = getTemplate(headerFormat, "$2");
+
+		sb.append("class_component {" + lineSep);
+		sb.append("	u1 tag:" + readU1(hexReader) + lineSep);
+		sb.append("	u2 size:" + readU2(hexReader) + lineSep);
+		String signature_pool_length_str = readU2_NOPading(hexReader);
+		int signature_pool_length = Integer.parseInt(signature_pool_length_str, 16);
+		sb.append("	u2 signature_pool_length:" + toHexStyle(signature_pool_length_str) + lineSep);
+		// skip signature_pool
+		if (signature_pool_length > 0) {
+			readU2_NOPading(hexReader);
+		}
+		int flag = readU1Left(hexReader, 4);
+		int interFace_count = readU1Right(hexReader);
+		if (flag == Cap.ACC_INTERFACE) {
+			sb.append(tabChar(1) + "interface_info interfaces[]" + lineSep);
+		} else {
+			sb.append(tabChar(1) + "class_info classes[]" + lineSep);
+		}
+		sb.append(tabChar(1) + "{" + lineSep);
+		sb.append(tabChar(2) + "u1 bitfield {" + lineSep);
+		sb.append(tabChar(3) + "bit[4] flags:" + byteHex1(flag) + lineSep);
+		sb.append(tabChar(3) + "bit[4] interface_count:" + byteHex1(interFace_count) + lineSep);
+		sb.append(tabChar(2) + "}" + lineSep);
+		if (flag == Cap.ACC_INTERFACE) {
+			sb.append(padding(template1, hexReader));
+		} else {
+			sb.append(padding(template1, hexReader));
+		}
+
+		sb.append(padding(template1, hexReader));
+
+		return sb.toString();
 	}
 
 	public static int readU1Left(StringReader hexReader, int len) throws IOException {
@@ -330,6 +364,24 @@ public abstract class Formatter {
 			return false;
 		}
 		return true;
+	}
+
+	public static String tabChar(int size) {
+		StringBuilder sb = new StringBuilder();
+		do {
+			sb.append("\t");
+			size--;
+		} while (size > 0);
+		return sb.toString();
+	}
+
+	public static String getTemplate(String formater, String mark) {
+		int start = formater.indexOf(mark);
+		int end = formater.lastIndexOf(mark);
+		if (start != end) {
+			return formater.substring(start + mark.length() + lineSep.length(), end).replaceAll("//", " ");
+		}
+		return null;
 	}
 
 	public static String getCacheFormatter(String formatter, int end, int starth, int endh) {
