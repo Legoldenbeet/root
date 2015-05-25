@@ -115,8 +115,8 @@ public abstract class Formatter {
 			int u1pos = lineStr.indexOf("u1");
 			int u2pos = lineStr.indexOf("u2");
 			int u4pos = lineStr.indexOf("u4");
-			int bit4lpos = lineStr.indexOf("bit[4]_left");
-			int bit4rpos = lineStr.indexOf("bit[4]_right");
+			// int bit4lpos = lineStr.indexOf("bit[4]_left");
+			// int bit4rpos = lineStr.indexOf("bit[4]_right");
 			int start = lineStr.indexOf("[");
 			int end = lineStr.indexOf("]");
 			int starth = lineStr.indexOf("{");
@@ -167,11 +167,7 @@ public abstract class Formatter {
 					lineStr = lineStr + ":" + readU4(hexReader) + lineSep;
 				}
 				sb.append(lineStr + lineSep);
-			} else if (bit4lpos > 0) {
-				lineStr = lineStr + ":" + readU1Left(hexReader, 4) + lineSep;
-			} else if (bit4rpos > 0) {
-				lineStr = lineStr + ":" + readU1Right(hexReader) + lineSep;
-			}else if ((start > 0 && end > 0) && (starth > 0 || endh > 0)) {
+			} else if ((start > 0 && end > 0) && (starth > 0 || endh > 0)) {
 				String key = lineStr.substring(start + 1, end);
 				if (isNumeric(key)) {
 				} else {

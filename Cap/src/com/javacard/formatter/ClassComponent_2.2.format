@@ -8,54 +8,52 @@ class_component {
 //	}
 
 //	interface_info interfaces[]{
-	interface_info interfaces{
-		u1 bitfield {
-			bit[4]_left flags
-			bitr[4]_right interface_count
-		}
-		u2 class_ref superinterfaces[interface_count]
-		interface_name_info interface_name{
-			u1 interface_name_length
-			u1 interface_name[interface_name_length]
-		}	
-	}
-	
+//		u1 bitfield {
+//			bit[4]_left flags
+//			bitr[4]_right interface_count
+//		}
+//		u2 class_ref superinterfaces[interface_count]
+//		interface_name_info interface_name{
+//			u1 interface_name_length
+//			u1 interface_name[interface_name_length]
+//		}	
+//	}
+//	
 //	class_info classes[]{
-	class_info classes{
-		u1 bitfield {
-			bit[4]_left flags
-			bitr[4]_right interface_count
-		}
-		u2 class_ref super_class_ref
-		u1 declared_instance_size
-		u1 first_reference_token
-		u1 reference_count
-		u1 public_method_table_base
-		u1 public_method_table_count
-		u1 package_method_table_base
-		u1 package_method_table_count
-		u2 public_virtual_method_table[public_method_table_count]
-		u2 package_virtual_method_table[package_method_table_count]
-		
-		implemented_interface_info interfaces[interface_count]{
-			class_ref interface
-			u1 count
-			u1 index[count]
-		}
-		
-		remote_interface_info remote_interfaces{
-			u1 remote_methods_count
-			remote_method_info remote_methods[remote_methods_count]{
-				u2 remote_method_hash
-				u2 signature_offset
-				u1 virtual_method_token
-			}
-			u1 hash_modifier_length
-			u1 hash_modifier[hash_modifier_length]
-			u1 class_name_length
-			u1 class_name[class_name_length]
-			u1 remote_interfaces_count
-			u2 class_ref remote_interfaces[remote_interfaces_count]
-		}
-	}
-}
+//		u1 bitfield {
+//			bit[4]_left flags
+//			bitr[4]_right interface_count
+//		}
+//		u2 class_ref super_class_ref
+//		u1 declared_instance_size
+//		u1 first_reference_token
+//		u1 reference_count
+//		u1 public_method_table_base
+//		u1 public_method_table_count
+//		u1 package_method_table_base
+//		u1 package_method_table_count
+//		u2 public_virtual_method_table[public_method_table_count]
+//		u2 package_virtual_method_table[package_method_table_count]
+//		
+//		implemented_interface_info interfaces[interface_count]{
+//			u2 class_ref interface
+//			u1 count
+//			u1 index[count]
+//		}
+//		
+//		remote_interface_info remote_interfaces{
+//			u1 remote_methods_count
+//			remote_method_info remote_methods[remote_methods_count]{
+//				u2 remote_method_hash
+//				u2 signature_offset
+//				u1 virtual_method_token
+//			}
+//			u1 hash_modifier_length
+//			u1 hash_modifier[hash_modifier_length]
+//			u1 class_name_length
+//			u1 class_name[class_name_length]
+//			u1 remote_interfaces_count
+//			u2 class_ref remote_interfaces[remote_interfaces_count]
+//		}
+//	}
+//}
