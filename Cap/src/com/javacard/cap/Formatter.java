@@ -202,6 +202,10 @@ public abstract class Formatter {
 		return sb.toString();
 	}
 
+	public static String padingClassComponent(StringReader stringReader) {
+		return null;
+	}
+
 	public static int readU1Left(StringReader hexReader, int len) throws IOException {
 		char[] u1 = new char[2];
 		hexReader.read(u1);

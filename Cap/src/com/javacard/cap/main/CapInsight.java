@@ -210,12 +210,16 @@ public class CapInsight extends Formatter {
 		int minor=Integer.parseInt(capInfoMap.get("MINOR_VERSION"));
 		
 		String componentInfo = capInfoMap.get(componentName);
+		StringReader sr=new StringReader(componentInfo);
+		if (componentName.equalsIgnoreCase("Class.cap")) {
+			return padingClassComponent(sr);
+		}
 		componentName = componentName.substring(0, componentName.lastIndexOf('.'));
 		
 		String headerFormat = read(componentName + "Component"+"_"+major+"."+minor);
 		
 		if (WDAssert.isNotEmpty(headerFormat)) {
-			return paddingExt(componentName,headerFormat, new StringReader(componentInfo));
+			return paddingExt(componentName,headerFormat,sr);
 		}
 
 		return null;
