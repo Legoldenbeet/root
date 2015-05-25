@@ -1,29 +1,28 @@
-class_component {
-	u1 tag
-	u2 size
-	u2 signature_pool_length
+//class_component {
+//	u1 tag
+//	u2 size
+//	u2 signature_pool_length
 //	type_descriptor signature_pool[signature_pool_length]{
 //		u1 nibble_count;
 //		u1 type[(nibble_count+1) / 2];
 //	}
-
 //	interface_info interfaces[]{
 //		u1 bitfield {
-//			bit[4]_left flags
-//			bitr[4]_right interface_count
-//		}
+//			bit[4] flags
+//			bit[4] interface_count
+//		}$1
 //		u2 class_ref superinterfaces[interface_count]
 //		interface_name_info interface_name{
 //			u1 interface_name_length
 //			u1 interface_name[interface_name_length]
 //		}	
-//	}
-//	
+//	}$1
+//
 //	class_info classes[]{
 //		u1 bitfield {
-//			bit[4]_left flags
-//			bitr[4]_right interface_count
-//		}
+//			bit[4] flags
+//			bit[4] interface_count
+//		}$2
 //		u2 class_ref super_class_ref
 //		u1 declared_instance_size
 //		u1 first_reference_token
@@ -55,5 +54,5 @@ class_component {
 //			u1 remote_interfaces_count
 //			u2 class_ref remote_interfaces[remote_interfaces_count]
 //		}
-//	}
+//	}$2
 //}
