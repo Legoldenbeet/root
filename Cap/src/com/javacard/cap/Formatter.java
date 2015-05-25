@@ -232,7 +232,7 @@ public abstract class Formatter {
 		if (flag == Cap.ACC_INTERFACE) {
 			sb.append(padding(template1, hexReader));
 		} else {
-			sb.append(padding(template1, hexReader));
+			sb.append(padding(template2, hexReader));
 		}
 
 		sb.append(padding(template1, hexReader));
