@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <exe4j version="4.4.4" transformSequenceNumber="1">
   <directoryPresets config="E:/程序打包/CapInsight/dist" />
-  <application name="CapInsight" distributionSourceDir="E:/程序打包/CapInsight">
+  <application name="CapInsight" distributionSourceDir="E:/程序打包/CapInsight/dist">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
@@ -23,8 +23,9 @@
       <envVar name="JDK_HOME" />
     </searchSequence>
     <classPath>
-      <directory location="./dist/plugins" failOnError="false" />
-      <archive location="./dist/CapInsight.jar" failOnError="false" />
+      <directory location="./plugins" failOnError="false" />
+      <directory location="./cap" failOnError="false" />
+      <archive location="./CapInsight.jar" failOnError="false" />
     </classPath>
     <nativeLibraryDirectories />
   </java>
