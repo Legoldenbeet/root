@@ -14,6 +14,7 @@ import java.util.zip.ZipFile;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class Cap {
+	public static String version="2.2";
 	// COMPONENT_Header 1
 	// COMPONENT_Directory 2
 	// COMPONENT_Applet 3
@@ -38,8 +39,7 @@ public class Cap {
 	public static final int COMPONENT_Descriptor = 0x0B;
 
 	public static final String MAGIC_NUMBER="DECAFFED";
-//	public static int MAJOR_VERSION = 0x02;
-//	public static int MINOR_VERSION = 0x02;
+	
 	public static final int ACC_INTERFACE = 0x08;
 	public static final int ACC_SHAREABLE = 0x04;
 	public static final int ACC_REMOTE = 0x02;

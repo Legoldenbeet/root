@@ -208,6 +208,8 @@ public class CapInsight extends Formatter {
 
 		int major = Integer.parseInt(capInfoMap.get("MAJOR_VERSION"));
 		int minor = Integer.parseInt(capInfoMap.get("MINOR_VERSION"));
+		
+		Cap.version=major+"."+minor;
 
 		String componentInfo = capInfoMap.get(componentName);
 		StringReader sr = new StringReader(componentInfo);

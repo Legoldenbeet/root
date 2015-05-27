@@ -209,13 +209,18 @@ public abstract class Formatter {
 		sb.append("	u1 tag:" + readU1(hexReader) + lineSep);
 		int componentSize = Integer.parseInt(readU2_NOPading(hexReader), 16);
 		sb.append("	u2 size:" + byteHex2(componentSize) + lineSep);
-		String signature_pool_length_str = readU2_NOPading(hexReader);
-		int signature_pool_length = Integer.parseInt(signature_pool_length_str, 16);
-		sb.append("	u2 signature_pool_length:" + toHexStyle(signature_pool_length_str) + lineSep);
-		// skip signature_pool
-		if (signature_pool_length > 0) {
-			readU2_NOPading(hexReader);
+		if (Cap.version.equalsIgnoreCase("2.2")) {
+			String signature_pool_length_str = readU2_NOPading(hexReader);
+			componentSize -= 2;
+			int signature_pool_length = Integer.parseInt(signature_pool_length_str, 16);
+			sb.append("	u2 signature_pool_length:" + toHexStyle(signature_pool_length_str) + lineSep);
+			// skip signature_pool
+			if (signature_pool_length > 0) {
+				readU2_NOPading(hexReader);
+				componentSize -= (signature_pool_length * 2);
+			}
 		}
+
 		do {
 			int flag = readU1Left(hexReader, 4);
 			int interFace_count = readU1Right(hexReader);
