@@ -204,12 +204,11 @@ public abstract class Formatter {
 
 	public static String padingClassComponent(String headerFormat, StringReader hexReader) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		String template1 = getTemplate(headerFormat, "$1");
-		String template2 = getTemplate(headerFormat, "$2");
 
 		sb.append("class_component {" + lineSep);
 		sb.append("	u1 tag:" + readU1(hexReader) + lineSep);
-		sb.append("	u2 size:" + readU2(hexReader) + lineSep);
+		int componentSize = Integer.parseInt(readU2_NOPading(hexReader), 16);
+		sb.append("	u2 size:" + byteHex2(componentSize) + lineSep);
 		String signature_pool_length_str = readU2_NOPading(hexReader);
 		int signature_pool_length = Integer.parseInt(signature_pool_length_str, 16);
 		sb.append("	u2 signature_pool_length:" + toHexStyle(signature_pool_length_str) + lineSep);
@@ -217,26 +216,80 @@ public abstract class Formatter {
 		if (signature_pool_length > 0) {
 			readU2_NOPading(hexReader);
 		}
-		int flag = readU1Left(hexReader, 4);
-		int interFace_count = readU1Right(hexReader);
-		if (flag == Cap.ACC_INTERFACE) {
-			sb.append(tabChar(1) + "interface_info interfaces[]" + lineSep);
-		} else {
-			sb.append(tabChar(1) + "class_info classes[]" + lineSep);
-		}
-		sb.append(tabChar(1) + "{" + lineSep);
-		sb.append(tabChar(2) + "u1 bitfield {" + lineSep);
-		sb.append(tabChar(3) + "bit[4] flags:" + byteHex1(flag) + lineSep);
-		sb.append(tabChar(3) + "bit[4] interface_count:" + byteHex1(interFace_count) + lineSep);
-		sb.append(tabChar(2) + "}" + lineSep);
-		if (flag == Cap.ACC_INTERFACE) {
-			sb.append(padding(template1, hexReader));
-		} else {
-			sb.append(padding(template2, hexReader));
-		}
+		do {
+			int flag = readU1Left(hexReader, 4);
+			int interFace_count = readU1Right(hexReader);
+			componentSize--;
+			if ((flag & Cap.ACC_INTERFACE) == Cap.ACC_INTERFACE) {
+				sb.append(tabChar(1) + "interface_info interfaces[]" + lineSep);
+			} else {
+				sb.append(tabChar(1) + "class_info classes[]" + lineSep);
+			}
+			sb.append(tabChar(1) + "{" + lineSep);
+			sb.append(tabChar(2) + "u1 bitfield {" + lineSep);
+			sb.append(tabChar(3) + "bit[4] flags:" + byteHex1(flag) + lineSep);
+			sb.append(tabChar(3) + "bit[4] interface_count:" + byteHex1(interFace_count) + lineSep);
+			sb.append(tabChar(2) + "}" + lineSep);
+			if (flag == Cap.ACC_INTERFACE) {
+				if (interFace_count > 0) {
+					sb.append(tabChar(2) + "u2 class_ref superinterfaces[interface_count]:" + readU2Array(hexReader, interFace_count) + lineSep);
+					componentSize -= (interFace_count * 2);
+					if ((flag & Cap.ACC_REMOTE) == Cap.ACC_REMOTE) {
+						sb.append(tabChar(2) + "interface_name_info interface_name[interface_count]{" + lineSep);
+						sb.append(tabChar(3) + "u1 interface_name_length:" + readU1(hexReader) + lineSep);
+						componentSize--;
+						int interface_name_length = getArrayCount("interface_name_length", sb.toString());
+						sb.append(tabChar(3) + "u1 interface_name[interface_name_length]:" + readU1Array(hexReader, interface_name_length) + lineSep);
+						componentSize -= interface_name_length;
+						sb.append(tabChar(2) + "}" + lineSep);
+					}
+				}
+			} else {
+				sb.append(tabChar(2) + "u2 class_ref super_class_ref:" + readU2(hexReader) + lineSep);
+				componentSize -= 2;
+				sb.append(tabChar(2) + "u1 declared_instance_size:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				sb.append(tabChar(2) + "u1 first_reference_token:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				sb.append(tabChar(2) + "u1 reference_count:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				sb.append(tabChar(2) + "u1 public_method_table_base:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				sb.append(tabChar(2) + "u1 public_method_table_count:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				sb.append(tabChar(2) + "u1 package_method_table_base:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				sb.append(tabChar(2) + "u1 package_method_table_count:" + readU1(hexReader) + lineSep);
+				componentSize--;
+				int public_method_table_count = getArrayCount("public_method_table_count", sb.toString());
+				if (public_method_table_count > 0) {
+					sb.append(tabChar(2) + "u2 public_virtual_method_table[public_method_table_count]:" + readU2Array(hexReader, public_method_table_count) + lineSep);
+					componentSize -= (public_method_table_count * 2);
+				}
+				int package_method_table_count = getArrayCount("package_method_table_count", sb.toString());
+				if (package_method_table_count > 0) {
+					sb.append(tabChar(2) + "u2 package_virtual_method_table[package_method_table_count]:" + readU2Array(hexReader, package_method_table_count) + lineSep);
+					componentSize -= (package_method_table_count * 2);
+				}
+				// int interface_count=getArrayCount("interface_count", sb.toString());
+				if (interFace_count > 0) {
+					for (int i = 0; i < interFace_count; i++) {
+						sb.append(tabChar(2) + "implemented_interface_info interfaces[" + i + "]{" + lineSep);
+						sb.append(tabChar(3) + "u2 class_ref interface:" + readU2(hexReader) + lineSep);
+						componentSize -= 2;
+						sb.append(tabChar(3) + "u1 count:" + readU1(hexReader) + lineSep);
+						componentSize--;
+						int count = getArrayCount("count", sb.toString());
+						sb.append(tabChar(3) + "u1 index[count]:" + readU1Array(hexReader, count) + lineSep);
+						componentSize -= (count * 2);
+						sb.append(tabChar(2) + "}" + lineSep);
+					}
+				}
 
-		sb.append(padding(template1, hexReader));
-
+			}
+			sb.append(tabChar(1) + "}" + lineSep);
+		} while (componentSize > 0);
+		sb.append("}" + lineSep);
 		return sb.toString();
 	}
 
@@ -329,7 +382,21 @@ public abstract class Formatter {
 	}
 
 	public static String byteHex1(int i) {
-		return toHexStyle(WDStringUtil.paddingHeadZero(Integer.toHexString(i), 2));
+		String i_str = Integer.toHexString(i);
+		if (i_str.length() < 2) {
+			return toHexStyle(WDStringUtil.paddingHeadZero(i_str, 2));
+		} else {
+			return toHexStyle(i_str);
+		}
+	}
+
+	public static String byteHex2(int i) {
+		String i_str = Integer.toHexString(i);
+		if (i_str.length() < 4) {
+			return toHexStyle(WDStringUtil.paddingHeadZero(i_str, 4));
+		} else {
+			return toHexStyle(i_str);
+		}
 	}
 
 	public static String initArray(String hex, int index) {

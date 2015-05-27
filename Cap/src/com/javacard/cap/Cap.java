@@ -41,6 +41,8 @@ public class Cap {
 //	public static int MAJOR_VERSION = 0x02;
 //	public static int MINOR_VERSION = 0x02;
 	public static final int ACC_INTERFACE = 0x08;
+	public static final int ACC_SHAREABLE = 0x04;
+	public static final int ACC_REMOTE = 0x02;
 	
 	public static final int ACC_EXTENDED = 0x08;
 	public static final int ACC_ABSTRACT = 0x04;

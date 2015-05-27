@@ -12,7 +12,7 @@
 //			bit[4] interface_count
 //		}$1
 //		u2 class_ref superinterfaces[interface_count]
-//		interface_name_info interface_name{
+//		interface_name_info interface_name[interface_count]{
 //			u1 interface_name_length
 //			u1 interface_name[interface_name_length]
 //		}	
