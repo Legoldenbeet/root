@@ -101,10 +101,15 @@ public class CapInsight extends Formatter {
 				}
 				if (node.isLeaf()) {
 					try {
+						String info = sessionMap.get(parentNodeName).get(nodeName);
 						textPane.setText("");
-						textPane.setText(sessionMap.get(parentNodeName).get(nodeName));
+						textPane.setText(info);
 						textArea.setText("");
-						textArea.setText(format(parentNodeName, nodeName));
+						if (nodeName.startsWith("Debug") || nodeName.startsWith("Descriptor")||nodeName.startsWith("WDDebug")) {
+							textArea.setText("fail.");
+						} else {
+							textArea.setText(format(parentNodeName, nodeName));
+						}
 					} catch (Exception e2) {
 						// TODO: handle exception
 						e2.printStackTrace();
@@ -208,8 +213,8 @@ public class CapInsight extends Formatter {
 
 		int major = Integer.parseInt(capInfoMap.get("MAJOR_VERSION"));
 		int minor = Integer.parseInt(capInfoMap.get("MINOR_VERSION"));
-		
-		Cap.version=major+"."+minor;
+
+		Cap.version = major + "." + minor;
 
 		String componentInfo = capInfoMap.get(componentName);
 		StringReader sr = new StringReader(componentInfo);
@@ -219,7 +224,7 @@ public class CapInsight extends Formatter {
 
 		if (WDAssert.isNotEmpty(headerFormat)) {
 			if (componentName.equalsIgnoreCase("Class")) {
-				return padingClassComponent(headerFormat,sr);
+				return padingClassComponent(headerFormat, sr);
 			} else {
 				return paddingExt(headerFormat, sr);
 			}
