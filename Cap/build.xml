@@ -85,9 +85,9 @@
 
 	<!--move files to ${dist-dir}-->
 	<target name="move">
-		<copy todir="${dist-dir}/cap">
-					<fileset dir="cap" />
-				</copy>
+		<copy todir="${dist-dir}/debug">
+			<fileset dir="debug" />
+		</copy>
 		<copy todir="${dist-dir}/plugins">
 			<fileset dir="lib" />
 		</copy>
