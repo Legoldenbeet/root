@@ -16,21 +16,52 @@ public class ReaderXChannel implements IAPDUChannel {
 	@Override
 	public String send(String commandApdu) {
 		logger.debug("send[" + commandApdu.toUpperCase() + "]");
-		byte len=(byte)(commandApdu.length()/2);
-		String recv = handle.Send(len, WDByteUtil.HEX2Bytes(commandApdu));
+		// byte len = (byte) (commandApdu.length() / 2);
+		byte[] apduBuffer = WDByteUtil.HEX2Bytes(commandApdu);
+		String recv = handle.Send((byte) apduBuffer.length, apduBuffer);
 		String sw = recv.substring(recv.length() - 4, recv.length());
-		String sw2=sw.substring(sw.length() - 2, sw.length());
-		if (sw.equalsIgnoreCase("9000")) {
+		String sw1 = sw.substring(0, 2);
+		String sw2 = sw.substring(sw.length() - 2, sw.length());
+
+		switch (Integer.parseInt(sw1, 16)) {
+		case 0x90:
 			logger.debug("recv[" + recv + "]");
-		} else if (sw.startsWith("61")) {
+			break;
+		case 0x61:
 			logger.debug("recv[" + recv + "]");
-			recv=send("00C00000" + sw2);
-		} else if (sw.toUpperCase().startsWith("6C")) {
+			recv = send("00C00000" + sw2);
+			break;
+		case 0x6C:
 			logger.debug("recv[" + recv + "]");
-			recv=send(commandApdu.substring(0,commandApdu.length()-2) + sw2);
-		} else {
+			recv = send(commandApdu.substring(0, commandApdu.length() - 2) + sw2);
+			break;
+		case 0x63:
+			if (sw2.equalsIgnoreCase("10")) {
+				logger.debug("recv[" + recv + "]");
+				recv = recv.substring(0, recv.length() - 4);
+				recv += send(commandApdu.substring(0, 6) + "01" + commandApdu.substring(8));
+			}
+			break;
+		default:
 			logger.error("recv[" + recv + "]");
+			break;
 		}
+		// if (sw.equalsIgnoreCase("9000")) {
+		// logger.debug("recv[" + recv + "]");
+		// } else if (sw.startsWith("61")) {
+		// logger.debug("recv[" + recv + "]");
+		// recv = send("00C00000" + sw2);
+		// } else if (sw.toUpperCase().startsWith("6C")) {
+		// logger.debug("recv[" + recv + "]");
+		// recv = send(commandApdu.substring(0, commandApdu.length() - 2) + sw2);
+		// } else if (sw.startsWith("6310")) {
+		// logger.debug("recv[" + recv + "]");
+		// recv=recv.substring(0,recv.length()-4);
+		// recv+= send(commandApdu.substring(0, 6)+"01"+commandApdu.substring(8));
+		// return recv;
+		// } else {
+		// logger.error("recv[" + recv + "]");
+		// }
 		return recv;
 	}
 
