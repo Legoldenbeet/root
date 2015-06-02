@@ -83,6 +83,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static JMenuItem mntmdeleteObj;
 	// private static JMenuItem mntmCardStatus;
 	private static JMenuItem mntmBuildScripts;
+	private static JMenuItem mntmBuildScriptsJTS;
 	private static JMenuItem mntmInstallApplet;
 
 	private static Thread runPrgThread = null;
@@ -192,6 +193,36 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 					File[] file = jFileChooser.getSelectedFiles();
 					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
 					loadCapThead.setRealCard(false);
+					loadCapThead.setJTS(false);
+					loadCapThead.start();
+				}
+				log.setLogArea(textPane_1);
+			}
+		});
+		mntmBuildScriptsJTS = new JMenuItem("BUILD SCRIPTS_JTS");
+		mntmBuildScriptsJTS.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				log.setLogArea(textPane);
+				JFileChooser jFileChooser = null;
+				String capFile = Config.getValue("CardInfo", "currentCap");
+				if (WDAssert.isNotEmpty(capFile)) {
+					jFileChooser = new JFileChooser(capFile);
+				} else {
+					jFileChooser = new JFileChooser("./resources/cap");
+				}
+
+				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
+				jFileChooser.setFileFilter(fileNameExtensionFilter);
+				jFileChooser.setMultiSelectionEnabled(true);
+
+				int i = jFileChooser.showOpenDialog(null);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File[] file = jFileChooser.getSelectedFiles();
+					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
+					loadCapThead.setRealCard(false);
+					loadCapThead.setJTS(true);
 					loadCapThead.start();
 				}
 				log.setLogArea(textPane_1);
@@ -747,6 +778,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							popup.removeAll();
 							addMenu(mntmLoad, e);
 							addMenu(mntmBuildScripts, e);
+							addMenu(mntmBuildScriptsJTS, e);
 							showMenu(e);
 						} 
 

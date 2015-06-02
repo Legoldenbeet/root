@@ -17,11 +17,25 @@ import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
 public class LoadCapThead extends Thread {
+	/**
+	 * @return the isJTS
+	 */
+	public boolean isJTS() {
+		return isJTS;
+	}
+
+	/**
+	 * @param isJTS the isJTS to set
+	 */
+	public void setJTS(boolean isJTS) {
+		this.isJTS = isJTS;
+	}
 	public static CommonAPDU commonAPDU;
 	public static Log log = new Log();
 	public JTextPane textPane;
 	public File[] capFiles;
 	public boolean isRealCard = false;
+	public boolean isJTS=false;
 
 	public boolean isRealCard() {
 		return isRealCard;
@@ -64,7 +78,7 @@ public class LoadCapThead extends Thread {
 				if (isRealCard) {
 					resp = commonAPDU.send(apduCommand);
 				} else {
-					log.out(formatLoadScript(apduCommand, "//INSTALL [for load]"), Log.LOG_COLOR_BLACK);
+					log.out(formatLoadScript(apduCommand, "//INSTALL [for load]",isJTS), Log.LOG_COLOR_BLACK);
 					resp = "9000";
 				}
 				if (resp.endsWith(Constants.SW_SUCCESS)) {
@@ -86,9 +100,9 @@ public class LoadCapThead extends Thread {
 							resp = commonAPDU.send(temp);
 						} else {
 							if(p1.equalsIgnoreCase("80")){
-								log.out(formatLoadScript(temp, "//LOAD [for Last Block]"), Log.LOG_COLOR_BLACK);
+								log.out(formatLoadScript(temp, "//LOAD [for Last Block]",isJTS), Log.LOG_COLOR_BLACK);
 							}else {
-								log.out(formatLoadScript(temp, "//LOAD [for " + (j+1) + " Block]"), Log.LOG_COLOR_BLACK);
+								log.out(formatLoadScript(temp, "//LOAD [for " + (j+1) + " Block]",isJTS), Log.LOG_COLOR_BLACK);
 							}
 							resp = "9000";
 						}
@@ -119,10 +133,14 @@ public class LoadCapThead extends Thread {
 	 * @param desc
 	 * @return
 	 */
-	public String formatLoadScript(String apdu, String desc) {
+	public String formatLoadScript(String apdu, String desc,boolean isJTS) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(desc).append("\n");
-		sb.append(apdu).append("SW9000").append("\n");
+		if (isJTS) {
+			sb.append("    jts.senDisplay('").append(apdu).append("SW9000").append("');").append("\n");
+		}else {
+			sb.append(apdu).append("SW9000").append("\n");
+		}
 		return sb.toString();
 	}
 }
