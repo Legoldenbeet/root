@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,6 +23,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
+
+import sun.util.logging.resources.logging;
 
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.pcsc.PcscChannel;
@@ -118,12 +121,12 @@ public class CardReaderPanel extends JPanel {
 					String reader = comboBox.getSelectedItem().toString();
 					HashMap<String, String> res = commonAPDU.reset(reader);
 					StringSelection atr = new StringSelection(res.get("atr"));
-					//Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+					// Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
 					String atrS = "";
 
 					if ("9000".equals(res.get("sw"))) {
-						//clipboard.setContents(atr, null);
+						// clipboard.setContents(atr, null);
 						atrS = res.get("atr");
 					} else {
 						atrS = "";
@@ -167,8 +170,9 @@ public class CardReaderPanel extends JPanel {
 					future.get(1, TimeUnit.SECONDS);
 					executorService.shutdownNow();
 				} catch (Exception e2) {
-					// TODO: handle exception
-					e2.printStackTrace();
+					if (!(e2 instanceof TimeoutException)) {
+						e2.printStackTrace();
+					}
 				}
 
 			}
