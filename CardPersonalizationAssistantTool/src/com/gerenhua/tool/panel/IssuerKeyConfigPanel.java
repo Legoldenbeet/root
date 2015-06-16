@@ -145,7 +145,7 @@ public class IssuerKeyConfigPanel extends JPanel {
 				Config.setValue("ApplicationKey", "UDKac", textField.getText().trim());
 				Config.setValue("ApplicationKey", "UDKmac", textField_1.getText().trim());
 				Config.setValue("ApplicationKey", "UDKenc", textField_2.getText().trim());
-				Config.write();
+//				Config.write();
 
 				JOptionPane.showMessageDialog(null, "保存成功！", "提示框", JOptionPane.INFORMATION_MESSAGE);
 			}
