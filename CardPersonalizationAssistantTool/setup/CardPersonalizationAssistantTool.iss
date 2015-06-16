@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardPAT"
-#define MyAppVersion "1.0.2"
+#define MyAppVersion "1.0.2.4"
 #define MyAppPublisher "ZUNEI, Inc."
 #define MyAppExeName "CardPAT.exe"
 

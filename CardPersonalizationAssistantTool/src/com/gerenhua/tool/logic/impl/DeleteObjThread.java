@@ -2,6 +2,7 @@ package com.gerenhua.tool.logic.impl;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
@@ -21,8 +22,23 @@ public class DeleteObjThread extends Thread {
 
 	@Override
 	public void run() {
-		DefaultMutableTreeNode selNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+		DefaultMutableTreeNode selNode = null;
+		TreePath[] treePath = null;
+		if (tree.getSelectionCount() == 1) {
+			selNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+			delNode(selNode);
+		} else {
+			treePath = tree.getSelectionPaths();
+			for (TreePath tPath : treePath) {
+				selNode = (DefaultMutableTreeNode) (tPath.getLastPathComponent());
+				delNode(selNode);
+			}
+		}
 
+		CardInfoDetectPanel.refreshTree();
+	}
+
+	public void delNode(DefaultMutableTreeNode selNode) {
 		String selNodeName = (selNode != null) ? selNode.toString() : null;
 		if (WDAssert.isNotEmpty(selNodeName)) {
 
@@ -51,7 +67,5 @@ public class DeleteObjThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		CardInfoDetectPanel.refreshTree();
 	}
-
 }

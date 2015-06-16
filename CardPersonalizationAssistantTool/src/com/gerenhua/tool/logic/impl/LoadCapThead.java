@@ -61,8 +61,9 @@ public class LoadCapThead extends Thread {
 				CapFile cap = new CapFile(new FileInputStream(file));
 				
 				boolean includeDebug=Integer.parseInt(Config.getValue("CardInfo", "includeDebug"))==0?false:true;
+				boolean separateComponents=Integer.parseInt(Config.getValue("CardInfo", "separateComponents"))==0?false:true;
 				int blockSize=Integer.parseInt(Config.getValue("CardInfo", "cap2prg_commandlen"),16);
-				List<byte[]> loadFileInfo = cap.getLoadBlocks(includeDebug, false, blockSize);
+				List<byte[]> loadFileInfo = cap.getLoadBlocks(includeDebug, separateComponents, blockSize);
 
 				List<String> outList=new ArrayList<String>();
 				cap.dump(outList);
@@ -89,7 +90,8 @@ public class LoadCapThead extends Thread {
 						if (j <=0xFF) {
 							p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j), 2);
 						} else {
-							p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j - 0xFF-1), 2);
+//							p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j - 0xFF-1), 2);
+							p2 = WDStringUtil.paddingHeadZero(Integer.toHexString(j%0x100), 2);
 						}
 
 						String lc = WDStringUtil.paddingHeadZero(Integer.toHexString(loadFileInfo.get(j).length), 2);

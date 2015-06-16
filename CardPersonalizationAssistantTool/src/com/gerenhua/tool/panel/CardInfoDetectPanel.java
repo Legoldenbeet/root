@@ -421,9 +421,6 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		panel_2.add(scrollPane_2, BorderLayout.CENTER);
 
 		textPane_1 = new JTextPane() {
-			/**
-													 * 
-													 */
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -759,7 +756,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							setStatusDialog(false, false);
 							updateStatusDialog.isISD = true;
 							showMenu(e);
-						}else if (nodeName.equalsIgnoreCase("Application Instances")) {
+						} else if (nodeName.equalsIgnoreCase("Application Instances")) {
 							popup.removeAll();
 							Collection<String> templates = Config.getItems("Personalization_Template");
 							for (String template : templates) {
@@ -780,7 +777,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							addMenu(mntmBuildScripts, e);
 							addMenu(mntmBuildScriptsJTS, e);
 							showMenu(e);
-						} 
+						}
 
 					}
 				}

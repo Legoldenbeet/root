@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 public class FileUtil {
 	private static Logger log = Logger.getLogger(FileUtil.class);
+	public static String USER_DIR = System.getProperty("user.dir");
 	public static String LINE_SEPARATOR = System.getProperty("line.separator");
 	public static String boradFile = "C:\\windows\\SCRCenter.ini";
 

@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +21,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.gerenhua.tool.utils.Config;
+import com.gerenhua.tool.utils.FileUtil;
 import com.gerenhua.tool.utils.SwingUtils;
 import com.gerenhua.tool.utils.WindowsExcuter;
 import com.jtattoo.plaf.AbstractLookAndFeel;
@@ -147,10 +147,12 @@ public class FacePanel extends JPanel {
 						try {
 							// TODO Auto-generated method stub
 							List<String> cmdList = new ArrayList<String>();
+							cmdList.add("cmd");
+							cmdList.add("/c");
 							cmdList.add("java");
 							cmdList.add("-jar");
 							cmdList.add(Config.getValue("Terminal_Data", "appName") + ".jar");
-							WindowsExcuter.excute(new File("."), cmdList);
+							WindowsExcuter.excute(new File(FileUtil.USER_DIR), cmdList, false);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -176,10 +178,12 @@ public class FacePanel extends JPanel {
 						try {
 							// TODO Auto-generated method stub
 							List<String> cmdList = new ArrayList<String>();
+							cmdList.add("cmd");
+							cmdList.add("/c");
 							cmdList.add("java");
 							cmdList.add("-jar");
 							cmdList.add(Config.getValue("Terminal_Data", "appName") + ".jar");
-							WindowsExcuter.excute(new File("."), cmdList);
+							WindowsExcuter.excute(new File(FileUtil.USER_DIR), cmdList, false);
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
