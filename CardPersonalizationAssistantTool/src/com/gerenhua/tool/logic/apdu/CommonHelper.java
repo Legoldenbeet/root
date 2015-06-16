@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 

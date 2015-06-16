@@ -192,7 +192,7 @@ public class PBOCHandler extends BaseHandler {
 				String icPKReminder = cardRecordData.get("9F48");
 				String caPKIndex = cardRecordData.get("8F");
 				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
-					// staticDataList += aip;
+					staticDataList += aip;
 				}
 				String pan = cardRecordData.get("5A");
 				pan = pan.replaceAll("F", "");
@@ -267,7 +267,19 @@ public class PBOCHandler extends BaseHandler {
 
 				// Generate arqc
 				logger.debug("==========================Generate AC1================================");
-				String cdol1Data = loadDolData(cardRecordData.get("8C"), param);// 9F0206 9F0306 9F1A02 9505 5F2A02 9A03 9C01 9F3704 9F2103 9F4E14
+//				交易日期 9A 3
+//				交易时间9F21 3
+//				授权金额9F02 6
+//				其它金额9F03 6
+//				终端国家代码9F1A 2
+//				交易货币代码5F2A 2
+//				商户名称 9F4E 20
+//				交易类型9C 1
+//				应用交易计数器（ATC） 9F36
+//				终端不可预知数 9F37
+//				终端验证结果TVR 95
+//				9F0206授权金额 9F0306其它金额 9F1A02终端国家代码 9505终端验证结果TVR 5F2A02交易货币代码 9A03交易日期 9F2103交易时间 9C01交易类型 9F3704终端不可预知数
+				String cdol1Data = loadDolData(cardRecordData.get("8C"), param);
 				// #######################################################
 				// 控制参数 40： bit8，bit7 ：00=AAC--拒绝
 				// 01=TC--脱机
@@ -284,7 +296,7 @@ public class PBOCHandler extends BaseHandler {
 				String arqc = result.get("9F26");
 				String atc = result.get("9F36");
 				String iad = result.get("9F10");
-				String CVR = iad.substring(8, 14);
+				String CVR = iad.substring(6, 14);
 //				字节1： 长度字节 03
 //				字节2：
 //				位8–7：
@@ -317,7 +329,7 @@ public class PBOCHandler extends BaseHandler {
 //				位4：1 =上次交易发卡行脚本处理失败指针
 //				位3：1=上次交易DDA 失败交易拒绝
 				logger.debug("=================================ARQC=================================");
-				String arpc = issuerDao.requestArpc(pan, panSerial, cdol1Data, aip, atc, iad, arqc);
+				String arpc = issuerDao.requestArpc(pan, panSerial, "00000000010000000000000001560000000000015615061640EBC32C68", aip, atc, iad, arqc);
 				logger.debug("online validate successed!");
 
 				genWordUtil.add("验证ARQC中使用的数据");
