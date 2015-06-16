@@ -8,6 +8,8 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.javacard.cap.main.Config;
+import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
@@ -343,7 +345,12 @@ public abstract class Formatter {
 	}
 
 	public static String readU1Array(StringReader hexReader, int num) throws IOException {
-		return toHexStyle(readU1Array_NOPading(hexReader, num));
+		String aid=readU1Array_NOPading(hexReader, num);
+		String pkg_name=Config.getValue("pkg_info", aid);
+		if (WDAssert.isNotEmpty(pkg_name)) {
+			return toHexStyle(aid)+"["+pkg_name+"]";
+		}
+		return toHexStyle(aid);
 	}
 
 	public static String readU1Array_NOPading(StringReader hexReader, int num) throws IOException {

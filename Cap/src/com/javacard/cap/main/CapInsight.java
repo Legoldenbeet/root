@@ -3,6 +3,8 @@ package com.javacard.cap.main;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -19,6 +21,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -38,10 +41,10 @@ import com.watchdata.commons.lang.WDAssert;
 public class CapInsight extends Formatter {
 
 	private JFrame frmCapinsight;
-	private JTree tree;
+	public static JTree tree;
 	public static Map<String, Map<String, String>> sessionMap = new HashMap<String, Map<String, String>>();
-	private JTextPane textPane;
-	private JTextArea textArea;
+	private static JTextPane textPane;
+	public static JTextArea textArea;
 
 	/**
 	 * Launch the application.
@@ -52,6 +55,7 @@ public class CapInsight extends Formatter {
 				try {
 					CapInsight window = new CapInsight();
 					window.frmCapinsight.setVisible(true);
+					new DropTarget(window.frmCapinsight, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tree), true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -145,8 +149,8 @@ public class CapInsight extends Formatter {
 		JMenu menu = new JMenu("文件");
 		menuBar.add(menu);
 
-		JMenuItem menuItem = new JMenuItem("打开");
-		menuItem.addActionListener(new ActionListener() {
+		JMenuItem mntmcap = new JMenuItem("打开（CAP）");
+		mntmcap.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser jFileChooser = new JFileChooser("./debug");
 				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
@@ -156,36 +160,77 @@ public class CapInsight extends Formatter {
 				int i = jFileChooser.showOpenDialog(null);
 				if (i == JFileChooser.APPROVE_OPTION) {
 					File[] fileList = jFileChooser.getSelectedFiles();
-					// File file = jFileChooser.getSelectedFile();
-					DefaultTreeModel dtm = (DefaultTreeModel) tree.getModel();
-					DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
-					root.removeAllChildren();
-
-					for (File file : fileList) {
-						DefaultMutableTreeNode capNode = new DefaultMutableTreeNode(file.getName());
-						root.add(capNode);
-						try {
-							Map<String, String> mapBean = Cap.readCap(file.getPath());
-							for (String key : mapBean.keySet()) {
-								if (key.endsWith(".cap")) {
-									DefaultMutableTreeNode componentNode = new DefaultMutableTreeNode(key);
-									capNode.add(componentNode);
-								}
-							}
-							sessionMap.put(file.getName(), mapBean);
-						} catch (Exception e2) {
-							// TODO: handle exception
-						}
-						expandTree(tree, true);
-						tree.updateUI();
-					}
+					addCapFile(fileList);
 				}
 			}
 		});
+		menu.add(mntmcap);
+		
+		JMenuItem menuItem_1 = new JMenuItem("全部清空");
+		menuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTreeModel dtm = (DefaultTreeModel) tree.getModel();
+				DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
+				root.removeAllChildren();
+				//tree.repaint();
+				tree.updateUI();
+			}
+		});
+		
+		JSeparator separator_1 = new JSeparator();
+		menu.add(separator_1);
+		menu.add(menuItem_1);
+		
+		JMenuItem menuItem = new JMenuItem("全部展开");
+		menuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				expandTree(tree, true);
+				tree.updateUI();
+			}
+		});
 		menu.add(menuItem);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("全部收缩");
+		mntmNewMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				expandTree(tree, false);
+				tree.updateUI();
+			}
+		});
+		menu.add(mntmNewMenuItem);
 		frmCapinsight.setLocationRelativeTo(null);
 	}
 
+	public static void addCapFile(File[] fileList){
+		// File file = jFileChooser.getSelectedFile();
+		DefaultTreeModel dtm = (DefaultTreeModel) tree.getModel();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
+//		root.removeAllChildren();
+
+		for (File file : fileList) {
+//			if (sessionMap.containsKey(file.getName())) {
+//				continue;
+//			}
+			DefaultMutableTreeNode capNode = new DefaultMutableTreeNode(file.getName());
+			root.add(capNode);
+			try {
+				Map<String, String> mapBean = Cap.readCap(file.getPath());
+				for (String key : mapBean.keySet()) {
+					if (key.endsWith(".cap")) {
+						DefaultMutableTreeNode componentNode = new DefaultMutableTreeNode(key);
+						capNode.add(componentNode);
+					}
+				}
+				sessionMap.put(file.getName(), mapBean);
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+			//expandTree(tree, true);
+			tree.updateUI();
+		}
+	}
+	
 	public static void expandTree(JTree tree, boolean bo) {
 		TreeNode root = (TreeNode) tree.getModel().getRoot();
 		expandAll(tree, new TreePath(root), bo);
