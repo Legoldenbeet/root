@@ -60,7 +60,7 @@ public class PBOCHandler extends BaseHandler {
 		HashMap<String, String> param = new HashMap<String, String>();
 		String termRandom = WDStringUtil.getRandomHexString(8);
 		param.put("9F02", WDStringUtil.paddingHeadZero(String.valueOf(tradeMount), 12));
-		param.put("9C","40");
+//		param.put("9C","40");
 		param.put("9F7A", "00");
 		param.put("9F37", termRandom);
 		Date dateTime = new Date();
