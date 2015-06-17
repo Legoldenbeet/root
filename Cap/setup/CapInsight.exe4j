@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<exe4j version="4.4.4" transformSequenceNumber="1">
+<exe4j version="4.0" transformSequenceNumber="1">
   <directoryPresets config="E:/程序打包/CapInsight/dist" />
   <application name="CapInsight" distributionSourceDir="E:/程序打包/CapInsight/dist">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="CapInsight" type="1" iconSet="true" iconFile="E:/程序打包/CapInsight/setup/logo_48.ico" executableDir="." redirectStderr="true" stderrFile="debug/error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="false" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false" amd64="false">
+  <executable name="CapInsight" type="1" iconSet="true" iconFile="E:/程序打包/CapInsight/setup/logo_48.ico" executableDir="." redirectStderr="false" stderrFile="debug/error.log" redirectStdout="false" stdoutFile="output.log" failOnStderrOutput="false" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" amd64="false">
     <messageSet />
-    <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" companyName="" productVersion="" />
+    <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" companyName="" productVersion="" />
   </executable>
-  <splashScreen show="false" autoOff="true" alwaysOnTop="true" width="0" height="0" bitmapFile="" java6SplashScreen="false">
+  <splashScreen show="false" autoOff="true" alwaysOnTop="true" width="0" height="0" bitmapFile="">
     <text>
       <statusLine x="20" y="20" text="" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
       <versionLine x="20" y="40" text="version %VERSION%" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
     </text>
   </splashScreen>
-  <java mainClass="com.javacard.cap.main.CapInsight" vmParameters="-J-Xmx800M" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true" minVersion="1.4" maxVersion="1.8" allowBetaVM="true" jdkOnly="false">
+  <java mainClass="com.javacard.cap.main.CapInsight" vmParameters="-J-Xmx256M" arguments="" allowVMPassthroughParameters="true" preferredVM="client" minVersion="1.4" maxVersion="1.8" allowBetaVM="true" jdkOnly="false">
     <searchSequence>
       <envVar name="JAVA_HOME" />
       <envVar name="JDK_HOME" />
