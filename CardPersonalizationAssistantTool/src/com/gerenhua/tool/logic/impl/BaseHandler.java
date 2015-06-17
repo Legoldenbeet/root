@@ -22,6 +22,7 @@ import com.watchdata.commons.lang.WDAssert;
  */
 public class BaseHandler {
 	public static HashMap<String, String> tradeDefaultPara;
+	public static final String GAC1_CODOL="9F02069F03069F1A0295055F2A029A039C019F37049F2103";
 	public static String authRespCode = "3030";
 	public CommonAPDU apduHandler;
 	public static final int AIP_SUPPORT_SDA=7;
