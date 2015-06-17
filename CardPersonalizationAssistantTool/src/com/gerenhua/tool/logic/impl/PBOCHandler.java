@@ -329,8 +329,7 @@ public class PBOCHandler extends BaseHandler {
 //				位4：1 =上次交易发卡行脚本处理失败指针
 //				位3：1=上次交易DDA 失败交易拒绝
 				logger.debug("=================================ARQC=================================");
-				String cdol1DataForAC1 = loadDolData("9F02069F03069F1A0295055F2A029F21039C019F3704", param);
-				String arpc = issuerDao.requestArpc(pan, panSerial, cdol1DataForAC1, aip, atc, iad, arqc);
+				String arpc = issuerDao.requestArpc(pan, panSerial, cdol1Data, aip, atc, iad, arqc);
 				logger.debug("online validate successed!");
 
 				genWordUtil.add("验证ARQC中使用的数据");
