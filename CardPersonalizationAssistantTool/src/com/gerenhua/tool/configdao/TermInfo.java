@@ -15,7 +15,7 @@ public class TermInfo {
 
 	public TermInfo getTermInfo(String sectionName) {
 		TermInfo terminfo = new TermInfo();
-		terminfo.setTerminal_perform(Config.getValue(sectionName, "terminal_perform"));
+		terminfo.setTerminal_perform(Config.getValue(sectionName, "9F33"));
 
 		return terminfo;
 	}

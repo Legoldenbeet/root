@@ -66,7 +66,6 @@ public class PBOCHandler extends BaseHandler {
 		Date dateTime = new Date();
 		param.put("9A", getFormatDate(dateTime, Constants.FORMAT_SHORT_DATE));
 		param.put("9F21", getFormatDate(dateTime, Constants.FORMAT_TIME));
-		param.put("9F66", "46800000");// 非接触能力
 		NDC.push("[PBOC]");
 		logger.debug("PBOC trade start...", 0);
 		genWordUtil = new GenReportUtil();
@@ -191,7 +190,7 @@ public class PBOCHandler extends BaseHandler {
 				String icPKExp = cardRecordData.get("9F47");
 				String icPKReminder = cardRecordData.get("9F48");
 				String caPKIndex = cardRecordData.get("8F");
-				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {
+				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)&&cardRecordData.get("9F4A")!=null) {
 					staticDataList += aip;
 				}
 				String pan = cardRecordData.get("5A");

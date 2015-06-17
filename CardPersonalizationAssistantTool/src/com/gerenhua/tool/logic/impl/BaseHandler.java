@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.CommonHelper;
+import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.reportutil.APDUSendANDRes;
 import com.watchdata.commons.lang.WDAssert;
 
@@ -38,13 +39,16 @@ public class BaseHandler {
 		if (tradeDefaultPara == null) {
 			tradeDefaultPara = new HashMap<String, String>();
 			tradeDefaultPara.put("9F7A", "01"); // 电子现金终端指示器
-			tradeDefaultPara.put("5F2A", "0156"); // 交易货币代码
-			tradeDefaultPara.put("9F1A", "0156"); // 终端国家代码
+			tradeDefaultPara.put("5F2A", Config.getValue("Terminal_Data", "5F2A")); // 交易货币代码
+			tradeDefaultPara.put("9F1A", Config.getValue("Terminal_Data", "9F1A")); // 终端国家代码
 			//tradeDefaultPara.put("9F66", "B6000000");// 非接触能力
+			tradeDefaultPara.put("9F66", "46800000");// 非接触能力
 			tradeDefaultPara.put("9F03", "000000000000");// 其他金额
-			tradeDefaultPara.put("9F4E", "ABEDF8D910F0CBD8EBEDF8D910F0CBD8E5A81BA0");// 商户名称
+			tradeDefaultPara.put("9F4E", "CBADCBB5BFC6BCBCD4DACFDFB3E4D6B5D2B5CEF1");// 商户名称
 			tradeDefaultPara.put("95", "0000000000");// 终端验证结果（TVR）
-			tradeDefaultPara.put("9C", "40");
+			tradeDefaultPara.put("9C", Config.getValue("Terminal_Data", "9C"));
+			tradeDefaultPara.put("9F33", Config.getValue("Terminal_Data", "9F33"));
+			tradeDefaultPara.put("9F35", Config.getValue("Terminal_Data", "9F35"));
 		}
 	}
 

@@ -309,7 +309,7 @@ public class TerminalPerformanceConfigPanel extends JPanel {
 		termPerform += addStr(valueStr.toUpperCase(), "0", 2, 0);
 
 		
-		Config.setValue("Terminal_Data", "terminal_perform", termPerform);
+		Config.setValue("Terminal_Data", "9F33", termPerform);
 		JOptionPane.showMessageDialog(null, "保存成功！");
 	}
 

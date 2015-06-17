@@ -54,7 +54,6 @@ public class ElectronicCashHandler extends BaseHandler {
 		Date dateTime = new Date();
 		param.put("9A", getFormatDate(dateTime, Constants.FORMAT_SHORT_DATE));
 		param.put("9F21", getFormatDate(dateTime, Constants.FORMAT_TIME));
-		param.put("9F66", "46800000");// 非接触能力
 		NDC.push("[E cash load]");
 		logger.debug("E cash load start...",0);
 
