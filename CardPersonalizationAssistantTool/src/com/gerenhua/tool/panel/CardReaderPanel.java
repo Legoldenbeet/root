@@ -1,7 +1,5 @@
 package com.gerenhua.tool.panel;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,8 +21,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-
-import sun.util.logging.resources.logging;
 
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.pcsc.PcscChannel;
