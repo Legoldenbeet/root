@@ -10,6 +10,7 @@ import javax.swing.JTextPane;
 
 import org.apache.log4j.NDC;
 
+import com.gerenhua.tool.app.Application;
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.AbstractAPDU;
@@ -17,6 +18,7 @@ import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.logic.issuer.IIssuerDao;
 import com.gerenhua.tool.logic.issuer.local.IssuerDaoImpl;
 import com.gerenhua.tool.logic.pki.DataAuthenticate;
+import com.gerenhua.tool.panel.ApplicationSelectDialog;
 import com.gerenhua.tool.utils.PropertiesManager;
 import com.gerenhua.tool.utils.Terminal;
 import com.gerenhua.tool.utils.reportutil.APDUSendANDRes;
@@ -76,7 +78,7 @@ public class PBOCHandler extends BaseHandler {
 
 		try {
 			// 为了保证卡片和读卡器的正确性，交易开始前务必先复位
-			logger.debug("=============================reset===================================");
+			logger.debug("=============================Initialization=================================");
 			HashMap<String, String> res = apduHandler.reset();
 			if (!"9000".equals(res.get("sw"))) {
 				logger.error("card reset falied");
@@ -84,11 +86,11 @@ public class PBOCHandler extends BaseHandler {
 				// genWordUtil.close();
 				return false;
 			}
-			logger.debug("atr:" + res.get("atr"));
+			logger.debug("ATR:" + res.get("atr"));
 			// 复位报告内容
-			genWordUtil.add("atr", "Card Reset", res.get("atr"), new HashMap<String, String>());
+			genWordUtil.add("ATR", "Card Reset", res.get("atr"), new HashMap<String, String>());
 
-			logger.debug("============================select PSE=================================");
+			logger.debug("============================Application Selection=================================");
 			HashMap<String, String> result = apduHandler.select(Constants.PSE);
 			if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
 				logger.error("select PSE error,card return:" + result.get("sw"));
@@ -102,12 +104,14 @@ public class PBOCHandler extends BaseHandler {
 
 			if (WDAssert.isNotEmpty(result.get("88"))) {
 				// read dir, begin from 01
-				logger.debug("==============================read dir================================");
 				List<HashMap<String, String>> readDirList = apduHandler.readDir(result.get("88"));
 
+				ApplicationSelectDialog applicationSelectDialog=new ApplicationSelectDialog(Application.frame,readDirList);
+				applicationSelectDialog.setLocationRelativeTo(Application.frame);
+				applicationSelectDialog.setVisible(true);
 				// select aid
-				String aid = readDirList.get(0).get("4F");
-				logger.debug("===============================select aid==============================");
+				String aid = applicationSelectDialog.getSelectedAID();
+				logger.debug("===============================Final Selection==============================");
 				if (WDAssert.isEmpty(aid)) {
 					logger.error("select aid is null");
 					genWordUtil.add("获取AID为空");
@@ -139,7 +143,7 @@ public class PBOCHandler extends BaseHandler {
 				try {
 					loadDolDataResult = loadDolData(pdol, param);
 				} catch (Exception e) {
-					logger.error("PBOC get ddol param exception!");
+					logger.error(e.getMessage());
 					genWordUtil.add("获取DDOL数据出错");
 					// genWordUtil.close();
 					return false;
@@ -342,7 +346,7 @@ public class PBOCHandler extends BaseHandler {
 				result = apduHandler.externalAuthenticate(arpc + authRespCode);
 				if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
 					logger.error("external Authenticate failed,card return:" + result.get("sw"));
-					genWordUtil.add("外部认证失败");
+					genWordUtil.add("发卡行认证失败！");
 					// genWordUtil.close();
 					return false;
 				}
@@ -360,7 +364,7 @@ public class PBOCHandler extends BaseHandler {
 					genWordUtil.add("CDOL2 Data:" + cdol2Data);
 //				}
 
-				logger.debug("========================PBOC trade finished!=======================");
+				logger.debug("========================PBOC trade Approved!=======================");
 				genWordUtil.add("PBOC交易完成!");
 				return true;
 			} else {
