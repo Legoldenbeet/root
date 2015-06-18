@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.utils.Config;
-import com.gerenhua.tool.utils.TermSupportUtil;
+import com.gerenhua.tool.utils.Terminal;
 /**
  * 
  * @description: 指令打包解包封装抽象类
@@ -153,7 +153,7 @@ public class AbstractAPDU {
 		String tagComment=Config.getValue("TAG", tag);
 		log.info(tag + "\t"+tagLen+" "+ value+"【"+tagComment+"】");
 		if (tag.equalsIgnoreCase("8E")) {
-			TermSupportUtil.parse8E(value);
+			Terminal.parse8E(value);
 		}
 	}
 	

@@ -18,7 +18,7 @@ import com.gerenhua.tool.logic.issuer.IIssuerDao;
 import com.gerenhua.tool.logic.issuer.local.IssuerDaoImpl;
 import com.gerenhua.tool.logic.pki.DataAuthenticate;
 import com.gerenhua.tool.utils.PropertiesManager;
-import com.gerenhua.tool.utils.TermSupportUtil;
+import com.gerenhua.tool.utils.Terminal;
 import com.gerenhua.tool.utils.reportutil.APDUSendANDRes;
 import com.gerenhua.tool.utils.reportutil.GenReportUtil;
 import com.watchdata.commons.lang.WDAssert;
@@ -55,7 +55,7 @@ public class PBOCHandler extends BaseHandler {
 	 *            判断终端性能
 	 * @return
 	 */
-	public boolean doTrade(int tradeMount, String readerName, TermSupportUtil termSupportUtil) {
+	public boolean doTrade(int tradeMount, String readerName) {
 		// 初始化交易参数，如授权金额，pin等
 		HashMap<String, String> param = new HashMap<String, String>();
 		String termRandom = WDStringUtil.getRandomHexString(8);
@@ -114,7 +114,7 @@ public class PBOCHandler extends BaseHandler {
 					// genWordUtil.close();
 					return false;
 				}
-				if (termSupportUtil.isSupportAID(aid)) {
+				if (Terminal.support(aid)) {
 					result = apduHandler.select(aid);
 				} else {
 					logger.error("Terminal can not support the app");

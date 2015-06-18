@@ -1,29 +1,21 @@
 package com.gerenhua.tool.logic.impl;
 
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
-import com.gerenhua.tool.configdao.AIDInfo;
-import com.gerenhua.tool.configdao.TermInfo;
 import com.gerenhua.tool.panel.AtmPanel.TerminalSupportType;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.PropertiesManager;
-import com.gerenhua.tool.utils.TermSupportUtil;
-import com.watchdata.commons.lang.WDStringUtil;
+import com.gerenhua.tool.utils.Terminal;
+import com.watchdata.commons.lang.WDAssert;
 
 public class TradeThread implements Runnable {
 	public String money;
 	public JTextPane textPane;
 	public String tradeType;
 	public JButton reportButton;
-
-	private boolean success = false;
 	private PropertiesManager pm = new PropertiesManager();
-
-	public TermInfo termInfo = new TermInfo();
 
 	public TradeThread(String money, String tradeType, JButton reportButton, JTextPane textPane) {
 		this.money = money;
@@ -36,98 +28,41 @@ public class TradeThread implements Runnable {
 	public void run() {
 		if ("".equals(tradeType)) {
 			JOptionPane.showMessageDialog(null, pm.getString("mv.tradepanel.selectTradeType"), pm.getString("mv.testdata.InfoWindow"), JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		// 读卡器驱动名称
+		String readerName = Config.getValue("Terminal_Data", "reader");
+		if (WDAssert.isEmpty(money)) {
+			JOptionPane.showMessageDialog(null, "请输入交易金额！");
+			return;
+		}
+		// 交易金额
+		int tradeMount = Integer.parseInt(money);
+
+		if (!Terminal.isSupportTheFunction(TerminalSupportType.SUPPORTDDA)) {
+			JOptionPane.showMessageDialog(null, "终端不支持DDA验证,交易无法进行!");
+		}
+		if ("qPBOC".equals(tradeType)) {
+			// 执行交易
+			QPBOCHandler qpbocHandler = new QPBOCHandler(textPane);
+			qpbocHandler.trade(readerName, tradeMount);
 		} else {
-			if (money.length() > 0) {
-				// 获取终端性能参数
-				String termPerform = "";
-				boolean touchSupport = false;
-				try {
-					termPerform = termInfo.getTermInfo("Terminal_Data").getTerminal_perform();
-					termPerform = Integer.toBinaryString(Integer.parseInt(termPerform, 16));
-					termPerform = WDStringUtil.paddingHeadZero(termPerform, 24);
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "获取终端性能参数出错!", pm.getString("mv.testdata.InfoWindow"), JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				// 获取终端支持的AID列表
-				List<AIDInfo> aidlist = new AIDInfo().getAidInfos("SupAID");
-				// 判断终端性能
-				TermSupportUtil termSupportUtil = new TermSupportUtil(termPerform, aidlist);
-				// 判断是否支持接触式IC
-				if (termSupportUtil.isSupportTheFunction(TerminalSupportType.TOUCHIC)) {
-					touchSupport = true;
-				} else {
-					touchSupport = false;
-				}
-				// 读卡器驱动名称
-				String readerName = Config.getValue("Terminal_Data", "reader");
-				// 交易金额
-				int tradeMount = 0;
-				try {
-					// 将交易金额转换为int型
-					tradeMount = getTradeAmount(money.toString());
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, e1.getMessage(), pm.getString("mv.testdata.InfoWindow"), JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				if (termSupportUtil.isSupportTheFunction(TerminalSupportType.SUPPORTDDA)) {
-					if ("qPBOC".equals(tradeType)) {
-						// 执行交易
-						QPBOCHandler qpbocHandler = new QPBOCHandler(textPane);
-						success = qpbocHandler.trade(readerName, tradeMount, termSupportUtil);
-					} else {
-						if (!touchSupport) {
-							JOptionPane.showMessageDialog(null, "终端不支持接触式IC,交易无法进行!", pm.getString("mv.testdata.InfoWindow"), JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						if ("借贷记".equals(tradeType)) {
-							PBOCHandler pBOCHandler = new PBOCHandler(textPane);
-							success = pBOCHandler.doTrade(tradeMount, readerName, termSupportUtil);
-						} else if ("电子现金".equals(tradeType)) {
-							ElectronicCashHandler electronicCashHandler = new ElectronicCashHandler(textPane);
-							success = electronicCashHandler.ECPurcharse(tradeMount, readerName, termSupportUtil);
-						} else if ("圈存".equals(tradeType)) {
-							ElectronicCashHandler electronicCashHandler = new ElectronicCashHandler(textPane);
-							success = electronicCashHandler.ECLoad(tradeMount, readerName, termSupportUtil);
-						}
-					}
-					success = true;
-				} else {
-					success = false;
-				}
-				reportButton.setEnabled(true);
+			if (!Terminal.isSupportTheFunction(TerminalSupportType.TOUCHIC)) {
+				JOptionPane.showMessageDialog(null, "终端不支持接触式IC,交易无法进行!", pm.getString("mv.testdata.InfoWindow"), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			if ("借贷记".equals(tradeType)) {
+				PBOCHandler pBOCHandler = new PBOCHandler(textPane);
+				pBOCHandler.doTrade(tradeMount, readerName);
+			} else if ("电子现金".equals(tradeType)) {
+				ElectronicCashHandler electronicCashHandler = new ElectronicCashHandler(textPane);
+				electronicCashHandler.ECPurcharse(tradeMount, readerName);
+			} else if ("圈存".equals(tradeType)) {
+				ElectronicCashHandler electronicCashHandler = new ElectronicCashHandler(textPane);
+				electronicCashHandler.ECLoad(tradeMount, readerName);
 			}
 		}
 
+		reportButton.setEnabled(true);
 	}
-
-	/**
-	 * 将界面上文本框中输入数据转换为int型
-	 * 
-	 * @param tradeAmount
-	 * @return
-	 * @throws Exception
-	 */
-	public int getTradeAmount(String tradeAmount) throws Exception {
-		if (tradeAmount.indexOf(".") > -1) {
-			String amountFront = tradeAmount.substring(0, tradeAmount.indexOf("."));
-			String amountTail = tradeAmount.substring(tradeAmount.indexOf(".") + 1);
-			if (amountTail.length() == 1) {
-				amountTail = amountTail + "0";
-			}
-			try {
-				return Integer.parseInt(amountFront + amountTail);
-			} catch (NumberFormatException e) {
-				throw new Exception("输入的交易金额超出了最大限额");
-			}
-		} else {
-			try {
-				return Integer.parseInt(tradeAmount + "00");
-			} catch (NumberFormatException e) {
-				throw new Exception("输入的交易金额超出了最大限额");
-			}
-		}
-	}
-
 }

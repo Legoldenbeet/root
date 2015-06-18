@@ -344,7 +344,7 @@ public class TerminalPerformanceConfigPanel extends JPanel {
 	private void init() {
 		setName(pm.getString("mv.terminalperformanceconfig.name"));
 
-		String tpconfig=Config.getValue("Terminal_Data", "terminal_perform");
+		String tpconfig=Config.getValue("Terminal_Data", "9F33");
 
 		if (WDAssert.isNotEmpty(tpconfig)) {
 			String B1 = tpconfig.substring(0, 2);

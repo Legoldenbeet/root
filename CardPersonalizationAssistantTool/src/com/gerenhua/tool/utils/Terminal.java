@@ -1,6 +1,5 @@
 package com.gerenhua.tool.utils;
 
-import java.util.HashSet;
 import java.util.List;
 
 import com.gerenhua.tool.configdao.AIDInfo;
@@ -15,23 +14,11 @@ import com.watchdata.commons.lang.WDStringUtil;
  *         该类提供判断终端是否支持某一项终端性能
  * 
  */
-public class TermSupportUtil {
-
-	private String supportData;
-	private HashSet<String> aidSet = new HashSet<String>(20);
+public class Terminal {
 	public static Log log = new Log();
 
-	/**
-	 * 
-	 * @param supportData
-	 *            终端性能数据，为二进制串
-	 */
-	public TermSupportUtil(String supportData, List<AIDInfo> aidList) {
-		this.supportData = supportData;
-		// 循环aid列表存进hashset
-		for (AIDInfo aidInfo : aidList) {
-			aidSet.add(aidInfo.getAid());
-		}
+	public static String getTerminal_perform() {
+		return Config.getValue("Terminal_Data", "9F33");
 	}
 
 	/**
@@ -41,32 +28,36 @@ public class TermSupportUtil {
 	 *            需要判断的功能
 	 * @return
 	 */
-	public boolean isSupportTheFunction(TerminalSupportType supportType) {
+	public static boolean isSupportTheFunction(TerminalSupportType supportType) {
+		// 获取终端性能参数
+		String termPerform = Terminal.getTerminal_perform();
+		termPerform = Integer.toBinaryString(Integer.parseInt(termPerform, 16));
+		termPerform = WDStringUtil.paddingHeadZero(termPerform, 24);
 		switch (supportType) {
 		case TOUCHIC:
-			return isSupport(supportData.substring(5, 6));
+			return isSupport(termPerform.substring(5, 6));
 		case TRACK:
-			return isSupport(supportData.substring(6, 7));
+			return isSupport(termPerform.substring(6, 7));
 		case KEYBOARD:
-			return isSupport(supportData.substring(7, 8));
+			return isSupport(termPerform.substring(7, 8));
 		case CERTIFICATECHECK:
-			return isSupport(supportData.substring(8, 9));
+			return isSupport(termPerform.substring(8, 9));
 		case NOCVM:
-			return isSupport(supportData.substring(11, 12));
+			return isSupport(termPerform.substring(11, 12));
 		case SIGN:
-			return isSupport(supportData.substring(13, 14));
+			return isSupport(termPerform.substring(13, 14));
 		case LINKPIN:
-			return isSupport(supportData.substring(14, 15));
+			return isSupport(termPerform.substring(14, 15));
 		case ICPINCHECK:
-			return isSupport(supportData.substring(15, 16));
+			return isSupport(termPerform.substring(15, 16));
 		case SUPPORTCDA:
-			return isSupport(supportData.substring(19, 20));
+			return isSupport(termPerform.substring(19, 20));
 		case EATCARD:
-			return isSupport(supportData.substring(21, 22));
+			return isSupport(termPerform.substring(21, 22));
 		case SUPPORTDDA:
-			return isSupport(supportData.substring(22, 23));
+			return isSupport(termPerform.substring(22, 23));
 		case SUPPORTSDA:
-			return isSupport(supportData.substring(23, 24));
+			return isSupport(termPerform.substring(23, 24));
 		default:
 			return false;
 		}
@@ -121,11 +112,15 @@ public class TermSupportUtil {
 	 * @param aid
 	 * @return
 	 */
-	public boolean isSupportAID(String aid) {
-		if (aidSet.contains(aid)) {
-			return true;
-		} else {
-			return false;
+	public static boolean support(String aid) {
+		// 获取终端支持的AID列表
+		List<AIDInfo> aidlist = new AIDInfo().getAidInfos("SupAID");
+		// 循环aid列表存进hashset
+		for (AIDInfo aidInfo : aidlist) {
+			if (aidInfo.getAid().equals(aid)) {
+				return true;
+			}
 		}
+		return false;
 	}
 }
