@@ -34,6 +34,7 @@ import com.gerenhua.tool.configdao.PublicKeyInfo;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.FixedSizePlainDocument;
 import com.gerenhua.tool.utils.PropertiesManager;
+import com.watchdata.commons.lang.WDAssert;
 
 /**
  * 
@@ -269,6 +270,15 @@ public class CAPublicKeyConfigPanel extends JPanel {
 		add(modifyButton);
 		modifyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (WDAssert.isEmpty(algorithmtextField.getText().trim())
+						||WDAssert.isEmpty(EXPtextField.getText().trim())
+						||WDAssert.isEmpty(HashtextField.getText().trim())
+						||WDAssert.isEmpty(textField.getText().trim())
+						||WDAssert.isEmpty(ModuletextField.getText().trim())
+						) {
+					JOptionPane.showMessageDialog(null, "CA参数输入错误！");
+					return;
+				}
 				PublicKeyInfo publicKeyInfo = new PublicKeyInfo();
 				publicKeyInfo.setRid(RIDCombox.getSelectedItem().toString());
 				publicKeyInfo.setArith(algorithmtextField.getText());
