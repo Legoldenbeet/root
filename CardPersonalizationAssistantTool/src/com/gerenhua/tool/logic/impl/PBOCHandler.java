@@ -256,7 +256,7 @@ public class PBOCHandler extends BaseHandler {
 								logger.error("verify pin failed,card return:" + result.get("sw"));
 								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
 							} else {
-								logger.debug("verify pin pass!");
+								logger.debug("Verify PIN PASS!");
 								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
 							}
 						} else {
@@ -350,7 +350,7 @@ public class PBOCHandler extends BaseHandler {
 					return false;
 				}
 
-				genWordUtil.add(result.get("apdu"), "External Authenticate", result.get("res"), result);
+				genWordUtil.add(result.get("apdu"), "Issuer Authentication", result.get("res"), result);
 
 				// Generate tc
 				// if (CommonHelper.shiftRight(CVR, 22) != 2) {
@@ -359,7 +359,7 @@ public class PBOCHandler extends BaseHandler {
 				String cdol2Data = loadDolData(cardRecordData.get("8D"), param);
 				result = apduHandler.generateAC(cdol2Data, AbstractAPDU.P1_TC);
 
-				genWordUtil.add(result.get("apdu"), "Generate AC2", result.get("res"), result);
+				genWordUtil.add(result.get("apdu"), "Completion(Generate AC2)", result.get("res"), result);
 				genWordUtil.add("CDOL2 Data:" + cdol2Data);
 				// }
 
