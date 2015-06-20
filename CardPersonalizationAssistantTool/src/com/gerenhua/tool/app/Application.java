@@ -19,7 +19,6 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 
 import com.gerenhua.tool.utils.Config;
-import com.gerenhua.tool.utils.PropertiesManager;
 import com.gerenhua.tool.utils.SwingUtils;
 
 /**
@@ -31,8 +30,6 @@ import com.gerenhua.tool.utils.SwingUtils;
  * @copyright watchdata
  */
 public class Application extends JFrame {
-
-	private static PropertiesManager pm = new PropertiesManager();
 	private static final long serialVersionUID = -1077236347297286235L;
 	private static Logger log = Logger.getLogger(Application.class);
 	public static Application frame;
@@ -125,16 +122,16 @@ public class Application extends JFrame {
 		double screenWidth = d.getWidth();
 		double screenHeight = d.getHeight();
 
-		if (screenWidth > 1024) {
-			screenWidth = 1024;
-		} else {
-			screenWidth = screenWidth - 50;
-		}
-		if (screenHeight > 768) {
-			screenHeight = 768;
-		} else {
-			screenHeight = screenHeight - 50;
-		}
+//		if (screenWidth > 1024) {
+//			screenWidth = 1024;
+//		} else {
+//			screenWidth = screenWidth - 50;
+//		}
+//		if (screenHeight > 768) {
+//			screenHeight = 768;
+//		} else {
+//			screenHeight = screenHeight - 50;
+//		}
 		setSize((int) screenWidth, (int) screenHeight);
 
 		setLocationRelativeTo(null);
