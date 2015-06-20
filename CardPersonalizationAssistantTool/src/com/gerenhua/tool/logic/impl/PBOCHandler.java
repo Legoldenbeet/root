@@ -228,7 +228,7 @@ public class PBOCHandler extends BaseHandler {
 					genWordUtil.add(log);
 				}
 				// get data
-				logger.debug("================================get data=============================");
+				logger.debug("================================Processing Restrictions=============================");
 				HashMap<String, String> dataMap = new HashMap<String, String>();
 				result = apduHandler.getData("9F52");
 				dataMap.put("9F52", result.get("9F52"));
@@ -244,6 +244,7 @@ public class PBOCHandler extends BaseHandler {
 				dataMap.put("9F58", result.get("9F58"));
 				result = apduHandler.getData("9F59");
 				dataMap.put("9F59", result.get("9F59"));
+				logger.debug("================================Cardholder Verification=============================");
 				// Verify PIN
 				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
 					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
@@ -263,9 +264,11 @@ public class PBOCHandler extends BaseHandler {
 						}
 					}
 				}
-
+				logger.debug("================================Terminal Risk Management=============================");
+				logger.debug("================================Terminal Action Analysis=============================");
+				
 				// Generate arqc
-				logger.debug("==========================Generate AC1================================");
+				logger.debug("==========================Card Action Analysis(Generate AC1)================================");
 				// 交易日期 9A 3
 				// 交易时间9F21 3
 				// 授权金额9F02 6
@@ -327,7 +330,7 @@ public class PBOCHandler extends BaseHandler {
 				// 令
 				// 位4：1 =上次交易发卡行脚本处理失败指针
 				// 位3：1=上次交易DDA 失败交易拒绝
-				logger.debug("=================================ARQC=================================");
+				logger.debug("=================================Online processing=================================");
 				String gAC1_DDOL = loadDolData(GAC1_CODOL, param);
 				String arpc = issuerDao.requestArpc(pan, panSerial, gAC1_DDOL, aip, atc, iad, arqc);
 				logger.debug("online validate successed!");
@@ -338,7 +341,7 @@ public class PBOCHandler extends BaseHandler {
 				genWordUtil.add("IAD:" + iad);
 				genWordUtil.add("ARPC:" + arpc);
 				// 请求发卡行认证AC密文
-				logger.debug("=======================External Authenticate============================");
+				logger.debug("=======================Issuer Authentication============================");
 				result = apduHandler.externalAuthenticate(arpc + authRespCode);
 				if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
 					logger.error("external Authenticate failed,card return:" + result.get("sw"));
@@ -351,7 +354,7 @@ public class PBOCHandler extends BaseHandler {
 
 				// Generate tc
 				// if (CommonHelper.shiftRight(CVR, 22) != 2) {
-				logger.debug("===========================Generate AC2===========================");
+				logger.debug("===========================Completion(Generate AC2)===========================");
 				param.put("8A", authRespCode);
 				String cdol2Data = loadDolData(cardRecordData.get("8D"), param);
 				result = apduHandler.generateAC(cdol2Data, AbstractAPDU.P1_TC);
