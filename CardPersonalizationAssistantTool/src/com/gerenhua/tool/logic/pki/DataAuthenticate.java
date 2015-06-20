@@ -109,11 +109,11 @@ public class DataAuthenticate {
 		for (String calog : caLogList) {
 			logList.add(calog);
 		}
-		printLog(logList, "ICC Public Key Certificate('9F 46'):\n" + icCert);
+		printLog(logList, "ICC Public Key Certificate[9F46]:\n" + icCert);
 		printLog(logList, "ICC Public Key Modulus:\n" + icPKInfo.getPubMod());
 		printLog(logList, "ICC Public Key Remainder[9F48]:\n" + icPKSurplus);
 		// printLog(logList,icPKInfo.toString());
-		printLog(logList, "ICC Public Key Exponent ('9F 47') :\n" + icPKExponent);
+		printLog(logList, "ICC Public Key Exponent [9F47] :\n" + icPKExponent);
 
 		// 判断IC卡公钥模长度与动态数据长度是否相等
 		if (icPKInfo.getPubMod().length() != signedDynamicData.length()) {
@@ -122,7 +122,7 @@ public class DataAuthenticate {
 		}
 		// 恢复签名的动态数据
 		String resultData = CryptoUtil.rsa_decrypt(icPKInfo.getPubMod(), icPKExponent, signedDynamicData);
-		printLog(logList, "Recovered signedDDA data:" + resultData);
+		printLog(logList, "Data Recovered (for DDA) :" + resultData);
 		// 判断恢复数据的开头
 		if (!resultData.startsWith(RECOVER_DATA_HEAD + SIGN_DATA_STYLE_DDA)) {
 			log.error("dynamicDataAuthenticate not start with 6A05!");
@@ -139,8 +139,10 @@ public class DataAuthenticate {
 		printLog(logList, "hash style：" + hashStyle);
 		// 需要计算哈希的数据
 		String toHashData = resultData.substring(2, resultData.length() - 42) + ddolDataList;
+		
+		
 		// log.debug("dynamicDataAuthenticate to hash：" + toHashData);
-		printLog(logList, "DDA hash data：" + toHashData);
+		printLog(logList, "Input Data for Hash (for DDA) : \n"+ toHashData);
 		String hashData = "";
 		// 判断哈希算法标识并计算哈希
 		try {
@@ -160,16 +162,17 @@ public class DataAuthenticate {
 			// return false;
 		}
 		// log.debug("dynamicDataAuthenticate get hash：" + hashData);
-		printLog(logList, "calcuate hash：" + hashData);
+		printLog(logList, "Hash Recomputed (for DDA) :" + hashData);
 		// 恢复数据中的哈希数据
 		String resultHashData = resultData.substring(resultData.length() - 42, resultData.length() - 2);
 		// log.debug("dynamicDataAuthenticate get hash from recovered data：" + resultHashData);
-		printLog(logList, "recovered data hash：" + resultHashData);
+		printLog(logList, "Hash Recovered from Signed Dynamic Application Data :" + resultHashData);
 		// 比较两个哈希值
 		if (!hashData.equalsIgnoreCase(resultHashData)) {
-			log.error("Hash is not equals!");
+			log.error("Signed Dynamic Application Data Hash is not equals!");
 			return false;
 		}
+		log.debug("Dynamic Application Data Hash is verified!\n");
 		// 填充数据
 		for (int i = 0; i < logList.size(); i++) {
 			list.add("");

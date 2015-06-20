@@ -105,7 +105,7 @@ public class PkiUtil {
 			if ("SOOO".equals(errCode)) {
 				cardissuerPublicKeyInfo.setSuccess(true);
 				cardissuerPublicKeyInfo.setErrorCode(errCode);
-				logList.add("Check Issuer PK Certificate--PASS!");
+				logList.add("Check Issuer PK Certificate PASS!");
 				log.debug("Issuer Public Key Certificate Hash is verified!\n");
 			} else {
 				cardissuerPublicKeyInfo.setErrorCode(errCode);
