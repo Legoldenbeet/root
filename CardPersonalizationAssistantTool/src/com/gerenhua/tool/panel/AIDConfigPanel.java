@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -52,7 +53,7 @@ public class AIDConfigPanel extends JPanel {
 	public static JButton buttonDel;
 	public static JButton buttonSave;
 
-    private PropertiesManager pm = new PropertiesManager();
+	private PropertiesManager pm = new PropertiesManager();
 	private final String[] COLUMNS = new String[] { pm.getString("mv.aidconfig.aidtitle"), pm.getString("mv.aidconfig.discriptiontitle"), pm.getString("mv.aidconfig.versiontitle") };
 	private List<AIDInfo> sdList;
 	private AIDInfo aidInfo = new AIDInfo();
@@ -107,6 +108,8 @@ public class AIDConfigPanel extends JPanel {
 		add(buttonAdd);
 
 		final JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane.setBounds(10, 40, 690, 558);
 		add(scrollPane);
 
@@ -259,7 +262,7 @@ public class AIDConfigPanel extends JPanel {
 				return;
 			} else {
 				AIDInfo aidInfo = new AIDInfo();
-				if (Config.getItem("SupAID", textFieldAid.getText().trim())!=null) {
+				if (Config.getItem("SupAID", textFieldAid.getText().trim()) != null) {
 					JOptionPane.showMessageDialog(null, pm.getString("mv.aidconfig.aidexists"), pm.getString("mv.aidconfig.infoWindow"), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -275,11 +278,11 @@ public class AIDConfigPanel extends JPanel {
 						table.repaint();
 
 						JOptionPane.showMessageDialog(null, "添加成功!", "提示框", JOptionPane.INFORMATION_MESSAGE);
-					}else {
+					} else {
 						JOptionPane.showMessageDialog(null, pm.getString("mv.aidconfig.saveerr"), pm.getString("mv.aidconfig.infoWindow"), JOptionPane.ERROR_MESSAGE);
 					}
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null,"添加aid出错", e.getMessage(), JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "添加aid出错", e.getMessage(), JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
@@ -320,7 +323,7 @@ public class AIDConfigPanel extends JPanel {
 
 		}
 	};
-	
+
 	private ActionListener saveActionListener = new ActionListener() {
 		public void actionPerformed(final ActionEvent e) {
 			int selectedNum = table.getSelectedRows().length;

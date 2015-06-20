@@ -83,7 +83,7 @@ public class CAPublicKeyConfigPanel extends JPanel {
 	public CAPublicKeyConfigPanel() {
 		super();
 		setLayout(null);
-		//setBorder(JTBorderFactory.createTitleBorder("CA公钥管理"));
+		// setBorder(JTBorderFactory.createTitleBorder("CA公钥管理"));
 		init();
 
 		RIDCombox = new JComboBox();
@@ -270,12 +270,7 @@ public class CAPublicKeyConfigPanel extends JPanel {
 		add(modifyButton);
 		modifyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (WDAssert.isEmpty(algorithmtextField.getText().trim())
-						||WDAssert.isEmpty(EXPtextField.getText().trim())
-						||WDAssert.isEmpty(HashtextField.getText().trim())
-						||WDAssert.isEmpty(textField.getText().trim())
-						||WDAssert.isEmpty(ModuletextField.getText().trim())
-						) {
+				if (WDAssert.isEmpty(algorithmtextField.getText().trim()) || WDAssert.isEmpty(EXPtextField.getText().trim()) || WDAssert.isEmpty(HashtextField.getText().trim()) || WDAssert.isEmpty(textField.getText().trim()) || WDAssert.isEmpty(ModuletextField.getText().trim())) {
 					JOptionPane.showMessageDialog(null, "CA参数输入错误！");
 					return;
 				}
@@ -312,6 +307,7 @@ public class CAPublicKeyConfigPanel extends JPanel {
 		panel.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		panel.add(scrollPane, BorderLayout.CENTER);
 
