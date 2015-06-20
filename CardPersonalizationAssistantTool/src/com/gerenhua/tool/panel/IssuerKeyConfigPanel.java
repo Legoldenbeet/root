@@ -1,20 +1,30 @@
 package com.gerenhua.tool.panel;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 
 import com.gerenhua.tool.configdao.IssuerKeyInfo;
 import com.gerenhua.tool.logic.apdu.CommonHelper;
@@ -38,6 +48,13 @@ public class IssuerKeyConfigPanel extends JPanel {
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
+	private JTable table;
+	private final String[] COLUMNS = new String[] { "密钥名称", "UDKac", "UDKmac", "UDKenc", "Derive" };
+	Object[][] tableData = null;
+	private DefaultTableModel testDataTableModel = null;
+	List<IssuerKeyInfo> sdList = new ArrayList<IssuerKeyInfo>();
+	private JTextField textField_4;
+	private JCheckBox chckbxDe;
 
 	/**
 	 * Create the panel
@@ -137,17 +154,34 @@ public class IssuerKeyConfigPanel extends JPanel {
 		textField_2.setText(ikInfo.getEncKey());
 		add(textField_2);
 
+		chckbxDe = new JCheckBox("Derive");
+		chckbxDe.setBounds(195, 139, 103, 23);
+		chckbxDe.setSelected(ikInfo.getDerive() == 0 ? false : true);
+		add(chckbxDe);
+
+		textField_4 = new JTextField();
+		textField_4.setBounds(82, 140, 107, 20);
+		textField_4.setText(ikInfo.getKeyName());
+		add(textField_4);
+		textField_4.setColumns(10);
+
 		final JButton button_1 = new JButton();
 		button_1.setText("保存");
-		button_1.setBounds(82, 143, 84, 21);
+		button_1.setBounds(82, 170, 84, 21);
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				Config.setValue("ApplicationKey", "UDKac", textField.getText().trim());
-				Config.setValue("ApplicationKey", "UDKmac", textField_1.getText().trim());
-				Config.setValue("ApplicationKey", "UDKenc", textField_2.getText().trim());
-//				Config.write();
+				issuerKeyInfo.setDerive(chckbxDe.isSelected() == true ? 1 : 0);
+				issuerKeyInfo.setKeyName(textField_4.getText().trim());
+				issuerKeyInfo.setAcKey(textField.getText().trim());
+				issuerKeyInfo.setMacKey(textField_1.getText().trim());
+				issuerKeyInfo.setEncKey(textField_2.getText().trim());
+				issuerKeyInfo.add(issuerKeyInfo);
+				Config.setValue("ApplicationKey", "currentAppKey", issuerKeyInfo.getKeyName());
 
 				JOptionPane.showMessageDialog(null, "保存成功！", "提示框", JOptionPane.INFORMATION_MESSAGE);
+				sdList = issuerKeyInfo.getIssuerKeyInfos("ApplicationKey");
+				tableDataDisp();
+				table.repaint();
 			}
 
 		});
@@ -168,18 +202,18 @@ public class IssuerKeyConfigPanel extends JPanel {
 		textField_3.getDocument().addDocumentListener(new DocumentListener() {
 			public void insertUpdate(DocumentEvent e) {
 				try {
-				String appKeyStr=textField_3.getText();
-				String udkAc=appKeyStr.substring(0, 32);
-				CommonHelper.updateUI(textField, udkAc);
-				CommonHelper.updateUI(textField_5, CommonHelper.getCheckValue(udkAc));
-				
-				String udkMac=appKeyStr.substring(32, 64);
-				CommonHelper.updateUI(textField_1, udkMac);
-				CommonHelper.updateUI(textField_6, CommonHelper.getCheckValue(udkMac));
-				
-				String udkEnc=appKeyStr.substring(64, 96);
-				CommonHelper.updateUI(textField_2, udkEnc);
-				CommonHelper.updateUI(textField_7, CommonHelper.getCheckValue(udkEnc));
+					String appKeyStr = textField_3.getText();
+					String udkAc = appKeyStr.substring(0, 32);
+					CommonHelper.updateUI(textField, udkAc);
+					CommonHelper.updateUI(textField_5, CommonHelper.getCheckValue(udkAc));
+
+					String udkMac = appKeyStr.substring(32, 64);
+					CommonHelper.updateUI(textField_1, udkMac);
+					CommonHelper.updateUI(textField_6, CommonHelper.getCheckValue(udkMac));
+
+					String udkEnc = appKeyStr.substring(64, 96);
+					CommonHelper.updateUI(textField_2, udkEnc);
+					CommonHelper.updateUI(textField_7, CommonHelper.getCheckValue(udkEnc));
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -194,43 +228,103 @@ public class IssuerKeyConfigPanel extends JPanel {
 		});
 
 		add(textField_3);
-		
+
 		JLabel label_1 = new JLabel();
 		label_1.setText("CKV：");
 		label_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		label_1.setBounds(485, 53, 47, 20);
 		add(label_1);
-		
+
 		textField_5 = new JTextField();
 		textField_5.setToolTipText("");
 		textField_5.setEditable(false);
 		textField_5.setBounds(538, 53, 111, 20);
 		add(textField_5);
-		
+
 		JLabel label_2 = new JLabel();
 		label_2.setText("CKV：");
 		label_2.setHorizontalAlignment(SwingConstants.RIGHT);
 		label_2.setBounds(485, 83, 47, 20);
 		add(label_2);
-		
+
 		textField_6 = new JTextField();
 		textField_6.setToolTipText("");
 		textField_6.setEditable(false);
 		textField_6.setBounds(538, 83, 111, 20);
 		add(textField_6);
-		
+
 		JLabel label_3 = new JLabel();
 		label_3.setText("CKV：");
 		label_3.setHorizontalAlignment(SwingConstants.RIGHT);
 		label_3.setBounds(485, 113, 47, 20);
 		add(label_3);
-		
+
 		textField_7 = new JTextField();
 		textField_7.setToolTipText("");
 		textField_7.setEditable(false);
 		textField_7.setBounds(538, 113, 111, 20);
 		add(textField_7);
 
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 211, 770, 358);
+		add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		panel.add(scrollPane, BorderLayout.CENTER);
+
+		table = new JTable();
+		table.getTableHeader().setReorderingAllowed(true);
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					int row = table.rowAtPoint(e.getPoint());
+					// int colum = table.columnAtPoint(e.getPoint());
+
+					issuerKeyInfo = issuerKeyInfo.getIssuerKeyInfo("ApplicationKey", table.getValueAt(row, 0).toString());
+
+					chckbxDe.setSelected(issuerKeyInfo.getDerive() == 0 ? false : true);
+					textField_4.setText(issuerKeyInfo.getKeyName());
+					textField.setText(issuerKeyInfo.getAcKey());
+					textField_1.setText(issuerKeyInfo.getMacKey());
+					textField_2.setText(issuerKeyInfo.getEncKey());
+				}
+			}
+		});
+		sdList = issuerKeyInfo.getIssuerKeyInfos("ApplicationKey");
+		tableDataDisp();
+		scrollPane.setViewportView(table);
+
+	}
+
+	/**
+	 * @Title: tableDataDisp
+	 * @Description 将从数据库中查出的数据显示在table中
+	 * @param
+	 * @return
+	 * @throws
+	 */
+	public void tableDataDisp() {
+		int rowNum = sdList.size();
+		tableData = new Object[rowNum][5];
+		for (int i = 0; i < rowNum; i++) {
+			tableData[i][0] = sdList.get(i).getKeyName();
+			tableData[i][1] = sdList.get(i).getAcKey();
+			tableData[i][2] = sdList.get(i).getMacKey();
+			tableData[i][3] = sdList.get(i).getEncKey();
+			tableData[i][4] = sdList.get(i).getDerive();
+		}
+		testDataTableModel = new DefaultTableModel(tableData, COLUMNS) {
+			private static final long serialVersionUID = -9082031840487910439L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		table.setModel(testDataTableModel);
 	}
 
 	private void init() {

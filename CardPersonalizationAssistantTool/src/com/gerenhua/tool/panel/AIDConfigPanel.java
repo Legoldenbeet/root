@@ -107,7 +107,7 @@ public class AIDConfigPanel extends JPanel {
 		add(buttonAdd);
 
 		final JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 40, 690, 653);
+		scrollPane.setBounds(10, 40, 690, 558);
 		add(scrollPane);
 
 		table = new JTable();

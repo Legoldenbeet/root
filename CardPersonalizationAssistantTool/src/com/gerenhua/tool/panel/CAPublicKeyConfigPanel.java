@@ -307,7 +307,7 @@ public class CAPublicKeyConfigPanel extends JPanel {
 		label.setText("RID：");
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 100, 789, 597);
+		panel.setBounds(10, 100, 789, 509);
 		add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 
