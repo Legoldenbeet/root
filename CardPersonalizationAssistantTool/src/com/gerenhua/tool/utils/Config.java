@@ -157,8 +157,7 @@ public class Config {
 			try {
 				throw new IOException("item is exists.");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		iniSection.addItem(itemName);
