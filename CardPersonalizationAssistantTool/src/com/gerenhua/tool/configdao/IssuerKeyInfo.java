@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import com.gerenhua.tool.app.Application;
 import com.gerenhua.tool.utils.Config;
 
 public class IssuerKeyInfo {
@@ -100,6 +103,10 @@ public class IssuerKeyInfo {
 	}
 
 	public boolean del(String keyName) {
+		if (keyName.equalsIgnoreCase(Config.getValue("ApplicationKey", "currentAppKey"))) {
+			JOptionPane.showMessageDialog(Application.frame, "密钥正在使用无法删除！");
+			return false;
+		}
 		Config.delItem("ApplicationKey", keyName);
 		return true;
 	}

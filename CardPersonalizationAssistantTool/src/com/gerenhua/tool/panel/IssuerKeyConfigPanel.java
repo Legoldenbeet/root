@@ -303,7 +303,6 @@ public class IssuerKeyConfigPanel extends JPanel {
 				}else {
 					int row=table.rowAtPoint(e.getPoint());
 					currentSelectedKeyName=table.getValueAt(row, 0).toString();
-					addPopup(table, popupMenu);
 				}
 				
 			}
@@ -326,6 +325,7 @@ public class IssuerKeyConfigPanel extends JPanel {
 			}
 		});
 		popupMenu.add(popmItem);
+		addPopup(table, popupMenu);
 	}
 
 	/**
