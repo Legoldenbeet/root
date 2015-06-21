@@ -198,7 +198,7 @@ public class ElectronicCashHandler extends BaseHandler {
 
 				// Verify PIN
 				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
-					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
+					if (CommonHelper.supportOfflinePin(cardRecordData.get("8E"))) {
 						logger.debug("=================================Verify PIN===========================");
 						String pin = JOptionPane.showInputDialog("请输入PIN：");
 						if (WDAssert.isNotEmpty(pin)) {
@@ -479,7 +479,7 @@ public class ElectronicCashHandler extends BaseHandler {
 				
 				// Verify PIN
 				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
-					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
+					if (CommonHelper.supportOfflinePin(cardRecordData.get("8E"))) {
 						logger.debug("=================================Verify PIN===========================");
 						String pin = JOptionPane.showInputDialog("请输入PIN：");
 						if (WDAssert.isNotEmpty(pin)) {

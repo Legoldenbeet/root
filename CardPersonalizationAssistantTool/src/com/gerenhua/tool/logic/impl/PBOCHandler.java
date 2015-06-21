@@ -26,14 +26,6 @@ import com.gerenhua.tool.utils.reportutil.GenReportUtil;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 
-/**
- * 
- * @description: PBOC交易逻辑处理
- * @author: juan.jiang 2012-3-21
- * @version: 1.0.0
- * @modify:
- * @Copyright: watchdata
- */
 public class PBOCHandler extends BaseHandler {
 	private static Log logger = new Log();
 	private IIssuerDao issuerDao = new IssuerDaoImpl();
@@ -173,13 +165,19 @@ public class PBOCHandler extends BaseHandler {
 				}
 				// Internal Authenticate
 				logger.debug("=======================Internal Authenticate==============================");
-				result = apduHandler.internalAuthenticate(termRandom);
-				String signedDynmicData = result.get("80");
+				String signedDynmicData = "";
+				if (CommonHelper.support(aip, AIP_SUPPORT_DDA)) {// 有条件的——如果支持DDA（EMV）
+					result = apduHandler.internalAuthenticate(termRandom);
+					signedDynmicData = result.get("80");
 
-				genWordUtil.add(result.get("apdu"), "Internal Authenticate", result.get("res"), result);
+					genWordUtil.add(result.get("apdu"), "Internal Authenticate", result.get("res"), result);
 
-				genWordUtil.add("Random Data:" + termRandom);
-				genWordUtil.add("StaticDataList:" + staticDataList);
+					genWordUtil.add("Random Data:" + termRandom);
+					genWordUtil.add("StaticDataList:" + staticDataList);
+				} else {
+					logger.debug("Application not support Offline Dynamic Data Authentication (DDA).");
+					logger.debug("Internal Authenticate not performed!");
+				}
 				// DDA,SDA
 				String issuerPKCert = cardRecordData.get("90");
 				String issuerPKReminder = cardRecordData.get("92");
@@ -228,14 +226,12 @@ public class PBOCHandler extends BaseHandler {
 					genWordUtil.add(log);
 				}
 				// get data
-				logger.debug("================================Processing Restrictions=============================");
+				logger.debug("================================GET DATA=============================");
 				HashMap<String, String> dataMap = new HashMap<String, String>();
 				result = apduHandler.getData("9F52");
 				dataMap.put("9F52", result.get("9F52"));
 				result = apduHandler.getData("9F54");
 				dataMap.put("9F54", result.get("9F54"));
-				result = apduHandler.getData("9F5C");
-				dataMap.put("9F5C", result.get("9F5C"));
 				result = apduHandler.getData("9F56");
 				dataMap.put("9F56", result.get("9F56"));
 				result = apduHandler.getData("9F57");
@@ -244,10 +240,38 @@ public class PBOCHandler extends BaseHandler {
 				dataMap.put("9F58", result.get("9F58"));
 				result = apduHandler.getData("9F59");
 				dataMap.put("9F59", result.get("9F59"));
+				result = apduHandler.getData("9F5C");
+				dataMap.put("9F5C", result.get("9F5C"));
+				logger.debug("================================Processing Restrictions=============================");
+				logger.debug("Card Application Version Number [9F08]:"+cardRecordData.get("9F08"));
+				logger.debug("Issuer Country Code [5F28] :"+cardRecordData.get("5F28"));
+				
+				logger.debug("Check Application Effective Date");
+				logger.debug("Application Effective Date [5F25]:"+cardRecordData.get("5F25"));
+				logger.debug("Transaction Date [9A] :"+cardRecordData.get("9A"));
+				if (Integer.parseInt(cardRecordData.get("9A"))<=Integer.parseInt(cardRecordData.get("5F25"))) {
+					logger.debug("Check Application Effective Date...OK.");
+				}else {
+					logger.error("Check Application Effective Date error!");
+				}
+				
+				logger.debug("Check Application Expiration Date");
+				logger.debug("Application Expiration Date [5F24]:"+cardRecordData.get("5F24"));
+				logger.debug("Transaction Date [9A] :"+cardRecordData.get("9A"));
+				if (Integer.parseInt(cardRecordData.get("9A"))<=Integer.parseInt(cardRecordData.get("5F24"))&&Integer.parseInt(cardRecordData.get("5F25"))<=Integer.parseInt(cardRecordData.get("5F24"))) {
+					logger.debug("Check Application Expiration Date...OK.");
+				}else {
+					logger.error("Check Application Expiration Date error!");
+				}
+				
 				logger.debug("================================Cardholder Verification=============================");
 				// Verify PIN
 				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
-					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
+					// 持卡人验证方法
+					logger.debug("CVM LIST:");
+					Terminal.parse8E(cardRecordData.get("8E"));
+					logger.debug("CVM to be taken:");
+					if (CommonHelper.supportOfflinePin(cardRecordData.get("8E"))) {
 						logger.debug("=================================Verify PIN===========================");
 						String pin = JOptionPane.showInputDialog("请输入PIN：");
 						if (WDAssert.isNotEmpty(pin)) {
@@ -260,13 +284,13 @@ public class PBOCHandler extends BaseHandler {
 								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
 							}
 						} else {
-							logger.error("verify pin failed,card return:" + result.get("sw"));
+							logger.error("Cardholder not input PIN,Cardholder Verification FAIL!");
 						}
 					}
 				}
 				logger.debug("================================Terminal Risk Management=============================");
 				logger.debug("================================Terminal Action Analysis=============================");
-				
+
 				// Generate arqc
 				logger.debug("==========================Card Action Analysis(Generate AC1)================================");
 				// 交易日期 9A 3

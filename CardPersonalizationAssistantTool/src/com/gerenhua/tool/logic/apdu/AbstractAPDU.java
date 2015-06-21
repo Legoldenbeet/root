@@ -152,9 +152,9 @@ public class AbstractAPDU {
 		//print log with tag comment
 		String tagComment=Config.getValue("TAG", tag);
 		log.info(tag + "\t"+tagLen+" "+ value+"【"+tagComment+"】");
-		if (tag.equalsIgnoreCase("8E")) {
-			Terminal.parse8E(value);
-		}
+//		if (tag.equalsIgnoreCase("8E")) {
+//			Terminal.parse8E(value);
+//		}
 	}
 	
 	private boolean isComleteTag(String tag){
