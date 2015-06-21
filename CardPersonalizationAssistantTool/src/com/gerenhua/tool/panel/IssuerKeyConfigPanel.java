@@ -1,6 +1,7 @@
 package com.gerenhua.tool.panel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,13 +16,16 @@ import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
@@ -31,6 +35,7 @@ import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.FixedSizePlainDocument;
 import com.gerenhua.tool.utils.PropertiesManager;
+import com.watchdata.commons.lang.WDAssert;
 
 public class IssuerKeyConfigPanel extends JPanel {
 
@@ -55,7 +60,8 @@ public class IssuerKeyConfigPanel extends JPanel {
 	List<IssuerKeyInfo> sdList = new ArrayList<IssuerKeyInfo>();
 	private JTextField textField_4;
 	private JCheckBox chckbxDe;
-
+	private JPopupMenu popupMenu = new JPopupMenu();
+	public static String currentSelectedKeyName="";
 	/**
 	 * Create the panel
 	 */
@@ -280,7 +286,10 @@ public class IssuerKeyConfigPanel extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+				if (SwingUtilities.isLeftMouseButton(e)) {
+					if (e.getClickCount() != 2) {
+						return;
+					}
 					int row = table.rowAtPoint(e.getPoint());
 					// int colum = table.columnAtPoint(e.getPoint());
 
@@ -291,13 +300,32 @@ public class IssuerKeyConfigPanel extends JPanel {
 					textField.setText(issuerKeyInfo.getAcKey());
 					textField_1.setText(issuerKeyInfo.getMacKey());
 					textField_2.setText(issuerKeyInfo.getEncKey());
+				}else {
+					int row=table.rowAtPoint(e.getPoint());
+					currentSelectedKeyName=table.getValueAt(row, 0).toString();
+					addPopup(table, popupMenu);
 				}
+				
 			}
 		});
 		sdList = issuerKeyInfo.getIssuerKeyInfos("ApplicationKey");
 		tableDataDisp();
 		scrollPane.setViewportView(table);
 
+		JMenuItem popmItem=new JMenuItem("删除");
+		popmItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (WDAssert.isNotEmpty(currentSelectedKeyName)) {
+					issuerKeyInfo.del(currentSelectedKeyName);
+					sdList=issuerKeyInfo.getIssuerKeyInfos("ApplicationKey");
+					tableDataDisp();
+					table.repaint();
+				}
+			}
+		});
+		popupMenu.add(popmItem);
 	}
 
 	/**
@@ -330,5 +358,22 @@ public class IssuerKeyConfigPanel extends JPanel {
 
 	private void init() {
 		setName(pm.getString("mv.issuerkeyconfig.name"));
+	}
+	private static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+			private void showMenu(MouseEvent e) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
 	}
 }

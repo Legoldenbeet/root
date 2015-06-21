@@ -57,11 +57,11 @@ public class IssuerKeyInfo {
 		String current = Config.getValue(sectionName, "currentAppKey");
 		return getIssuerKeyInfo(sectionName, current);
 	}
-	
-	public IssuerKeyInfo getIssuerKeyInfo(String sectionName,String item) {
+
+	public IssuerKeyInfo getIssuerKeyInfo(String sectionName, String item) {
 
 		IssuerKeyInfo issuerKeyInfo = new IssuerKeyInfo();
-		String itemV=Config.getValue(sectionName,item);
+		String itemV = Config.getValue(sectionName, item);
 		String[] items = itemV.split("\\|");
 		issuerKeyInfo.setKeyName(item);
 		issuerKeyInfo.setDerive(Integer.parseInt(items[0].toString().trim()));
@@ -95,8 +95,12 @@ public class IssuerKeyInfo {
 
 	public boolean add(IssuerKeyInfo issuerKeyInfo) {
 		Config.addItem("ApplicationKey", issuerKeyInfo.getKeyName());
-		Config.setValue("ApplicationKey", issuerKeyInfo.getKeyName(), issuerKeyInfo.getDerive() + "|" +issuerKeyInfo.getAcKey()+"|"+issuerKeyInfo.getMacKey()+"|"+issuerKeyInfo.getEncKey());
+		Config.setValue("ApplicationKey", issuerKeyInfo.getKeyName(), issuerKeyInfo.getDerive() + "|" + issuerKeyInfo.getAcKey() + "|" + issuerKeyInfo.getMacKey() + "|" + issuerKeyInfo.getEncKey());
 		return true;
 	}
 
+	public boolean del(String keyName) {
+		Config.delItem("ApplicationKey", keyName);
+		return true;
+	}
 }
