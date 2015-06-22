@@ -23,25 +23,25 @@ import com.watchdata.commons.lang.WDAssert;
  */
 public class BaseHandler {
 	public static HashMap<String, String> tradeDefaultPara;
-	public static final String GAC1_CODOL="9F02069F03069F1A0295055F2A029A039C019F37049F2103";
+	public static final String GAC1_CODOL = "9F02069F03069F1A0295055F2A029A039C019F37049F2103";
 	public static String authRespCode = "3030";
 	public CommonAPDU apduHandler;
-	public static final int AIP_SUPPORT_SDA=7;
-	public static final int AIP_SUPPORT_DDA=6;
-	public static final int AIP_SUPPORT_CARDHOLDER_VERIFY=5;
-	public static final int AIP_SUPPORT_RISK_MANAGERMENT=4;
-	public static final int AIP_SUPPORT_EXTERNAL_AUTHENTICATE=3;
-	public static final int AIP_SUPPORT_RFU=2;
-	public static final int AIP_SUPPORT_CDA=1;
+	public static final int AIP_SUPPORT_SDA = 7;
+	public static final int AIP_SUPPORT_DDA = 6;
+	public static final int AIP_SUPPORT_CARDHOLDER_VERIFY = 5;
+	public static final int AIP_SUPPORT_RISK_MANAGERMENT = 4;
+	public static final int AIP_SUPPORT_EXTERNAL_AUTHENTICATE = 3;
+	public static final int AIP_SUPPORT_RFU = 2;
+	public static final int AIP_SUPPORT_CDA = 1;
 
 	public BaseHandler() {
-		apduHandler=new CommonAPDU();
+		apduHandler = new CommonAPDU();
 		if (tradeDefaultPara == null) {
 			tradeDefaultPara = new HashMap<String, String>();
 			tradeDefaultPara.put("9F7A", "01"); // 电子现金终端指示器
 			tradeDefaultPara.put("5F2A", Config.getValue("Terminal_Data", "5F2A")); // 交易货币代码
 			tradeDefaultPara.put("9F1A", Config.getValue("Terminal_Data", "9F1A")); // 终端国家代码
-			//tradeDefaultPara.put("9F66", "B6000000");// 非接触能力
+			// tradeDefaultPara.put("9F66", "B6000000");// 非接触能力
 			tradeDefaultPara.put("9F66", "46800000");// 非接触能力
 			tradeDefaultPara.put("9F03", "000000000000");// 其他金额
 			tradeDefaultPara.put("9F4E", "CBADCBB5BFC6BCBCD4DACFDFB3E4D6B5D2B5CEF1");// 商户名称
@@ -49,6 +49,7 @@ public class BaseHandler {
 			tradeDefaultPara.put("9C", Config.getValue("Terminal_Data", "9C"));
 			tradeDefaultPara.put("9F33", Config.getValue("Terminal_Data", "9F33"));
 			tradeDefaultPara.put("9F35", Config.getValue("Terminal_Data", "9F35"));
+			tradeDefaultPara.put("8A", authRespCode);
 		}
 	}
 
@@ -60,7 +61,7 @@ public class BaseHandler {
 	 * @return
 	 * @throws Exception
 	 */
-	protected String loadDolData(String dol, HashMap<String, String> param) throws Exception {
+	public String loadDolData(String dol, HashMap<String, String> param) throws Exception {
 		StringBuffer result = new StringBuffer();
 		ArrayList<String> tagList = CommonHelper.parseTLData(dol);
 		for (String tag : tagList) {
@@ -82,8 +83,8 @@ public class BaseHandler {
 	 * @return
 	 * @throws Exception
 	 */
-	protected HashMap<String, String> getCardRecordData(String afl, List<APDUSendANDRes> list) throws Exception {
-		//填充目的集合用于复制
+	public HashMap<String, String> getCardRecordData(String afl, List<APDUSendANDRes> list) throws Exception {
+		// 填充目的集合用于复制
 		List<APDUSendANDRes> aList = new ArrayList<APDUSendANDRes>();
 		for (int i = 0; i < CommonHelper.getFileCount(afl); i++) {
 			list.add(null);
@@ -94,11 +95,11 @@ public class BaseHandler {
 		HashMap<String, String> cardRecordData = new HashMap<String, String>();
 		for (String fileId : fileList) {
 			HashMap<String, String> fileData = apduHandler.readRecord(fileId.substring(0, 2), fileId.substring(2, 4));
-			
+
 			// Read Record报告内容
 			APDUSendANDRes apduSendANDRes = new APDUSendANDRes();
 			apduSendANDRes.setSendAPDU(fileData.get("apdu"));
-			apduSendANDRes.setDes("Read Record_DGI"+CommonHelper.getDgiHead(fileId.substring(0, 2))+fileId.substring(2, 4));
+			apduSendANDRes.setDes("Read Record_DGI" + CommonHelper.getDgiHead(fileId.substring(0, 2)) + fileId.substring(2, 4));
 			apduSendANDRes.setResponseAPDU(fileData.get("res"));
 			apduSendANDRes.setTagDes(fileData);
 			aList.add(apduSendANDRes);

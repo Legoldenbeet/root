@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.utils.Config;
-import com.gerenhua.tool.utils.Terminal;
 /**
  * 
  * @description: 指令打包解包封装抽象类
