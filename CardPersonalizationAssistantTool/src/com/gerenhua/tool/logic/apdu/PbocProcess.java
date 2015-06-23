@@ -293,7 +293,7 @@ public class PbocProcess extends BaseHandler {
 		logger.debug("Check Application Effective Date");
 		logger.debug("Application Effective Date [5F25]:" + cardRecordData.get("5F25"));
 		logger.debug("Transaction Date [9A] :" + param.get("9A"));
-		if (Integer.parseInt(param.get("9A")) <= Integer.parseInt(cardRecordData.get("5F25"))) {
+		if (Integer.parseInt(param.get("9A")) >= Integer.parseInt(cardRecordData.get("5F25"))) {
 			logger.debug("Check Application Effective Date...OK.");
 		} else {
 			processResult = false;
