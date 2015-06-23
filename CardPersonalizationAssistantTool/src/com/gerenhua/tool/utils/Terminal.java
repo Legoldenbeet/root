@@ -85,7 +85,7 @@ public class Terminal {
 			cvmCode = cvmCode + "------" + Config.getValue("CVM_CODE", binary.substring(0, 2)) + ";" + Config.getValue("CVM_TYPE", binary.substring(2, 8));
 			cvmCondtionCode = cvmCondtionCode + "------" + Config.getValue("CVM_Condition_Code", cvmCondtionCode);
 			
-			if (i==20) {
+			if (i==16) {
 				chooseCVM=cvmCode+"\n"+cvmCondtionCode;
 			}
 			log.warn(cvmCode);
