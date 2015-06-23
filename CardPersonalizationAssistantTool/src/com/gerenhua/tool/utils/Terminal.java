@@ -63,7 +63,8 @@ public class Terminal {
 		}
 	}
 
-	public static void parse8E(String str8E) {
+	public static String parse8E(String str8E) {
+		String chooseCVM="";
 		String x = str8E.substring(0, 8);
 		String y = str8E.substring(8, 16);
 		String cvmCode = "";
@@ -74,8 +75,7 @@ public class Terminal {
 		log.warn(x);
 		log.warn(y);
 		log.warn("---------------------------------------\n");
-		int i = 16;
-		while (i < str8E.length()) {
+		for (int i = 16; i < str8E.length(); i += 4){
 			cvmCode = str8E.substring(i, i + 2);
 			cvmCondtionCode = str8E.substring(i + 2, i + 4);
 
@@ -84,11 +84,15 @@ public class Terminal {
 
 			cvmCode = cvmCode + "------" + Config.getValue("CVM_CODE", binary.substring(0, 2)) + ";" + Config.getValue("CVM_TYPE", binary.substring(2, 8));
 			cvmCondtionCode = cvmCondtionCode + "------" + Config.getValue("CVM_Condition_Code", cvmCondtionCode);
-			i += 4;
+			
+			if (i==20) {
+				chooseCVM=cvmCode+"\n"+cvmCondtionCode;
+			}
 			log.warn(cvmCode);
 			log.warn(cvmCondtionCode);
 			log.warn("---------------------------------------");
 		}
+		return chooseCVM;
 	}
 
 	/**

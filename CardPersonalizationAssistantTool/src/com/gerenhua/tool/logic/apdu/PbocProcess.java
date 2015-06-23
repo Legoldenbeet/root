@@ -285,15 +285,15 @@ public class PbocProcess extends BaseHandler {
 	 * @param logger
 	 * @return
 	 */
-	public static boolean processingRestrictions(HashMap<String, String> cardRecordData, Log logger) {
+	public static boolean processingRestrictions(HashMap<String, String> cardRecordData,HashMap<String, String> param,Log logger) {
 		boolean processResult = false;
 		logger.debug("Card Application Version Number [9F08]:" + cardRecordData.get("9F08"));
 		logger.debug("Issuer Country Code [5F28] :" + cardRecordData.get("5F28"));
 
 		logger.debug("Check Application Effective Date");
 		logger.debug("Application Effective Date [5F25]:" + cardRecordData.get("5F25"));
-		logger.debug("Transaction Date [9A] :" + cardRecordData.get("9A"));
-		if (Integer.parseInt(cardRecordData.get("9A")) <= Integer.parseInt(cardRecordData.get("5F25"))) {
+		logger.debug("Transaction Date [9A] :" + param.get("9A"));
+		if (Integer.parseInt(param.get("9A")) <= Integer.parseInt(cardRecordData.get("5F25"))) {
 			logger.debug("Check Application Effective Date...OK.");
 		} else {
 			processResult = false;
@@ -302,8 +302,8 @@ public class PbocProcess extends BaseHandler {
 
 		logger.debug("Check Application Expiration Date");
 		logger.debug("Application Expiration Date [5F24]:" + cardRecordData.get("5F24"));
-		logger.debug("Transaction Date [9A] :" + cardRecordData.get("9A"));
-		if (Integer.parseInt(cardRecordData.get("9A")) <= Integer.parseInt(cardRecordData.get("5F24")) && Integer.parseInt(cardRecordData.get("5F25")) <= Integer.parseInt(cardRecordData.get("5F24"))) {
+		logger.debug("Transaction Date [9A] :" + param.get("9A"));
+		if (Integer.parseInt(param.get("9A")) <= Integer.parseInt(cardRecordData.get("5F24")) && Integer.parseInt(cardRecordData.get("5F25")) <= Integer.parseInt(cardRecordData.get("5F24"))) {
 			logger.debug("Check Application Expiration Date...OK.");
 			processResult = true;
 		} else {
@@ -328,8 +328,8 @@ public class PbocProcess extends BaseHandler {
 		if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
 			// 持卡人验证方法
 			logger.debug("CVM LIST:");
-			Terminal.parse8E(cardRecordData.get("8E"));
-			logger.debug("CVM to be taken:");
+			String chooseCVM=Terminal.parse8E(cardRecordData.get("8E"));
+			logger.debug("CVM to be taken:\n"+chooseCVM);
 			if (CommonHelper.supportOfflinePin(cardRecordData.get("8E"))) {
 				logger.debug("=================================Verify PIN===========================");
 				String pin = JOptionPane.showInputDialog("请输入PIN：");
@@ -350,6 +350,7 @@ public class PbocProcess extends BaseHandler {
 				}
 			}
 		}
+		processResult = true;
 		return processResult;
 	}
 
@@ -411,7 +412,7 @@ public class PbocProcess extends BaseHandler {
 	public static String onlineprocessing(BaseHandler baseHandler, String pan, String panSerial, String aip, String atc, String iad, String arqc, HashMap<String, String> param, Log logger, GenReportUtil genWordUtil) throws Exception {
 		String gAC1_DDOL = baseHandler.loadDolData(BaseHandler.GAC1_CODOL, param);
 		String arpc = issuerDao.requestArpc(pan, panSerial, gAC1_DDOL, aip, atc, iad, arqc);
-		logger.debug("online validate successed!");
+		logger.debug("Online processing OK!");
 
 		genWordUtil.add("验证ARQC中使用的数据");
 		genWordUtil.add("ARQC:" + arqc);

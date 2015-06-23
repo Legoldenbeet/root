@@ -98,7 +98,7 @@ public class PBOCHandler extends BaseHandler {
 			HashMap<String, String> dataMap = new HashMap<String, String>();
 			dataMap = PbocProcess.getData(cardRecordData, apduHandler);
 			logger.debug("================================Processing Restrictions=============================");
-			if (PbocProcess.processingRestrictions(cardRecordData, logger)) {
+			if (PbocProcess.processingRestrictions(cardRecordData,param,logger)) {
 				logger.debug("Processing Restrictions OK.");
 			} else {
 				logger.error("Processing Restrictions Fail!");
