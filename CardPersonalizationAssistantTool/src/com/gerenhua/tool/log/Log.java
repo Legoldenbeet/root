@@ -76,7 +76,7 @@ public class Log {
 			SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
 
 			if (command == LOG_COLOR_BLACK) {
-				jTextPane.setText("");
+//				jTextPane.setText("");
 				StyleConstants.setForeground(simpleAttributeSet, Color.BLACK);
 			}else if (command == LOG_COLOR_GREEN) {
 				StyleConstants.setForeground(simpleAttributeSet, Color.GREEN);
