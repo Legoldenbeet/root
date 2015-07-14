@@ -285,6 +285,10 @@ public class PbocProcess extends BaseHandler {
 	 * @param logger
 	 * @return
 	 */
+//	应用版本号检查
+//	 应用用途控制检查
+//	 生效日期检查
+//	 失效日期检查
 	public static boolean processingRestrictions(HashMap<String, String> cardRecordData,HashMap<String, String> param,Log logger) {
 		boolean processResult = false;
 		logger.debug("Card Application Version Number [9F08]:" + cardRecordData.get("9F08"));
