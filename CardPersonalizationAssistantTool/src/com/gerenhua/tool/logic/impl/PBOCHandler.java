@@ -98,7 +98,7 @@ public class PBOCHandler extends BaseHandler {
 			HashMap<String, String> dataMap = new HashMap<String, String>();
 			dataMap = PbocProcess.getData(cardRecordData, apduHandler);
 			logger.debug("================================Processing Restrictions=============================");
-			if (PbocProcess.processingRestrictions(cardRecordData,param,logger)) {
+			if (PbocProcess.processingRestrictions(cardRecordData, param, logger)) {
 				logger.debug("Processing Restrictions OK.");
 			} else {
 				logger.error("Processing Restrictions Fail!");
@@ -110,16 +110,22 @@ public class PBOCHandler extends BaseHandler {
 				logger.error("Cardholder Verification Fail!");
 			}
 			logger.debug("================================Terminal Risk Management=============================");
-//			<<终端风险管理>>
-//			 终端异常文件检查
-//			 商户强制联机
-//			 最低限额检查
-//			 交易日志
-//			 随机选择
-//			 频度检查 可选（EMV）
-//			 新卡检查 可选（JR/T 0025借记/贷记）
+			// <<终端风险管理>>
+			//  终端异常文件检查
+			//  商户强制联机
+			//  最低限额检查
+			//  交易日志
+			//  随机选择
+			//  频度检查 可选（EMV）
+			//  新卡检查 可选（JR/T 0025借记/贷记）
+			if (PbocProcess.terminalRiskManagement()) {
+				logger.debug("Terminal Risk Management OK.");
+			}
 			logger.debug("================================Terminal Action Analysis=============================");
-//			IAC可选（EMV）IAC需要（JR/T 0025借记/贷记）
+			// IAC可选（EMV）IAC需要（JR/T 0025借记/贷记）
+			if (PbocProcess.terminalActionAnalysis()) {
+				logger.debug("Terminal Action Analysis.");
+			}
 			// Generate arqc
 			logger.debug("==========================Card Action Analysis(Generate AC1)================================");
 			result = PbocProcess.cardActionAnalysis((BaseHandler) this, cardRecordData, param, apduHandler, genWordUtil);

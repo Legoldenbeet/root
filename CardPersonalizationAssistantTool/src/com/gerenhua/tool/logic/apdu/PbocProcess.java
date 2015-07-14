@@ -285,11 +285,11 @@ public class PbocProcess extends BaseHandler {
 	 * @param logger
 	 * @return
 	 */
-//	应用版本号检查
-//	 应用用途控制检查
-//	 生效日期检查
-//	 失效日期检查
-	public static boolean processingRestrictions(HashMap<String, String> cardRecordData,HashMap<String, String> param,Log logger) {
+	// 应用版本号检查
+	//  应用用途控制检查
+	//  生效日期检查
+	//  失效日期检查
+	public static boolean processingRestrictions(HashMap<String, String> cardRecordData, HashMap<String, String> param, Log logger) {
 		boolean processResult = false;
 		logger.debug("Card Application Version Number [9F08]:" + cardRecordData.get("9F08"));
 		logger.debug("Issuer Country Code [5F28] :" + cardRecordData.get("5F28"));
@@ -332,8 +332,8 @@ public class PbocProcess extends BaseHandler {
 		if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
 			// 持卡人验证方法
 			logger.debug("CVM LIST:");
-			String chooseCVM=Terminal.parse8E(cardRecordData.get("8E"));
-			logger.debug("CVM to be taken:\n"+chooseCVM);
+			String chooseCVM = Terminal.parse8E(cardRecordData.get("8E"));
+			logger.debug("CVM to be taken:\n" + chooseCVM);
 			if (CommonHelper.supportOfflinePin(cardRecordData.get("8E"))) {
 				logger.debug("=================================Verify PIN===========================");
 				String pin = JOptionPane.showInputDialog("请输入PIN：");
@@ -355,6 +355,24 @@ public class PbocProcess extends BaseHandler {
 			}
 		}
 		processResult = true;
+		return processResult;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean terminalRiskManagement() {
+		boolean processResult = true;
+		return processResult;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public static boolean terminalActionAnalysis() {
+		boolean processResult = true;
 		return processResult;
 	}
 
