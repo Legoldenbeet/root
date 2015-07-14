@@ -51,7 +51,7 @@ public class PbocProcess extends BaseHandler {
 	 * @param genWordUtil
 	 * @return
 	 */
-	public static String applicationSelection(String paySysDir,CommonAPDU apduHandler, Log logger, GenReportUtil genWordUtil) {
+	public static String applicationSelection(String paySysDir, CommonAPDU apduHandler, Log logger, GenReportUtil genWordUtil) {
 		HashMap<String, String> result = apduHandler.select(paySysDir);
 		if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
 			logger.error("select PSE error,card return:" + result.get("sw"));
@@ -61,7 +61,7 @@ public class PbocProcess extends BaseHandler {
 		}
 
 		// 选择pse报告内容
-		genWordUtil.add(result.get("apdu"), "Select "+WDStringUtil.hex2asc(paySysDir), result.get("res"), result);
+		genWordUtil.add(result.get("apdu"), "Select " + WDStringUtil.hex2asc(paySysDir), result.get("res"), result);
 
 		if (WDAssert.isEmpty(result.get("88"))) {
 			logger.error("88 is null.");
@@ -388,7 +388,7 @@ public class PbocProcess extends BaseHandler {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HashMap<String, String> cardActionAnalysis(BaseHandler baseHandler, HashMap<String, String> cardRecordData, HashMap<String, String> param, CommonAPDU apduHandler, GenReportUtil genWordUtil) throws Exception {
+	public static HashMap<String, String> cardActionAnalysis(BaseHandler baseHandler, HashMap<String, String> cardRecordData, HashMap<String, String> param,String requestType, CommonAPDU apduHandler, GenReportUtil genWordUtil) throws Exception {
 		// 交易日期 9A 3
 		// 交易时间9F21 3
 		// 授权金额9F02 6
@@ -409,7 +409,7 @@ public class PbocProcess extends BaseHandler {
 		// 11=RFU
 		// 生成密文的数据源：第五部分附录D： 授权金额
 		// #######################################################
-		result = apduHandler.generateAC(cdol1Data, AbstractAPDU.P1_ARQC);
+		result = apduHandler.generateAC(cdol1Data, requestType);
 
 		genWordUtil.add(result.get("apdu"), "Generate AC1", result.get("res"), result);
 		genWordUtil.add("CDOL1 Data:" + cdol1Data);
@@ -485,5 +485,39 @@ public class PbocProcess extends BaseHandler {
 		genWordUtil.add(result.get("apdu"), "Completion(Generate AC2)", result.get("res"), result);
 		genWordUtil.add("CDOL2 Data:" + cdol2Data);
 		return result;
+	}
+
+	/**
+	 * 
+	 * @param apduHandler
+	 * @param pan
+	 * @param panSerial
+	 * @param atc
+	 * @param arqc
+	 * @param balance
+	 * @param tradeMount
+	 * @param genWordUtil
+	 * @return
+	 * @throws Exception
+	 */
+	public static boolean putData(CommonAPDU apduHandler, String pan, String panSerial, String atc, String arqc, String balance, int tradeMount, GenReportUtil genWordUtil) throws Exception {
+		String[] script = issuerDao.generateLoadIssuerScript(pan, panSerial, atc, arqc, balance, tradeMount);
+		String issuerScript = script[0];
+		// 交易成功
+		result = apduHandler.putData(issuerScript);
+		// PUT DATA 报告
+		genWordUtil.add(result.get("apdu"), "PUT DATA", result.get("res"), result);
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param apduHandler
+	 * @param genWordUtil
+	 * @throws Exception
+	 */
+	public static void showBlance(CommonAPDU apduHandler, GenReportUtil genWordUtil) throws Exception {
+		result = apduHandler.getData("9F79");
+		genWordUtil.add("电子现金账户余额：:" + result.get("9F79"));
 	}
 }

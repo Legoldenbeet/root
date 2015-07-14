@@ -66,6 +66,7 @@ public class AtmPanel extends JPanel {
 		add(enterMoneyLabel);
 
 		moneyTextField = new JTextField();
+		moneyTextField.setText("10");
 		moneyTextField.setBounds(46, 154, 60, 23);
 		add(moneyTextField);
 

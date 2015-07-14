@@ -15,40 +15,38 @@ import com.gerenhua.tool.utils.PropertiesManager;
 import com.gerenhua.tool.utils.reportutil.GenReportUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
-public class PBOCHandler extends BaseHandler {
+public class ECloadHander extends BaseHandler {
 	private static Log logger = new Log();
 	private GenReportUtil genWordUtil = null;
 	private PropertiesManager pm = new PropertiesManager();
 
-	public PBOCHandler(JTextPane textPane) {
+	public ECloadHander(JTextPane textPane) {
 		logger.setLogArea(textPane);
 	}
 
 	/**
-	 * pboc交易处理流程 LIYAXIAO 2015-6-20,上午10:28:55
 	 * 
 	 * @param tradeMount
 	 * @param readerName
 	 * @return
 	 */
-	public boolean doTrade(int tradeMount, String readerName) {
+	public boolean trade(int tradeMount, String readerName) {
 		// 初始化交易参数，如授权金额，pin等
 		HashMap<String, String> param = new HashMap<String, String>();
 		String termRandom = WDStringUtil.getRandomHexString(8);
 		param.put("9F02", WDStringUtil.paddingHeadZero(String.valueOf(tradeMount), 12));
-		// param.put("9C","40");
-		param.put("9F7A", "00");
 		param.put("9F37", termRandom);
 		Date dateTime = new Date();
 		param.put("9A", getFormatDate(dateTime, Constants.FORMAT_SHORT_DATE));
 		param.put("9F21", getFormatDate(dateTime, Constants.FORMAT_TIME));
-		NDC.push("[PBOC]");
-		logger.debug("PBOC trade start...", 0);
+		NDC.push("[E cash load]");
+		logger.debug("ECload start...", 0);
+
 		genWordUtil = new GenReportUtil();
 
-		genWordUtil.open(pm.getString("mv.tradepanel.lend"));
-		genWordUtil.addFileTitle("PBOC交易检测报告");
-		genWordUtil.addTransactionName("PBOC");
+		genWordUtil.open(pm.getString("mv.tradepanel.earmark"));
+		genWordUtil.addFileTitle("圈存交易检测报告");
+		genWordUtil.addTransactionName("电子现金圈存");
 
 		try {
 			// 为了保证卡片和读卡器的正确性，交易开始前务必先复位
@@ -98,6 +96,29 @@ public class PBOCHandler extends BaseHandler {
 			logger.debug("================================GET DATA=============================");
 			HashMap<String, String> dataMap = new HashMap<String, String>();
 			dataMap = PbocProcess.getData(cardRecordData, apduHandler);
+			result = apduHandler.getData("9F77");
+			String limit = result.get("9F77");
+			result = apduHandler.getData("9F78");
+			String singleLimit = result.get("9F78");
+			result = apduHandler.getData("9F79");
+			String balance = result.get("9F79");
+			if (tradeMount > Integer.parseInt(singleLimit)) {
+				logger.error("ElectronicCashHandler ECLoad  single tradeMount is larger than the single top limit!");
+				genWordUtil.add("交易金额大于单笔交易金额上限");
+				// genWordUtil.close();
+				return false;
+			}
+			if (tradeMount + Integer.parseInt(balance) > Integer.parseInt(limit)) {
+				logger.error("balance plus trademount is larger than the top limit");
+				genWordUtil.add("现有余额与交易金额之和大于电子现金余额上限");
+				// genWordUtil.close();
+				return false;
+			}
+			genWordUtil.add("PDOL Data:" + pdol);
+			genWordUtil.add("电子现金账户上限:" + limit);
+			genWordUtil.add("单笔交易上限:" + singleLimit);
+			genWordUtil.add("电子现金账户余额:" + balance);
+
 			logger.debug("================================Processing Restrictions=============================");
 			if (PbocProcess.processingRestrictions(cardRecordData, param, logger)) {
 				logger.debug("Processing Restrictions OK.");
@@ -125,11 +146,12 @@ public class PBOCHandler extends BaseHandler {
 			logger.debug("================================Terminal Action Analysis=============================");
 			// IAC可选（EMV）IAC需要（JR/T 0025借记/贷记）
 			if (PbocProcess.terminalActionAnalysis()) {
-				logger.debug("Terminal Action Analysis.");
+				logger.debug("Terminal Action Analysis OK.");
 			}
+
 			// Generate arqc
 			logger.debug("==========================Card Action Analysis(Generate AC1)================================");
-			result = PbocProcess.cardActionAnalysis((BaseHandler) this, cardRecordData, param, AbstractAPDU.P1_ARQC, apduHandler, genWordUtil);
+			result = PbocProcess.cardActionAnalysis((BaseHandler) this, cardRecordData, param,AbstractAPDU.P1_ARQC, apduHandler, genWordUtil);
 			String arqc = result.get("9F26");
 			String atc = result.get("9F36");
 			String iad = result.get("9F10");
@@ -173,19 +195,25 @@ public class PBOCHandler extends BaseHandler {
 			// Generate tc
 			logger.debug("===========================Completion(Generate AC2)===========================");
 			result = PbocProcess.completion((BaseHandler) this, cardRecordData, param, apduHandler, genWordUtil);
-			logger.debug("========================PBOC trade Approved!=======================");
-			genWordUtil.add("PBOC交易完成!");
+			logger.debug("=================================Put Data=================================");
+			if (PbocProcess.putData(apduHandler, pan, panSerial, atc, arqc, balance, tradeMount, genWordUtil)) {
+				logger.debug("Put Data success.");
+			}
+			logger.debug("=================================Show Blance=================================");
+			PbocProcess.showBlance(apduHandler, genWordUtil);
+			logger.debug("=================================ECload finished=================================");
+			genWordUtil.add("ECload finished.");
 			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			genWordUtil.add(e.getMessage());
 			return false;
 		} finally {
+			// 关闭文档
 			genWordUtil.close();
 			NDC.pop();
 			NDC.remove();
 			// apduHandler.close();
 		}
-
 	}
 }

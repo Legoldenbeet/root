@@ -37,7 +37,7 @@ public class TradeThread implements Runnable {
 			return;
 		}
 		// 交易金额
-		int tradeMount = Integer.parseInt(money);
+		int tradeMount = Integer.parseInt(money) * 100;
 
 		if (!Terminal.isSupportTheFunction(TerminalSupportType.SUPPORTDDA)) {
 			JOptionPane.showMessageDialog(null, "终端不支持DDA验证,交易无法进行!");
@@ -55,11 +55,11 @@ public class TradeThread implements Runnable {
 				PBOCHandler pBOCHandler = new PBOCHandler(textPane);
 				pBOCHandler.doTrade(tradeMount, readerName);
 			} else if ("电子现金".equals(tradeType)) {
-				ElectronicCashHandler electronicCashHandler = new ElectronicCashHandler(textPane);
-				electronicCashHandler.ECPurcharse(tradeMount, readerName);
+				ECconsumeHander eCconsumeHander = new ECconsumeHander(textPane);
+				eCconsumeHander.trade(tradeMount, readerName);
 			} else if ("圈存".equals(tradeType)) {
-				ElectronicCashHandler electronicCashHandler = new ElectronicCashHandler(textPane);
-				electronicCashHandler.ECLoad(tradeMount, readerName);
+				ECloadHander eCloadHander = new ECloadHander(textPane);
+				eCloadHander.trade(tradeMount, readerName);
 			}
 		}
 
