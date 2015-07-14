@@ -116,8 +116,8 @@ public class PBOCHandler extends BaseHandler {
 //			 最低限额检查
 //			 交易日志
 //			 随机选择
-//			 频度检查
-//			 新卡检查
+//			 频度检查 可选（EMV）
+//			 新卡检查 可选（JR/T 0025借记/贷记）
 			logger.debug("================================Terminal Action Analysis=============================");
 //			IAC可选（EMV）IAC需要（JR/T 0025借记/贷记）
 			// Generate arqc
