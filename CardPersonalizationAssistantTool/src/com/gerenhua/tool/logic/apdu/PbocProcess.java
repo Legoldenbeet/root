@@ -50,8 +50,8 @@ public class PbocProcess extends BaseHandler {
 	 * @param genWordUtil
 	 * @return
 	 */
-	public static String applicationSelection(CommonAPDU apduHandler, Log logger, GenReportUtil genWordUtil) {
-		HashMap<String, String> result = apduHandler.select(Constants.PSE);
+	public static String applicationSelection(String paySysDir,CommonAPDU apduHandler, Log logger, GenReportUtil genWordUtil) {
+		HashMap<String, String> result = apduHandler.select(paySysDir);
 		if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
 			logger.error("select PSE error,card return:" + result.get("sw"));
 			genWordUtil.add("选择PSE出错");
@@ -60,7 +60,7 @@ public class PbocProcess extends BaseHandler {
 		}
 
 		// 选择pse报告内容
-		genWordUtil.add(result.get("apdu"), "Select PSE", result.get("res"), result);
+		genWordUtil.add(result.get("apdu"), "Select "+paySysDir, result.get("res"), result);
 
 		if (WDAssert.isEmpty(result.get("88"))) {
 			logger.error("88 is null.");

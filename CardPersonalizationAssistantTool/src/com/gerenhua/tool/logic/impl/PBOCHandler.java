@@ -55,7 +55,7 @@ public class PBOCHandler extends BaseHandler {
 			HashMap<String, String> result;
 			PbocProcess.initialization(apduHandler, logger, genWordUtil);
 			logger.debug("============================Application Selection=================================");
-			String aid = PbocProcess.applicationSelection(apduHandler, logger, genWordUtil);
+			String aid = PbocProcess.applicationSelection(Constants.PSE, apduHandler, logger, genWordUtil);
 			logger.debug("===============================Final Selection=================================");
 			result = PbocProcess.finalSelection(aid, apduHandler, logger, genWordUtil);
 			String pdol = result.get("9F38");
