@@ -18,6 +18,7 @@ import com.gerenhua.tool.utils.Terminal;
 import com.gerenhua.tool.utils.reportutil.APDUSendANDRes;
 import com.gerenhua.tool.utils.reportutil.GenReportUtil;
 import com.watchdata.commons.lang.WDAssert;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class PbocProcess extends BaseHandler {
 	public static HashMap<String, String> result;
@@ -60,7 +61,7 @@ public class PbocProcess extends BaseHandler {
 		}
 
 		// 选择pse报告内容
-		genWordUtil.add(result.get("apdu"), "Select "+paySysDir, result.get("res"), result);
+		genWordUtil.add(result.get("apdu"), "Select "+WDStringUtil.hex2asc(paySysDir), result.get("res"), result);
 
 		if (WDAssert.isEmpty(result.get("88"))) {
 			logger.error("88 is null.");
