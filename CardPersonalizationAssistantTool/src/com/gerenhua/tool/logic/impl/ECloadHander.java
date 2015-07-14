@@ -103,7 +103,7 @@ public class ECloadHander extends BaseHandler {
 			result = apduHandler.getData("9F79");
 			String balance = result.get("9F79");
 			if (tradeMount > Integer.parseInt(singleLimit)) {
-				logger.error("ElectronicCashHandler ECLoad  single tradeMount is larger than the single top limit!");
+				logger.error("ECLoad  single tradeMount[9F02] is larger than the single top limit[9F77]!");
 				genWordUtil.add("交易金额大于单笔交易金额上限");
 				// genWordUtil.close();
 				return false;
