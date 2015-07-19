@@ -11,15 +11,12 @@ import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.AbstractAPDU;
 import com.gerenhua.tool.logic.apdu.PbocProcess;
-import com.gerenhua.tool.logic.issuer.IIssuerDao;
-import com.gerenhua.tool.logic.issuer.local.IssuerDaoImpl;
 import com.gerenhua.tool.utils.PropertiesManager;
 import com.gerenhua.tool.utils.reportutil.GenReportUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
 public class ECconsumeHander extends BaseHandler {
 	private static Log logger = new Log();
-	private IIssuerDao issuerDao = new IssuerDaoImpl();
 	private GenReportUtil genWordUtil = null;
 	private PropertiesManager pm = new PropertiesManager();
 
