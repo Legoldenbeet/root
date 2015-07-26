@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -119,20 +121,14 @@ public class Application extends JFrame {
 		initContentPane();
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		double screenWidth = d.getWidth();
-		double screenHeight = d.getHeight();
-
-//		if (screenWidth > 1024) {
-//			screenWidth = 1024;
-//		} else {
-//			screenWidth = screenWidth - 50;
-//		}
-//		if (screenHeight > 768) {
-//			screenHeight = 768;
-//		} else {
-//			screenHeight = screenHeight - 50;
-//		}
-		setSize((int) screenWidth, (int) screenHeight);
+		Rectangle bounds=new Rectangle(d);
+		Insets insets=Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+		
+		bounds.x=insets.left;
+		bounds.y=insets.top;
+		bounds.width-=insets.left+insets.right;
+		bounds.height-=insets.top+insets.bottom;
+		setBounds(bounds);
 
 		setLocationRelativeTo(null);
 		setResizable(true);
