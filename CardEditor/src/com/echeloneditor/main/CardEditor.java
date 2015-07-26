@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
@@ -136,6 +138,16 @@ public class CardEditor {
 					SwingUtils.updateUI();
 					// 初始化窗体
 					CardEditor cardEditor = new CardEditor();
+					Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+					Rectangle bounds=new Rectangle(d);
+					Insets insets=Toolkit.getDefaultToolkit().getScreenInsets(frmEcheloneditor.getGraphicsConfiguration());
+					
+					bounds.x=insets.left;
+					bounds.y=insets.top;
+					bounds.width-=insets.left+insets.right;
+					bounds.height-=insets.top+insets.bottom;
+					frmEcheloneditor.setBounds(bounds);
+					
 					// 框体屏幕居中显示
 					frmEcheloneditor.setLocationRelativeTo(null);
 					// 显示窗体
