@@ -207,7 +207,7 @@ public class AtmPanel extends JPanel {
 					if (ret == JOptionPane.YES_OPTION) {
 						// word
 						try {
-							Runtime.getRuntime().exec("cmd /c start winword \"\" \"" + filePath + "\"");
+							Runtime.getRuntime().exec("cmd /c start \"\" \"" + filePath + "\"");
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							JOptionPane.showMessageDialog(null, "打开文件失败，位置：" + filePath + "请手动操作！");
