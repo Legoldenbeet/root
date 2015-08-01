@@ -1,9 +1,9 @@
 package com.gerenhua.tool.logic.impl;
 
-import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
+import com.gerenhua.tool.panel.AtmPanel;
 import com.gerenhua.tool.panel.AtmPanel.TerminalSupportType;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.PropertiesManager;
@@ -14,13 +14,11 @@ public class TradeThread implements Runnable {
 	public String money;
 	public JTextPane textPane;
 	public String tradeType;
-	public JButton reportButton;
 	private PropertiesManager pm = new PropertiesManager();
 
-	public TradeThread(String money, String tradeType, JButton reportButton, JTextPane textPane) {
+	public TradeThread(String money, String tradeType, JTextPane textPane) {
 		this.money = money;
 		this.tradeType = tradeType;
-		this.reportButton = reportButton;
 		this.textPane = textPane;
 	}
 
@@ -62,7 +60,7 @@ public class TradeThread implements Runnable {
 				eCloadHander.trade(tradeMount, readerName);
 			}
 		}
-
-		reportButton.setEnabled(true);
+		AtmPanel.tableDataDisp();
+//		reportButton.setEnabled(true);
 	}
 }
