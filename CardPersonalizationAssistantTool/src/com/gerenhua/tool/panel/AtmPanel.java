@@ -166,7 +166,7 @@ public class AtmPanel extends JPanel {
 		});
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 213, 100, 200);
+		scrollPane.setBounds(6, 187, 100, 300);
 		add(scrollPane);
 
 		table = new JTable();
