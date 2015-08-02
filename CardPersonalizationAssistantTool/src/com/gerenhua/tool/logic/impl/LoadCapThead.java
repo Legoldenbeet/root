@@ -139,7 +139,7 @@ public class LoadCapThead extends Thread {
 		StringBuilder sb = new StringBuilder();
 		sb.append(desc).append("\n");
 		if (isJTS) {
-			sb.append("    jts.senDisplay('").append(apdu).append("SW9000").append("');").append("\n");
+			sb.append("    jts.GP_senDisplay('").append(apdu).append("SW9000").append("');").append("\n");
 		}else {
 			sb.append(apdu).append("SW9000").append("\n");
 		}

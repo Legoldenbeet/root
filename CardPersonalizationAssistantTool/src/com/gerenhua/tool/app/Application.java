@@ -121,13 +121,13 @@ public class Application extends JFrame {
 		initContentPane();
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		Rectangle bounds=new Rectangle(d);
-		Insets insets=Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
-		
-		bounds.x=insets.left;
-		bounds.y=insets.top;
-		bounds.width-=insets.left+insets.right;
-		bounds.height-=insets.top+insets.bottom;
+		Rectangle bounds = new Rectangle(d);
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+
+		bounds.x = insets.left;
+		bounds.y = insets.top;
+		bounds.width -= insets.left + insets.right;
+		bounds.height -= insets.top + insets.bottom;
 		setBounds(bounds);
 
 		setLocationRelativeTo(null);

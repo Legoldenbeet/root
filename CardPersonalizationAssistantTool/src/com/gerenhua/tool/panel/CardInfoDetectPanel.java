@@ -12,8 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -43,7 +41,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import com.gerenhua.tool.app.RightPanel;
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.CommonHelper;
@@ -58,7 +55,7 @@ import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.kms.kmsi.IKms;
 
-public class CardInfoDetectPanel extends JPanel implements Observer {
+public class CardInfoDetectPanel extends JPanel {
 	/**
 	 * 
 	 */
@@ -68,6 +65,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static JTextField textField_2;
 	private JTextField textField_3;
 	private static JTree tree;
+	public static JTree tree_1;
 	private static JTextField textField_4;
 	private static JTextField textField_5;
 	public static CommonAPDU commonAPDU;
@@ -81,10 +79,13 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 	private static JMenuItem mntmChangeStatus;
 	private static JMenuItem mntmLoad;
 	private static JMenuItem mntmdeleteObj;
-	// private static JMenuItem mntmCardStatus;
 	private static JMenuItem mntmBuildScripts;
 	private static JMenuItem mntmBuildScriptsJTS;
 	private static JMenuItem mntmInstallApplet;
+
+	private static JMenuItem mntmOpen;
+	private static JMenuItem mntmRefresh;
+	public static JSplitPane cardinfoSplitPane;
 
 	private static Thread runPrgThread = null;
 	public static RunPrgThread rpt = null;
@@ -115,58 +116,15 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			}
 		});
 
-		// mntmCardStatus = new JMenuItem("CARD STATUS");
-		// mntmCardStatus.addActionListener(new ActionListener() {
-		// public void actionPerformed(ActionEvent arg0) {
-		// log.setLogArea(textPane_1);
-		// RightPanel.configPanel.setVisible(true);
-		// SwingUtilities.invokeLater(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// // TODO Auto-generated method stub
-		// RightPanel.configPanel.initPanel();
-		// }
-		// });
-		//
-		// Application.rightPanel.add(RightPanel.configPanel, BorderLayout.CENTER);
-		// RightPanel.cardInfoDetectPanel.setVisible(false);
-		// RightPanel.facePanel.setVisible(false);
-		// RightPanel.testDataConfigPanel.setVisible(false);
-		// RightPanel.terminalTypeConfigPanel.setVisible(false);
-		// RightPanel.terminalPerformanceConfigPanel.setVisible(false);
-		// RightPanel.terminalLimitConfigPanel.setVisible(false);
-		// RightPanel.issuerKeyConfigPanel.setVisible(false);
-		// RightPanel.caPublicKeyConfigPanel.setVisible(false);
-		// RightPanel.aidConfigPanel.setVisible(false);
-		// RightPanel.logoPanel.setVisible(false);
-		// RightPanel.tradePanel.setVisible(false);
-		// RightPanel.cardReaderPanel.setVisible(false);
-		// }
-		// });
-
 		mntmLoad = new JMenuItem("LOAD CAP");
 		mntmLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane_1);
-				JFileChooser jFileChooser = null;
-				String capFile = Config.getValue("CardInfo", "currentCap");
-				if (WDAssert.isNotEmpty(capFile)) {
-					jFileChooser = new JFileChooser(capFile);
-				} else {
-					jFileChooser = new JFileChooser("./resources/cap");
-				}
-				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
-				jFileChooser.setFileFilter(fileNameExtensionFilter);
-				jFileChooser.setMultiSelectionEnabled(true);
-
-				int i = jFileChooser.showOpenDialog(null);
-				if (i == JFileChooser.APPROVE_OPTION) {
-					File[] file = jFileChooser.getSelectedFiles();
-					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane_1);
-					loadCapThead.setRealCard(true);
-					loadCapThead.start();
-				}
+				DefaultMutableTreeNode selNode = (DefaultMutableTreeNode) tree_1.getLastSelectedPathComponent();
+				File[] file = { new File(Config.getValue("CardInfo", "currentCap") + "/" + selNode.toString()) };
+				LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane_1);
+				loadCapThead.setRealCard(true);
+				loadCapThead.start();
 			}
 		});
 
@@ -176,26 +134,12 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane);
-				JFileChooser jFileChooser = null;
-				String capFile = Config.getValue("CardInfo", "currentCap");
-				if (WDAssert.isNotEmpty(capFile)) {
-					jFileChooser = new JFileChooser(capFile);
-				} else {
-					jFileChooser = new JFileChooser("./resources/cap");
-				}
-
-				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
-				jFileChooser.setFileFilter(fileNameExtensionFilter);
-				jFileChooser.setMultiSelectionEnabled(true);
-
-				int i = jFileChooser.showOpenDialog(null);
-				if (i == JFileChooser.APPROVE_OPTION) {
-					File[] file = jFileChooser.getSelectedFiles();
-					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
-					loadCapThead.setRealCard(false);
-					loadCapThead.setJTS(false);
-					loadCapThead.start();
-				}
+				DefaultMutableTreeNode selNode = (DefaultMutableTreeNode) tree_1.getLastSelectedPathComponent();
+				File[] file = { new File(Config.getValue("CardInfo", "currentCap") + "/" + selNode.toString()) };
+				LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
+				loadCapThead.setRealCard(false);
+				loadCapThead.setJTS(false);
+				loadCapThead.start();
 				log.setLogArea(textPane_1);
 			}
 		});
@@ -205,26 +149,12 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				log.setLogArea(textPane);
-				JFileChooser jFileChooser = null;
-				String capFile = Config.getValue("CardInfo", "currentCap");
-				if (WDAssert.isNotEmpty(capFile)) {
-					jFileChooser = new JFileChooser(capFile);
-				} else {
-					jFileChooser = new JFileChooser("./resources/cap");
-				}
-
-				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("cap package", "cap");
-				jFileChooser.setFileFilter(fileNameExtensionFilter);
-				jFileChooser.setMultiSelectionEnabled(true);
-
-				int i = jFileChooser.showOpenDialog(null);
-				if (i == JFileChooser.APPROVE_OPTION) {
-					File[] file = jFileChooser.getSelectedFiles();
-					LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
-					loadCapThead.setRealCard(false);
-					loadCapThead.setJTS(true);
-					loadCapThead.start();
-				}
+				DefaultMutableTreeNode selNode = (DefaultMutableTreeNode) tree_1.getLastSelectedPathComponent();
+				File[] file = { new File(Config.getValue("CardInfo", "currentCap") + "/" + selNode.toString()) };
+				LoadCapThead loadCapThead = new LoadCapThead(file, commonAPDU, textPane);
+				loadCapThead.setRealCard(false);
+				loadCapThead.setJTS(true);
+				loadCapThead.start();
 				log.setLogArea(textPane_1);
 			}
 		});
@@ -253,6 +183,33 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 				deleteObjThread.start();
 			}
 		});
+		mntmOpen = new JMenuItem("添加");
+		mntmOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser jFileChooser = null;
+				String capFile = Config.getValue("CardInfo", "currentCap");
+				if (WDAssert.isNotEmpty(capFile)) {
+					jFileChooser = new JFileChooser(capFile);
+				} else {
+					jFileChooser = new JFileChooser("./resources/cap/");
+				}
+
+				jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				jFileChooser.setMultiSelectionEnabled(false);
+
+				int i = jFileChooser.showOpenDialog(null);
+				if (i == JFileChooser.APPROVE_OPTION) {
+					File file = jFileChooser.getSelectedFile();
+					showCapList(tree_1, file);
+				}
+			}
+		});
+		mntmRefresh = new JMenuItem("刷新");
+		mntmRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showCapList(tree_1,new File(Config.getValue("CardInfo", "currentCap")));
+			}
+		});
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel panel = new JPanel();
@@ -260,6 +217,8 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		panel.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		panel.add(scrollPane);
 
 		tree = new JTree();
@@ -379,13 +338,35 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		panel_3.add(lblKmc);
 		lblKmc.setHorizontalAlignment(SwingConstants.RIGHT);
 
+		JPanel capPanel = new JPanel();
+		capPanel.setBorder(new TitledBorder(null, "CapInfo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		capPanel.setLayout(new BorderLayout(0, 0));
+		cardinfoSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		cardinfoSplitPane.setResizeWeight(0.85);
+		cardinfoSplitPane.setLeftComponent(panel);
+		cardinfoSplitPane.setRightComponent(capPanel);
+
+		JScrollPane scrollPane_3 = new JScrollPane();
+		scrollPane_3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_3.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		capPanel.add(scrollPane_3, BorderLayout.CENTER);
+
+		tree_1 = new JTree();
+		tree_1.setVisibleRowCount(0);
+		tree_1.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("CapInfo") {
+			{
+			}
+		}));
+		addPopup(tree_1, popupMenu);
+		scrollPane_3.setViewportView(tree_1);
+
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setEnabled(false);
 		splitPane.setResizeWeight(0.5);
 		splitPane.setLeftComponent(panel_3);
-		splitPane.setRightComponent(panel);
+		splitPane.setRightComponent(cardinfoSplitPane);
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "GP\u6307\u4EE4", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
+		panel_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "GP APDU", TitledBorder.LEADING, TitledBorder.TOP, null, Color.BLACK));
 		panel_1.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -710,7 +691,6 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 
 			}
 		});
-
 	}
 
 	private void addPopup(Component component, final JPopupMenu popup) {
@@ -727,7 +707,7 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 						if (WDAssert.isEmpty(nodeName)) {
 							return;
 						}
-						if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo")) {
+						if (node.isLeaf() && !nodeName.equalsIgnoreCase("CardInfo") && !nodeName.equalsIgnoreCase("CapInfo")) {
 							String parentNodeName = node.getParent().toString().trim();
 							String grandFather = null;
 							if (node.getParent().getParent() != null) {
@@ -756,6 +736,11 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 							setStatusDialog(false, false);
 							updateStatusDialog.isISD = true;
 							showMenu(e);
+						} else if (nodeName.equalsIgnoreCase("CapInfo")) {
+							popup.removeAll();
+							popup.add(mntmOpen);
+							popup.add(mntmRefresh);
+							showMenu(e);
 						} else if (nodeName.equalsIgnoreCase("Application Instances")) {
 							popup.removeAll();
 							Collection<String> templates = Config.getItems("Personalization_Template");
@@ -771,7 +756,8 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 								addMenu(item_tmp, e);
 							}
 							showMenu(e);
-						} else if (nodeName.equalsIgnoreCase("Load Files")) {
+						} // else if (nodeName.equalsIgnoreCase("Load Files")) {
+						else if (nodeName.endsWith(".cap")) {
 							popup.removeAll();
 							addMenu(mntmLoad, e);
 							addMenu(mntmBuildScripts, e);
@@ -820,7 +806,6 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		if (rpt == null) {
 			rpt = new RunPrgThread(textPane, commonAPDU);
 			runPrgThread = new Thread(rpt);
-			rpt.addObserver(RightPanel.cardInfoDetectPanel);
 			runPrgThread.start();
 		}
 	}
@@ -840,17 +825,20 @@ public class CardInfoDetectPanel extends JPanel implements Observer {
 		updateStatusDialog.setVisible(visible);
 	}
 
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		String temp = arg1.toString();
-		String[] tmp = temp.split("\\|");
-		int pos1 = Integer.parseInt(tmp[0]);
-		int pos2 = Integer.parseInt(tmp[1]);
-		// textPane.setCaretPosition(pos2);
+	public static void showCapList(JTree tree, File file) {
+		Config.setValue("CardInfo", "currentCap", file.getPath());
 
-		// SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
-		// StyleConstants.setBackground(simpleAttributeSet, Color.RED);
-		// StyledDocument doc = textPane.getStyledDocument();
-		// doc.setCharacterAttributes(pos1, pos2, simpleAttributeSet, false);
+		DefaultTreeModel dtm = (DefaultTreeModel) tree_1.getModel();
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
+		root.removeAllChildren();
+		DefaultMutableTreeNode capPathNode = new DefaultMutableTreeNode(file.getPath());
+		root.add(capPathNode);
+
+		for (File eFile : file.listFiles()) {
+			DefaultMutableTreeNode eFilePathNode = new DefaultMutableTreeNode(eFile.getName());
+			capPathNode.add(eFilePathNode);
+		}
+
+		CardInfoThread.expandTree(tree, true);
 	}
 }
