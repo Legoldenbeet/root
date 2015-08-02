@@ -178,6 +178,10 @@ public class AtmPanel extends JPanel {
 				if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e)) {
 					popupMenu.show(table, e.getX(), e.getY());
 				}
+				if (e.getClickCount()==2&&SwingUtilities.isLeftMouseButton(e)) {
+					int row=table.getSelectedRow();
+					openDoc(reportDir+table.getValueAt(row, 0).toString());
+				}
 			}
 
 			@Override
@@ -205,15 +209,7 @@ public class AtmPanel extends JPanel {
 					Object[] options = { "打开", "保存" };
 					int ret = JOptionPane.showOptionDialog(null, "交易检测报告", "提示框", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 					if (ret == JOptionPane.YES_OPTION) {
-						// word
-						try {
-							Runtime.getRuntime().exec("cmd /c start \"\" \"" + filePath + "\"");
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							JOptionPane.showMessageDialog(null, "打开文件失败，位置：" + filePath + "请手动操作！");
-							return;
-						}
-
+						openDoc(filePath);
 					} else if (ret == JOptionPane.NO_OPTION) {
 						JFileChooser fileChooser = new JFileChooser();
 						fileChooser.setCurrentDirectory(new File("."));
@@ -294,6 +290,16 @@ public class AtmPanel extends JPanel {
 		table.setModel(testDataTableModel);
 	}
 
+	private void openDoc(String filePath){
+		// word
+		try {
+			Runtime.getRuntime().exec("cmd /c start \"\" \"" + filePath + "\"");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "打开文件失败，位置：" + filePath + "请手动操作！");
+			return;
+		}
+	}
 	public static boolean decimalDigitsLimit(String moneyStr) {
 		String eg = "^[0-9]{1,3}([.]{1}[0-9]{0,2})?$";
 		Matcher m = Pattern.compile(eg, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(moneyStr);
