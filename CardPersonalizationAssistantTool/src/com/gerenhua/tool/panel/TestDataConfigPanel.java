@@ -7,19 +7,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -33,9 +46,9 @@ import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.utils.Config;
+import com.gerenhua.tool.utils.FileUtil;
 import com.gerenhua.tool.utils.PropertiesManager;
 import com.watchdata.commons.lang.WDStringUtil;
-import javax.swing.JSplitPane;
 
 /**
  * TestDataConfigPanel.java
@@ -162,6 +175,40 @@ public class TestDataConfigPanel extends JPanel {
 		});
 		popupMenu.add(menuItem);
 		
+		JSeparator separator = new JSeparator();
+		popupMenu.add(separator);
+		
+		JMenuItem menuItem_1 = new JMenuItem("保存");
+		menuItem_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jFileChooser=new JFileChooser(FileUtil.USER_DIR);
+//				FileNameExtensionFilter fileNameExtensionFilter=new FileNameExtensionFilter(".txt", ".txt");
+//				jFileChooser.setFileFilter(fileNameExtensionFilter);
+				
+				int ret=jFileChooser.showSaveDialog(null);
+				if (ret==JFileChooser.APPROVE_OPTION) {
+					try {
+						File file=jFileChooser.getSelectedFile();
+						FileWriter fw=new FileWriter(file);
+						
+						BufferedWriter bw=new BufferedWriter(fw);
+						DefaultTreeModel dtm = (DefaultTreeModel) tree.getModel();
+						DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
+						
+						saveLog(root, bw);
+						bw.flush();
+//						fw.flush();
+						fw.close();
+						bw.close();
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+					
+				}
+			}
+		});
+		popupMenu.add(menuItem_1);
+		
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setResizeWeight(0.5);
@@ -173,6 +220,17 @@ public class TestDataConfigPanel extends JPanel {
 		dialog.getContentPane().add(dlgscrollPane);
 	}
 
+	public void saveLog(DefaultMutableTreeNode treeNode,BufferedWriter br) throws IOException{
+		Enumeration<DefaultMutableTreeNode> children = treeNode.children(); 
+        while (children.hasMoreElements()) { 
+            DefaultMutableTreeNode child = children.nextElement(); 
+            br.write(child.toString()+FileUtil.LINE_SEPARATOR);
+            if (!child.isLeaf()) { // 是否叶子节点 
+            	saveLog(child, br);
+            } 
+        } 
+	}
+	
 	public String parse8E(String str8E) {
 		StringBuilder sb = new StringBuilder();
 		String x = str8E.substring(0, 8);
@@ -232,7 +290,6 @@ public class TestDataConfigPanel extends JPanel {
 		tree.scrollPathToVisible(path);
 		tree.updateUI();
 	}
-
 	public void scanAid(String aid) {
 		// ppse node
 		HashMap<String, String> res = apduHandler.select(aid);

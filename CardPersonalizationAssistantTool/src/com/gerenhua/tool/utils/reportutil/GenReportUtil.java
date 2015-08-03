@@ -30,7 +30,8 @@ public class GenReportUtil {
 	private static Document document;
 	private static Table table;
 	private static SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
-	private static Date tranctionDate=new Date();
+
+	// private static Date tranctionDate=new Date();
 
 	// 默认构造方法出始话数据
 	public GenReportUtil() {
@@ -60,14 +61,14 @@ public class GenReportUtil {
 		// document.setMargins(2.54f, 2.54f, 3.18f, 3.18f);
 
 		try {
-			RtfWriter2.getInstance(document, new FileOutputStream(System.getProperty("user.dir") + "/report/" + transactionName+"-"+sf.format(tranctionDate)+".doc"));
+			RtfWriter2.getInstance(document, new FileOutputStream(System.getProperty("user.dir") + "/report/" + transactionName + "-" + sf.format(new Date()) + ".doc"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		// 添加页眉
-		HeaderFooter header = new HeaderFooter(new Phrase(Config.getValue("Terminal_Data", "appName")+"                            版权所有："+Config.getValue("Terminal_Data", "company"), new Font(Font.NORMAL, 10, Font.NORMAL, Color.BLACK)), false);
+		HeaderFooter header = new HeaderFooter(new Phrase(Config.getValue("Terminal_Data", "appName") + "                            版权所有：" + Config.getValue("Terminal_Data", "company"), new Font(Font.NORMAL, 10, Font.NORMAL, Color.BLACK)), false);
 		header.setAlignment(Element.ALIGN_RIGHT);
 		document.setHeader(header);
 		// 添加页脚
@@ -106,7 +107,7 @@ public class GenReportUtil {
 	public void addTransactionName(String transactionName) {
 		// 表头
 		Paragraph ptName = new Paragraph(transactionName, new Font(Font.TIMES_ROMAN, 12, Font.BOLD, Color.BLACK));
-		Paragraph pDate = new Paragraph("交易时间：" + sf.format(tranctionDate), new Font(Font.TIMES_ROMAN, 12, Font.BOLD, Color.BLACK));
+		Paragraph pDate = new Paragraph("交易时间：" + sf.format(new Date()), new Font(Font.TIMES_ROMAN, 12, Font.BOLD, Color.BLACK));
 		try {
 			Cell cell = new Cell(ptName);
 			// 单元格

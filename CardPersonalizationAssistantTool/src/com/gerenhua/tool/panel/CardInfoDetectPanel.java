@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -166,10 +167,15 @@ public class CardInfoDetectPanel extends JPanel {
 				log.setLogArea(textPane_1);
 				Component component = SwingUtilities.getRoot(tree);
 				JFrame root = (JFrame) component;
+				Component fatherComponent = tree.getParent().getParent();
+
+				Point p = SwingUtilities.convertPoint(fatherComponent, 0, 0, root);
+
 				InstallDialog installDialog = null;
 				installDialog = new InstallDialog(root, tree, commonAPDU);
-				int x = (int) (root.getLocation().getX() + root.getSize().width - 480);
-				int y = (int) (root.getLocation().getY() + 40);
+				int x = p.x + fatherComponent.getWidth() - 490;
+				int y = p.y;
+
 				installDialog.setLocation(x, y);
 				installDialog.setVisible(true);
 			}
@@ -201,13 +207,14 @@ public class CardInfoDetectPanel extends JPanel {
 				if (i == JFileChooser.APPROVE_OPTION) {
 					File file = jFileChooser.getSelectedFile();
 					showCapList(tree_1, file);
+					Config.setValue("CardInfo", "currentCap", file.getPath());
 				}
 			}
 		});
 		mntmRefresh = new JMenuItem("刷新");
 		mntmRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				showCapList(tree_1,new File(Config.getValue("CardInfo", "currentCap")));
+				showCapList(tree_1, new File(Config.getValue("CardInfo", "currentCap")));
 			}
 		});
 		setLayout(new BorderLayout(0, 0));
@@ -362,7 +369,7 @@ public class CardInfoDetectPanel extends JPanel {
 
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setEnabled(false);
-		splitPane.setResizeWeight(0.5);
+		splitPane.setResizeWeight(0.4);
 		splitPane.setLeftComponent(panel_3);
 		splitPane.setRightComponent(cardinfoSplitPane);
 		JPanel panel_1 = new JPanel();
@@ -825,9 +832,7 @@ public class CardInfoDetectPanel extends JPanel {
 		updateStatusDialog.setVisible(visible);
 	}
 
-	public static void showCapList(JTree tree, File file) {
-		Config.setValue("CardInfo", "currentCap", file.getPath());
-
+	public static void showCapList(JTree ttree, File file) {
 		DefaultTreeModel dtm = (DefaultTreeModel) tree_1.getModel();
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode) dtm.getRoot();
 		root.removeAllChildren();
@@ -835,10 +840,12 @@ public class CardInfoDetectPanel extends JPanel {
 		root.add(capPathNode);
 
 		for (File eFile : file.listFiles()) {
-			DefaultMutableTreeNode eFilePathNode = new DefaultMutableTreeNode(eFile.getName());
-			capPathNode.add(eFilePathNode);
+			if (eFile.getName().endsWith(".cap")) {
+				DefaultMutableTreeNode eFilePathNode = new DefaultMutableTreeNode(eFile.getName());
+				capPathNode.add(eFilePathNode);
+			}
 		}
-
-		CardInfoThread.expandTree(tree, true);
+		tree_1.updateUI();
+		CardInfoThread.expandTree(ttree, true);
 	}
 }
