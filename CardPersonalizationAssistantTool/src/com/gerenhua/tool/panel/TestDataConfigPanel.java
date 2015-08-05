@@ -85,7 +85,7 @@ public class TestDataConfigPanel extends JPanel {
 
 	public TestDataConfigPanel() {
 		super();
-		log.setLogArea(textPane_1);
+//		log.setLogArea(textPane_1);
 		setName(pm.getString("mv.testdata.name"));
 		// setBorder(JTBorderFactory.createTitleBorder(pm.getString("mv.menu.dataConfig")));
 

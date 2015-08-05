@@ -93,7 +93,7 @@ public class CardInfoDetectPanel extends JPanel {
 	public static UpdateStatusDialog updateStatusDialog = null;
 
 	public CardInfoDetectPanel() {
-		log.setLogArea(textPane_1);
+//		log.setLogArea(textPane_1);
 		setName("卡片信息");
 		DefaultMutableTreeNode RootNode = new DefaultMutableTreeNode("CardInfo");
 		DefaultTreeModel TreeModel = new DefaultTreeModel(RootNode);

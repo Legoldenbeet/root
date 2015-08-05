@@ -26,6 +26,7 @@ public class Log {
 	}
 
 	public void setLogArea(JTextPane textPane) {
+		textPane.setText("");//cleal 
 		this.jTextPane = textPane;
 	}
 
