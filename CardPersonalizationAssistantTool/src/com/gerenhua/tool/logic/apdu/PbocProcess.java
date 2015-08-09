@@ -76,6 +76,39 @@ public class PbocProcess extends BaseHandler {
 		// select aid
 		return applicationSelectDialog.getSelectedAID();
 	}
+	/**
+	 * qpboc ppse
+	 * @param paySysDir
+	 * @param apduHandler
+	 * @param logger
+	 * @param genWordUtil
+	 * @return
+	 */
+	public static String applicationSelection_qpboc(String paySysDir, CommonAPDU apduHandler, Log logger, GenReportUtil genWordUtil) {
+		HashMap<String, String> result = apduHandler.select(paySysDir);
+		if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
+			logger.error("select PPSE error,card return:" + result.get("sw"));
+			genWordUtil.add("选择PPSE出错");
+			// genWordUtil.close();
+			return null;
+		}
+
+		// 选择ppse报告内容
+		genWordUtil.add(result.get("apdu"), "Select " + WDStringUtil.hex2asc(paySysDir), result.get("res"), result);
+
+		if (WDAssert.isEmpty(result.get("BF0C"))) {
+			logger.error("BF0C is null.");
+			return null;
+		}
+		// read dir, begin from 01
+		List<HashMap<String, String>> readDirList = apduHandler.readDir(result.get("88"));
+
+		ApplicationSelectDialog applicationSelectDialog = new ApplicationSelectDialog(Application.frame, readDirList);
+		applicationSelectDialog.setLocationRelativeTo(Application.frame);
+		applicationSelectDialog.setVisible(true);
+		// select aid
+		return applicationSelectDialog.getSelectedAID();
+	}
 
 	/**
 	 * 选择应用
@@ -101,7 +134,7 @@ public class PbocProcess extends BaseHandler {
 			// genWordUtil.close();
 			return null;
 		}
-		if (!"9000".equals(result.get("sw"))) {
+		if (!Constants.SW_SUCCESS.equals(result.get("sw"))) {
 			logger.error("select app get response:" + result.get("sw"));
 			genWordUtil.add("选择应用出错");
 			// genWordUtil.close();

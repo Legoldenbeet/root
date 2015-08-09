@@ -11,12 +11,15 @@ import org.apache.log4j.NDC;
 
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
-import com.gerenhua.tool.logic.apdu.PbocProcess;
+import com.gerenhua.tool.logic.apdu.CommonHelper;
 import com.gerenhua.tool.logic.issuer.IIssuerDao;
 import com.gerenhua.tool.logic.issuer.local.IssuerDaoImpl;
 import com.gerenhua.tool.logic.pki.DataAuthenticate;
 import com.gerenhua.tool.utils.PropertiesManager;
+import com.gerenhua.tool.utils.Terminal;
+import com.gerenhua.tool.utils.reportutil.APDUSendANDRes;
 import com.gerenhua.tool.utils.reportutil.GenReportUtil;
+import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 
 /**
@@ -25,16 +28,23 @@ import com.watchdata.commons.lang.WDStringUtil;
  * @author liya.xiao
  * 
  */
-public class QPBOCHandler extends BaseHandler {
+public class CopyOfQPBOCHandler extends BaseHandler {
 	private static Log logger = new Log();
 	private IIssuerDao issuerDao = new IssuerDaoImpl();
 	private PropertiesManager pm = new PropertiesManager();
 
-	public QPBOCHandler(JTextPane textPane) {
+	public CopyOfQPBOCHandler(JTextPane textPane) {
 		logger.setLogArea(textPane);
 	}
 
 	public boolean trade(String readerName, int tradeMount) {
+		// 生成交易检测报告
+		GenReportUtil genWordUtil = new GenReportUtil();
+		// 打开报告文档
+		genWordUtil.open(pm.getString("mv.tradepanel.qPBOC"));
+		genWordUtil.addFileTitle("交易检测报告");
+		genWordUtil.addTransactionName("QPBOC");
+
 		// 参数
 		HashMap<String, String> param = new HashMap<String, String>();
 		param.put("9F02", WDStringUtil.paddingHeadZero(String.valueOf(tradeMount), 12));
@@ -47,41 +57,71 @@ public class QPBOCHandler extends BaseHandler {
 		param.put("9F66", "2A000000");// 非接触能力
 		NDC.push("[QPBOC]");
 		logger.debug("QPBOC start...", 0);
-		// 生成交易检测报告
-		GenReportUtil genWordUtil = new GenReportUtil();
-		// 打开报告文档
-		genWordUtil.open(pm.getString("mv.tradepanel.qPBOC"));
-		genWordUtil.addFileTitle("交易检测报告");
-		genWordUtil.addTransactionName("QPBOC");
-
 		try {
-			// 为了保证卡片和读卡器的正确性，交易开始前务必先复位
-			logger.debug("=============================Initialization=================================");
-			HashMap<String, String> result;
-			PbocProcess.initialization(apduHandler, logger, genWordUtil);
-			logger.debug("============================Application Selection=================================");
-			String aid = PbocProcess.applicationSelection_qpboc(Constants.PPSE, apduHandler, logger, genWordUtil);
-			logger.debug("===============================Final Selection=================================");
-			result = PbocProcess.finalSelection(aid, apduHandler, logger, genWordUtil);
-			String pdol = result.get("9F38");
-			genWordUtil.add("PDOL Data:" + pdol);
-			logger.debug("=================================Show Blance=================================");
-			PbocProcess.showBlance(apduHandler, genWordUtil);
+			// 复位
+			logger.debug("===============================reset=====================================");
+			HashMap<String, String> res = apduHandler.reset();
+			if (!"9000".equals(res.get("sw"))) {
+				genWordUtil.add("卡片复位失败！");
+				genWordUtil.close();
+				return false;
+			}
+			// 复位报告内容
+			genWordUtil.add("atr", "card ATR", res.get("atr"), new HashMap<String, String>());
+
+			// 选择PPSE
+			logger.debug("============================select PPSE=====================================");
+			HashMap<String, String> result = apduHandler.select(Constants.PPSE);
+			if (!"9000".equals(result.get("sw"))) {
+				return false;
+			}
+
+			// 选择ppse报告内容
+			genWordUtil.add(result.get("apdu"), "select PPSE", result.get("res"), result);
+
+			// 选择AID
+			logger.debug("============================select AID=====================================");
+			String aid = result.get("4F");
+			if (WDAssert.isEmpty(aid)) {
+				return false;
+			}
+			if (Terminal.support(aid)) {
+				result = apduHandler.select(aid);
+			} else {
+				genWordUtil.add("终端不支持此应用！");
+				genWordUtil.close();
+				return false;
+			}
+			if (!"9000".equals(result.get("sw"))) {
+				genWordUtil.add("选择应用返回:" + result.get("sw"));
+				genWordUtil.close();
+				return false;
+			}
+
+			// 选择aid报告内容
+			genWordUtil.add(result.get("apdu"), "select AID", result.get("res"), result);
+
+			logger.debug("============================Balance=====================================");
+			apduHandler.getData("9F79");
+
 			// GPO如果pdol不存在 发8300
-			logger.debug("==================================Initiate Application(GPO)==================================");
-			result = PbocProcess.initiateApplication((BaseHandler) this, pdol, param, apduHandler, logger, genWordUtil);
+			logger.debug("===================================GPO=====================================");
+			String pdolData = loadDolData(result.get("9F38"), param);
+			result = apduHandler.gpo("83" + CommonHelper.getLVData(pdolData, 1));
+			if (!"9000".equals(result.get("sw"))) {
+				genWordUtil.add("GPO返回:" + result.get("sw"));
+				genWordUtil.close();
+				return false;
+			}
+
+			// GPO报告内容
+			genWordUtil.add(result.get("apdu"), "GPO", result.get("res"), result);
+
 			String aip = result.get("82");
-			// 字节1：
-			// 位8：1=RFU
-			// 位7：1=支持SDA
-			// 位6：1=支持DDA
-			// 位5：1=支持持卡人认证
-			// 位4：1=执行终端风险管理
-			// 位3：1=支持发卡行认证
-			// 位2：RFU（0）
-			// 位1：1=支持CDA
-			// 字节2：RFU（“00”）
-			genWordUtil.add("AIP:" + aip);
+			if (WDAssert.isEmpty(aip)) {
+				return false;
+			}
+
 			// 判断是否联机或脱机
 			String cvrString = result.get("9F10").substring(8, 10);
 			if ("80".equalsIgnoreCase(cvrString)) {// AAC
@@ -92,10 +132,16 @@ public class QPBOCHandler extends BaseHandler {
 			} else if ("90".equalsIgnoreCase(cvrString)) {// TC
 				genWordUtil.add("Card Accepted Offline Line Transaction.");
 				// read record
-				logger.debug("=================================Read Application Data===========================");
-				HashMap<String, String> cardRecordData = PbocProcess.readApplicationData((BaseHandler) this, result, genWordUtil);
+				logger.debug("====================================read record=====================================");
+				List<APDUSendANDRes> aList = new ArrayList<APDUSendANDRes>();
+				HashMap<String, String> cardRecordData = getCardRecordData(result.get("94"), aList);
 				String staticDataList = cardRecordData.get("staticDataList");
-				genWordUtil.add("StaticDataList:" + cardRecordData);
+
+				// 读记录报告
+				for (APDUSendANDRes apduSendANDRes2 : aList) {
+					genWordUtil.add(apduSendANDRes2);
+				}
+
 				// DDA,SDA
 				logger.debug("=====================================DDA validate=====================================");
 				String issuerPKCert = cardRecordData.get("90");// 发卡行公钥(IPK)证书
@@ -120,7 +166,7 @@ public class QPBOCHandler extends BaseHandler {
 					genWordUtil.close();
 					return false;
 				}
-				// 打印fdda报告
+				// 打印dda报告
 				for (String string : logList) {
 					genWordUtil.add(string);
 				}
@@ -128,7 +174,7 @@ public class QPBOCHandler extends BaseHandler {
 			} else if ("A0".equalsIgnoreCase(cvrString)) {// ARQC
 				// 报告
 				genWordUtil.add("online validate!");
-				logger.debug("============================online validate=====================================");
+				logger.debug("============================online validata=====================================");
 				// 请求发卡行认证AC密文
 				String arqc = result.get("9F26");
 				String atc = result.get("9F36");
@@ -136,12 +182,12 @@ public class QPBOCHandler extends BaseHandler {
 				String pan = result.get("57").substring(0, result.get("57").indexOf("D"));
 				String panSerial = result.get("5F34");
 
-				String arpc = issuerDao.requestArpc(pan, panSerial, pdol.substring(8), aip, atc, iad, arqc);
+				String arpc = issuerDao.requestArpc(pan, panSerial, pdolData.substring(8), aip, atc, iad, arqc);
 				logger.debug("ARPC[" + arpc + "]");
 				genWordUtil.add("ARPC[" + arpc + "]");
 			}
-			logger.debug("=================================Show Blance=================================");
-			PbocProcess.showBlance(apduHandler, genWordUtil);
+			logger.debug("============================Balance=====================================");
+			result = apduHandler.getData("9F79");
 			logger.debug("============================QPBOC trade finished!=====================================");
 			// 报告
 			genWordUtil.add("QPBOC trade finished!");
