@@ -817,7 +817,7 @@ public class CardEditor {
 		menuItem_16.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504114154800_easyicon_net_24.png")));
 		menuItem_16.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AssistantToolDialog assistantToolDialog=new AssistantToolDialog();
+				AssistantToolDialog assistantToolDialog=new AssistantToolDialog(statusObject);
 				
 				int tabCount = tabbedPane.getTabCount();
 				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);

@@ -18,19 +18,22 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.echeloneditor.utils.Config;
+import com.echeloneditor.vo.StatusObject;
 import com.watchdata.commons.crypto.WD3DesCryptoUtil;
 import com.watchdata.commons.crypto.pboc.WDPBOCUtil;
 import com.watchdata.commons.jce.JceBase.Padding;
 import com.watchdata.commons.lang.WDBase64;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDEncodeUtil;
-import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.kms.kmsi.IKms;
 
 public class AssistantToolDialog extends JPanel {
@@ -40,23 +43,52 @@ public class AssistantToolDialog extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField dataField;
+	private JTextArea dataField;
+	private JTextArea restultField;
 	private JTextField keyField;
 	private JLabel lblResult;
-	private JTextField restultField;
+	private StatusObject statusObject;
 
 	/**
 	 * Create the dialog.
 	 */
-	public AssistantToolDialog() {
+	public AssistantToolDialog(final StatusObject statusObject) {
+		this.statusObject = statusObject;
 		setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(72, 45, 800, 160);
+		contentPanel.add(panel_1);
+		panel_1.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		panel_1.add(scrollPane_1, BorderLayout.CENTER);
+
+		dataField = new JTextArea();
+		dataField.setLineWrap(true);
+		scrollPane_1.setViewportView(dataField);
+
+		JPanel panel = new JPanel();
+		panel.setBounds(72, 215, 800, 160);
+		contentPanel.add(panel);
+		panel.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+		panel.add(scrollPane, BorderLayout.CENTER);
+
+		restultField = new JTextArea();
+		restultField.setLineWrap(true);
+		scrollPane.setViewportView(restultField);
 
 		JLabel lblNewLabel = new JLabel("Data");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(10, 34, 59, 15);
+		lblNewLabel.setBounds(10, 45, 59, 15);
 		contentPanel.add(lblNewLabel);
 
 		final JButton configip = new JButton("设置");
@@ -67,7 +99,7 @@ public class AssistantToolDialog extends JPanel {
 				dialog.setVisible(true);
 			}
 		});
-		configip.setBounds(418, 64, 101, 25);
+		configip.setBounds(435, 10, 101, 25);
 		contentPanel.add(configip);
 
 		final JCheckBox chckbxHsm = new JCheckBox("Hsm");
@@ -81,54 +113,43 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		chckbxHsm.setBounds(333, 65, 79, 23);
+		chckbxHsm.setBounds(350, 11, 79, 23);
 		contentPanel.add(chckbxHsm);
-
-		dataField = new JTextField();
-		dataField.setText("0000000000000000");
-		dataField.setBounds(75, 34, 500, 22);
-		contentPanel.add(dataField);
-		dataField.setColumns(10);
 		{
 			JLabel lblKey = new JLabel("Key");
 			lblKey.setHorizontalAlignment(SwingConstants.CENTER);
-			lblKey.setBounds(10, 69, 59, 15);
+			lblKey.setBounds(10, 15, 59, 15);
 			contentPanel.add(lblKey);
 		}
 		{
 			keyField = new JTextField();
 			keyField.setText("57415443484441544154696D65434F53");
 			keyField.setColumns(10);
-			keyField.setBounds(75, 69, 249, 22);
+			keyField.setBounds(72, 13, 249, 22);
 			contentPanel.add(keyField);
 		}
 
 		lblResult = new JLabel("Result");
 		lblResult.setHorizontalAlignment(SwingConstants.CENTER);
-		lblResult.setBounds(10, 101, 59, 15);
+		lblResult.setBounds(10, 233, 59, 15);
 		contentPanel.add(lblResult);
-
-		restultField = new JTextField();
-		restultField.setColumns(10);
-		restultField.setBounds(75, 101, 500, 22);
-		contentPanel.add(restultField);
 
 		JButton btnBase = new JButton("Base64解码");
 		btnBase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				restultField.setText(new String(WDBase64.decode(dataField.getText().getBytes())));
+				restultField.setText(WDBase64.decode(dataField.getText(), statusObject.getSelectedEncodeItem()));
 			}
 		});
-		btnBase.setBounds(319, 183, 125, 25);
+		btnBase.setBounds(316, 420, 125, 25);
 		contentPanel.add(btnBase);
 
 		JButton btnBase_1 = new JButton("Base64编码");
 		btnBase_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				restultField.setText(new String(WDBase64.encode(dataField.getText().getBytes())));
+				restultField.setText(WDBase64.encode(dataField.getText(), statusObject.getSelectedEncodeItem()));
 			}
 		});
-		btnBase_1.setBounds(319, 148, 125, 25);
+		btnBase_1.setBounds(316, 385, 125, 25);
 		contentPanel.add(btnBase_1);
 
 		JButton btnNewButton = new JButton("ECB DES");
@@ -150,7 +171,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		btnNewButton.setBounds(75, 148, 112, 25);
+		btnNewButton.setBounds(72, 385, 112, 25);
 		contentPanel.add(btnNewButton);
 
 		JButton btnEcbDecrypt = new JButton("ECB Decrypt");
@@ -172,7 +193,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		btnEcbDecrypt.setBounds(75, 183, 112, 25);
+		btnEcbDecrypt.setBounds(72, 420, 112, 25);
 		contentPanel.add(btnEcbDecrypt);
 
 		JButton btnCbcDes = new JButton("CBC DES");
@@ -194,7 +215,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		btnCbcDes.setBounds(197, 148, 112, 25);
+		btnCbcDes.setBounds(194, 385, 112, 25);
 		contentPanel.add(btnCbcDes);
 
 		JButton btnCbcDecrypt = new JButton("CBC Decrypt");
@@ -216,7 +237,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		btnCbcDecrypt.setBounds(197, 183, 112, 25);
+		btnCbcDecrypt.setBounds(194, 420, 112, 25);
 		contentPanel.add(btnCbcDecrypt);
 
 		JButton btnNewButton_1 = new JButton("TDES MAC");
@@ -227,7 +248,7 @@ public class AssistantToolDialog extends JPanel {
 				restultField.setText(res.substring(res.length() - 16, res.length()));
 			}
 		});
-		btnNewButton_1.setBounds(454, 148, 95, 25);
+		btnNewButton_1.setBounds(451, 385, 95, 25);
 		contentPanel.add(btnNewButton_1);
 
 		JButton btnNewButton_2 = new JButton("MAC");
@@ -237,25 +258,35 @@ public class AssistantToolDialog extends JPanel {
 			}
 		});
 		btnNewButton_2.setToolTipText("Single DES Plus Final Triple DES MAC");
-		btnNewButton_2.setBounds(454, 183, 95, 25);
+		btnNewButton_2.setBounds(451, 420, 95, 25);
 		contentPanel.add(btnNewButton_2);
 
 		JButton btnNewButton_3 = new JButton("ASC->String");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				restultField.setText(WDStringUtil.hex2asc(dataField.getText()));
+				try {
+					// restultField.setText(WDStringUtil.hex2asc(new String(dataField.getText().getBytes(statusObject.getSelectedEncodeItem()),statusObject.getSelectedEncodeItem())));
+					restultField.setText(new String(WDByteUtil.HEX2Bytes(dataField.getText()), statusObject.getSelectedEncodeItem()));
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 		});
-		btnNewButton_3.setBounds(75, 257, 112, 25);
+		btnNewButton_3.setBounds(556, 423, 112, 25);
 		contentPanel.add(btnNewButton_3);
 
 		JButton btnNewButton_4 = new JButton("String->ASC");
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				restultField.setText(WDStringUtil.asc2hex(dataField.getText()));
+				try {
+					// restultField.setText(WDStringUtil.asc2hex(new String(dataField.getText().getBytes(statusObject.getSelectedEncodeItem()), statusObject.getSelectedEncodeItem())));
+					restultField.setText(WDByteUtil.bytes2HEX(dataField.getText().getBytes(statusObject.getSelectedEncodeItem())));
+				} catch (Exception e2) {
+					// TODO: handle exception
+				}
 			}
 		});
-		btnNewButton_4.setBounds(75, 219, 112, 25);
+		btnNewButton_4.setBounds(556, 385, 112, 25);
 		contentPanel.add(btnNewButton_4);
 
 		JButton btnNewButton_5 = new JButton("SHA1");
@@ -264,7 +295,7 @@ public class AssistantToolDialog extends JPanel {
 				restultField.setText(WDByteUtil.bytes2HEX(WDEncodeUtil.sha1(WDByteUtil.HEX2Bytes(dataField.getText()))));
 			}
 		});
-		btnNewButton_5.setBounds(197, 219, 112, 25);
+		btnNewButton_5.setBounds(678, 385, 112, 25);
 		contentPanel.add(btnNewButton_5);
 
 		JButton btnNewButton_6 = new JButton("MD5");
@@ -273,7 +304,7 @@ public class AssistantToolDialog extends JPanel {
 				restultField.setText(WDByteUtil.bytes2HEX(WDEncodeUtil.md5(WDByteUtil.HEX2Bytes(dataField.getText()))));
 			}
 		});
-		btnNewButton_6.setBounds(196, 257, 112, 25);
+		btnNewButton_6.setBounds(677, 423, 112, 25);
 		contentPanel.add(btnNewButton_6);
 
 		JButton btnXor = new JButton("XOR");
@@ -308,7 +339,7 @@ public class AssistantToolDialog extends JPanel {
 
 			}
 		});
-		btnXor.setBounds(319, 219, 112, 25);
+		btnXor.setBounds(800, 385, 112, 25);
 		contentPanel.add(btnXor);
 
 		JButton btnNot = new JButton("NOT");
@@ -317,7 +348,7 @@ public class AssistantToolDialog extends JPanel {
 				JOptionPane.showMessageDialog(null, "未实现！");
 			}
 		});
-		btnNot.setBounds(318, 257, 112, 25);
+		btnNot.setBounds(799, 423, 112, 25);
 		contentPanel.add(btnNot);
 
 		JButton btnSha = new JButton("SHA256");
@@ -326,7 +357,7 @@ public class AssistantToolDialog extends JPanel {
 				restultField.setText(WDByteUtil.bytes2HEX(WDEncodeUtil.sha256(WDByteUtil.HEX2Bytes(dataField.getText()))));
 			}
 		});
-		btnSha.setBounds(441, 219, 112, 25);
+		btnSha.setBounds(922, 385, 112, 25);
 		contentPanel.add(btnSha);
 
 		JButton btnSha_1 = new JButton("SHA512");
@@ -335,7 +366,7 @@ public class AssistantToolDialog extends JPanel {
 				restultField.setText(WDByteUtil.bytes2HEX(WDEncodeUtil.sha512(WDByteUtil.HEX2Bytes(dataField.getText()))));
 			}
 		});
-		btnSha_1.setBounds(440, 257, 112, 25);
+		btnSha_1.setBounds(921, 423, 112, 25);
 		contentPanel.add(btnSha_1);
 
 		JButton btnShafile = new JButton("File->SHA1");
@@ -369,7 +400,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		btnShafile.setBounds(75, 296, 112, 25);
+		btnShafile.setBounds(72, 455, 112, 25);
 		contentPanel.add(btnShafile);
 
 		JButton btnMdfile = new JButton("File->MD5");
@@ -403,7 +434,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		btnMdfile.setBounds(197, 297, 112, 25);
+		btnMdfile.setBounds(194, 456, 112, 25);
 		contentPanel.add(btnMdfile);
 
 	}
