@@ -99,7 +99,7 @@ public class AssistantToolDialog extends JPanel {
 				dialog.setVisible(true);
 			}
 		});
-		configip.setBounds(435, 10, 101, 25);
+		configip.setBounds(686, 10, 101, 25);
 		contentPanel.add(configip);
 
 		final JCheckBox chckbxHsm = new JCheckBox("Hsm");
@@ -113,7 +113,7 @@ public class AssistantToolDialog extends JPanel {
 				}
 			}
 		});
-		chckbxHsm.setBounds(350, 11, 79, 23);
+		chckbxHsm.setBounds(601, 11, 79, 23);
 		contentPanel.add(chckbxHsm);
 		{
 			JLabel lblKey = new JLabel("Key");
@@ -125,7 +125,7 @@ public class AssistantToolDialog extends JPanel {
 			keyField = new JTextField();
 			keyField.setText("57415443484441544154696D65434F53");
 			keyField.setColumns(10);
-			keyField.setBounds(72, 13, 249, 22);
+			keyField.setBounds(72, 13, 474, 22);
 			contentPanel.add(keyField);
 		}
 
