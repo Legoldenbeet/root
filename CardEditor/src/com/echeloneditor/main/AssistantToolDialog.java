@@ -95,7 +95,7 @@ public class AssistantToolDialog extends JPanel {
 		configip.setVisible(false);
 		configip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ConfigIpDialog dialog = new ConfigIpDialog((JDialog) SwingUtilities.getRoot((Component) e.getSource()));
+				ConfigIpDialog dialog = new ConfigIpDialog(CardEditor.frmEcheloneditor);
 				dialog.setVisible(true);
 			}
 		});

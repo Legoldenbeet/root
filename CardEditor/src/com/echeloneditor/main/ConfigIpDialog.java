@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -45,7 +46,7 @@ public class ConfigIpDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ConfigIpDialog(JDialog dialog) {
+	public ConfigIpDialog(JFrame dialog) {
 		super(dialog, true);
 		setTitle("HSM");
 		setBounds(100, 100, 450, 139);
