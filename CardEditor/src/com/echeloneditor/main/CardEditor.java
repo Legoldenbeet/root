@@ -39,6 +39,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
@@ -816,15 +817,18 @@ public class CardEditor {
 		menuItem_16.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504114154800_easyicon_net_24.png")));
 		menuItem_16.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (dialog == null) {
-					dialog = new AssistantToolDialog();
-				}
-				if (dialog.isVisible()) {
-					dialog.toFront();
-				} else {
-					dialog.setVisible(true);
-				}
+				AssistantToolDialog assistantToolDialog=new AssistantToolDialog();
+				
+				int tabCount = tabbedPane.getTabCount();
+				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
+				closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
+				closeableTabComponent.setFileSzie(0);
+				closeableTabComponent.setFileNameExt(".tool");
+				closeableTabComponent.setModify(false);
+				tabbedPane.add("AssistantTool", assistantToolDialog);
+				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 
+				tabbedPane.setSelectedComponent(assistantToolDialog);
 			}
 		});
 

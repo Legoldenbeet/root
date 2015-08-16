@@ -33,7 +33,7 @@ import com.watchdata.commons.lang.WDEncodeUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 import com.watchdata.kms.kmsi.IKms;
 
-public class AssistantToolDialog extends JDialog {
+public class AssistantToolDialog extends JPanel {
 
 	/**
 	 * 
@@ -46,27 +46,12 @@ public class AssistantToolDialog extends JDialog {
 	private JTextField restultField;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			AssistantToolDialog dialog = new AssistantToolDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public AssistantToolDialog() {
-		setTitle("Assistant Tool");
-		setBounds(100, 100, 600, 379);
-		getContentPane().setLayout(new BorderLayout());
+		setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Data");
@@ -297,19 +282,19 @@ public class AssistantToolDialog extends JDialog {
 
 				String com1 = keyField.getText();
 				String com2 = dataField.getText();
-				
-				if (com1.length()%2!=0||com2.length()%2!=0) {
+
+				if (com1.length() % 2 != 0 || com2.length() % 2 != 0) {
 					JOptionPane.showMessageDialog(null, "不是整字节！");
 					return;
 				}
-				
+
 				byte[] com1Bytes = new byte[com1.length() / 2];
 				byte[] com2Bytes = new byte[com2.length() / 2];
 
 				com1Bytes = WDByteUtil.HEX2Bytes(com1);
 				com2Bytes = WDByteUtil.HEX2Bytes(com2);
-				
-				if (com1Bytes.length!=com2Bytes.length) {
+
+				if (com1Bytes.length != com2Bytes.length) {
 					JOptionPane.showMessageDialog(null, "长度不一致！");
 					return;
 				}
