@@ -93,7 +93,7 @@ public class CardInfoDetectPanel extends JPanel {
 	public static UpdateStatusDialog updateStatusDialog = null;
 
 	public CardInfoDetectPanel() {
-//		log.setLogArea(textPane_1);
+		// log.setLogArea(textPane_1);
 		setName("卡片信息");
 		DefaultMutableTreeNode RootNode = new DefaultMutableTreeNode("CardInfo");
 		DefaultTreeModel TreeModel = new DefaultTreeModel(RootNode);
@@ -200,8 +200,11 @@ public class CardInfoDetectPanel extends JPanel {
 					jFileChooser = new JFileChooser("./resources/cap/");
 				}
 
-				jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				jFileChooser.setMultiSelectionEnabled(false);
+				FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("JAVACARD Cap File", "cap");
+				jFileChooser.setFileFilter(fileNameExtensionFilter);
+
+				jFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				jFileChooser.setMultiSelectionEnabled(true);
 
 				int i = jFileChooser.showOpenDialog(null);
 				if (i == JFileChooser.APPROVE_OPTION) {
