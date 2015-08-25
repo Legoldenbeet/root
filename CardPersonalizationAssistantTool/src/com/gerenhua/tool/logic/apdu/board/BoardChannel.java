@@ -2,6 +2,7 @@ package com.gerenhua.tool.logic.apdu.board;
 
 import com.gerenhua.tool.logic.apdu.IAPDUChannel;
 import com.gerenhua.tool.logic.apdu.board.BoardOperate.CLibrary;
+import com.gerenhua.tool.utils.Config;
 
 public class BoardChannel extends IAPDUChannel {
 	private static CLibrary handle = null;
@@ -25,7 +26,7 @@ public class BoardChannel extends IAPDUChannel {
 			logger.debug("Recv【" + recv + "】");
 			recv=send(commandApdu.substring(0,commandApdu.length()-2) + sw2);
 		} else {
-			logger.error("Recv【" + recv + "】");
+			logger.error("Recv【" + recv + "】["+Config.getValue("Exception_Code", recv)+"]");
 		}
 		return recv;
 	}

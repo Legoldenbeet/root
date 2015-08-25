@@ -2,6 +2,7 @@ package com.gerenhua.tool.logic.apdu.readerx;
 
 import com.gerenhua.tool.logic.apdu.IAPDUChannel;
 import com.gerenhua.tool.logic.apdu.readerx.ReaderXOperate.CLibrary;
+import com.gerenhua.tool.utils.Config;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class ReaderXChannel extends IAPDUChannel {
@@ -13,7 +14,7 @@ public class ReaderXChannel extends IAPDUChannel {
 
 	@Override
 	public String send(String commandApdu) {
-		logger.debug("Send【" + commandApdu.toUpperCase() + "]");
+		logger.debug("Send【" + commandApdu.toUpperCase() + "】");
 		// byte len = (byte) (commandApdu.length() / 2);
 		byte[] apduBuffer = WDByteUtil.HEX2Bytes(commandApdu);
 		String recv = handle.Send((byte) apduBuffer.length, apduBuffer);
@@ -41,7 +42,7 @@ public class ReaderXChannel extends IAPDUChannel {
 			}
 			break;
 		default:
-			logger.error("Recv【" + recv + "】");
+			logger.error("Recv【" + recv + "】["+Config.getValue("Exception_Code", recv)+"]");
 			break;
 		}
 		// if (sw.equalsIgnoreCase("9000")) {

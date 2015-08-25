@@ -48,7 +48,7 @@ public class PcscChannel extends IAPDUChannel {
 			resp+=send(WDByteUtil.bytes2HEX(apduBuffer));
 			break;
 		default:
-			logger.error("Recv【" + resp + "】");
+			logger.error("Recv【" + resp + "】["+Config.getValue("Exception_Code", resp)+"]");
 			break;
 		}
 //		if (responseAPDU.getSW() == 0x9000) {
