@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import javax.swing.JComponent;
 import javax.swing.Scrollable;
 
+import com.gerenhua.tool.app.Application;
+
 /**
  * Windows文件浏览器左侧折叠面板组件类 实现了Scrollable，使其能放在JScrollPane中。
  * 

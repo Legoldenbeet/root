@@ -1,12 +1,10 @@
 package com.gerenhua.tool.logic.apdu.readerx;
 
-import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.IAPDUChannel;
 import com.gerenhua.tool.logic.apdu.readerx.ReaderXOperate.CLibrary;
 import com.watchdata.commons.lang.WDByteUtil;
 
-public class ReaderXChannel implements IAPDUChannel {
-	private static Log logger = new Log();
+public class ReaderXChannel extends IAPDUChannel {
 	private static CLibrary handle = null;
 
 	public ReaderXChannel() {
@@ -15,7 +13,7 @@ public class ReaderXChannel implements IAPDUChannel {
 
 	@Override
 	public String send(String commandApdu) {
-		logger.debug("send[" + commandApdu.toUpperCase() + "]");
+		logger.debug("Send【" + commandApdu.toUpperCase() + "]");
 		// byte len = (byte) (commandApdu.length() / 2);
 		byte[] apduBuffer = WDByteUtil.HEX2Bytes(commandApdu);
 		String recv = handle.Send((byte) apduBuffer.length, apduBuffer);
@@ -25,25 +23,25 @@ public class ReaderXChannel implements IAPDUChannel {
 
 		switch (Integer.parseInt(sw1, 16)) {
 		case 0x90:
-			logger.debug("recv[" + recv + "]");
+			logger.debug("Recv【" + recv + "】");
 			break;
 		case 0x61:
-			logger.debug("recv[" + recv + "]");
+			logger.debug("Recv【" + recv + "】");
 			recv = send("00C00000" + sw2);
 			break;
 		case 0x6C:
-			logger.debug("recv[" + recv + "]");
+			logger.debug("Recv【" + recv + "】");
 			recv = send(commandApdu.substring(0, commandApdu.length() - 2) + sw2);
 			break;
 		case 0x63:
 			if (sw2.equalsIgnoreCase("10")) {
-				logger.debug("recv[" + recv + "]");
+				logger.debug("Recv【" + recv + "】");
 				recv = recv.substring(0, recv.length() - 4);
 				recv += send(commandApdu.substring(0, 6) + "01" + commandApdu.substring(8));
 			}
 			break;
 		default:
-			logger.error("recv[" + recv + "]");
+			logger.error("Recv【" + recv + "】");
 			break;
 		}
 		// if (sw.equalsIgnoreCase("9000")) {
