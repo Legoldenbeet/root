@@ -39,7 +39,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
@@ -73,9 +72,6 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
-import com.sepp.server.PooledConnectionHandler;
-import com.sepp.server.ServerListener;
-import com.sepp.server.ServiceSocket;
 import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
@@ -95,7 +91,7 @@ public class CardEditor {
 
 	public JSplitPane centerSplitPaneH;
 	public JSplitPane centerSplitPaneV;
-	
+
 	public SystemShell systemShell;
 
 	public static FileHander fileHander;
@@ -140,15 +136,15 @@ public class CardEditor {
 					// 初始化窗体
 					CardEditor cardEditor = new CardEditor();
 					Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-					Rectangle bounds=new Rectangle(d);
-					Insets insets=Toolkit.getDefaultToolkit().getScreenInsets(frmEcheloneditor.getGraphicsConfiguration());
-					
-					bounds.x=insets.left;
-					bounds.y=insets.top;
-					bounds.width-=insets.left+insets.right;
-					bounds.height-=insets.top+insets.bottom;
+					Rectangle bounds = new Rectangle(d);
+					Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(frmEcheloneditor.getGraphicsConfiguration());
+
+					bounds.x = insets.left;
+					bounds.y = insets.top;
+					bounds.width -= insets.left + insets.right;
+					bounds.height -= insets.top + insets.bottom;
 					frmEcheloneditor.setBounds(bounds);
-					
+
 					// 框体屏幕居中显示
 					frmEcheloneditor.setLocationRelativeTo(null);
 					// 显示窗体
@@ -168,12 +164,8 @@ public class CardEditor {
 				}
 			}
 		});
-		sysThread = new Thread(new PooledConnectionHandler());
-		// sysThread.setDaemon(true);
-		sysThread.start();
 		// 启动同步接收和发送服务
-		new ServerListener().startService(9000);
-
+		new SeppImpl().open(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
 	}
 
 	/**
@@ -216,10 +208,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent actionevent) {
 				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					if (ServiceSocket.sepp == null) {
-						ServiceSocket.sepp = new SeppImpl();
-					}
-					ServiceSocket.sepp.sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+					new SeppImpl().sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -817,8 +806,8 @@ public class CardEditor {
 		menuItem_16.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504114154800_easyicon_net_24.png")));
 		menuItem_16.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AssistantToolDialog assistantToolDialog=new AssistantToolDialog(statusObject);
-				
+				AssistantToolDialog assistantToolDialog = new AssistantToolDialog(statusObject);
+
 				int tabCount = tabbedPane.getTabCount();
 				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
 				closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
@@ -894,7 +883,7 @@ public class CardEditor {
 		mntmJava.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "debugPath")).getParentFile(), "cmd.exe /c start "+Config.getValue("CONFIG", "jd_path"), false);
+					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "debugPath")).getParentFile(), "cmd.exe /c start " + Config.getValue("CONFIG", "jd_path"), false);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -963,7 +952,7 @@ public class CardEditor {
 
 		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
 		bottomTabbedPane.addTab("状态信息", statusPanel);
-		systemShell=new SystemShell();
+		systemShell = new SystemShell();
 		RScrollPane shellScrollPane = new DockableWindowScrollPane(systemShell);
 		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
 
