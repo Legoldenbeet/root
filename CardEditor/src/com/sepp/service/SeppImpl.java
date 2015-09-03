@@ -13,7 +13,6 @@ import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.Cmd;
 import com.sepp.client.SessionClient;
-import com.sepp.interfaces.Sepp;
 import com.sepp.server.PooledConnectionHandler;
 import com.watchdata.commons.lang.WDByteUtil;
 import com.watchdata.commons.lang.WDStringUtil;

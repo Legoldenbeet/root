@@ -1,4 +1,4 @@
-package com.sepp.interfaces;
+package com.sepp.service;
 
 import java.util.ArrayList;
 

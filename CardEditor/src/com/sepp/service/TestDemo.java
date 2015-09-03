@@ -1,4 +1,4 @@
-package com.sepp.client;
+package com.sepp.service;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
