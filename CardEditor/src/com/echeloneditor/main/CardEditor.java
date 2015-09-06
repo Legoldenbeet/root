@@ -39,6 +39,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
@@ -165,7 +166,15 @@ public class CardEditor {
 			}
 		});
 		// 启动同步接收和发送服务
-		new SeppImpl().open(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				new SeppImpl(tabbedPane,statusObject).open(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
+			}
+		});
+		
 	}
 
 	/**
@@ -208,7 +217,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent actionevent) {
 				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					new SeppImpl().sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+					new SeppImpl(tabbedPane,statusObject).sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -10,6 +10,9 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.mina.core.future.ReadFuture;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -18,25 +21,32 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.executor.ExecutorFilter;
+import org.apache.mina.filter.logging.LoggingFilter;
+import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.Cmd;
+import com.echeloneditor.vo.StatusObject;
 import com.watchdata.commons.lang.WDByteUtil;
-import com.watchdata.commons.lang.WDStringUtil;
 
 public class SeppImpl implements Sepp {
+	JTabbedPane tabbedPane;
+	StatusObject statusObject;
 
-	public SeppImpl() {
+	public SeppImpl(JTabbedPane tabbedPane, StatusObject statusObject) {
+		this.tabbedPane = tabbedPane;
+		this.statusObject = statusObject;
 	}
 
 	@Override
 	public String process(byte[] data) {
-		String resp="success_done.";
+		String resp = "success_done.";
 		try {
 			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
 			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
@@ -56,14 +66,14 @@ public class SeppImpl implements Sepp {
 					closeFile();
 					break;
 				case Sepp.INS_TERM_INFO_NAME:
-					resp=getTermUserName();
+					resp = getTermUserName();
 					break;
 				default:
 					break;
 				}
 			}
 		} catch (Exception e) {
-			resp= e.getMessage();
+			resp = e.getMessage();
 		}
 		return resp;
 	}
@@ -91,28 +101,32 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(data, offset, fileNameBytes, 0, fileNameLen);
 		offset += fileNameLen;
 		String fileName = new String(fileNameBytes, "GBK");
-		File file = new File(FileAction.USER_DIR + "/"+Config.getValue("CONFIG", "debugPath")+"/" + fileName);
+		final File file = new File(FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
 		if (!file.getParentFile().exists()) {
 			file.mkdir();
 		}
 		if (file.exists()) {
 			FileUtils.deleteQuietly(file);
-		}else {
+		} else {
 			file.createNewFile();
 		}
-		
+
 		FileOutputStream fos = new FileOutputStream(file);
 		BufferedOutputStream bw = new BufferedOutputStream(fos);
-		
+
 		bw.write(data, offset, data.length - offset);
 		bw.flush();
 		fos.close();
 		bw.close();
+		SwingUtilities.invokeLater(new Runnable() {
 
-		//PooledConnectionHandler.processRequest(file);
-		// FileHander fileHander = new FileHander(tabbedPane, statusObject);
-		// fileHander.openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
-		// JOptionPane.showMessageDialog(null, "ok");
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+			}
+		});
+
 	}
 
 	/**
@@ -124,24 +138,24 @@ public class SeppImpl implements Sepp {
 	 * @throws Exception
 	 */
 	public boolean sendFile(File file, String targetIp) throws Exception {
-		FileInputStream fileInputStream=new FileInputStream(file);
-		int len=fileInputStream.available();
-		byte[] data=new byte[Sepp.CMD_LEN+Sepp.FILE_NAME_LEN+file.getName().getBytes("GBK").length+len];
-		byte[] fileBytes=new byte[len];
-		
+		FileInputStream fileInputStream = new FileInputStream(file);
+		int len = fileInputStream.available();
+		byte[] data = new byte[Sepp.CMD_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("GBK").length + len];
+		byte[] fileBytes = new byte[len];
+
 		fileInputStream.read(fileBytes);
-		int pos=0;
+		int pos = 0;
 		System.arraycopy(WDByteUtil.HEX2Bytes("0F000000"), 0, data, pos, 4);
-		int fileNameLen=file.getName().getBytes("GBK").length;
-		pos+=4;
-		data[pos]=(byte)fileNameLen;
+		int fileNameLen = file.getName().getBytes("GBK").length;
+		pos += 4;
+		data[pos] = (byte) fileNameLen;
 		pos++;
 		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
-		pos+=fileNameLen;
+		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
 		fileInputStream.close();
-		
-		new SeppImpl().send(data, targetIp, 9991);
+
+		send(data, targetIp, 9991);
 		return true;
 	}
 
@@ -173,16 +187,18 @@ public class SeppImpl implements Sepp {
 
 	public static void main(String[] args) throws Exception {
 		// new SeppImpl().scanFriend();
-		WindowsExcuter.excute(new File("."), "cmd.exe /c telnet 10.0.97.68 9000",true);
+		WindowsExcuter.excute(new File("."), "cmd.exe /c telnet 10.0.97.68 9000", true);
 	}
 
 	@Override
 	public void open(int seppPort) {
 		try {
 			NioSocketAcceptor acceptor = new NioSocketAcceptor();
+			acceptor.getFilterChain().addLast("logger", new LoggingFilter());
 			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
 			Executor threadPool = Executors.newCachedThreadPool();// 建立线程池
 			acceptor.getFilterChain().addLast("exector", new ExecutorFilter(threadPool));
+			acceptor.getSessionConfig().setReuseAddress(true);
 			acceptor.setHandler(new SeppIOHander());
 			acceptor.bind(new InetSocketAddress(seppPort));
 			Debug.log.debug("Service started on port " + seppPort + "...");
@@ -192,7 +208,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public String send(byte[] msg,String ip,int port) {
+	public String send(byte[] msg, String ip, int port) {
 		String recv = "";
 		NioSocketConnector connector = new NioSocketConnector();
 		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
@@ -213,17 +229,17 @@ public class SeppImpl implements Sepp {
 			connector.dispose();
 		}
 		return recv;
-		
+
 	}
-	
-	private class SeppIOHander extends IoHandlerAdapter{
+
+	private class SeppIOHander extends IoHandlerAdapter {
 		public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
 			Debug.log.info("exceptionCaught=" + cause.toString());
 			cause.printStackTrace();
 		}
 
 		public void messageSent(IoSession session, Object message) throws Exception {
-			Debug.log.info("messageSent="+session.getRemoteAddress().toString());
+			Debug.log.info("messageSent=" + session.getRemoteAddress().toString());
 		}
 
 		public void sessionClosed(IoSession session) throws Exception {
@@ -232,21 +248,23 @@ public class SeppImpl implements Sepp {
 		}
 
 		public void sessionCreated(IoSession session) throws Exception {
-			Debug.log.info("sessionCreated="+session.getRemoteAddress().toString());
+			SocketSessionConfig cfg = (SocketSessionConfig) session.getConfig();
+			cfg.setSoLinger(0);
+			Debug.log.info("sessionCreated=" + session.getRemoteAddress().toString());
 		}
 
 		public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-			Debug.log.info("sessionIdle="+status.toString()+"="+session.getRemoteAddress().toString());
+			Debug.log.info("sessionIdle=" + status.toString() + "=" + session.getRemoteAddress().toString());
 		}
 
 		public void sessionOpened(IoSession session) throws Exception {
-			Debug.log.info("sessionOpened="+session.getRemoteAddress().toString());
+			Debug.log.info("sessionOpened=" + session.getRemoteAddress().toString());
 		}
 
 		public void messageReceived(IoSession session, Object msg) throws Exception {
 			try {
 				Debug.log.info("接收到的报文数据：" + msg.toString());
-				String recv=process((byte[])msg);
+				String recv = process((byte[]) msg);
 				session.write(recv);
 				Debug.log.info("发送出的报文数据：" + recv);
 			} catch (Exception e) {

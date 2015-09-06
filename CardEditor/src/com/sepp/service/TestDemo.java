@@ -47,7 +47,7 @@ public class TestDemo {
 			
 			fileInputStream.close();
 			
-			Sepp sepp=new SeppImpl();
+			Sepp sepp=new SeppImpl(null,null);
 			String res=sepp.send(data, "127.0.0.1", 9991);
 			System.out.println(res);
 		}
