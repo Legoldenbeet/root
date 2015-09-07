@@ -151,7 +151,7 @@ public class SeppImpl implements Sepp {
 			@Override
 			public void run() {
 				try {
-					WindowsExcuter.excute(file, "cmd /c start \"\" \"" + file.getPath() + "\"", false);
+					Runtime.getRuntime().exec("cmd /c start \"\" \"" + file.getPath() + "\"");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
