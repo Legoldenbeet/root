@@ -3,13 +3,17 @@ package com.sepp.service;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -101,7 +105,7 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(data, offset, fileNameBytes, 0, fileNameLen);
 		offset += fileNameLen;
 		String fileName = new String(fileNameBytes, "GBK");
-		final File file = new File(FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
+		File file = new File(FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
 		if (!file.getParentFile().exists()) {
 			file.mkdir();
 		}
@@ -110,7 +114,7 @@ public class SeppImpl implements Sepp {
 		} else {
 			file.createNewFile();
 		}
-
+		
 		FileOutputStream fos = new FileOutputStream(file);
 		BufferedOutputStream bw = new BufferedOutputStream(fos);
 
@@ -118,6 +122,18 @@ public class SeppImpl implements Sepp {
 		bw.flush();
 		fos.close();
 		bw.close();
+		
+		Collection<String> fileTypeList=Config.getItems("FILE_TYPE");
+		String fileExt=fileName.substring(fileName.indexOf(".")+1);
+		if (fileTypeList.contains(fileExt)) {
+			openFile(file);
+		}else {
+			openDir(file);
+		}
+	}
+
+	private void openFile(final File file) throws IOException{
+		//在编辑区打开文件开启独立线程
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -126,9 +142,23 @@ public class SeppImpl implements Sepp {
 				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
 			}
 		});
-
 	}
+	
+	private void openDir(final File file) throws IOException{
+		//在编辑区打开文件开启独立线程
+		SwingUtilities.invokeLater(new Runnable() {
 
+			@Override
+			public void run() {
+				try {
+					WindowsExcuter.excute(file, "cmd /c start \"\" \"" + file.getPath() + "\"", false);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 	/**
 	 * send file to targetIp
 	 * 
@@ -216,10 +246,10 @@ public class SeppImpl implements Sepp {
 		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 		IoSession session = connector.connect(new InetSocketAddress(ip, port)).awaitUninterruptibly().getSession();
 		try {
-			session.write(msg).awaitUninterruptibly();
+			session.write(msg).awaitUninterruptibly(3, TimeUnit.SECONDS);
 			Debug.log.info("Send：" + msg);
 			ReadFuture readFuture = session.read();
-			if (readFuture.awaitUninterruptibly(1000, TimeUnit.SECONDS)) {
+			if (readFuture.awaitUninterruptibly(3, TimeUnit.SECONDS)) {
 				recv = readFuture.getMessage().toString();
 				Debug.log.info("Recv：" + recv);
 			}
