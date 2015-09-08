@@ -128,7 +128,7 @@ public class SeppImpl implements Sepp {
 		if (fileTypeList.contains(fileExt)) {
 			openFile(file);
 		}else {
-			openDir(file);
+			openDir(file.getParent());
 		}
 	}
 
@@ -144,20 +144,13 @@ public class SeppImpl implements Sepp {
 		});
 	}
 	
-	private void openDir(final File file) throws IOException{
-		//在编辑区打开文件开启独立线程
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					Runtime.getRuntime().exec("cmd /c start \"\" \"" + file.getPath() + "\"");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+	public void openDir(String target) {
+		try {
+			WindowsExcuter.excute(new File("."), "cmd.exe /c start " + target+"\\",false);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	/**
 	 * send file to targetIp
