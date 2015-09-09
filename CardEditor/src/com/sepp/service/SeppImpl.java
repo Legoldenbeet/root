@@ -18,17 +18,29 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.future.ReadFuture;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
+import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
+import org.apache.mina.filter.codec.ProtocolDecoder;
+import org.apache.mina.filter.codec.ProtocolDecoderAdapter;
+import org.apache.mina.filter.codec.ProtocolDecoderOutput;
+import org.apache.mina.filter.codec.ProtocolEncoder;
+import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
+import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit.EndAction;
+
+import sun.reflect.generics.tree.Tree;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
@@ -38,6 +50,8 @@ import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.Cmd;
 import com.echeloneditor.vo.StatusObject;
 import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDEncodeUtil;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class SeppImpl implements Sepp {
 	JTabbedPane tabbedPane;
@@ -114,7 +128,7 @@ public class SeppImpl implements Sepp {
 		} else {
 			file.createNewFile();
 		}
-		
+
 		FileOutputStream fos = new FileOutputStream(file);
 		BufferedOutputStream bw = new BufferedOutputStream(fos);
 
@@ -122,18 +136,18 @@ public class SeppImpl implements Sepp {
 		bw.flush();
 		fos.close();
 		bw.close();
-		
-		Collection<String> fileTypeList=Config.getItems("FILE_TYPE");
-		String fileExt=fileName.substring(fileName.indexOf(".")+1);
+
+		Collection<String> fileTypeList = Config.getItems("FILE_TYPE");
+		String fileExt = fileName.substring(fileName.indexOf(".") + 1);
 		if (fileTypeList.contains(fileExt)) {
 			openFile(file);
-		}else {
+		} else {
 			openDir(file.getParent());
 		}
 	}
 
-	private void openFile(final File file) throws IOException{
-		//在编辑区打开文件开启独立线程
+	private void openFile(final File file) throws IOException {
+		// 在编辑区打开文件开启独立线程
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -143,15 +157,16 @@ public class SeppImpl implements Sepp {
 			}
 		});
 	}
-	
+
 	public void openDir(String target) {
 		try {
-			WindowsExcuter.excute(new File("."), "cmd.exe /c start " + target+"\\",false);
+			WindowsExcuter.excute(new File("."), "cmd.exe /c start " + target + "\\", false);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * send file to targetIp
 	 * 
@@ -163,17 +178,17 @@ public class SeppImpl implements Sepp {
 	public boolean sendFile(File file, String targetIp) throws Exception {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		int len = fileInputStream.available();
-		byte[] data = new byte[Sepp.CMD_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("GBK").length + len];
+		byte[] data = new byte[Sepp.CMD_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("UTF-8").length + len];
 		byte[] fileBytes = new byte[len];
 
 		fileInputStream.read(fileBytes);
 		int pos = 0;
 		System.arraycopy(WDByteUtil.HEX2Bytes("0F000000"), 0, data, pos, 4);
-		int fileNameLen = file.getName().getBytes("GBK").length;
+		int fileNameLen = file.getName().getBytes("UTF-8").length;
 		pos += 4;
 		data[pos] = (byte) fileNameLen;
 		pos++;
-		System.arraycopy(file.getName().getBytes("GBK"), 0, data, pos, fileNameLen);
+		System.arraycopy(file.getName().getBytes("UTF-8"), 0, data, pos, fileNameLen);
 		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
 		fileInputStream.close();
@@ -218,7 +233,7 @@ public class SeppImpl implements Sepp {
 		try {
 			NioSocketAcceptor acceptor = new NioSocketAcceptor();
 			acceptor.getFilterChain().addLast("logger", new LoggingFilter());
-			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
+			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ByteArrayCodecFactory()));
 			Executor threadPool = Executors.newCachedThreadPool();// 建立线程池
 			acceptor.getFilterChain().addLast("exector", new ExecutorFilter(threadPool));
 			acceptor.getSessionConfig().setReuseAddress(true);
@@ -234,15 +249,15 @@ public class SeppImpl implements Sepp {
 	public String send(byte[] msg, String ip, int port) {
 		String recv = "";
 		NioSocketConnector connector = new NioSocketConnector();
-		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
+		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ByteArrayCodecFactory()));
 		connector.getSessionConfig().setUseReadOperation(true);
 		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 		IoSession session = connector.connect(new InetSocketAddress(ip, port)).awaitUninterruptibly().getSession();
 		try {
-			session.write(msg).awaitUninterruptibly(3, TimeUnit.SECONDS);
+			session.write(msg).awaitUninterruptibly(10, TimeUnit.SECONDS);
 			Debug.log.info("Send：" + msg);
 			ReadFuture readFuture = session.read();
-			if (readFuture.awaitUninterruptibly(3, TimeUnit.SECONDS)) {
+			if (readFuture.awaitUninterruptibly(10, TimeUnit.SECONDS)) {
 				recv = readFuture.getMessage().toString();
 				Debug.log.info("Recv：" + recv);
 			}
@@ -294,5 +309,85 @@ public class SeppImpl implements Sepp {
 				Debug.log.debug(e.getMessage());
 			}
 		}
+	}
+
+	private class ByteArrayCodecFactory implements ProtocolCodecFactory {
+		private ByteArrayDecoder decoder = null;
+		private ByteArrayEncoder encoder = null;
+
+		public ByteArrayCodecFactory() {
+			encoder = new ByteArrayEncoder();
+			decoder = new ByteArrayDecoder();
+		}
+
+		@Override
+		public ProtocolDecoder getDecoder(IoSession iosession) throws Exception {
+			// TODO Auto-generated method stub
+			return decoder;
+		}
+
+		@Override
+		public ProtocolEncoder getEncoder(IoSession iosession) throws Exception {
+			// TODO Auto-generated method stub
+			return encoder;
+		}
+	}
+	private class ByteArrayDecoder extends CumulativeProtocolDecoder {
+
+		@Override
+		protected boolean doDecode(IoSession iosession, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
+			if (in.remaining()<Sepp.headerLen) {
+				return false;
+			}
+			if (in.remaining() > 0) {
+				// 有数据时，读取 4 字节判断消息长度
+				byte[] sizeBytes = new byte[Sepp.headerLen];
+
+				// 标记当前位置，以便 reset
+				in.mark();
+
+				// 读取钱 4 个字节
+				in.get(sizeBytes);
+				int size = Integer.parseInt(WDByteUtil.bytes2HEX(sizeBytes),16);
+				int left=in.remaining();
+				if (size >left) {
+					// 如果消息内容的长度不够，则重置（相当于不读取 size），返回 false
+					in.reset();
+					// 接收新数据，以拼凑成完整的数据~
+					return false;
+				} else {
+					byte[] dataBytes = new byte[size];
+					in.get(dataBytes, 0, size);
+					out.write(dataBytes);
+					if (in.remaining() > 0) {
+						// 如果读取内容后还粘了包，就让父类把剩下的数据再给解析一次~
+						return true;
+					}
+				}
+			}
+			// 处理成功，让父类进行接收下个包
+			return false;
+		}
+	}
+
+	private class ByteArrayEncoder extends ProtocolEncoderAdapter {
+
+		@Override
+		public void encode(IoSession iosession, Object obj, ProtocolEncoderOutput out) throws Exception {
+			// TODO Auto-generated method stub
+			byte[] bytes=(byte[])obj;
+			IoBuffer buffer=IoBuffer.allocate(1024,true);
+			buffer.setAutoExpand(true);
+			
+			buffer.put(WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(bytes.length+"", Sepp.headerLen*2)));
+			buffer.put(bytes);
+			buffer.flip();
+			
+			out.write(buffer);
+			out.flush();
+			
+//			buffer.free();
+		}
+
 	}
 }

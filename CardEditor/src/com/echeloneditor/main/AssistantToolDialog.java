@@ -1,7 +1,6 @@
 package com.echeloneditor.main;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -13,7 +12,6 @@ import java.security.MessageDigest;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,7 +21,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import com.echeloneditor.utils.Config;
@@ -345,7 +342,21 @@ public class AssistantToolDialog extends JPanel {
 		JButton btnNot = new JButton("NOT");
 		btnNot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, "未实现！");
+				//String com1 = keyField.getText();
+				String com2 = dataField.getText();
+
+				if (com2.length() % 2 != 0) {
+					JOptionPane.showMessageDialog(null, "不是整字节！");
+					return;
+				}
+
+				byte[] com2Bytes=WDByteUtil.HEX2Bytes(com2);
+
+				for (int i = 0; i < com2Bytes.length; i++) {
+					com2Bytes[i] = (byte)(~com2Bytes[i]);
+				}
+
+				restultField.setText(WDByteUtil.bytes2HEX(com2Bytes));
 			}
 		});
 		btnNot.setBounds(799, 423, 112, 25);
