@@ -7,6 +7,7 @@ import com.echeloneditor.vo.Cmd;
 
 public interface Sepp {
 	public final byte headerLen=Byte.parseByte(Config.getValue("CONFIG", "seppHeaderLen"));
+	public final int packetSize=Integer.parseInt(Config.getValue("CONFIG", "seppPacketSize"));
 	public final byte CLA_TERMINAL_INFO=0x0A;
 	public final byte CLA_FILE_OPERATION=0x0F;
 	

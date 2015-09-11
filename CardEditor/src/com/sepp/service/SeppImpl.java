@@ -3,7 +3,6 @@ package com.sepp.service;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -13,7 +12,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -27,7 +25,6 @@ import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolDecoderAdapter;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
@@ -38,9 +35,6 @@ import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextAreaEditorKit.EndAction;
-
-import sun.reflect.generics.tree.Tree;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
@@ -48,9 +42,9 @@ import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.Cmd;
+import com.echeloneditor.vo.FileHeader;
 import com.echeloneditor.vo.StatusObject;
 import com.watchdata.commons.lang.WDByteUtil;
-import com.watchdata.commons.lang.WDEncodeUtil;
 import com.watchdata.commons.lang.WDStringUtil;
 
 public class SeppImpl implements Sepp {
@@ -233,7 +227,7 @@ public class SeppImpl implements Sepp {
 		try {
 			NioSocketAcceptor acceptor = new NioSocketAcceptor();
 			acceptor.getFilterChain().addLast("logger", new LoggingFilter());
-			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ByteArrayCodecFactory()));
+			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
 			Executor threadPool = Executors.newCachedThreadPool();// 建立线程池
 			acceptor.getFilterChain().addLast("exector", new ExecutorFilter(threadPool));
 			acceptor.getSessionConfig().setReuseAddress(true);
@@ -249,7 +243,7 @@ public class SeppImpl implements Sepp {
 	public String send(byte[] msg, String ip, int port) {
 		String recv = "";
 		NioSocketConnector connector = new NioSocketConnector();
-		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ByteArrayCodecFactory()));
+		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
 		connector.getSessionConfig().setUseReadOperation(true);
 		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 		IoSession session = connector.connect(new InetSocketAddress(ip, port)).awaitUninterruptibly().getSession();
@@ -335,29 +329,30 @@ public class SeppImpl implements Sepp {
 	private class ByteArrayDecoder extends CumulativeProtocolDecoder {
 
 		@Override
-		protected boolean doDecode(IoSession iosession, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
-			if (in.remaining()<Sepp.headerLen) {
-				return false;
-			}
+		protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
+			in.setAutoExpand(true);
 			if (in.remaining() > 0) {
-				// 有数据时，读取 4 字节判断消息长度
-				byte[] sizeBytes = new byte[Sepp.headerLen];
-
-				// 标记当前位置，以便 reset
+				FileHeader fileHeader=(FileHeader)session.getAttribute("fileHeaer");
+				if (fileHeader==null||fileHeader.getSize()<=0) {
+					fileHeader=new FileHeader();
+					// 有数据时，读取 4 字节判断消息长度
+					byte[] sizeBytes = new byte[Sepp.headerLen];
+					// 读取钱 4 个字节
+					in.get(sizeBytes);
+					int size = Integer.parseInt(WDByteUtil.bytes2HEX(sizeBytes),16);
+					fileHeader.setSize(size);
+					session.setAttribute("fileHeaer", fileHeader);
+				}
 				in.mark();
-
-				// 读取钱 4 个字节
-				in.get(sizeBytes);
-				int size = Integer.parseInt(WDByteUtil.bytes2HEX(sizeBytes),16);
-				int left=in.remaining();
-				if (size >left) {
+				int fileSize=fileHeader.getSize();
+				if (fileSize >in.remaining()) {
 					// 如果消息内容的长度不够，则重置（相当于不读取 size），返回 false
 					in.reset();
 					// 接收新数据，以拼凑成完整的数据~
 					return false;
 				} else {
-					byte[] dataBytes = new byte[size];
-					in.get(dataBytes, 0, size);
+					byte[] dataBytes = new byte[fileSize];
+					in.get(dataBytes, 0, fileSize);
 					out.write(dataBytes);
 					if (in.remaining() > 0) {
 						// 如果读取内容后还粘了包，就让父类把剩下的数据再给解析一次~
@@ -386,7 +381,7 @@ public class SeppImpl implements Sepp {
 			out.write(buffer);
 			out.flush();
 			
-//			buffer.free();
+			buffer.free();
 		}
 
 	}
