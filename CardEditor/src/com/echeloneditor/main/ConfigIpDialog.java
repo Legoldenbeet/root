@@ -62,6 +62,7 @@ public class ConfigIpDialog extends JDialog {
 		textField.setColumns(10);
 
 		btnNewButton = new JButton("连接");
+		btnNewButton.setBorderPainted(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				IKms iKms = IKms.getInstance();
@@ -99,6 +100,7 @@ public class ConfigIpDialog extends JDialog {
 		getContentPane().add(lblNewLabel_1);
 
 		btnNewButton_1 = new JButton("断开");
+		btnNewButton_1.setBorderPainted(false);
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				IKms iKms = IKms.getInstance();

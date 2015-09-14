@@ -328,6 +328,7 @@ public class SwingUtils {
 		UIManager.getDefaults().put("PopupMenu.font", commonFont);
 		UIManager.getDefaults().put("TitledBorder.font", commonFont);
 		UIManager.getDefaults().put("ComboBox.font", commonFont);
+		UIManager.getDefaults().put("JButton.font", commonFont);
 	}
 
 	/**
