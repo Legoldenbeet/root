@@ -47,7 +47,7 @@ public class AssistantToolDialog extends JPanel {
 	private JTextField keyField;
 	private JLabel lblResult;
 	private StatusObject statusObject;
-	private JTextField textField;
+	private JTextField ivTextField;
 	private JTextField lenTextField_1;
 	private JTextField expTextField_2;
 	private JTextField modulusTextField_1;
@@ -214,11 +214,11 @@ public class AssistantToolDialog extends JPanel {
 					if (chckbxHsm.isSelected()) {
 						IKms iKms = IKms.getInstance();
 
-						restultField.setText(iKms.encrypt(keyField.getText(), IKms.DES_CBC, dataField.getText(), "0000000000000000", Config.getValue("HSM", "IP") + "_" + Config.getValue("HSM", "PORT")));
+						restultField.setText(iKms.encrypt(keyField.getText(), IKms.DES_CBC, dataField.getText(), ivTextField.getText().trim(), Config.getValue("HSM", "IP") + "_" + Config.getValue("HSM", "PORT")));
 						Config.setValue("HSM", "keyindex", keyField.getText());
 
 					} else {
-						restultField.setText(WD3DesCryptoUtil.cbc_encrypt(keyField.getText(), dataField.getText(), Padding.NoPadding, "0000000000000000"));
+						restultField.setText(WD3DesCryptoUtil.cbc_encrypt(keyField.getText(), dataField.getText(), Padding.NoPadding, ivTextField.getText().trim()));
 					}
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage());
@@ -237,11 +237,11 @@ public class AssistantToolDialog extends JPanel {
 					if (chckbxHsm.isSelected()) {
 						IKms iKms = IKms.getInstance();
 
-						restultField.setText(iKms.decrypt(keyField.getText(), IKms.DES_CBC, dataField.getText(), "0000000000000000", Config.getValue("HSM", "IP") + "_" + Config.getValue("HSM", "PORT")));
+						restultField.setText(iKms.decrypt(keyField.getText(), IKms.DES_CBC, dataField.getText(), ivTextField.getText().trim(), Config.getValue("HSM", "IP") + "_" + Config.getValue("HSM", "PORT")));
 						Config.setValue("HSM", "keyindex", keyField.getText());
 
 					} else {
-						restultField.setText(WD3DesCryptoUtil.cbc_decrypt(keyField.getText(), dataField.getText(), Padding.NoPadding, "0000000000000000"));
+						restultField.setText(WD3DesCryptoUtil.cbc_decrypt(keyField.getText(), dataField.getText(), Padding.NoPadding, ivTextField.getText().trim()));
 					}
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, e1.getMessage());
@@ -501,11 +501,11 @@ public class AssistantToolDialog extends JPanel {
 		btnRsagenerate.setBounds(316, 603, 125, 25);
 		contentPanel.add(btnRsagenerate);
 
-		textField = new JTextField();
-		textField.setText("0000000000000000");
-		textField.setBounds(444, 15, 155, 22);
-		contentPanel.add(textField);
-		textField.setColumns(10);
+		ivTextField = new JTextField();
+		ivTextField.setText("0000000000000000");
+		ivTextField.setBounds(444, 15, 155, 22);
+		contentPanel.add(ivTextField);
+		ivTextField.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Iv:");
 		lblNewLabel_1.setBounds(414, 15, 33, 21);
