@@ -96,6 +96,7 @@ public class AssistantToolDialog extends JPanel {
 
 		final JButton configip = new JButton("设置");
 		configip.setBorderPainted(false);
+		configip.setFocusPainted(false);
 		configip.setVisible(false);
 		configip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -140,6 +141,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(lblResult);
 
 		JButton btnBase = new JButton("Base64解码");
+		btnBase.setFocusPainted(false);
 		btnBase.setBorderPainted(false);
 		btnBase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -150,6 +152,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnBase);
 
 		JButton btnBase_1 = new JButton("Base64编码");
+		btnBase_1.setFocusPainted(false);
 		btnBase_1.setBorderPainted(false);
 		btnBase_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -160,7 +163,8 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnBase_1);
 
 		JButton btnNewButton = new JButton("ECB DES");
-		// btnNewButton.setFocusPainted(false);
+		btnNewButton.setFocusPainted(false);
+		btnNewButton.setFocusPainted(false);
 		btnNewButton.setBorderPainted(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -184,6 +188,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton);
 
 		JButton btnEcbDecrypt = new JButton("ECB Decrypt");
+		btnEcbDecrypt.setFocusPainted(false);
 		btnEcbDecrypt.setBorderPainted(false);
 		btnEcbDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -207,6 +212,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnEcbDecrypt);
 
 		JButton btnCbcDes = new JButton("CBC DES");
+		btnCbcDes.setFocusPainted(false);
 		btnCbcDes.setBorderPainted(false);
 		btnCbcDes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -230,6 +236,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnCbcDes);
 
 		JButton btnCbcDecrypt = new JButton("CBC Decrypt");
+		btnCbcDecrypt.setFocusPainted(false);
 		btnCbcDecrypt.setBorderPainted(false);
 		btnCbcDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -253,6 +260,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnCbcDecrypt);
 
 		JButton btnNewButton_1 = new JButton("TDES MAC");
+		btnNewButton_1.setFocusPainted(false);
 		btnNewButton_1.setBorderPainted(false);
 		btnNewButton_1.setToolTipText("Full Triple DES MAC");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -265,6 +273,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton_1);
 
 		JButton btnNewButton_2 = new JButton("MAC");
+		btnNewButton_2.setFocusPainted(false);
 		btnNewButton_2.setBorderPainted(false);
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -276,6 +285,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton_2);
 
 		JButton btnNewButton_3 = new JButton("ASC->String");
+		btnNewButton_3.setFocusPainted(false);
 		btnNewButton_3.setBorderPainted(false);
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -291,6 +301,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton_3);
 
 		JButton btnNewButton_4 = new JButton("String->ASC");
+		btnNewButton_4.setFocusPainted(false);
 		btnNewButton_4.setBorderPainted(false);
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -306,6 +317,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton_4);
 
 		JButton btnNewButton_5 = new JButton("SHA1");
+		btnNewButton_5.setFocusPainted(false);
 		btnNewButton_5.setBorderPainted(false);
 		btnNewButton_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -316,6 +328,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton_5);
 
 		JButton btnNewButton_6 = new JButton("MD5");
+		btnNewButton_6.setFocusPainted(false);
 		btnNewButton_6.setBorderPainted(false);
 		btnNewButton_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -326,6 +339,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNewButton_6);
 
 		JButton btnXor = new JButton("XOR");
+		btnXor.setFocusPainted(false);
 		btnXor.setBorderPainted(false);
 		btnXor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -362,6 +376,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnXor);
 
 		JButton btnNot = new JButton("NOT");
+		btnNot.setFocusPainted(false);
 		btnNot.setBorderPainted(false);
 		btnNot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -386,6 +401,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnNot);
 
 		JButton btnSha = new JButton("SHA256");
+		btnSha.setFocusPainted(false);
 		btnSha.setBorderPainted(false);
 		btnSha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -396,6 +412,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnSha);
 
 		JButton btnSha_1 = new JButton("SHA512");
+		btnSha_1.setFocusPainted(false);
 		btnSha_1.setBorderPainted(false);
 		btnSha_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -406,6 +423,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnSha_1);
 
 		JButton btnShafile = new JButton("File->SHA1");
+		btnShafile.setFocusPainted(false);
 		btnShafile.setBorderPainted(false);
 		btnShafile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -441,6 +459,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnShafile);
 
 		JButton btnMdfile = new JButton("File->MD5");
+		btnMdfile.setFocusPainted(false);
 		btnMdfile.setBorderPainted(false);
 		btnMdfile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -476,6 +495,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnMdfile);
 
 		JButton btnRsapublicdecrypt = new JButton("RSA_Decrypt");
+		btnRsapublicdecrypt.setFocusPainted(false);
 		btnRsapublicdecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				restultField.setText(RsaUtil.rsa_decrypt(modulusTextField_1.getText().trim(), expTextField_2.getText().trim(), dataField.getText().trim()));
@@ -486,6 +506,7 @@ public class AssistantToolDialog extends JPanel {
 		contentPanel.add(btnRsapublicdecrypt);
 
 		JButton btnRsagenerate = new JButton("RSA_Generate");
+		btnRsagenerate.setFocusPainted(false);
 		btnRsagenerate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {

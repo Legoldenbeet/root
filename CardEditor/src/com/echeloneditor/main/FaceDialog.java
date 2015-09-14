@@ -130,6 +130,7 @@ public class FaceDialog extends JDialog {
 
 		JButton btnNewButton = new JButton("保存设置");
 		btnNewButton.setBorderPainted(false);
+		btnNewButton.setFocusPainted(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String select = lafList.getSelectedValue().toString();
@@ -154,6 +155,7 @@ public class FaceDialog extends JDialog {
 
 		JButton button = new JButton("恢复默认");
 		button.setBorderPainted(false);
+		button.setFocusPainted(false);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Config.setValue("CURRENT_THEME","current_laf", "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");

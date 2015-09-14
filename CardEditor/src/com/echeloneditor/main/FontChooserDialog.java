@@ -442,6 +442,8 @@ public class FontChooserDialog extends JDialog {
 	private JButton getBtOK() {
 		if (btOK == null) {
 			btOK = new JButton();
+			btOK.setFocusPainted(false);
+			btOK.setBorderPainted(false);
 			btOK.setBounds(new Rectangle(365, 14, 65, 24));
 			btOK.setText("确定");
 			btOK.addActionListener(new java.awt.event.ActionListener() {
@@ -475,6 +477,8 @@ public class FontChooserDialog extends JDialog {
 	private JButton getBtCancel() {
 		if (btCancel == null) {
 			btCancel = new JButton();
+			btCancel.setFocusPainted(false);
+			btCancel.setBorderPainted(false);
 			btCancel.setBounds(new Rectangle(365, 46, 65, 24));
 			btCancel.setText("取消");
 			btCancel.addActionListener(new ActionListener() {
