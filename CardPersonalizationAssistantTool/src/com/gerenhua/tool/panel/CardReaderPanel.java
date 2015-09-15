@@ -1,5 +1,7 @@
 package com.gerenhua.tool.panel;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
@@ -27,21 +30,6 @@ import com.gerenhua.tool.logic.apdu.pcsc.PcscChannel;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.FileUtil;
 import com.gerenhua.tool.utils.PropertiesManager;
-
-/**
- * TerminalTypeConfigPanel.java
- * 
- * @description: 读卡器配置界面
- * 
- * @author: pei.li 2012-4-26
- * 
- * @version:1.0.0
- * 
- * @modify：
- * 
- * @Copyright：watchdata
- */
-
 public class CardReaderPanel extends JPanel {
 
 	private static final long serialVersionUID = -6360462745055001746L;
@@ -51,7 +39,8 @@ public class CardReaderPanel extends JPanel {
 	private PropertiesManager pm = new PropertiesManager();
 	public PcscChannel apduChannel = new PcscChannel();
 	public static CommonAPDU commonAPDU;
-
+	private JTextField resetTextField;
+	public JButton btnNewButton_2;
 	/**
 	 * Create the panel
 	 */
@@ -116,14 +105,11 @@ public class CardReaderPanel extends JPanel {
 				if (comboBox.getSelectedItem() != null) {
 					String reader = comboBox.getSelectedItem().toString();
 					HashMap<String, String> res = commonAPDU.reset(reader);
-					StringSelection atr = new StringSelection(res.get("atr"));
-					// Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-
 					String atrS = "";
-
 					if ("9000".equals(res.get("sw"))) {
-						// clipboard.setContents(atr, null);
 						atrS = res.get("atr");
+						resetTextField.setText(res.get("atr"));
+						btnNewButton_2.setEnabled(true);
 					} else {
 						atrS = "";
 					}
@@ -196,6 +182,24 @@ public class CardReaderPanel extends JPanel {
 		btnNewButton_1.setFocusPainted(false);
 		btnNewButton_1.setBorderPainted(false);
 		add(btnNewButton_1);
+		
+		resetTextField = new JTextField();
+		resetTextField.setBounds(70, 41, 365, 20);
+		add(resetTextField);
+		resetTextField.setColumns(10);
+		
+		btnNewButton_2 = new JButton("剪贴板");
+		btnNewButton_2.setBorderPainted(false);
+		btnNewButton_2.setFocusPainted(false);
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				StringSelection atr = new StringSelection(resetTextField.getText().trim());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(atr, null);
+				((JButton)e.getSource()).setEnabled(false);
+			}
+		});
+		btnNewButton_2.setBounds(445, 41, 95, 21);
+		add(btnNewButton_2);
 	}
-
 }
