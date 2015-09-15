@@ -3,6 +3,7 @@
 
 #define MyAppName "CardEditor"
 #define MyAppVersion "1.2.2"
+#define MyAppPublisher "SHUISHUO, Inc."
 #define MyAppExeName "CardEditor.exe"
 
 [Setup]
@@ -12,6 +13,7 @@
 AppId={{F46559D3-701E-42D4-9A84-6D4955575BEF}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
+AppPublisher={#MyAppPublisher}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
