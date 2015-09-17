@@ -78,6 +78,8 @@ public class CardInfoDetectPanel extends JPanel {
 
 	private static JMenuItem mntmCardinfo;
 	private static JMenuItem mntmChangeStatus;
+	private static JMenuItem mntmSetDefaultIsdAid;
+	
 	private static JMenuItem mntmLoad;
 	private static JMenuItem mntmdeleteObj;
 	private static JMenuItem mntmBuildScripts;
@@ -116,7 +118,24 @@ public class CardInfoDetectPanel extends JPanel {
 				setStatusDialog(true, true);
 			}
 		});
-
+		mntmSetDefaultIsdAid=new JMenuItem("DEFAULT ISD AID");
+		mntmSetDefaultIsdAid.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String aid=JOptionPane.showInputDialog(null, "请输入默认ISD AID", "输入框", JOptionPane.INFORMATION_MESSAGE);
+				if (WDAssert.isNotEmpty(aid)) {
+					if (aid.length()<=32&&aid.length()>10) {
+						Config.setValue("Terminal_Data", "defaultISD", aid);
+					}else {
+						JOptionPane.showMessageDialog(null, "AID长度不合法");
+					}
+				}else {
+					Config.setValue("Terminal_Data", "defaultISD", "");
+				}
+			}
+		});
+		
 		mntmLoad = new JMenuItem("LOAD CAP");
 		mntmLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -741,8 +760,8 @@ public class CardInfoDetectPanel extends JPanel {
 						if (nodeName.equalsIgnoreCase("CardInfo")) {
 							popup.removeAll();
 							addMenu(mntmCardinfo, e);
-							// addMenu(mntmCardStatus, e);
 							addMenu(mntmChangeStatus, e);
+							addMenu(mntmSetDefaultIsdAid, e);
 							setStatusDialog(false, false);
 							updateStatusDialog.isISD = true;
 							showMenu(e);
