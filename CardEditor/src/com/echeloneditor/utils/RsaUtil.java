@@ -7,14 +7,18 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.RSAKeyGenParameterSpec;
+
+import javax.crypto.Cipher;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import com.watchdata.commons.crypto.WDKeyUtil;
 import com.watchdata.commons.crypto.WDRsaCryptoUtil;
+import com.watchdata.commons.exception.WDCryptoExcetion;
 import com.watchdata.commons.jce.JceBase.Padding;
 import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
@@ -29,8 +33,12 @@ public class RsaUtil {
 	// log5j打日志
 	private static Logger log = Logger.getLogger(RsaUtil.class);
 
+	public static final String RSA_ECB_NOPADDING = "RSA/ECB/NoPadding";
+	public static BouncyCastleProvider bc=new BouncyCastleProvider();
+
 	/**
 	 * 生成公私钥对
+	 * 
 	 * @param keysize
 	 * @param publicExponent
 	 * @return
@@ -39,9 +47,23 @@ public class RsaUtil {
 	 */
 	public static KeyPair generateKeyPair(int keysize, int publicExponent) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 		RSAKeyGenParameterSpec spec = new RSAKeyGenParameterSpec(keysize, BigInteger.valueOf(publicExponent));
-		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA", new BouncyCastleProvider());
+		KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("RSA",bc);
 		keyPairGen.initialize(spec, new SecureRandom());
 		return keyPairGen.genKeyPair();
+	}
+
+	public static String rsa_encrypt(RSAPrivateKey rsaPrivateKey, String data) {
+		if (rsaPrivateKey == null || data == null)
+			throw new IllegalArgumentException("data is invalid");
+		try {
+			Cipher cipher = Cipher.getInstance(RSA_ECB_NOPADDING,bc);
+			cipher.init(Cipher.ENCRYPT_MODE, rsaPrivateKey);
+			byte temp[] = cipher.doFinal(WDByteUtil.HEX2Bytes(data));
+			return WDByteUtil.bytes2HEX(temp);
+		} catch (Exception e) {
+			throw new WDCryptoExcetion(e);
+		}
+		// return result;
 	}
 
 	/**
@@ -55,7 +77,7 @@ public class RsaUtil {
 	 *            解密数据
 	 * @return
 	 */
-	public static String rsa_decrypt(String modulus, String publicExponent, String dataToDecrypt) {
+	public static String rsa_decrypt(String modulus, String publicExponent, String decryptData) {
 		// 入口数据校检
 		if (WDAssert.isEmpty(modulus)) {
 			log.error("modulus cann't be null.");
@@ -72,7 +94,7 @@ public class RsaUtil {
 			return "";
 		}
 
-		if (WDAssert.isEmpty(dataToDecrypt)) {
+		if (WDAssert.isEmpty(decryptData)) {
 			log.error("decryptData cann't be null.");
 			return "";
 		}
@@ -84,7 +106,7 @@ public class RsaUtil {
 		// 生成公钥对象
 		RSAPublicKey publicKey = WDKeyUtil.generateRSAPublicKey(WDByteUtil.HEX2Bytes(sb.toString()), WDByteUtil.HEX2Bytes(publicExponent));
 		// 调用wd-coder中的rsa解密算法解密数据
-		result = WDRsaCryptoUtil.rsa_decrypt(publicKey, dataToDecrypt, Padding.NoPadding);
+		result = WDRsaCryptoUtil.rsa_decrypt(publicKey, decryptData, Padding.NoPadding);
 
 		return result;
 	}

@@ -502,7 +502,7 @@ public class AssistantToolDialog extends JPanel {
 			}
 		});
 		btnRsapublicdecrypt.setBorderPainted(false);
-		btnRsapublicdecrypt.setBounds(316, 565, 125, 25);
+		btnRsapublicdecrypt.setBounds(316, 603, 125, 25);
 		contentPanel.add(btnRsapublicdecrypt);
 
 		JButton btnRsagenerate = new JButton("RSA_Generate");
@@ -519,7 +519,7 @@ public class AssistantToolDialog extends JPanel {
 			}
 		});
 		btnRsagenerate.setBorderPainted(false);
-		btnRsagenerate.setBounds(316, 603, 125, 25);
+		btnRsagenerate.setBounds(439, 565, 125, 25);
 		contentPanel.add(btnRsagenerate);
 
 		ivTextField = new JTextField();
@@ -561,6 +561,17 @@ public class AssistantToolDialog extends JPanel {
 		modulusTextField_1.setBounds(72, 45, 841, 21);
 		contentPanel.add(modulusTextField_1);
 		modulusTextField_1.setColumns(10);
+		
+		JButton btnRsaencrypt = new JButton("RSA_Encrypt");
+		btnRsaencrypt.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null, "noop.");
+			}
+		});
+		btnRsaencrypt.setFocusPainted(false);
+		btnRsaencrypt.setBorderPainted(false);
+		btnRsaencrypt.setBounds(316, 565, 125, 25);
+		contentPanel.add(btnRsaencrypt);
 
 	}
 }
