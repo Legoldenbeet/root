@@ -33,6 +33,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -167,14 +168,14 @@ public class CardEditor {
 		});
 		// 启动同步接收和发送服务
 		SwingUtilities.invokeLater(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				new SeppImpl(tabbedPane,statusObject).open(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
+				new SeppImpl(tabbedPane, statusObject).open(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
 			}
 		});
-		
+
 	}
 
 	/**
@@ -217,7 +218,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent actionevent) {
 				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					new SeppImpl(tabbedPane,statusObject).sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+					new SeppImpl(tabbedPane, statusObject).sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -816,6 +817,10 @@ public class CardEditor {
 		menuItem_16.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AssistantToolDialog assistantToolDialog = new AssistantToolDialog(statusObject);
+				JScrollPane jScrollPane = new JScrollPane();
+				jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				jScrollPane.setViewportView(assistantToolDialog);
 
 				int tabCount = tabbedPane.getTabCount();
 				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
@@ -823,11 +828,11 @@ public class CardEditor {
 				closeableTabComponent.setFileSzie(0);
 				closeableTabComponent.setFileNameExt(".tool");
 				closeableTabComponent.setModify(false);
-				tabbedPane.add("AssistantTool", assistantToolDialog);
+				tabbedPane.add("AssistantTool", jScrollPane);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 				SwingUtils.setTabbedPaneTitle(tabbedPane, "小工具");
 
-				tabbedPane.setSelectedComponent(assistantToolDialog);
+				tabbedPane.setSelectedComponent(jScrollPane);
 			}
 		});
 
@@ -967,6 +972,8 @@ public class CardEditor {
 		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
 
 		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		centerSplitPaneV.setContinuousLayout(true);
+		centerSplitPaneV.setOneTouchExpandable(true);
 		centerSplitPaneV.setTopComponent(tabbedPane);
 		centerSplitPaneV.setBottomComponent(bottomTabbedPane);
 		centerSplitPaneV.setDividerLocation(0.8);
