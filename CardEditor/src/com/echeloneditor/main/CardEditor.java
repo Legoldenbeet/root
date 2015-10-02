@@ -814,10 +814,10 @@ public class CardEditor {
 		menuItem_16.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AssistantToolDialog assistantToolDialog = new AssistantToolDialog(statusObject);
-				JScrollPane jScrollPane = new JScrollPane();
-				jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-				jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-				jScrollPane.setViewportView(assistantToolDialog);
+//				JScrollPane jScrollPane = new JScrollPane();
+//				jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//				jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//				jScrollPane.setViewportView(assistantToolDialog);
 
 				int tabCount = tabbedPane.getTabCount();
 				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
@@ -825,11 +825,11 @@ public class CardEditor {
 				closeableTabComponent.setFileSzie(0);
 				closeableTabComponent.setFileNameExt(".tool");
 				closeableTabComponent.setModify(false);
-				tabbedPane.add("AssistantTool", jScrollPane);
+				tabbedPane.add("AssistantTool", assistantToolDialog);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 				SwingUtils.setTabbedPaneTitle(tabbedPane, "小工具");
 
-				tabbedPane.setSelectedComponent(jScrollPane);
+				tabbedPane.setSelectedComponent(assistantToolDialog);
 			}
 		});
 
