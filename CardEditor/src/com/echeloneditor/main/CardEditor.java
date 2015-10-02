@@ -93,9 +93,6 @@ public class CardEditor {
 
 	public JSplitPane centerSplitPaneH;
 	public JSplitPane centerSplitPaneV;
-
-	public SystemShell systemShell;
-
 	public static FileHander fileHander;
 	public FileInputStream fis;
 
@@ -152,7 +149,7 @@ public class CardEditor {
 					// 显示窗体
 					frmEcheloneditor.setVisible(true);
 					cardEditor.centerSplitPaneH.setDividerLocation(0.2);
-					cardEditor.centerSplitPaneV.setDividerLocation(0.8);
+					cardEditor.centerSplitPaneV.setDividerLocation(0.95);
 
 					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
 
@@ -965,18 +962,18 @@ public class CardEditor {
 		JSeparator separator_14 = new JSeparator();
 		menu_2.add(separator_14);
 
-		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
-		bottomTabbedPane.addTab("状态信息", statusPanel);
-		systemShell = new SystemShell();
-		RScrollPane shellScrollPane = new DockableWindowScrollPane(systemShell);
-		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
+//		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
+//		bottomTabbedPane.addTab("状态信息", statusPanel);
+//		systemShell = new SystemShell();
+//		RScrollPane shellScrollPane = new DockableWindowScrollPane(systemShell);
+//		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
 
 		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		centerSplitPaneV.setContinuousLayout(true);
 		centerSplitPaneV.setOneTouchExpandable(true);
 		centerSplitPaneV.setTopComponent(tabbedPane);
-		centerSplitPaneV.setBottomComponent(bottomTabbedPane);
-		centerSplitPaneV.setDividerLocation(0.8);
+		centerSplitPaneV.setBottomComponent(statusPanel);
+//		centerSplitPaneV.setDividerLocation(0.95);//
 		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
 		xFileSystemTree = new XFileSystemTree(tabbedPane, statusObject);
@@ -990,7 +987,7 @@ public class CardEditor {
 		JTabbedPane leftTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
 		leftTabbedPane.addTab("资源管理器", FileAction.fsv.getSystemIcon(FileAction.fsv.getHomeDirectory()), scrollPane);
 
-		centerSplitPaneH.setDividerLocation(0.2);
+//		centerSplitPaneH.setDividerLocation(0.2);
 		centerSplitPaneH.setLeftComponent(leftTabbedPane);
 		centerSplitPaneH.setRightComponent(centerSplitPaneV);
 		frmEcheloneditor.getContentPane().add(centerSplitPaneH, BorderLayout.CENTER);
