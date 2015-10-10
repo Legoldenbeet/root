@@ -827,6 +827,8 @@ public class CardEditor {
 				closeableTabComponent.setModify(false);
 				tabbedPane.add("AssistantTool", assistantToolDialog);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
+				tabbedPane.setSelectedComponent(assistantToolDialog);
+				
 				SwingUtils.setTabbedPaneTitle(tabbedPane, "小工具");
 
 				tabbedPane.setSelectedComponent(assistantToolDialog);
