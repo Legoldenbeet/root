@@ -33,7 +33,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -46,6 +45,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
+import org.apache.log4j.Logger;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.RScrollPane;
@@ -80,7 +80,7 @@ import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDByteUtil;
 
 public class CardEditor {
-
+	private static Logger log = Logger.getLogger(CardEditor.class);
 	public static JFrame frmEcheloneditor;
 	public static JTabbedPane tabbedPane;
 	public static StatusObject statusObject;
@@ -132,37 +132,37 @@ public class CardEditor {
 					Font commonFont = new Font("微软雅黑", Font.PLAIN, 14);
 					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
-					// 初始化窗体
-					CardEditor cardEditor = new CardEditor();
-					Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-					Rectangle bounds = new Rectangle(d);
-					Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(frmEcheloneditor.getGraphicsConfiguration());
-
-					bounds.x = insets.left;
-					bounds.y = insets.top;
-					bounds.width -= insets.left + insets.right;
-					bounds.height -= insets.top + insets.bottom;
-					frmEcheloneditor.setBounds(bounds);
-
-					// 框体屏幕居中显示
-					frmEcheloneditor.setLocationRelativeTo(null);
-					// 显示窗体
-					frmEcheloneditor.setVisible(true);
-					cardEditor.centerSplitPaneH.setDividerLocation(0.2);
-					cardEditor.centerSplitPaneV.setDividerLocation(0.95);
-
-					new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
-
-					if (args.length > 0) {
-						for (int i = 0; i < args.length; i++) {
-							fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
-						}
-					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					log.error("LookAndFeel unsupported.");
 				}
 			}
 		});
+		// 初始化窗体
+		CardEditor cardEditor = new CardEditor();
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle bounds = new Rectangle(d);
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(frmEcheloneditor.getGraphicsConfiguration());
+
+		bounds.x = insets.left;
+		bounds.y = insets.top;
+		bounds.width -= insets.left + insets.right;
+		bounds.height -= insets.top + insets.bottom;
+		frmEcheloneditor.setBounds(bounds);
+
+		// 框体屏幕居中显示
+		frmEcheloneditor.setLocationRelativeTo(null);
+		// 显示窗体
+		frmEcheloneditor.setVisible(true);
+		cardEditor.centerSplitPaneH.setDividerLocation(0.2);
+		cardEditor.centerSplitPaneV.setDividerLocation(0.95);
+
+		new DropTarget(frmEcheloneditor, DnDConstants.ACTION_COPY_OR_MOVE, new SimpleDragFileListener(tabbedPane, statusObject), true);
+
+		if (args.length > 0) {
+			for (int i = 0; i < args.length; i++) {
+				fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
+			}
+		}
 		// 启动同步接收和发送服务
 		SwingUtilities.invokeLater(new Runnable() {
 
