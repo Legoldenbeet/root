@@ -118,7 +118,7 @@ public class CardReaderPanel extends JPanel {
 				}
 			}
 		});
-		button.setBounds(534, 11, 60, 21);
+		button.setBounds(569, 11, 120, 21);
 		button.setFocusPainted(false);
 		button.setBorderPainted(false);
 		add(button);
@@ -159,7 +159,7 @@ public class CardReaderPanel extends JPanel {
 
 			}
 		});
-		btnNewButton.setBounds(464, 11, 60, 21);
+		btnNewButton.setBounds(447, 11, 120, 21);
 		btnNewButton.setFocusPainted(false);
 		btnNewButton.setBorderPainted(false);
 		add(btnNewButton);
@@ -178,7 +178,7 @@ public class CardReaderPanel extends JPanel {
 				});
 			}
 		});
-		btnNewButton_1.setBounds(604, 11, 60, 21);
+		btnNewButton_1.setBounds(691, 11, 120, 21);
 		btnNewButton_1.setFocusPainted(false);
 		btnNewButton_1.setBorderPainted(false);
 		add(btnNewButton_1);
@@ -199,7 +199,7 @@ public class CardReaderPanel extends JPanel {
 				((JButton)e.getSource()).setEnabled(false);
 			}
 		});
-		btnNewButton_2.setBounds(445, 41, 95, 21);
+		btnNewButton_2.setBounds(447, 41, 120, 21);
 		add(btnNewButton_2);
 	}
 }

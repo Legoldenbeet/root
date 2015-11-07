@@ -16,14 +16,14 @@ public class Config {
 	// default config file path
 	// **********************************************************************
 
-	public static String configPath = System.getProperty("user.dir") + "\\resources\\";
+	public static String configPath = System.getProperty("user.dir") + "/resources/";
 
 	public static File configFile = null;
 	public static IniFile ini = null;
 
 	static {
 		
-		configFile = new File(configPath + "/config.ini");
+		configFile = new File(configPath + "config.ini");
 
 		checkFile(configFile);
 

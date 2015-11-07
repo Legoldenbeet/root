@@ -27,7 +27,7 @@ public class CardToolPanel extends JPanel {
 		setLayout(null);
 
 		chckbxNewCheckBox = new JCheckBox("include DEBUG and DESCRIPTOR");
-		chckbxNewCheckBox.setBounds(65, 44, 232, 23);
+		chckbxNewCheckBox.setBounds(65, 44, 293, 23);
 		chckbxNewCheckBox.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -41,7 +41,7 @@ public class CardToolPanel extends JPanel {
 
 		
 		chckbxNewCheckBox_1 = new JCheckBox("拆分组件生成");
-		chckbxNewCheckBox_1.setBounds(65, 82, 162, 23);
+		chckbxNewCheckBox_1.setBounds(65, 82, 267, 23);
 		chckbxNewCheckBox_1.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub

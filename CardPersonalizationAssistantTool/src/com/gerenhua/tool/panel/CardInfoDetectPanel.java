@@ -264,28 +264,28 @@ public class CardInfoDetectPanel extends JPanel {
 		panel_3.setLayout(null);
 
 		comboBox = new JComboBox();
-		comboBox.setBounds(74, 142, 54, 21);
+		comboBox.setBounds(10, 152, 72, 21);
 		panel_3.add(comboBox);
 		comboBox.setModel(new DefaultComboBoxModel(new String[] { "00", "01", "03" }));
 
-		JLabel lblId = new JLabel("id:");
-		lblId.setBounds(138, 146, 39, 15);
+		JLabel lblId = new JLabel("ID:");
+		lblId.setBounds(94, 152, 39, 21);
 		panel_3.add(lblId);
-		lblId.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblId.setHorizontalAlignment(SwingConstants.CENTER);
 
 		textField_5 = new JTextField();
-		textField_5.setBounds(182, 143, 66, 21);
+		textField_5.setBounds(134, 152, 54, 21);
 		panel_3.add(textField_5);
 		textField_5.setText("00");
 		textField_5.setColumns(10);
 
-		JLabel lblNewLabel_1 = new JLabel("version:");
-		lblNewLabel_1.setBounds(248, 146, 64, 15);
+		JLabel lblNewLabel_1 = new JLabel("VER:");
+		lblNewLabel_1.setBounds(200, 152, 65, 21);
 		panel_3.add(lblNewLabel_1);
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 
 		textField_4 = new JTextField();
-		textField_4.setBounds(322, 144, 66, 21);
+		textField_4.setBounds(277, 152, 66, 21);
 		panel_3.add(textField_4);
 		textField_4.setText("00");
 		textField_4.setColumns(10);
