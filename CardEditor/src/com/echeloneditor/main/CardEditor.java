@@ -67,6 +67,7 @@ import com.echeloneditor.listeners.SimpleDragFileListener;
 import com.echeloneditor.listeners.SimpleFileChooseListener;
 import com.echeloneditor.listeners.SimpleJmenuItemListener;
 import com.echeloneditor.listeners.TabbedPaneChangeListener;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
@@ -160,7 +161,7 @@ public class CardEditor {
 
 		if (args.length > 0) {
 			for (int i = 0; i < args.length; i++) {
-				fileHander.openFileWithFilePath(args[i], FileAction.DEFAULT_FILE_ENCODE);
+				fileHander.openFileWithFilePath(args[i], OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		}
 		// 启动同步接收和发送服务
@@ -242,7 +243,7 @@ public class CardEditor {
 		button_4.setVisible(false);
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionevent) {
-				open(tabbedPane, FileAction.BIG_FILE_READ_UNIT_SIZE, false, false);
+				open(tabbedPane, OsConstants.BIG_FILE_READ_UNIT_SIZE, false, false);
 			}
 		});
 		statusPanel.add(button_4);
@@ -438,7 +439,7 @@ public class CardEditor {
 					if (WDAssert.isEmpty(plainText)) {
 						return;
 					}
-					String debugPath = FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath");
+					String debugPath = OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath");
 					File fileDir = new File(debugPath);
 					if (!fileDir.exists()) {
 						if (!fileDir.canWrite()) {
@@ -821,7 +822,7 @@ public class CardEditor {
 
 				int tabCount = tabbedPane.getTabCount();
 				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-				closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
+				closeableTabComponent.setFileEncode(OsConstants.DEFAULT_FILE_ENCODE);
 				closeableTabComponent.setFileSzie(0);
 				closeableTabComponent.setFileNameExt(".tool");
 				closeableTabComponent.setModify(false);
@@ -880,7 +881,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent arg0) {
 				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
 				try {
-					WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c java -jar ScreenShot.jar", false);
+					WindowsExcuter.excute(new File(OsConstants.DEFAULT_USER_DIR), "cmd.exe /c java -jar ScreenShot.jar", false);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, e.getMessage());
@@ -949,7 +950,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					// WindowsExcuter.excute(new File(FileAction.USER_DIR), "cmd.exe /c start readme.txt");
-					fileHander.openFileWithFilePath(new File(FileAction.USER_DIR + "/history.txt").getPath(), FileAction.DEFAULT_FILE_ENCODE);
+					fileHander.openFileWithFilePath(new File(OsConstants.DEFAULT_USER_DIR + "/history.txt").getPath(), OsConstants.DEFAULT_FILE_ENCODE);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -987,7 +988,7 @@ public class CardEditor {
 		centerSplitPaneH = new JSplitPane();
 
 		JTabbedPane leftTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
-		leftTabbedPane.addTab("资源管理器", FileAction.fsv.getSystemIcon(FileAction.fsv.getHomeDirectory()), scrollPane);
+		leftTabbedPane.addTab("资源管理器", OsConstants.fsv.getSystemIcon(OsConstants.fsv.getHomeDirectory()), scrollPane);
 
 //		centerSplitPaneH.setDividerLocation(0.2);
 		centerSplitPaneH.setLeftComponent(leftTabbedPane);
@@ -1005,7 +1006,7 @@ public class CardEditor {
 
 		if (isAbsolute) {
 			if (isForward) {
-				offset = fileSize - FileAction.BIG_FILE_READ_UNIT_SIZE;
+				offset = fileSize - OsConstants.BIG_FILE_READ_UNIT_SIZE;
 			} else {
 				offset = 0;
 			}
@@ -1018,7 +1019,7 @@ public class CardEditor {
 		}
 		fileHander.fileDescMapBean.put(filePath, offset);
 
-		if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
+		if (fileSize > (OsConstants.BIG_FILE_SIZE << 20)) {
 			fileHander.openFileWithFilePath(filePath, fileHander.currentEncode);
 		} else {
 			JOptionPane.showMessageDialog(null, "too small!");

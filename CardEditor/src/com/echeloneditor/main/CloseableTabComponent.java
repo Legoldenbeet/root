@@ -7,14 +7,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.vo.StatusObject;
 
 public class CloseableTabComponent extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public String filePath = "";
-	public String fileEncode = FileAction.DEFAULT_FILE_ENCODE;
+	public String fileEncode = OsConstants.DEFAULT_FILE_ENCODE;
 	public String fileNameExt = ".txt";
 
 	public long fileSzie = 0;

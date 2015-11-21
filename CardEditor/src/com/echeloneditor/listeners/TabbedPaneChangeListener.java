@@ -18,6 +18,7 @@ import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.main.CardEditor;
 import com.echeloneditor.main.CloseableTabComponent;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.SwingUtils;
@@ -46,7 +47,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 				String filePath = closeableTabComponent.getFilePath();
 				FileHander.fileDescMapBean.remove(filePath);
 				FileHander.currentCharPos = 0;
-				FileHander.currentEncode = FileAction.DEFAULT_FILE_ENCODE;
+				FileHander.currentEncode = OsConstants.DEFAULT_FILE_ENCODE;
 
 				Debug.log.debug(FileHander.fileDescMapBean);
 
@@ -158,7 +159,7 @@ public class TabbedPaneChangeListener implements MouseListener {
 				statusObject.showCharNum(0);
 				statusObject.showSaveButton(modify);
 
-				boolean visible = fileSize > (FileAction.BIG_FILE_SIZE << 20) ? true : false;
+				boolean visible = fileSize > (OsConstants.BIG_FILE_SIZE << 20) ? true : false;
 				statusObject.showViewBtn(visible);
 
 				if (recordWhenOpenLastModiyTime != -1) {

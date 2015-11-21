@@ -29,6 +29,7 @@ import com.echeloneditor.listeners.EditorPaneListener;
 import com.echeloneditor.listeners.SimpleDragFileListener;
 import com.echeloneditor.main.CloseableTabComponent;
 import com.echeloneditor.main.FontWidthRuler;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.FontUtil;
@@ -54,7 +55,7 @@ public class FileHander {
 	public FileHander(JTabbedPane tabbedPane, StatusObject statusObject) {
 		this.tabbedPane = tabbedPane;
 		this.statusObject = statusObject;
-		bytes = new byte[FileAction.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
+		bytes = new byte[OsConstants.BIG_FILE_READ_UNIT_SIZE];// 缓冲区
 
 		detector = new UniversalDetector(null);
 	}
@@ -68,7 +69,7 @@ public class FileHander {
 			String fileName = file.getName();
 			long fileSize = file.length();
 
-			if (fileSize > (FileAction.BIG_FILE_SIZE << 20)) {
+			if (fileSize > (OsConstants.BIG_FILE_SIZE << 20)) {
 				isBigFile = true;
 			}
 			// 更新状态栏文件编码信息
@@ -170,13 +171,13 @@ public class FileHander {
 			textArea.setFont(FontUtil.getFont(res));
 
 			fis = new FileInputStream(file);
-			bis = new BufferedInputStream(fis, FileAction.BUFFER_SIZE);
+			bis = new BufferedInputStream(fis, OsConstants.DEFAULT_BUFFER_SIZE);
 			// BufferedReader br = new BufferedReader(new InputStreamReader(fis, FileAction.DEFAULT_FILE_ENCODE), FileAction.BUFFER_SIZE);
 			int count = 0;// 缓存计数器
 			try {
 				if (currentCharPos < fileSize) {
 					bis.skip(currentCharPos);
-					count = bis.read(bytes, 0, FileAction.BIG_FILE_READ_UNIT_SIZE);
+					count = bis.read(bytes, 0, OsConstants.BIG_FILE_READ_UNIT_SIZE);
 
 					if (currentCharPos == 0) {
 						detector.handleData(bytes, 0, count);
@@ -189,7 +190,7 @@ public class FileHander {
 							statusObject.SelectEncodeItem(currentEncode);
 							System.out.println("Detected encoding = " + encoding);
 						} else {
-							currentEncode = FileAction.DEFAULT_FILE_ENCODE;
+							currentEncode = OsConstants.DEFAULT_FILE_ENCODE;
 							System.out.println("No encoding detected. use default charset：" + currentEncode);
 						}
 					}
@@ -198,7 +199,7 @@ public class FileHander {
 					currentCharPos += count;
 				}
 			} catch (IOException e) {
-				currentEncode = FileAction.DEFAULT_FILE_ENCODE;
+				currentEncode = OsConstants.DEFAULT_FILE_ENCODE;
 				e.printStackTrace();
 				Debug.log.debug(e.getMessage());
 			} finally {
@@ -276,7 +277,7 @@ public class FileHander {
 
 		int tabCount = tabbedPane.getTabCount();
 		CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
-		closeableTabComponent.setFileEncode(FileAction.DEFAULT_FILE_ENCODE);
+		closeableTabComponent.setFileEncode(OsConstants.DEFAULT_FILE_ENCODE);
 		closeableTabComponent.setFileSzie(0);
 		closeableTabComponent.setFileNameExt(fileNameExt);
 		closeableTabComponent.setModify(false);

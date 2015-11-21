@@ -7,6 +7,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JTabbedPane;
 
 import com.echeloneditor.main.XFileSystemTree;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.StatusObject;
@@ -38,7 +39,7 @@ public class OpenExtAction extends AbstractAction {
 
 	public void actionPerformed(ActionEvent e) {
 		File file = fileSystemTree.getSelectedFile();
-		String targetPath = FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + file.getName() + ".txt";
+		String targetPath = OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + file.getName() + ".txt";
 		try {
 			WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type " + file.getName() + " >\"" + targetPath + "\"",true);
 		} catch (Exception e1) {
@@ -49,7 +50,7 @@ public class OpenExtAction extends AbstractAction {
 		File targetFile = new File(targetPath);
 
 		if (targetFile.isFile()&&targetFile.exists()) {
-			fileHander.openFileWithFilePath(targetPath, FileAction.DEFAULT_FILE_ENCODE);
+			fileHander.openFileWithFilePath(targetPath, OsConstants.DEFAULT_FILE_ENCODE);
 		}
 	}
 

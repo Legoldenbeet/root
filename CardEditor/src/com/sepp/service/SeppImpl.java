@@ -38,6 +38,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.WindowsExcuter;
@@ -113,7 +114,7 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(data, offset, fileNameBytes, 0, fileNameLen);
 		offset += fileNameLen;
 		String fileName = new String(fileNameBytes, "GBK");
-		File file = new File(FileAction.USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
+		File file = new File(OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
 		if (!file.getParentFile().exists()) {
 			file.mkdir();
 		}
@@ -147,7 +148,7 @@ public class SeppImpl implements Sepp {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(), OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		});
 	}

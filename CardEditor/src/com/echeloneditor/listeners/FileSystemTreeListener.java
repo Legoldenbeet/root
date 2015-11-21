@@ -13,6 +13,7 @@ import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.StatusObject;
@@ -94,7 +95,7 @@ public class FileSystemTreeListener implements MouseListener, KeyListener {
 					e1.printStackTrace();
 				}
 			} else {
-				fileHander.openFileWithFilePath(selectedFile.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+				fileHander.openFileWithFilePath(selectedFile.getPath(), OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		}
 	}

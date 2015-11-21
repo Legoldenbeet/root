@@ -9,18 +9,10 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import javax.swing.filechooser.FileSystemView;
-
-import com.echeloneditor.utils.Config;
+import com.echeloneditor.os.OsConstants;
 
 public class FileAction {
-	public static String FILE_SEPARATOR=System.getProperty("file.separator");
-	public static String DEFAULT_FILE_ENCODE =Config.getValue("CONFIG", "defaultCharset");
-	public static int BUFFER_SIZE = Integer.parseInt(Config.getValue("CONFIG", "ioBuffer")) << 20;// M
-	public static String USER_DIR = System.getProperty("user.dir");
-	public static int BIG_FILE_READ_UNIT_SIZE = Integer.parseInt(Config.getValue("CONFIG", "bigFileReadUnitSize"));
-	public static long BIG_FILE_SIZE = Integer.parseInt(Config.getValue("CONFIG", "bigFileSize"));
-	public static FileSystemView fsv=FileSystemView.getFileSystemView();
+
 	public FileAction() {
 
 	}
@@ -48,7 +40,7 @@ public class FileAction {
 			// 字符流通向字节流的桥梁
 			osw = new OutputStreamWriter(os, encode);
 			// 缓冲区
-			writer = new BufferedWriter(osw, BUFFER_SIZE);
+			writer = new BufferedWriter(osw, OsConstants.DEFAULT_BUFFER_SIZE);
 			// 将字符写到文件中
 			writer.write(fileContent);
 			// 刷新缓冲区
@@ -66,12 +58,5 @@ public class FileAction {
 				writer.close();
 			}
 		}
-	}
-	public static void main(String[] args) {
-		System.out.println(FileAction.fsv.getHomeDirectory().getPath());
-		System.out.println(FileAction.fsv.getSystemTypeDescription(new File(".")));
-		System.out.println(FileAction.fsv.getSystemDisplayName(new File(".")));
-		System.out.println(FileAction.fsv.getRoots()[0].getPath());
-		System.out.println(System.getProperties());
 	}
 }

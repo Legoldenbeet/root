@@ -8,6 +8,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
 import com.echeloneditor.main.XFileSystemTree;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.vo.StatusObject;
 
 /**
@@ -36,7 +37,7 @@ public class OpenAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		fileHander.openFileWithFilePath(fileSystemTree.getSelectedFileName(), FileAction.DEFAULT_FILE_ENCODE);
+		fileHander.openFileWithFilePath(fileSystemTree.getSelectedFileName(), OsConstants.DEFAULT_FILE_ENCODE);
 	}
 
 }

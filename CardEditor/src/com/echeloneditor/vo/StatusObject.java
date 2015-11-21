@@ -5,6 +5,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.os.OsConstants;
 import com.watchdata.commons.lang.WDAssert;
 
 public class StatusObject {
@@ -22,7 +23,7 @@ public class StatusObject {
 	private JComboBox jcb_friend;
 
 	public void reDefault(){
-		SelectEncodeItem(FileAction.DEFAULT_FILE_ENCODE);
+		SelectEncodeItem(OsConstants.DEFAULT_FILE_ENCODE);
 		showFileSize(0);
 		showCharNum(0);
 		showSepp(false);

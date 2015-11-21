@@ -3,6 +3,7 @@ package com.echeloneditor.utils;
 import java.io.File;
 
 import com.echeloneditor.actions.FileAction;
+import com.echeloneditor.os.OsConstants;
 
 public class FileUtil {
 
@@ -34,7 +35,7 @@ public class FileUtil {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		File file=new File(FileAction.USER_DIR);
+		File file=new File(OsConstants.DEFAULT_USER_DIR);
 		File[] fileList=file.listFiles();
 		for (int i = 0; i < fileList.length; i++) {
 			System.out.println(FileUtil.getFileNameExt(fileList[i]));
