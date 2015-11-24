@@ -314,7 +314,7 @@ public class FontChooserDialog extends JDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(445, 279);
+		this.setSize(517, 319);
 		this.setResizable(false);
 		this.setTitle("字体选择");
 		this.setContentPane(getJContentPane());
@@ -442,9 +442,9 @@ public class FontChooserDialog extends JDialog {
 	private JButton getBtOK() {
 		if (btOK == null) {
 			btOK = new JButton();
-			btOK.setFocusPainted(false);
-			btOK.setBorderPainted(false);
-			btOK.setBounds(new Rectangle(365, 14, 65, 24));
+//			btOK.setFocusPainted(false);
+//			btOK.setBorderPainted(false);
+			btOK.setBounds(new Rectangle(365, 14, 120, 24));
 			btOK.setText("确定");
 			btOK.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -477,9 +477,9 @@ public class FontChooserDialog extends JDialog {
 	private JButton getBtCancel() {
 		if (btCancel == null) {
 			btCancel = new JButton();
-			btCancel.setFocusPainted(false);
-			btCancel.setBorderPainted(false);
-			btCancel.setBounds(new Rectangle(365, 46, 65, 24));
+//			btCancel.setFocusPainted(false);
+//			btCancel.setBorderPainted(false);
+			btCancel.setBounds(new Rectangle(365, 46, 120, 24));
 			btCancel.setText("取消");
 			btCancel.addActionListener(new ActionListener() {
 

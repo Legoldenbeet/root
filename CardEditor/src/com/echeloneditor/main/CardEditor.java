@@ -123,7 +123,7 @@ public class CardEditor {
 					String currentTheme = Config.getValue("CURRENT_THEME", "current_theme");
 					String lafIndex = Config.getValue("CURRENT_THEME", "current_lafIndex");
 
-					if (!currentTheme.equals("window")) {
+					if (!currentTheme.equals(OsConstants.OS)) {
 						SwingUtils.setTheme(Integer.parseInt(lafIndex), currentTheme);
 					}
 
@@ -494,8 +494,9 @@ public class CardEditor {
 			JMenuItem menuItem = new JMenuItem("." + fileExt);
 			menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
 			menuItem.setActionCommand("new");
-			newFileMenu.add(new JSeparator());
+			
 			newFileMenu.add(menuItem);
+			newFileMenu.add(new JSeparator());
 		}
 		newFileMenu.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		menu.add(newFileMenu);

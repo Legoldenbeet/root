@@ -22,6 +22,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.SwingUtils;
 import com.jtattoo.plaf.AbstractLookAndFeel;
@@ -129,8 +130,8 @@ public class FaceDialog extends JDialog {
 		scrollPane_1.setViewportView(themeList);
 
 		JButton btnNewButton = new JButton("保存设置");
-		btnNewButton.setBorderPainted(false);
-		btnNewButton.setFocusPainted(false);
+//		btnNewButton.setBorderPainted(false);
+//		btnNewButton.setFocusPainted(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String select = lafList.getSelectedValue().toString();
@@ -150,16 +151,17 @@ public class FaceDialog extends JDialog {
 				}
 			}
 		});
-		btnNewButton.setBounds(291, 349, 93, 23);
+		btnNewButton.setBounds(208, 349, 140, 23);
 		getContentPane().add(btnNewButton);
 
-		JButton button = new JButton("恢复默认");
-		button.setBorderPainted(false);
-		button.setFocusPainted(false);
+		JButton button = new JButton("系统皮肤");
+//		button.setBorderPainted(false);
+//		button.setFocusPainted(false);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Config.setValue("CURRENT_THEME","current_laf", "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-				Config.setValue("CURRENT_THEME","current_theme", "window");
+				Config.setValue("CURRENT_THEME","current_laf", UIManager.getSystemLookAndFeelClassName());
+				Config.setValue("CURRENT_THEME","current_theme", OsConstants.OS);
+				
 				try {
 					SwingUtils.restart(Config.getValue("CONFIG", "appName"));
 				} catch (IOException e) {
@@ -168,7 +170,7 @@ public class FaceDialog extends JDialog {
 				}
 			}
 		});
-		button.setBounds(394, 349, 93, 23);
+		button.setBounds(360, 349, 140, 23);
 		getContentPane().add(button);
 
 		addWindowListener(new WindowAdapter() {
@@ -313,4 +315,7 @@ public class FaceDialog extends JDialog {
 			list.scrollRectToVisible(rect);
 		}
 	} // end scrollSelectedToVisible
+	public static void main(String[] args) {
+		System.out.println(UIManager.getSystemLookAndFeelClassName());
+	}
 }
