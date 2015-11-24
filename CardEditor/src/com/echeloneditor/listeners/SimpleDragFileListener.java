@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.swing.JTabbedPane;
 
-import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.vo.StatusObject;
