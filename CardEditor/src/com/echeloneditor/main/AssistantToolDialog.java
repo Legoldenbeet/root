@@ -150,8 +150,8 @@ public class AssistantToolDialog extends JPanel {
 		this.add(btnBase);
 
 		JButton btnBase_1 = new JButton("Base64编码");
-		btnBase_1.setFocusPainted(false);
-		btnBase_1.setBorderPainted(false);
+//		btnBase_1.setFocusPainted(false);
+//		btnBase_1.setBorderPainted(false);
 		btnBase_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				restultField.setText(WDBase64.encode(dataField.getText(), statusObject.getSelectedEncodeItem()));
@@ -161,9 +161,8 @@ public class AssistantToolDialog extends JPanel {
 		this.add(btnBase_1);
 
 		JButton btnNewButton = new JButton("ECB DES");
-		btnNewButton.setFocusPainted(false);
-		btnNewButton.setFocusPainted(false);
-		btnNewButton.setBorderPainted(false);
+//		btnNewButton.setFocusPainted(false);
+//		btnNewButton.setBorderPainted(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -210,8 +209,8 @@ public class AssistantToolDialog extends JPanel {
 		this.add(btnEcbDecrypt);
 
 		JButton btnCbcDes = new JButton("CBC DES");
-		btnCbcDes.setFocusPainted(false);
-		btnCbcDes.setBorderPainted(false);
+//		btnCbcDes.setFocusPainted(false);
+//		btnCbcDes.setBorderPainted(false);
 		btnCbcDes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
