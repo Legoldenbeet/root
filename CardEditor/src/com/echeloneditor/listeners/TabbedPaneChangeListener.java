@@ -179,19 +179,16 @@ public class TabbedPaneChangeListener implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stubj
+		if (e.isPopupTrigger()) {
+			showPopupMenu(e);
+		}
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {//windows xia走此分支
 		if (e.isPopupTrigger()) {
-			Component component = SwingUtilities.getRoot(e.getComponent());
-			int frameX = component.getX();
-			int frameY = component.getY();
-			int eX = e.getXOnScreen();
-			int eY = e.getYOnScreen();
-
-			jPopupMenu.show((JFrame) component, eX - frameX, eY - frameY);
+			showPopupMenu(e);
 		}
 	}
 
@@ -204,5 +201,14 @@ public class TabbedPaneChangeListener implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		// Debug.log.debug("mouseExited");
+	}
+	public void showPopupMenu(MouseEvent e){
+		Component component = SwingUtilities.getRoot(e.getComponent());
+		int frameX = component.getX();
+		int frameY = component.getY();
+		int eX = e.getXOnScreen();
+		int eY = e.getYOnScreen();
+
+		jPopupMenu.show((JFrame) component, eX - frameX, eY - frameY);
 	}
 }
