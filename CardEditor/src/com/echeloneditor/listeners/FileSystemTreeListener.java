@@ -89,7 +89,7 @@ public class FileSystemTreeListener implements MouseListener, KeyListener {
 		if (selectedFile.exists() && selectedFile.isFile() && selectedFile.canRead()) {
 			if (selectedFile.getPath().endsWith(".jar")) {
 				try {
-					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "jd_path")).getParentFile(), "cmd.exe /c start " + Config.getValue("CONFIG", "jd_path") + " " + selectedFile.getPath(), false);
+					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "jd_path")).getParentFile(), "start " + Config.getValue("CONFIG", "jd_path") + " " + selectedFile.getPath(), false);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

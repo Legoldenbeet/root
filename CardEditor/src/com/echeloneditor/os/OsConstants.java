@@ -1,7 +1,6 @@
 package com.echeloneditor.os;
 
 import java.io.File;
-import java.util.Properties;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -22,17 +21,17 @@ public class OsConstants {
 	}
 
 	public static boolean isMacOS() {
-		return OS.indexOf("mac") >= 0 && OS.indexOf("os") > 0 && OS.indexOf("x") < 0;
+		return OS.indexOf("Mac") >= 0|| OS.indexOf("mac") >= 0 ;
 	}
 
 	public static boolean isMacOSX()
 	{
-		return OS.indexOf("mac") >= 0 && OS.indexOf("os") > 0 && OS.indexOf("x") > 0;
+		return OS.indexOf("Mac") >= 0 && OS.indexOf("OS") > 0 && OS.indexOf("X") > 0;
 	}
 
 	public static boolean isWindows()
 	{
-		return OS.indexOf("windows") >= 0;
+		return OS.indexOf("windows") >= 0||OS.indexOf("Windows")>= 0;
 	}
 
 	public static void main(String[] args) {

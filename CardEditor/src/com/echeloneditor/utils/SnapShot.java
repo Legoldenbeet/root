@@ -102,6 +102,7 @@ public class SnapShot extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(f.getPath());
 	}
 
 	public static void screenShot() {

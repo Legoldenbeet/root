@@ -41,7 +41,7 @@ public class OpenExtAction extends AbstractAction {
 		File file = fileSystemTree.getSelectedFile();
 		String targetPath = OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + file.getName() + ".txt";
 		try {
-			WindowsExcuter.excute(file.getParentFile(), "cmd.exe /c type " + file.getName() + " >\"" + targetPath + "\"",true);
+			WindowsExcuter.excute(file.getParentFile(), "type " + file.getName() + " >\"" + targetPath + "\"",true);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

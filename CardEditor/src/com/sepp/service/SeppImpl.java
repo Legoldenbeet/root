@@ -155,7 +155,7 @@ public class SeppImpl implements Sepp {
 
 	public void openDir(String target) {
 		try {
-			WindowsExcuter.excute(new File("."), "cmd.exe /c start " + target + "\\", false);
+			WindowsExcuter.excute(new File("."), "start " + target + "\\", false);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -220,7 +220,7 @@ public class SeppImpl implements Sepp {
 
 	public static void main(String[] args) throws Exception {
 		// new SeppImpl().scanFriend();
-		WindowsExcuter.excute(new File("."), "cmd.exe /c telnet 10.0.97.68 9000", true);
+		WindowsExcuter.excute(new File("."), "telnet 10.0.97.68 9000", true);
 	}
 
 	@Override

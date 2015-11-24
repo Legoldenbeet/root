@@ -881,7 +881,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent arg0) {
 				CardEditor.frmEcheloneditor.setExtendedState(JFrame.ICONIFIED);
 				try {
-					WindowsExcuter.excute(new File(OsConstants.DEFAULT_USER_DIR), "cmd.exe /c java -jar ScreenShot.jar", false);
+					WindowsExcuter.excute(new File(OsConstants.DEFAULT_USER_DIR), "java -jar ScreenShot.jar", false);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(null, e.getMessage());
@@ -898,7 +898,7 @@ public class CardEditor {
 		mntmJava.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "debugPath")).getParentFile(), "cmd.exe /c start " + Config.getValue("CONFIG", "jd_path"), false);
+					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "debugPath")).getParentFile(), "start " + Config.getValue("CONFIG", "jd_path"), false);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
