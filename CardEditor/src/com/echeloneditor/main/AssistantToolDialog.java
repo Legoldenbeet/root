@@ -11,7 +11,7 @@ import java.nio.channels.FileChannel;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 
-import javax.swing.JButton;
+import com.echeloneditor.os.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
