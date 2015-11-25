@@ -496,7 +496,7 @@ public class CardEditor {
 			menuItem.setActionCommand("new");
 			
 			newFileMenu.add(menuItem);
-			newFileMenu.add(new JSeparator());
+//			newFileMenu.add(new JSeparator());
 		}
 		newFileMenu.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		menu.add(newFileMenu);
