@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -152,6 +154,10 @@ public class CardEditor {
 
 		// 框体屏幕居中显示
 		frmEcheloneditor.setLocationRelativeTo(null);
+//		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
+//                .getDefaultScreenDevice();
+//        gd.setFullScreenWindow(frmEcheloneditor);
+//		frmEcheloneditor.setUndecorated(true);;
 		// 显示窗体
 		frmEcheloneditor.setVisible(true);
 		cardEditor.centerSplitPaneH.setDividerLocation(0.2);
