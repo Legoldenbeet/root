@@ -114,30 +114,25 @@ public class CardEditor {
 	}
 
 	public static void startApp(final String[] args) {
+		try {
+			// 设置皮肤
+			String currentLaf = Config.getValue("CURRENT_THEME", "current_laf");
+			String currentTheme = Config.getValue("CURRENT_THEME", "current_theme");
+			String lafIndex = Config.getValue("CURRENT_THEME", "current_lafIndex");
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					// 设置皮肤
-					String currentLaf = Config.getValue("CURRENT_THEME", "current_laf");
-					String currentTheme = Config.getValue("CURRENT_THEME", "current_theme");
-					String lafIndex = Config.getValue("CURRENT_THEME", "current_lafIndex");
-
-					if (!currentTheme.equals(OsConstants.OS)) {
-						SwingUtils.setTheme(Integer.parseInt(lafIndex), currentTheme);
-					}
-					
-					JFrame.setDefaultLookAndFeelDecorated(true);
-					UIManager.setLookAndFeel(currentLaf);
-					
-					Font commonFont = new Font("微软雅黑", Font.PLAIN, 14);
-					SwingUtils.setLookAndFeelFont(commonFont);
-					SwingUtils.updateUI();
-				} catch (Exception e) {
-					log.error("LookAndFeel unsupported.");
-				}
+			if (!currentTheme.equals(OsConstants.OS)) {
+				SwingUtils.setTheme(Integer.parseInt(lafIndex), currentTheme);
 			}
-		});
+
+			UIManager.setLookAndFeel(currentLaf);
+			JFrame.setDefaultLookAndFeelDecorated(true);
+
+//			Font commonFont = new Font("微软雅黑", Font.PLAIN, 14);
+//			SwingUtils.setLookAndFeelFont(commonFont);
+			SwingUtils.updateUI();
+		} catch (Exception e) {
+			log.error("LookAndFeel unsupported.");
+		}
 		// 初始化窗体
 		CardEditor cardEditor = new CardEditor();
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -152,10 +147,10 @@ public class CardEditor {
 
 		// 框体屏幕居中显示
 		frmEcheloneditor.setLocationRelativeTo(null);
-//		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
-//                .getDefaultScreenDevice();
-//        gd.setFullScreenWindow(frmEcheloneditor);
-//		frmEcheloneditor.setUndecorated(true);;
+		// GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment()
+		// .getDefaultScreenDevice();
+		// gd.setFullScreenWindow(frmEcheloneditor);
+		// frmEcheloneditor.setUndecorated(true);;
 		// 显示窗体
 		frmEcheloneditor.setVisible(true);
 		cardEditor.centerSplitPaneH.setDividerLocation(0.2);
@@ -498,9 +493,9 @@ public class CardEditor {
 			JMenuItem menuItem = new JMenuItem("." + fileExt);
 			menuItem.addActionListener(new SimpleJmenuItemListener(tabbedPane, statusObject));
 			menuItem.setActionCommand("new");
-			
+
 			newFileMenu.add(menuItem);
-//			newFileMenu.add(new JSeparator());
+			// newFileMenu.add(new JSeparator());
 		}
 		newFileMenu.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20130504112619422_easyicon_net_24.png")));
 		menu.add(newFileMenu);
@@ -806,10 +801,10 @@ public class CardEditor {
 		menuItem_16.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AssistantToolDialog assistantToolDialog = new AssistantToolDialog(statusObject);
-//				JScrollPane jScrollPane = new JScrollPane();
-//				jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//				jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//				jScrollPane.setViewportView(assistantToolDialog);
+				// JScrollPane jScrollPane = new JScrollPane();
+				// jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+				// jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				// jScrollPane.setViewportView(assistantToolDialog);
 
 				int tabCount = tabbedPane.getTabCount();
 				CloseableTabComponent closeableTabComponent = new CloseableTabComponent(tabbedPane, statusObject);
@@ -820,7 +815,7 @@ public class CardEditor {
 				tabbedPane.add("AssistantTool", assistantToolDialog);
 				tabbedPane.setTabComponentAt(tabCount, closeableTabComponent);
 				tabbedPane.setSelectedComponent(assistantToolDialog);
-				
+
 				SwingUtils.setTabbedPaneTitle(tabbedPane, "小工具");
 
 				tabbedPane.setSelectedComponent(assistantToolDialog);
@@ -941,18 +936,18 @@ public class CardEditor {
 		menuItem_17.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/2013050411485151_easyicon_net_24.png")));
 		menu_2.add(menuItem_17);
 
-//		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
-//		bottomTabbedPane.addTab("状态信息", statusPanel);
-//		systemShell = new SystemShell();
-//		RScrollPane shellScrollPane = new DockableWindowScrollPane(systemShell);
-//		bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
+		// JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
+		// bottomTabbedPane.addTab("状态信息", statusPanel);
+		// systemShell = new SystemShell();
+		// RScrollPane shellScrollPane = new DockableWindowScrollPane(systemShell);
+		// bottomTabbedPane.addTab("控制台", FileAction.fsv.getSystemIcon(new File("C:/Windows/System32/cmd.exe")), shellScrollPane);
 
 		centerSplitPaneV = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		centerSplitPaneV.setContinuousLayout(true);
 		centerSplitPaneV.setOneTouchExpandable(true);
 		centerSplitPaneV.setTopComponent(tabbedPane);
 		centerSplitPaneV.setBottomComponent(statusPanel);
-//		centerSplitPaneV.setDividerLocation(0.95);//
+		// centerSplitPaneV.setDividerLocation(0.95);//
 		// frmEcheloneditor.getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
 		xFileSystemTree = new XFileSystemTree(tabbedPane, statusObject);
@@ -967,7 +962,7 @@ public class CardEditor {
 		JTabbedPane leftTabbedPane = new JTabbedPane(JTabbedPane.BOTTOM, JTabbedPane.WRAP_TAB_LAYOUT);
 		leftTabbedPane.addTab("资源管理器", OsConstants.fsv.getSystemIcon(OsConstants.fsv.getHomeDirectory()), scrollPane);
 
-//		centerSplitPaneH.setDividerLocation(0.2);
+		// centerSplitPaneH.setDividerLocation(0.2);
 		centerSplitPaneH.setLeftComponent(leftTabbedPane);
 		centerSplitPaneH.setRightComponent(centerSplitPaneV);
 		frmEcheloneditor.getContentPane().add(centerSplitPaneH, BorderLayout.CENTER);

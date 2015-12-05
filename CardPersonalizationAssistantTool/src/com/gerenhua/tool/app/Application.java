@@ -65,48 +65,6 @@ public class Application extends JFrame {
 			UIManager.setLookAndFeel(currentLaf);
 			JFrame.setDefaultLookAndFeelDecorated(true);
 
-			Font commonFont = new Font("微软雅黑", Font.PLAIN, 12);
-			Font titleFont = new Font("微软雅黑", Font.PLAIN, 14);
-			UIManager.getDefaults().put("CheckBox.font", commonFont);
-			UIManager.getDefaults().put("Tree.font", commonFont);
-			UIManager.getDefaults().put("Viewport.font", commonFont);
-			UIManager.getDefaults().put("ProgressBar.font", commonFont);
-			UIManager.getDefaults().put("RadioButtonMenuItem.font", commonFont);
-			UIManager.getDefaults().put("FormattedTextField.font", commonFont);
-			UIManager.getDefaults().put("ToolBar.font", commonFont);
-			UIManager.getDefaults().put("ColorChooser.font", commonFont);
-			UIManager.getDefaults().put("ToggleButton.font", commonFont);
-			UIManager.getDefaults().put("Panel.font", commonFont);
-			UIManager.getDefaults().put("TextArea.font", commonFont);
-			UIManager.getDefaults().put("Menu.font", commonFont);
-			UIManager.getDefaults().put("RadioButtonMenuItem.acceleratorFont", commonFont);
-			UIManager.getDefaults().put("Spinner.font", commonFont);
-			UIManager.getDefaults().put("Menu.acceleratorFont", commonFont);
-			UIManager.getDefaults().put("CheckBoxMenuItem.acceleratorFont", commonFont);
-			UIManager.getDefaults().put("TableHeader.font", commonFont);
-			UIManager.getDefaults().put("TextField.font", commonFont);
-			UIManager.getDefaults().put("OptionPane.font", commonFont);
-			UIManager.getDefaults().put("MenuBar.font", commonFont);
-			UIManager.getDefaults().put("Button.font", commonFont);
-			UIManager.getDefaults().put("Label.font", commonFont);
-			UIManager.getDefaults().put("PasswordField.font", commonFont);
-			UIManager.getDefaults().put("InternalFrame.titleFont", titleFont);
-			UIManager.getDefaults().put("OptionPane.buttonFont", commonFont);
-			UIManager.getDefaults().put("ScrollPane.font", commonFont);
-			UIManager.getDefaults().put("MenuItem.font", commonFont);
-			UIManager.getDefaults().put("ToolTip.font", commonFont);
-			UIManager.getDefaults().put("List.font", commonFont);
-			UIManager.getDefaults().put("OptionPane.messageFont", commonFont);
-			UIManager.getDefaults().put("EditorPane.font", commonFont);
-			UIManager.getDefaults().put("Table.font", commonFont);
-			UIManager.getDefaults().put("TabbedPane.font", commonFont);
-			UIManager.getDefaults().put("RadioButton.font", commonFont);
-			UIManager.getDefaults().put("CheckBoxMenuItem.font", commonFont);
-			UIManager.getDefaults().put("TextPane.font", commonFont);
-			UIManager.getDefaults().put("PopupMenu.font", commonFont);
-			UIManager.getDefaults().put("TitledBorder.font", commonFont);
-			UIManager.getDefaults().put("ComboBox.font", commonFont);
-
 			SwingUtils.updateUI();
 		} catch (Exception e) {
 			log.error("LookAndFeel unsupported.");
