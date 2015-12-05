@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -124,12 +122,13 @@ public class CardEditor {
 					String currentLaf = Config.getValue("CURRENT_THEME", "current_laf");
 					String currentTheme = Config.getValue("CURRENT_THEME", "current_theme");
 					String lafIndex = Config.getValue("CURRENT_THEME", "current_lafIndex");
-
+					
+					UIManager.setLookAndFeel(currentLaf);
+					
 					if (!currentTheme.equals(OsConstants.OS)) {
 						SwingUtils.setTheme(Integer.parseInt(lafIndex), currentTheme);
 					}
-
-					UIManager.setLookAndFeel(currentLaf);
+					
 					JFrame.setDefaultLookAndFeelDecorated(true);
 
 					Font commonFont = new Font("微软雅黑", Font.PLAIN, 14);
