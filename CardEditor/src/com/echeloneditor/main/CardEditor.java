@@ -122,15 +122,14 @@ public class CardEditor {
 					String currentLaf = Config.getValue("CURRENT_THEME", "current_laf");
 					String currentTheme = Config.getValue("CURRENT_THEME", "current_theme");
 					String lafIndex = Config.getValue("CURRENT_THEME", "current_lafIndex");
-					
-					UIManager.setLookAndFeel(currentLaf);
-					
+
 					if (!currentTheme.equals(OsConstants.OS)) {
 						SwingUtils.setTheme(Integer.parseInt(lafIndex), currentTheme);
 					}
 					
 					JFrame.setDefaultLookAndFeelDecorated(true);
-
+					UIManager.setLookAndFeel(currentLaf);
+					
 					Font commonFont = new Font("微软雅黑", Font.PLAIN, 14);
 					SwingUtils.setLookAndFeelFont(commonFont);
 					SwingUtils.updateUI();
