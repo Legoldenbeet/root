@@ -17,11 +17,11 @@ public class OsConstants {
 	public static FileSystemView fsv = FileSystemView.getFileSystemView();
 
 	public static boolean isLinux() {
-		return OS.indexOf("linux") >= 0;
+		return OS.indexOf("linux") >= 0||OS.indexOf("Linux")>0;
 	}
 
 	public static boolean isMacOS() {
-		return OS.indexOf("Mac") >= 0|| OS.indexOf("mac") >= 0 ;
+		return OS.indexOf("Mac") >= 0||OS.indexOf("mac") >= 0 ;
 	}
 
 	public static boolean isMacOSX()
@@ -31,7 +31,7 @@ public class OsConstants {
 
 	public static boolean isWindows()
 	{
-		return OS.indexOf("windows") >= 0||OS.indexOf("Windows")>= 0;
+		return OS.indexOf("windows") >= 0||OS.indexOf("Windows")>= 0||OS.indexOf("Window")>= 0||OS.indexOf("window")>= 0;
 	}
 
 	public static void main(String[] args) {
