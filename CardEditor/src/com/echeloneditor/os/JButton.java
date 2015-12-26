@@ -11,30 +11,33 @@ public class JButton extends javax.swing.JButton {
 	private static final long serialVersionUID = 1L;
 
 	public JButton() {
+		repaintButton();
+	}
+
+	public JButton(Icon icon) {
+		super(icon);
+		repaintButton();
+	}
+
+	public JButton(String text) {
+		super(text);
+		repaintButton();
+	}
+
+	public JButton(Action a) {
+		super(a);
+		repaintButton();
+	}
+
+	public JButton(String text, Icon icon) {
+		super(text, icon);
+		repaintButton();
+	}
+
+	public void repaintButton(){
 		if (OsConstants.isWindows()) {
 			this.setFocusPainted(false);
 			this.setBorderPainted(false);
 		}
 	}
-
-	public JButton(Icon icon) {
-		super(icon);
-		// TODO Auto-generated constructor stub
-	}
-
-	public JButton(String text) {
-		super(text);
-		// TODO Auto-generated constructor stub
-	}
-
-	public JButton(Action a) {
-		super(a);
-		// TODO Auto-generated constructor stub
-	}
-
-	public JButton(String text, Icon icon) {
-		super(text, icon);
-		// TODO Auto-generated constructor stub
-	}
-
 }
