@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import com.echeloneditor.os.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -66,6 +65,7 @@ import com.echeloneditor.listeners.SimpleDragFileListener;
 import com.echeloneditor.listeners.SimpleFileChooseListener;
 import com.echeloneditor.listeners.SimpleJmenuItemListener;
 import com.echeloneditor.listeners.TabbedPaneChangeListener;
+import com.echeloneditor.os.JButton;
 import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.FontUtil;
@@ -872,23 +872,6 @@ public class CardEditor {
 		});
 		mntmSnapshot.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150103103702829_easyicon_net_24.png")));
 		menu_1.add(mntmSnapshot);
-
-		JSeparator separator_8 = new JSeparator();
-		menu_1.add(separator_8);
-
-		JMenuItem mntmJava = new JMenuItem("JAVA逆向分析");
-		mntmJava.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "debugPath")).getParentFile(), "start " + Config.getValue("CONFIG", "jd_path"), false);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		mntmJava.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150329065033745_easyicon_net_24.png")));
-		menu_1.add(mntmJava);
 
 		JMenu menu_5 = new JMenu("皮肤");
 		menuBar.add(menu_5);
