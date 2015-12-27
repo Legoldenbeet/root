@@ -316,7 +316,7 @@ public class CardEditor {
 		panel_1.setLayout(new BorderLayout(0, 0));
 
 		JToolBar toolBar = new JToolBar();
-		toolBar.setFloatable(false);
+		//toolBar.setFloatable(false);
 		panel_1.add(toolBar, BorderLayout.NORTH);
 
 		JButton button = new JButton();
