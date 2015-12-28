@@ -4,7 +4,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
-import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.os.OsConstants;
 import com.watchdata.commons.lang.WDAssert;
 
@@ -56,7 +55,7 @@ public class StatusObject {
 	}
 
 	public void showFileSize(long size) {
-		getFileSize().setText("文件大小：" + size);
+		getFileSize().setText("文件大小：" + size+"Byte");
 	}
 
 	public void showSaveButton(boolean showBtn) {
