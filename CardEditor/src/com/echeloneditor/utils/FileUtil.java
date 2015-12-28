@@ -2,7 +2,6 @@ package com.echeloneditor.utils;
 
 import java.io.File;
 
-import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.os.OsConstants;
 
 public class FileUtil {
