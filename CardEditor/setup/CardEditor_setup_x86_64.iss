@@ -13,10 +13,9 @@
 AppId={{F46559D3-701E-42D4-9A84-6D4955575BEF}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-AppPublisher={#MyAppPublisher}
-;AppVerName={#MyAppName} {#MyAppVersion}
-DefaultDirName={pf}\{#MyAppName}
-DefaultGroupName={#MyAppName}
+AppPublisher={#MyAppPublisher};AppVerName={#MyAppName}_{#MyAppVersion}
+DefaultDirName={pf}\ShuiShuo Soft\{#MyAppName}
+DefaultGroupName=ShuiShuo Soft\{#MyAppName}
 AllowNoIcons=yes
 OutputDir=E:\³ÌÐò´ò°ü\CardEditor\setup\
 OutputBaseFilename={#MyAppName}_{#MyAppVersion}_setup
