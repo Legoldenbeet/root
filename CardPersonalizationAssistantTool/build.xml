@@ -27,6 +27,7 @@
 	<property name="source-dir" location="src" />
 	<property name="CardPCSC-source-dir" location="components/CardPcsc/src" />
 	<property name="root-dir" location="E:\程序打包\CardPersonalizationAssistantTool" />
+	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
 	<property name="class-dir" location="${root-dir}/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/dist" />
 	<property name="doc-dir" location="${root-dir}/javadoc" />
@@ -50,7 +51,7 @@
 	<!-- Compiles the classes.  -->
 	<target name="compile" description="Compile the source">
 		<mkdir dir="${class-dir}" />
-		<javac srcdir="${CardPCSC-source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="UTF-8">
+		<javac fork="true" executable="${javac-home}"  srcdir="${CardPCSC-source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="UTF-8">
 							<classpath refid="classpath" />
 						</javac>
 		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="UTF-8">
