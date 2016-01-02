@@ -167,8 +167,7 @@ public class CardEditor {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
-				new SeppImpl(tabbedPane, statusObject).open(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
+				new SeppImpl(tabbedPane, statusObject).startService(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
 			}
 		});
 

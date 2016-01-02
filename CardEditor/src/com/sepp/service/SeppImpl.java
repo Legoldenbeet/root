@@ -57,27 +57,26 @@ public class SeppImpl implements Sepp {
 	}
 
 	public String process(byte[] data) {
-		String resp = "success_done.";
+		String resp = "successed_done.";
 		try {
-			byte[] cmdHeader = new byte[Sepp.CMD_LEN];
-			System.arraycopy(data, 0, cmdHeader, 0, Sepp.CMD_LEN);
+			byte[] commandHeader = new byte[Sepp.COMMAND_LEN];
+			System.arraycopy(data, 0, commandHeader, 0, Sepp.COMMAND_LEN);
 
-			Cmd cmd = parse(cmdHeader);
+			Cmd cmd = parse(commandHeader);
 			if (cmd != null) {
 				if (cmd.getCla() != 0x0F) {
 					// 发送错误指令给对方
-
-					return "EXCEPTION_INS_NOT_SUPPORT";
+					return "INS_NOT_SUPPORT_EXCEPTION";
 				}
 				switch (cmd.getIns()) {
-				case Sepp.INS_OPEN:
-					receiveOpen(data, Sepp.FILE_NAME_LEN_OFFSET);
+				case Sepp.INS_TRANSFER:
+					receiveFile(new File(""), data, Sepp.FILE_NAME_LEN_OFFSET);
+					break;
+				case Sepp.INS_TRANSFER_OPEN:
+					receiveFileAndOpenIt(new File(""), data, Sepp.FILE_NAME_LEN_OFFSET);
 					break;
 				case Sepp.INS_CLOSE:
-//					closeFile(fileName);
-					break;
-				case Sepp.INS_NAME:
-					resp = getTermUserName();
+					// resp = getTermUserName();
 					break;
 				default:
 					break;
@@ -104,31 +103,9 @@ public class SeppImpl implements Sepp {
 		return cmd;
 	}
 
-	public void receiveOpen(byte[] data, short offset) throws Exception {
-		short fileNameLen = (short) data[offset];
-		byte[] fileNameBytes = new byte[fileNameLen];
-		offset += 1;
-		System.arraycopy(data, offset, fileNameBytes, 0, fileNameLen);
-		offset += fileNameLen;
-		String fileName = new String(fileNameBytes, "GBK");
-		File file = new File(OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
-		if (!file.getParentFile().exists()) {
-			file.mkdir();
-		}
-		if (file.exists()) {
-			FileUtils.deleteQuietly(file);
-		} else {
-			file.createNewFile();
-		}
-
-		FileOutputStream fos = new FileOutputStream(file);
-		BufferedOutputStream bw = new BufferedOutputStream(fos);
-
-		bw.write(data, offset, data.length - offset);
-		bw.flush();
-		fos.close();
-		bw.close();
-
+	// 在编辑区打开文件
+	private void openFileInEditor(File file) throws IOException {
+		String fileName = file.getName();
 		Collection<String> fileTypeList = Config.getItems("FILE_TYPE");
 		String fileExt = fileName.substring(fileName.indexOf(".") + 1);
 		if (fileTypeList.contains(fileExt)) {
@@ -145,7 +122,8 @@ public class SeppImpl implements Sepp {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(), OsConstants.DEFAULT_FILE_ENCODE);
+				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(),
+						OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		});
 	}
@@ -167,10 +145,10 @@ public class SeppImpl implements Sepp {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean sendFile(File file, String targetIp) throws Exception {
+	public boolean sendFile(File file, String ip) throws Exception {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		int len = fileInputStream.available();
-		byte[] data = new byte[Sepp.CMD_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("UTF-8").length + len];
+		byte[] data = new byte[Sepp.COMMAND_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("UTF-8").length + len];
 		byte[] fileBytes = new byte[len];
 
 		fileInputStream.read(fileBytes);
@@ -189,8 +167,8 @@ public class SeppImpl implements Sepp {
 		return true;
 	}
 
-	public boolean sendFile(String filePath, String targetIp) throws Exception {
-		return sendFile(new File(filePath), targetIp);
+	public boolean sendFile(String filePath, String ip) throws Exception {
+		return sendFile(new File(filePath), ip);
 	}
 
 	@Override
@@ -311,26 +289,27 @@ public class SeppImpl implements Sepp {
 			return encoder;
 		}
 	}
+
 	private class ByteArrayDecoder extends CumulativeProtocolDecoder {
 
 		@Override
 		protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
 			in.setAutoExpand(true);
 			if (in.remaining() > 0) {
-				FileHeader fileHeader=(FileHeader)session.getAttribute("fileHeaer");
-				if (fileHeader==null||fileHeader.getSize()<=0) {
-					fileHeader=new FileHeader();
+				FileHeader fileHeader = (FileHeader) session.getAttribute("fileHeaer");
+				if (fileHeader == null || fileHeader.getSize() <= 0) {
+					fileHeader = new FileHeader();
 					// 有数据时，读取 4 字节判断消息长度
 					byte[] sizeBytes = new byte[Sepp.headerLen];
 					// 读取钱 4 个字节
 					in.get(sizeBytes);
-					int size = Integer.parseInt(WDByteUtil.bytes2HEX(sizeBytes),16);
+					int size = Integer.parseInt(WDByteUtil.bytes2HEX(sizeBytes), 16);
 					fileHeader.setSize(size);
 					session.setAttribute("fileHeaer", fileHeader);
 				}
 				in.mark();
-				int fileSize=fileHeader.getSize();
-				if (fileSize >in.remaining()) {
+				int fileSize = fileHeader.getSize();
+				if (fileSize > in.remaining()) {
 					// 如果消息内容的长度不够，则重置（相当于不读取 size），返回 false
 					in.reset();
 					// 接收新数据，以拼凑成完整的数据~
@@ -355,30 +334,58 @@ public class SeppImpl implements Sepp {
 		@Override
 		public void encode(IoSession iosession, Object obj, ProtocolEncoderOutput out) throws Exception {
 			// TODO Auto-generated method stub
-			byte[] bytes=(byte[])obj;
-			IoBuffer buffer=IoBuffer.allocate(1024,true);
+			byte[] bytes = (byte[]) obj;
+			IoBuffer buffer = IoBuffer.allocate(1024, true);
 			buffer.setAutoExpand(true);
-			
-			buffer.put(WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(bytes.length+"", Sepp.headerLen*2)));
+
+			buffer.put(WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(bytes.length + "", Sepp.headerLen * 2)));
 			buffer.put(bytes);
 			buffer.flip();
-			
+
 			out.write(buffer);
 			out.flush();
-			
+
 			buffer.free();
 		}
 
 	}
 
 	@Override
-	public void receiveFile(File file) throws Exception {
-		// TODO Auto-generated method stub
-		
+	public File receiveFile(File file, byte[] buf, short offset) throws Exception {
+		short fileNameLen = (short) buf[offset];
+		byte[] fileNameBytes = new byte[fileNameLen];
+		offset += 1;
+		System.arraycopy(buf, offset, fileNameBytes, 0, fileNameLen);
+		offset += fileNameLen;
+		String fileName = new String(fileNameBytes, "GBK");
+		file = new File(OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
+		if (!file.getParentFile().exists()) {
+			file.mkdir();
+		}
+		if (file.exists()) {
+			FileUtils.deleteQuietly(file);
+		} else {
+			file.createNewFile();
+		}
+
+		FileOutputStream fos = new FileOutputStream(file);
+		BufferedOutputStream bw = new BufferedOutputStream(fos);
+
+		bw.write(buf, offset, buf.length - offset);
+		bw.flush();
+		fos.close();
+		bw.close();
+
+		return file;
 	}
 
 	@Override
-	public boolean closeFile(String fileName) {
+	public void receiveFileAndOpenIt(File file, byte[] buf, short offset) throws Exception {
+		openFileInEditor(receiveFile(file, buf, offset));
+	}
+
+	@Override
+	public boolean closeFile(String fileName, String ip) {
 		// TODO Auto-generated method stub
 		return false;
 	}
