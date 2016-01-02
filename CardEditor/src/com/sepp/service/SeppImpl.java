@@ -36,7 +36,6 @@ import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
-import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
@@ -57,7 +56,6 @@ public class SeppImpl implements Sepp {
 		this.statusObject = statusObject;
 	}
 
-	@Override
 	public String process(byte[] data) {
 		String resp = "success_done.";
 		try {
@@ -72,13 +70,13 @@ public class SeppImpl implements Sepp {
 					return "EXCEPTION_INS_NOT_SUPPORT";
 				}
 				switch (cmd.getIns()) {
-				case Sepp.INS_FILE_OPEN:
+				case Sepp.INS_OPEN:
 					receiveOpen(data, Sepp.FILE_NAME_LEN_OFFSET);
 					break;
-				case Sepp.INS_FILE_CLOSE:
-					closeFile();
+				case Sepp.INS_CLOSE:
+//					closeFile(fileName);
 					break;
-				case Sepp.INS_TERM_INFO_NAME:
+				case Sepp.INS_NAME:
 					resp = getTermUserName();
 					break;
 				default:
@@ -106,7 +104,6 @@ public class SeppImpl implements Sepp {
 		return cmd;
 	}
 
-	@Override
 	public void receiveOpen(byte[] data, short offset) throws Exception {
 		short fileNameLen = (short) data[offset];
 		byte[] fileNameBytes = new byte[fileNameLen];
@@ -197,18 +194,6 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public void closeFile() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void sendOpen(byte[] data, short offset) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public String getTermUserName() {
 		return System.getProperty("user.name");
 	}
@@ -224,7 +209,7 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public void open(int seppPort) {
+	public void startService(int seppPort) {
 		try {
 			NioSocketAcceptor acceptor = new NioSocketAcceptor();
 			acceptor.getFilterChain().addLast("logger", new LoggingFilter());
@@ -240,7 +225,6 @@ public class SeppImpl implements Sepp {
 		}
 	}
 
-	@Override
 	public String send(byte[] msg, String ip, int port) {
 		String recv = "";
 		NioSocketConnector connector = new NioSocketConnector();
@@ -385,5 +369,17 @@ public class SeppImpl implements Sepp {
 			buffer.free();
 		}
 
+	}
+
+	@Override
+	public void receiveFile(File file) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean closeFile(String fileName) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
