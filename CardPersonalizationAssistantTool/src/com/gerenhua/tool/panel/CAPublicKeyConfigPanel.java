@@ -34,6 +34,7 @@ import com.gerenhua.tool.configdao.PublicKeyInfo;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.FixedSizePlainDocument;
 import com.gerenhua.tool.utils.PropertiesManager;
+import com.watchdata.commons.lang.WDAssert;
 
 /**
  * 
@@ -82,7 +83,7 @@ public class CAPublicKeyConfigPanel extends JPanel {
 	public CAPublicKeyConfigPanel() {
 		super();
 		setLayout(null);
-		//setBorder(JTBorderFactory.createTitleBorder("CA公钥管理"));
+		// setBorder(JTBorderFactory.createTitleBorder("CA公钥管理"));
 		init();
 
 		RIDCombox = new JComboBox();
@@ -269,6 +270,10 @@ public class CAPublicKeyConfigPanel extends JPanel {
 		add(modifyButton);
 		modifyButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (WDAssert.isEmpty(algorithmtextField.getText().trim()) || WDAssert.isEmpty(EXPtextField.getText().trim()) || WDAssert.isEmpty(HashtextField.getText().trim()) || WDAssert.isEmpty(textField.getText().trim()) || WDAssert.isEmpty(ModuletextField.getText().trim())) {
+					JOptionPane.showMessageDialog(null, "CA参数输入错误！");
+					return;
+				}
 				PublicKeyInfo publicKeyInfo = new PublicKeyInfo();
 				publicKeyInfo.setRid(RIDCombox.getSelectedItem().toString());
 				publicKeyInfo.setArith(algorithmtextField.getText());
@@ -297,11 +302,12 @@ public class CAPublicKeyConfigPanel extends JPanel {
 		label.setText("RID：");
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 100, 789, 597);
+		panel.setBounds(10, 100, 789, 509);
 		add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		panel.add(scrollPane, BorderLayout.CENTER);
 

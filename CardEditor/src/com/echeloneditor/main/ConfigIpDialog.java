@@ -4,8 +4,9 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
+import com.echeloneditor.os.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -45,7 +46,7 @@ public class ConfigIpDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ConfigIpDialog(JDialog dialog) {
+	public ConfigIpDialog(JFrame dialog) {
 		super(dialog, true);
 		setTitle("HSM");
 		setBounds(100, 100, 450, 139);
@@ -61,6 +62,8 @@ public class ConfigIpDialog extends JDialog {
 		textField.setColumns(10);
 
 		btnNewButton = new JButton("连接");
+		btnNewButton.setFocusPainted(false);
+		btnNewButton.setBorderPainted(false);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				IKms iKms = IKms.getInstance();
@@ -98,6 +101,8 @@ public class ConfigIpDialog extends JDialog {
 		getContentPane().add(lblNewLabel_1);
 
 		btnNewButton_1 = new JButton("断开");
+		btnNewButton_1.setFocusPainted(false);
+		btnNewButton_1.setBorderPainted(false);
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				IKms iKms = IKms.getInstance();

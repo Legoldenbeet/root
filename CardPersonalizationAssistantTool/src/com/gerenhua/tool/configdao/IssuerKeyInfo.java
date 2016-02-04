@@ -1,5 +1,12 @@
 package com.gerenhua.tool.configdao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
+import com.gerenhua.tool.app.Application;
 import com.gerenhua.tool.utils.Config;
 
 public class IssuerKeyInfo {
@@ -7,6 +14,15 @@ public class IssuerKeyInfo {
 	private String macKey;
 	private String encKey;
 	private int derive;
+	private String keyName;
+
+	public String getKeyName() {
+		return keyName;
+	}
+
+	public void setKeyName(String keyName) {
+		this.keyName = keyName;
+	}
 
 	public String getAcKey() {
 		return acKey;
@@ -39,16 +55,59 @@ public class IssuerKeyInfo {
 	public void setDerive(int derive) {
 		this.derive = derive;
 	}
-	
-	public IssuerKeyInfo getIssuerKeyInfo(String sectionName){
-		
-		IssuerKeyInfo issuerKeyInfo=new IssuerKeyInfo();
-		issuerKeyInfo.setDerive(Integer.parseInt(Config.getValue(sectionName, "Derive")));
-		issuerKeyInfo.setAcKey(Config.getValue(sectionName, "UDKac"));
-		issuerKeyInfo.setMacKey(Config.getValue(sectionName, "UDKmac"));
-		issuerKeyInfo.setEncKey(Config.getValue(sectionName, "UDKenc"));
-		
+
+	public IssuerKeyInfo getIssuerKeyInfo(String sectionName) {
+		String current = Config.getValue(sectionName, "currentAppKey");
+		return getIssuerKeyInfo(sectionName, current);
+	}
+
+	public IssuerKeyInfo getIssuerKeyInfo(String sectionName, String item) {
+
+		IssuerKeyInfo issuerKeyInfo = new IssuerKeyInfo();
+		String itemV = Config.getValue(sectionName, item);
+		String[] items = itemV.split("\\|");
+		issuerKeyInfo.setKeyName(item);
+		issuerKeyInfo.setDerive(Integer.parseInt(items[0].toString().trim()));
+		issuerKeyInfo.setAcKey(items[1]);
+		issuerKeyInfo.setMacKey(items[2]);
+		issuerKeyInfo.setEncKey(items[3]);
+
 		return issuerKeyInfo;
 	}
-	
+
+	public List<IssuerKeyInfo> getIssuerKeyInfos(String iskSection) {
+		List<IssuerKeyInfo> result = new ArrayList<IssuerKeyInfo>();
+		Collection<String> isks = Config.getItems(iskSection);
+
+		for (String isk : isks) {
+			if (isk.equalsIgnoreCase("currentAppKey")) {
+				continue;
+			}
+			String itemV = Config.getValue(iskSection, isk);
+			String[] items = itemV.split("\\|");
+			IssuerKeyInfo issuerKeyInfo = new IssuerKeyInfo();
+			issuerKeyInfo.setKeyName(isk);
+			issuerKeyInfo.setDerive(Integer.parseInt(items[0].toString().trim()));
+			issuerKeyInfo.setAcKey(items[1]);
+			issuerKeyInfo.setMacKey(items[2]);
+			issuerKeyInfo.setEncKey(items[3]);
+			result.add(issuerKeyInfo);
+		}
+		return result;
+	}
+
+	public boolean add(IssuerKeyInfo issuerKeyInfo) {
+		Config.addItem("ApplicationKey", issuerKeyInfo.getKeyName());
+		Config.setValue("ApplicationKey", issuerKeyInfo.getKeyName(), issuerKeyInfo.getDerive() + "|" + issuerKeyInfo.getAcKey() + "|" + issuerKeyInfo.getMacKey() + "|" + issuerKeyInfo.getEncKey());
+		return true;
+	}
+
+	public boolean del(String keyName) {
+		if (keyName.equalsIgnoreCase(Config.getValue("ApplicationKey", "currentAppKey"))) {
+			JOptionPane.showMessageDialog(Application.frame, "密钥正在使用无法删除！");
+			return false;
+		}
+		Config.delItem("ApplicationKey", keyName);
+		return true;
+	}
 }

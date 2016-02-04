@@ -2,104 +2,6 @@ package com.gp.gpscript.script;
 
 public interface GPKeyCryptoEngine
 {
-   public int init(String p1, String p2);
-   public int init(String p1, String p2,String p3);
-
-   public void close();
-
-   
-   
-   
-   /**
-    * mac
-    * @param p1 the key used for mac
-    * @param p2 mech-ABC_DES_ECB/ABC_DES_CBC
-    * @param p3 data 
-    * @param p4 Initial vector
-    * @param p5 pan
-    * @return a new ByteString of the decrypted data
-    */
-   public NativeByteString macConnByPan(NativeKey p1,Number p2,NativeByteString p3,NativeByteString p4,String p5);
-   /**
-    * Decrypt Perform a decryption operation
-    * @param p1 the key used for decrypt
-    * @param p2 mech-ABC_DES_ECB/ABC_DES_CBC
-    * @param p3 data to encrypt
-    * @param p4 Initial vector
-    * @param p5 pan
-    * @return a new ByteString of the decrypted data
-    */
-   public NativeByteString decryptConnByPan(NativeKey p1,Number p2,NativeByteString p3,NativeByteString p4,String p5);
-   /**
-    * encrypt
-    * @param p1 key to use in the encrypt option
-    * @param p2 mech=ABC_DES_ECB/ABC_DES_CBC
-    * @param p3 data to encrypt
-    * @param p4 initial vector
-    * @param p5 pan
-    * @return a ByteString object containing the encrypted object
-    */
-   public NativeByteString encryptConnByPan(NativeByteString p1,Number p2,NativeByteString p3,NativeByteString p4,String p5);
-   
-  
-   /**
-    * deriveKey
-    * @param p1 key to use in the encrypt option
-    * @param p2 mech=ABC_DES_ECB/ABC_DES_CBC
-    * @param p3 data to encrypt
-    * @param p4 initial vector
-    * @param p5 pan
-    * @return a ByteString object containing the encrypted object
-    */
-   public NativeByteString deriveKeyConnByPan(NativeKey p1,Number p2,NativeByteString p3,NativeByteString p4,String p5,NativeKey p6);
-   /**
-    * wrapKeyConnByPan
-    * @param p1 key to use in the decrptEncrypt option
-    * @param p2 mech=ABC_DES_ECB/ABC_DES_CBC
-    * @param p3 data to encrypt
-    * @param p4 initial vector
-    * @param p5 pan
-    * @return a ByteString object containing the encrypted object
-    */
-   public NativeByteString wrapKeyConnByPan(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4, String p5);  
-   /**
-    * decryptEncryptConnByPan
-    * @param p1 key to use in the decrptEncrypt option
-    * @param p2 mech=ABC_DES_ECB/ABC_DES_CBC
-    * @param p3 data to encrypt
-    * @param p4 initial vector
-    * @param p5 pan
-    * @return a ByteString object containing the encrypted object
-    */
-   public NativeByteString decryptEncryptConnByPan(NativeKey p1, Number p2, NativeByteString p3, Number p4,NativeByteString p5, NativeByteString p6, NativeByteString p7, String p8);   
-   /**
-    * connect
-    * @param p1 pan
-    * @return success:0
-    */
-   public NativeByteString connectByPan(String p1);
- 
-   /**
-    * disconnByPan
-    * @param p1 pan
-    * @return success:0
-    */
-   public NativeByteString disconnByPan(String p1);
-  
-   
-   
-   
-   
-   public NativeByteString deriveKeyLmk(Number p1, Number p2, Number p3,NativeByteString p4,NativeByteString p5,NativeByteString p6);
-   
-   public NativeByteString decryptEncryptLmk(Number p1, Number p2, Number p3, NativeByteString p4, NativeByteString p5, Number p6, Number p7, Number p8, NativeByteString p9, NativeByteString p10, NativeByteString p11);
-
-   public NativeByteString wrapToLmk(Number p1, Number p2, Number p3,NativeByteString p4,Number p5, Number p6,NativeByteString p7,NativeByteString p8);
-   
-   public NativeByteString edk(Number p1,NativeByteString p2,NativeByteString p3);
-   
-   public NativeByteString inputKey(NativeByteString p1,NativeByteString p2,NativeByteString p3);
-   
    public NativeByteString getKey(NativeKey p1);
 
       /**
@@ -134,8 +36,6 @@ public interface GPKeyCryptoEngine
      * @param p4 derivedKey
      */
     public void deriveKey(NativeKey p1,Number p2,NativeByteString p3,NativeKey p4);
-    public void deriveOddKey(NativeKey p1,Number p2,NativeByteString p3,NativeKey p4);
-
     /**
      * create a digest of the data,using the algorithm specified by the mech parameter
      * @param p1 mech=SHA-1/MD5

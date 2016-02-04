@@ -16,6 +16,8 @@ import java.awt.LayoutManager;
 
 import javax.swing.JComponent;
 
+import com.gerenhua.tool.app.Application;
+
 /**
  * 该类是个辅助类，实现折叠面板的一个逻辑面板，包括面板caption和内容。
  * 
@@ -58,6 +60,7 @@ class Folder extends JComponent {
 		setLayout(new FolderTabLayout());
 		// 生成并添加标题组件
 		caption = new CaptionButton(label, expanded);
+//		caption.setFont(Application.titleFont);
 		add(caption);
 		// 生成并添加抽屉
 		drawer = new Drawer(expanded ? 1 : 0, comp);

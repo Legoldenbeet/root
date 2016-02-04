@@ -309,7 +309,7 @@ public class TerminalPerformanceConfigPanel extends JPanel {
 		termPerform += addStr(valueStr.toUpperCase(), "0", 2, 0);
 
 		
-		Config.setValue("Terminal_Data", "terminal_perform", termPerform);
+		Config.setValue("Terminal_Data", "9F33", termPerform);
 		JOptionPane.showMessageDialog(null, "保存成功！");
 	}
 
@@ -344,7 +344,7 @@ public class TerminalPerformanceConfigPanel extends JPanel {
 	private void init() {
 		setName(pm.getString("mv.terminalperformanceconfig.name"));
 
-		String tpconfig=Config.getValue("Terminal_Data", "terminal_perform");
+		String tpconfig=Config.getValue("Terminal_Data", "9F33");
 
 		if (WDAssert.isNotEmpty(tpconfig)) {
 			String B1 = tpconfig.substring(0, 2);

@@ -25,7 +25,9 @@
 	<!-- Set global properties for this build. -->
 	<property name="version" value="1.0.0" />
 	<property name="source-dir" location="src" />
+	<property name="CardPCSC-source-dir" location="components/CardPcsc/src" />
 	<property name="root-dir" location="E:\程序打包\CardPersonalizationAssistantTool" />
+	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
 	<property name="class-dir" location="${root-dir}/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/dist" />
 	<property name="doc-dir" location="${root-dir}/javadoc" />
@@ -34,6 +36,7 @@
 	<property name="debug" value="true" />
 	<property name="debuglevel" value="lines,vars,source" />
 	<property name="java-level" value="1.6" />
+	<property name="encode" value="UTF-8" />
 
 	<path id="classpath">
 		<fileset dir="${lib}">
@@ -49,9 +52,12 @@
 	<!-- Compiles the classes.  -->
 	<target name="compile" description="Compile the source">
 		<mkdir dir="${class-dir}" />
-		<javac srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="UTF-8">
+		<javac fork="true" executable="${javac-home}" srcdir="${CardPCSC-source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="${encode}">
 			<classpath refid="classpath" />
 		</javac>
+		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" listfiles="yes" includeantruntime="false" encoding="${encode}">
+					<classpath refid="classpath" />
+				</javac>
 	</target>
 
 	<!-- Creates the jar file. -->

@@ -2,7 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardEditor"
-#define MyAppVersion "1.2.2.3"
+#define MyAppVersion "1.2.3_beta"
+#define MyAppPublisher "SHUISHUO, Inc."
 #define MyAppExeName "CardEditor.exe"
 
 [Setup]
@@ -12,9 +13,9 @@
 AppId={{F46559D3-701E-42D4-9A84-6D4955575BEF}}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-;AppVerName={#MyAppName} {#MyAppVersion}
-DefaultDirName={pf}\{#MyAppName}
-DefaultGroupName={#MyAppName}
+AppPublisher={#MyAppPublisher};AppVerName={#MyAppName}_{#MyAppVersion}
+DefaultDirName={pf}\ShuiShuo Soft\{#MyAppName}
+DefaultGroupName=ShuiShuo Soft\{#MyAppName}
 AllowNoIcons=yes
 OutputDir=E:\³ÌÐò´ò°ü\CardEditor\setup\
 OutputBaseFilename={#MyAppName}_{#MyAppVersion}_setup

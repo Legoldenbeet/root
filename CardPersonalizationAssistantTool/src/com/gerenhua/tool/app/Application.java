@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -19,7 +21,6 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 
 import com.gerenhua.tool.utils.Config;
-import com.gerenhua.tool.utils.PropertiesManager;
 import com.gerenhua.tool.utils.SwingUtils;
 
 /**
@@ -31,8 +32,6 @@ import com.gerenhua.tool.utils.SwingUtils;
  * @copyright watchdata
  */
 public class Application extends JFrame {
-
-	private static PropertiesManager pm = new PropertiesManager();
 	private static final long serialVersionUID = -1077236347297286235L;
 	private static Logger log = Logger.getLogger(Application.class);
 	public static Application frame;
@@ -66,48 +65,6 @@ public class Application extends JFrame {
 			UIManager.setLookAndFeel(currentLaf);
 			JFrame.setDefaultLookAndFeelDecorated(true);
 
-			Font commonFont = new Font("微软雅黑", Font.PLAIN, 12);
-			Font titleFont = new Font("微软雅黑", Font.PLAIN, 14);
-			UIManager.getDefaults().put("CheckBox.font", commonFont);
-			UIManager.getDefaults().put("Tree.font", commonFont);
-			UIManager.getDefaults().put("Viewport.font", commonFont);
-			UIManager.getDefaults().put("ProgressBar.font", commonFont);
-			UIManager.getDefaults().put("RadioButtonMenuItem.font", commonFont);
-			UIManager.getDefaults().put("FormattedTextField.font", commonFont);
-			UIManager.getDefaults().put("ToolBar.font", commonFont);
-			UIManager.getDefaults().put("ColorChooser.font", commonFont);
-			UIManager.getDefaults().put("ToggleButton.font", commonFont);
-			UIManager.getDefaults().put("Panel.font", commonFont);
-			UIManager.getDefaults().put("TextArea.font", commonFont);
-			UIManager.getDefaults().put("Menu.font", commonFont);
-			UIManager.getDefaults().put("RadioButtonMenuItem.acceleratorFont", commonFont);
-			UIManager.getDefaults().put("Spinner.font", commonFont);
-			UIManager.getDefaults().put("Menu.acceleratorFont", commonFont);
-			UIManager.getDefaults().put("CheckBoxMenuItem.acceleratorFont", commonFont);
-			UIManager.getDefaults().put("TableHeader.font", commonFont);
-			UIManager.getDefaults().put("TextField.font", commonFont);
-			UIManager.getDefaults().put("OptionPane.font", commonFont);
-			UIManager.getDefaults().put("MenuBar.font", commonFont);
-			UIManager.getDefaults().put("Button.font", commonFont);
-			UIManager.getDefaults().put("Label.font", commonFont);
-			UIManager.getDefaults().put("PasswordField.font", commonFont);
-			UIManager.getDefaults().put("InternalFrame.titleFont", titleFont);
-			UIManager.getDefaults().put("OptionPane.buttonFont", commonFont);
-			UIManager.getDefaults().put("ScrollPane.font", commonFont);
-			UIManager.getDefaults().put("MenuItem.font", commonFont);
-			UIManager.getDefaults().put("ToolTip.font", commonFont);
-			UIManager.getDefaults().put("List.font", commonFont);
-			UIManager.getDefaults().put("OptionPane.messageFont", commonFont);
-			UIManager.getDefaults().put("EditorPane.font", commonFont);
-			UIManager.getDefaults().put("Table.font", commonFont);
-			UIManager.getDefaults().put("TabbedPane.font", commonFont);
-			UIManager.getDefaults().put("RadioButton.font", commonFont);
-			UIManager.getDefaults().put("CheckBoxMenuItem.font", commonFont);
-			UIManager.getDefaults().put("TextPane.font", commonFont);
-			UIManager.getDefaults().put("PopupMenu.font", commonFont);
-			UIManager.getDefaults().put("TitledBorder.font", commonFont);
-			UIManager.getDefaults().put("ComboBox.font", commonFont);
-
 			SwingUtils.updateUI();
 		} catch (Exception e) {
 			log.error("LookAndFeel unsupported.");
@@ -122,20 +79,14 @@ public class Application extends JFrame {
 		initContentPane();
 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		double screenWidth = d.getWidth();
-		double screenHeight = d.getHeight();
+		Rectangle bounds = new Rectangle(d);
+		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
 
-		if (screenWidth > 1024) {
-			screenWidth = 1024;
-		} else {
-			screenWidth = screenWidth - 50;
-		}
-		if (screenHeight > 768) {
-			screenHeight = 768;
-		} else {
-			screenHeight = screenHeight - 50;
-		}
-		setSize((int) screenWidth, (int) screenHeight);
+		bounds.x = insets.left;
+		bounds.y = insets.top;
+		bounds.width -= insets.left + insets.right;
+		bounds.height -= insets.top + insets.bottom;
+		setBounds(bounds);
 
 		setLocationRelativeTo(null);
 		setResizable(true);

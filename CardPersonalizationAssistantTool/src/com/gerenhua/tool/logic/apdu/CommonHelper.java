@@ -35,11 +35,11 @@ public class CommonHelper {
 		Iterator<String> it = sourceData.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			if (WDAssert.isEmpty(deptData.get(key))) {
+//			if (WDAssert.isEmpty(deptData.get(key))) {
 				deptData.put(key, sourceData.get(key));
-			} else {
-				// throw new Exception("map data is exist of key[" + key +"]");
-			}
+//			} else {
+//				// throw new Exception("map data is exist of key[" + key +"]");
+//			}
 
 		}
 	}
@@ -196,7 +196,7 @@ public class CommonHelper {
 		return res;
 	}
 
-	public static boolean parse8E(String str8E) {
+	public static boolean supportOfflinePin(String str8E) {
 		int i = 16;
 		while (i < str8E.length()) {
 			String cvm = str8E.substring(i, i + 4);
@@ -243,6 +243,19 @@ public class CommonHelper {
 				com.setText(target);
 			}
 		});
+	}
+	public static boolean support(String aip,int option){
+		byte aip_byte1=WDByteUtil.HEX2Bytes(aip)[0];
+		aip_byte1=(byte)((aip_byte1>>(option-1))&0x01);
+		if (aip_byte1==1) {
+			return true;
+		}
+		return false;
+	}
+	public static int shiftRight(String cvr,int option){
+		int cvr_int=Integer.parseInt(cvr, 16);
+		int res=cvr_int>>option;
+		return res;
 	}
 	public static void main(String[] args) {
 		int b = Integer.parseInt("b",16);

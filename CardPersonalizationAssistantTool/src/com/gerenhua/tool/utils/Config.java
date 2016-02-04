@@ -16,14 +16,14 @@ public class Config {
 	// default config file path
 	// **********************************************************************
 
-	public static String configPath = System.getProperty("user.dir") + "\\resources\\";
+	public static String configPath = System.getProperty("user.dir") + "/resources/";
 
 	public static File configFile = null;
 	public static IniFile ini = null;
 
 	static {
 		
-		configFile = new File(configPath + "/config.ini");
+		configFile = new File(configPath + "config.ini");
 
 		checkFile(configFile);
 
@@ -157,8 +157,7 @@ public class Config {
 			try {
 				throw new IOException("item is exists.");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		iniSection.addItem(itemName);

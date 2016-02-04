@@ -1,44 +1,40 @@
 package com.gp.gpscript.device;
 
+import javax.smartcardio.ResponseAPDU;
+
+import org.apache.log4j.Logger;
+
 import com.gp.gpscript.script.ApduChannel;
 import com.watchdata.cardpcsc.CardPcsc;
 import com.watchdata.commons.lang.WDStringUtil;
-import com.watchdata.util.DataUtil;
 
 public class PcscCardReader implements ApduChannel {
-	public CardPcsc cardPcsc;
+	public Logger log = Logger.getLogger(PcscCardReader.class);
 	public PcscCardReader(String reader){
-		cardPcsc=new CardPcsc();
-		cardPcsc.connectReader(reader);
+		CardPcsc.connectReader(reader);
 	}
 
 	@Override
 	public int init(String p1, String p2) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public byte[] reset() {
-		// TODO Auto-generated method stub
-		return cardPcsc.resetCard();
+		return CardPcsc.resetCard().getBytes();
 	}
 
 	@Override
 	public byte[] sendApdu(int CLA, int INS, int P1, int P2, byte[] toSendData, int LE) {
-		if (LE==-1) {
-			LE=0x00;
-		}
-		// TODO Auto-generated method stub
-		return DataUtil.hex2byte(cardPcsc.SendApdu(CLA, INS, P1, P2, toSendData, LE));
+		ResponseAPDU responseAPDU=CardPcsc.sendApdu(CLA, INS, P1, P2, toSendData, LE);
+		return responseAPDU.getBytes();
 	}
 
 	@Override
 	public byte[] sendApdu(byte[] toSendData, int len) {
-		// TODO Auto-generated method stub
-		return cardPcsc.SendApdu(toSendData).getBytes();
+		return (CardPcsc.sendApdu(toSendData)).getBytes();
 	}
 public static void main(String[] args) {
-	System.out.println(WDStringUtil.getRandomHexString(4));
+	System.out.println(WDStringUtil.getRandomHexString(8));
 }
 }

@@ -2,8 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CardPAT"
-#define MyAppVersion "1.0.2"
-#define MyAppPublisher "ZUNEI, Inc."
+#define MyAppVersion "1.0.3"
+#define MyAppPublisher "SHUISHUO, Inc."
 #define MyAppExeName "CardPAT.exe"
 
 [Setup]
@@ -15,8 +15,8 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={pf}\{#MyAppName}
-DefaultGroupName={#MyAppName}
+DefaultDirName={pf}\ShuiShuo Soft\{#MyAppName}
+DefaultGroupName=ShuiShuo Soft\{#MyAppName}
 AllowNoIcons=yes
 OutputDir=E:\³ÌÐò´ò°ü\CardPersonalizationAssistantTool\setup
 OutputBaseFilename={#MyAppName}_{#MyAppVersion}_setup

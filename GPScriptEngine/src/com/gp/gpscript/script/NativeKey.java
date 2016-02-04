@@ -32,6 +32,10 @@ import com.watchdata.commons.jce.JceBase.Padding;
  */
 public class NativeKey extends IdScriptableObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Object KEY_TAG = new Object();
 	private static NativeKey prototypeKey = new NativeKey();
 
@@ -40,7 +44,7 @@ public class NativeKey extends IdScriptableObject {
 	 *            the strBlob to set
 	 */
 	public void setStrBlob(NativeByteString strBlob) {
-		strBlob = strBlob;
+		this.strBlob = strBlob.toString();
 	}
 
 	/**

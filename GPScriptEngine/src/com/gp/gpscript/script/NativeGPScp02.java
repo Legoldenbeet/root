@@ -28,6 +28,10 @@ import com.gp.gpscript.utils.Hex;
  * @version 1.0
  */
 public class NativeGPScp02 extends IdScriptableObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Logger log = Logger.getLogger(NativeGPScp02.class);
 	private static final Object SCP02_TAG = new Object();
 
@@ -215,9 +219,9 @@ public class NativeGPScp02 extends IdScriptableObject {
 		case Id_externalAuthenticateV2:
 			realThis(thisObj, f).jsFunction_externalAuthenticateV2(cx, scope, args);
 			return null;
-		case Id_externalAuthenticateLmk:
-			realThis(thisObj, f).jsFunction_externalAuthenticateLmk(cx, scope, args);
-			return null;
+//		case Id_externalAuthenticateLmk:
+//			realThis(thisObj, f).jsFunction_externalAuthenticateLmk(cx, scope, args);
+//			return null;
 		case Id_beginRMac:
 			realThis(thisObj, f).jsFunction_beginRMac(cx, scope, args);
 			return null;
@@ -343,67 +347,6 @@ public class NativeGPScp02 extends IdScriptableObject {
 		// return
 		NativeByteString sNew = new NativeByteString(strResp, ee);
 		return sNew;
-	}
-
-	/**
-	 * 天津农行 session key is encrypted by lmk
-	 * 
-	 * @param cx
-	 * @param scope
-	 * @param p1
-	 */
-	private void externalAuthenticateLmk(Context cx, Scriptable scope, Number p1, String pan) {
-		String data;
-		String Rcard = cardChallenge.toString(); // random of card
-		log.debug("random of card:" + Rcard);
-		String Rter = hostChallenge.toString(); // random of terminal
-		log.debug("random of terminal:" + Rter);
-		String Host = "";
-		String Smac = "";
-		NativeByteString left;
-		byte[] iv = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-		Integer ee = new Integer(GPConstant.HEX);
-		Integer mech = new Integer(NativeCrypto.DES_ECB);
-
-		// NativeKey Sec_KEK=(NativeKey)key.get("Sec_KEK",scope);//new NativeKey("Sec_KEK");
-		// NativeKey Sec_ENC=(NativeKey)key.get("Sec_ENC",scope);//new NativeKey("Sec_ENC");
-		// NativeKey Sec_MAC=(NativeKey)key.get("Sec_MAC",scope);//new NativeKey("Sec_MAC");
-
-		// host
-		data = Rcard + Rter + "8000000000000000";
-		log.debug("data is : " + data);
-		// Host=(NativeCrypto.sign(Sec_ENC,new Integer(NativeCrypto.DES_MAC_EMV),new NativeByteString(data,ee))).toString();
-		// Host=(NativeCrypto.sign(encKey,new Integer(NativeCrypto.DES_MAC_EMV),new NativeByteString(data,ee), new NativeByteString("0000000000000000", ee))).toString();
-		Host = (NativeCrypto.encryptConnByPan(encKey.getBlob(), NativeCrypto.ABC_DES_CBC, new NativeByteString(data, ee), new NativeByteString("0000000000000000", ee), pan)).toString();
-		Host = Host.substring(Host.length() - 16);
-		log.debug("encKey===" + encKey.getBlob());
-		// Smac
-		byte[] level = new byte[1];
-		level[0] = (byte) (p1.intValue());
-		String strLevel = new String(Hex.encode(level));
-		log.debug("Host:" + Host);
-		data = "8482" + strLevel + "0010" + Host;
-		log.debug("命令data:" + data);
-		// Smac=(NativeCrypto.sign(Sec_MAC,new Integer(NativeCrypto.DES_MAC_EMV),new NativeByteString(data,ee))).toString();
-		/*
-		 * left=NativeCrypto.encryptConnByPan(new NativeByteString(macKey.strBlob.substring(0, 16),ee), NativeCrypto.ABC_DES_CBC, new NativeByteString(data,ee), new NativeByteString("0000000000000000", ee), pan); left=NativeCrypto.decryptConnByPan(new NativeByteString(macKey.strBlob.substring(16, 32),ee), NativeCrypto.ABC_DES_CBC, left, new NativeByteString("0000000000000000", ee), pan); Smac=(NativeCrypto.encryptConnByPan(new NativeByteString(macKey.strBlob.substring(0, 16),ee), NativeCrypto.ABC_DES_CBC, left, new NativeByteString("0000000000000000", ee), pan)).toString();
-		 */
-		Smac = (NativeCrypto.macConnByPan(macKey, 1, new NativeByteString(data, ee), new NativeByteString("0000000000000000", ee), pan)).toString();
-		log.debug("macKey===" + macKey.getBlob());
-		// save the current mac value for the next command
-		// PcscWrap.SMAC=Smac;
-		log.debug("Smac:" + Smac);
-		smac = new NativeByteString(Smac, new Integer(GPConstant.HEX));
-		// send command to card
-		byte[] resp = new byte[500];
-		log.debug("host and smac is : " + Host + Smac);
-
-		resp = this.card.sendApdu(cx, scope, 0x84, 0x82, p1.intValue(), 0x00, Hex.decode(Host + Smac), -1);
-		String strResp = new String(Hex.encode(resp));
-		this.card.SWException(cx, "GPScp02", strResp, 0x9000);
-		state = new Integer(GPConstant.SC_OPEN);
-		securityLevel = p1;
 	}
 
 	private void externalAuthenticate(Context cx, Scriptable scope, Number p1) {
@@ -590,48 +533,6 @@ public class NativeGPScp02 extends IdScriptableObject {
 		return sNew;
 	}
 
-	/**
-	 * 加密密钥采用Lmk保护的密钥
-	 * 
-	 * @param @param cx
-	 * @param @param scope
-	 * @param @param p1
-	 * @param @return
-	 * @return NativeByteString
-	 * @throws Exception
-	 */
-	public NativeByteString encryptKekLmk(Context cx, Scriptable scope, NativeByteString p1) {
-		// wrapkey is KEK
-		// NativeKey KekKey=(NativeKey)key.get("Sec_KEK",scope);//new NativeKey("Sec_KEK");//("KDCkek");
-		NativeByteString bwrapKey = kekKey.getBlob();
-		log.debug("encryted KSCkek（encrypt CDK:）" + kekKey.getBlob());
-		log.debug("LMK CDK:" + p1);
-		byte[] wrapKey = new byte[bwrapKey.GetLength()];
-		for (int i = 0; i < bwrapKey.GetLength(); i++)
-			wrapKey[i] = bwrapKey.ByteAt(i);
-
-		// mech is DES_ECB when scp01
-		int mech = 0;
-
-		byte[] dataToEncrypt = new byte[p1.GetLength()];
-		for (int i = 0; i < p1.GetLength(); i++)
-			dataToEncrypt[i] = p1.ByteAt(i);
-
-		byte[] iv = new byte[8];
-		for (int i = 0; i < 8; i++)
-			iv[i] = (byte) 0;
-
-		String out = "";
-		// out = Hex.decode(NativeCrypto.encrypt(kekKey, new Integer(mech), new NativeByteString(dataToEncrypt), new NativeByteString(iv)).toString());
-		out = NativeCrypto.wrapToLmk(mech, NativeCrypto.ZMK, NativeCrypto.LMK_DOUBLE_LENGTH_KEY, new NativeByteString(wrapKey), NativeCrypto.ZMK, NativeCrypto.LMK_DOUBLE_LENGTH_KEY, new NativeByteString(dataToEncrypt), new NativeByteString(iv)).toString();
-		// return
-		log.debug("out:" + out);
-		String str = out;
-		Integer ee = new Integer(GPConstant.HEX);
-		NativeByteString sNew = new NativeByteString(str, ee);
-		return sNew;
-	}
-
 	/*************************************************/
 	/* GP function */
 	/* throw exception according to the parameter***** */
@@ -667,13 +568,6 @@ public class NativeGPScp02 extends IdScriptableObject {
 			throw new EvaluatorException((new GPError("GPScp02", GPError.INVALID_TYPE)).toString());
 
 		externalAuthenticate(cx, scope, (Number) args[0], (Number) args[1]);
-	}
-
-	private void jsFunction_externalAuthenticateLmk(Context cx, Scriptable scope, Object[] args) {
-		if (!(args[0] instanceof Number))
-			throw new EvaluatorException((new GPError("GPScp02", GPError.INVALID_TYPE)).toString());
-
-		externalAuthenticateLmk(cx, scope, (Number) args[0], (String) args[1]);
 	}
 
 	private void jsFunction_beginRMac(Context cx, Scriptable scope, Object[] args) {

@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.echeloneditor.os.OsConstants;
+
 public class WindowsExcuter {
 	public final static Logger log = Logger.getLogger(WindowsExcuter.class);
 	public static Process p;
@@ -27,6 +29,12 @@ public class WindowsExcuter {
 	public static void excute(File dir, String windowCommand, boolean logPrint) throws Exception {
 		Debug.log.info(windowCommand);
 		List<String> cmdList = new ArrayList<String>();
+		if (OsConstants.isWindows()) {
+			cmdList.add("cmd.exe");
+			cmdList.add("/c");
+		}else if (OsConstants.isMacOS()) {
+			
+		}
 		for (String cmd : windowCommand.split(" ")) {
 			cmdList.add(cmd);
 		}

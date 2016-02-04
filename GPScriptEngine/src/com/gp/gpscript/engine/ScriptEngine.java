@@ -63,7 +63,6 @@ public class ScriptEngine {
 	public String secript = "";
 	public String iccdata;
 	public String selectedFragment = "";
-	public HashMap<String,HashMap<String, String>> varHashMap;
 	public ApduChannel apduChannel;
 	public Script script;
 	public ApplicationProfile appProfile;
@@ -109,14 +108,6 @@ public class ScriptEngine {
 
 	public void setCount(int count) {
 		this.count = count;
-	}
-
-	public HashMap<String, HashMap<String, String>> getVarHashMap() {
-		return varHashMap;
-	}
-
-	public void setVarHashMap(HashMap<String, HashMap<String, String>> varHashMap) {
-		this.varHashMap = varHashMap;
 	}
 
 	/**
@@ -246,7 +237,7 @@ public class ScriptEngine {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean dataMapping(int index) throws Exception {
+	public boolean dataMapping() throws Exception {
 		NativeArray dataArray;
 		NativeArray keyArray;
 		Application app;
@@ -274,7 +265,7 @@ public class ScriptEngine {
 			//设置声明的数据元素值
 			if (app.ap.DataElement != null) {
 				for (int i = 0; i < app.ap.DataElement.length; i++) {
-					SetDataElement(cx, scope, index, dataArray, app.ap.DataElement[i]);
+					SetDataElement(cx, scope, dataArray, app.ap.DataElement[i]);
 				}
 
 			} else {
@@ -427,7 +418,7 @@ public class ScriptEngine {
 		na.card.profile = cardProfile;
 		na.card.setApduChannel(apduChannel);
 		na.crypto = new NativeCrypto();
-		Hsm hsm = new Hsm();
+		Crypto hsm = new Crypto();
 		// cefk.setKmsi(kmsi);
 		// cefk.setKmsServer(kmsServer);
 		NativeCrypto.cryptoEngine.set(hsm);
@@ -462,7 +453,7 @@ public class ScriptEngine {
 		ngpa.card.setApduChannel(apduChannel);
 		ngpa.card.profile = cardProfile;
 		ngpa.crypto = new NativeCrypto();
-		Hsm cefk = new Hsm();
+		Crypto cefk = new Crypto();
 		// cefk.setKmsi(kmsi);
 		// cefk.setKmsServer(kmsServer);
 		NativeCrypto.cryptoEngine.set(cefk);
@@ -490,7 +481,7 @@ public class ScriptEngine {
 		sd.card.setApduChannel(apduChannel);
 		sd.card.profile = cardProfile;
 		sd.crypto = new NativeCrypto();
-		Hsm cefk = new Hsm();
+		Crypto cefk = new Crypto();
 		// cefk.setKmsi(kmsi);
 		// cefk.setKmsServer(kmsServer);
 		NativeCrypto.cryptoEngine.set(cefk);
@@ -518,11 +509,12 @@ public class ScriptEngine {
 	 * @param dataElement
 	 * @throws Exception
 	 */
-	public void SetDataElement(Context cx, Scriptable scope, int index, Scriptable objArray, apDataElement dataElement) throws Exception {
+	public void SetDataElement(Context cx, Scriptable scope, Scriptable objArray, apDataElement dataElement) throws Exception {
 		String strName = dataElement.Name;
 		String className = dataElement.Type;
 		String external = dataElement.External;
 		String encoding = dataElement.Encoding;
+		String value = dataElement.Value;
 		int encodeV = 1000;
 		if (encoding.equalsIgnoreCase("HEX"))
 			encodeV = 1000;
@@ -535,39 +527,15 @@ public class ScriptEngine {
 		else if (encoding.equalsIgnoreCase("CN"))
 			encodeV = 1004;
 		if (className.equalsIgnoreCase("BYTESTRING")) {
-			if (external.equals("true")) {
-				String allDGI = getValue(index, strName);
-
-				if (allDGI == null) {
-					ScriptRuntime.setObjectElem(objArray, strName, null, cx);
-				} else {
-					NativeByteString sNew = new NativeByteString(allDGI, new Integer(encodeV));
-
-					Object temp = NativeByteString.newByteString(cx, scope, sNew);
-					ScriptRuntime.setObjectElem(objArray, strName, temp, cx);
-				}
-			} else {
-				ScriptRuntime.setObjectElem(objArray, strName, null, cx);
-			}
-		} else if (className.equalsIgnoreCase("ByteString (Tag Specified)")) {
-			if (external.equals("true")) {
-				String allDGI = getValue(index, strName);
-				if (allDGI == null) {
-					ScriptRuntime.setObjectElem(objArray, strName, null, cx);
-				} else {
-					byte dgi[] = WDByteUtil.HEX2Bytes(allDGI);//Hex.decode(allDGI);
-					int tag = dgi[0] * 256 + dgi[1];
-					byte value[] = new byte[dgi.length - 3];
-					System.arraycopy(dgi, 3, value, 0, dgi.length - 3);
-					TLV MyTLV = new TLV(tag, value, (byte) 2);
-					Object temp = NativeTLV.newTLV(cx, scope, MyTLV);
-					ScriptRuntime.setObjectElem(objArray, strName, temp, cx);
-				}
+			if (external.equals("false")) {
+				NativeByteString dataValue = new NativeByteString(value, new Integer(encodeV));
+				Object temp = NativeByteString.newByteString(cx, scope, dataValue);
+				ScriptRuntime.setObjectElem(objArray, strName, temp, cx);
 			} else {
 				ScriptRuntime.setObjectElem(objArray, strName, null, cx);
 			}
 		} else if (className.equalsIgnoreCase("BOOLEAN")) {
-			if (external.equals("true")) {
+			if (external.equals("false")) {
 				boolean bValue = true;
 				Object para[] = { new Boolean(bValue) };
 				Scriptable result = ScriptRuntime.newObject(cx, scope, "Boolean", para);
@@ -577,9 +545,9 @@ public class ScriptEngine {
 				ScriptRuntime.setObjectElem(objArray, strName, null, cx);
 			}
 		} else if (className.equalsIgnoreCase("NUMBER")) {
-			if (external.equals("true")) {
-				String value = "11.1";
-				Number ss = new Double(value);
+			if (external.equals("false")) {
+				String Nvalue = "11.1";
+				Number ss = new Double(Nvalue);
 				Object para[] = { ss };
 				Scriptable result = ScriptRuntime.newObject(cx, scope, "Number", para);
 				Object temp = result;
@@ -615,10 +583,6 @@ public class ScriptEngine {
 
 	public String getKey(int index, String name) {
 		return "";
-	}
-
-	public String getValue(int index, String data) throws Exception {
-		return new DataMaping().getDataElement(index, data, varHashMap);
 	}
 
 	public ArrayList<String> getParaList() {

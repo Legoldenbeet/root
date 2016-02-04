@@ -26,6 +26,8 @@ import com.gp.gpscript.utils.Hex;
  * @version 1.0
  */
 public class NativeAtr extends IdScriptableObject {
+	private static final long serialVersionUID = 1L;
+
 	private static final Object ATR_TAG = new Object();
 
 	public static void init(Context cx, Scriptable scope, boolean sealed) {

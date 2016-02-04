@@ -9,26 +9,11 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 
-///////////////////////////////////////////////////////////////////////////////
-/**
- * 
- * <p>
- * Title: Crypto
- * </p>
- * <p>
- * Description: This class implements the Crypto (a native object). See [GP_SYS_SCR] 7.1.2
- * </p>
- * <p>
- * Copyright: Copyright (c) 2002
- * </p>
- * <p>
- * Company: watchdata
- * </p>
- * 
- * @author SunJinGang
- * @version 1.0
- */
 public class NativeCrypto extends IdScriptableObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Object CRYPTO_TAG = new Object();
 	private static final NativeCrypto prototypeCrypto = new NativeCrypto();
 
@@ -105,9 +90,9 @@ public class NativeCrypto extends IdScriptableObject {
 		case Id_deriveKey:
 			jsFunction_deriveKey(cx, scope, args);
 			return null;
-		case Id_deriveOddKey:
-			jsFunction_deriveOddKey(cx, scope, args);
-			return null;
+			// case Id_deriveOddKey:
+			// jsFunction_deriveOddKey(cx, scope, args);
+			// return null;
 		case Id_digest:
 			return jsFunction_digest(cx, scope, args);
 		case Id_encrypt:
@@ -133,33 +118,33 @@ public class NativeCrypto extends IdScriptableObject {
 		case Id_unwrapWrap:
 			jsFunction_unwrapWrap(cx, scope, args);
 			return null;
-		case Id_decryptEncryptLmk:
-			return jsFunction_decryptEncryptLmk(cx, scope, args);
-		case Id_deriveKeyLmk:
-			return jsFunction_deriveKeyLmk(cx, scope, args);
-		case Id_wrapToLmk:
-			return jsFunction_wrapToLmk(cx, scope, args);
-		case Id_edk:
-			return jsFunction_edk(cx, scope, args);
-		case Id_inputKey:
-			return jsFunction_inputKey(cx, scope, args);
-		case Id_getKey:
-			return jsFunction_getKey(cx, scope, args);
-		case Id_encryptConnByPan:
-			return jsFunction_encryptConnByPan(cx, scope, args);
-		case Id_decryptConnByPan:
-			return jsFunction_decryptConnByPan(cx, scope, args);
-		case Id_deriveKeyConnByPan:
-			return jsFunction_deriveKeyConnByPan(cx, scope, args);
-
-		case Id_decryptEncryptConnByPan:
-			return jsFunction_decryptEncryptConnByPan(cx, scope, args);
-		case Id_wrapKeyConnByPan:
-			return jsFunction_wrapKeyConnByPan(cx, scope, args);
-		case Id_connectByPan:
-			return jsFunction_connectByPan(cx, scope, args);
-		case Id_disconnByPan:
-			return jsFunction_disconnByPan(cx, scope, args);
+			// case Id_decryptEncryptLmk:
+			// return jsFunction_decryptEncryptLmk(cx, scope, args);
+			// case Id_deriveKeyLmk:
+			// return jsFunction_deriveKeyLmk(cx, scope, args);
+			// case Id_wrapToLmk:
+			// return jsFunction_wrapToLmk(cx, scope, args);
+			// case Id_edk:
+			// return jsFunction_edk(cx, scope, args);
+			// case Id_inputKey:
+			// return jsFunction_inputKey(cx, scope, args);
+			// case Id_getKey:
+			// return jsFunction_getKey(cx, scope, args);
+			// case Id_encryptConnByPan:
+			// return jsFunction_encryptConnByPan(cx, scope, args);
+			// case Id_decryptConnByPan:
+			// return jsFunction_decryptConnByPan(cx, scope, args);
+			// case Id_deriveKeyConnByPan:
+			// return jsFunction_deriveKeyConnByPan(cx, scope, args);
+			//
+			// case Id_decryptEncryptConnByPan:
+			// return jsFunction_decryptEncryptConnByPan(cx, scope, args);
+			// case Id_wrapKeyConnByPan:
+			// return jsFunction_wrapKeyConnByPan(cx, scope, args);
+			// case Id_connectByPan:
+			// return jsFunction_connectByPan(cx, scope, args);
+			// case Id_disconnByPan:
+			// return jsFunction_disconnByPan(cx, scope, args);
 
 		}
 		throw new IllegalArgumentException(String.valueOf(id));
@@ -175,11 +160,6 @@ public class NativeCrypto extends IdScriptableObject {
 
 	public static void deriveKey(NativeKey p1, Number p2, NativeByteString p3, NativeKey p4) {
 		cryptoEngine.get().deriveKey(p1, p2, p3, p4);
-
-	}
-
-	public static void deriveOddKey(NativeKey p1, Number p2, NativeByteString p3, NativeKey p4) {
-		cryptoEngine.get().deriveOddKey(p1, p2, p3, p4);
 
 	}
 
@@ -232,161 +212,7 @@ public class NativeCrypto extends IdScriptableObject {
 		cryptoEngine.get().unwrapWrap(p1, p2, p3, p4, p5, p6, p7);
 	}
 
-	public static NativeByteString decryptEncryptLmk(Number p1, Number p2, Number p3, NativeByteString p4, NativeByteString p5, Number p6, Number p7, Number p8, NativeByteString p9, NativeByteString p10, NativeByteString p11) {
-		return cryptoEngine.get().decryptEncryptLmk(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11);
-	}
-
 	// return jsFunction_wrapToLmk(cx, scope, args);
-
-	public static NativeByteString deriveKeyLmk(Number p1, Number p2, Number p3, NativeByteString p4, NativeByteString p5, NativeByteString p6) {
-		return cryptoEngine.get().deriveKeyLmk(p1, p2, p3, p4, p5, p6);
-	}
-
-	public static NativeByteString wrapToLmk(Number p1, Number p2, Number p3, NativeByteString p4, Number p5, Number p6, NativeByteString p7, NativeByteString p8) {
-		return cryptoEngine.get().wrapToLmk(p1, p2, p3, p4, p5, p6, p7, p8);
-	}
-
-	public static NativeByteString edk(Number p1, NativeByteString p2, NativeByteString p3) {
-		return cryptoEngine.get().edk(p1, p2, p3);
-	}
-
-	public static NativeByteString inputKey(NativeByteString p1, NativeByteString p2, NativeByteString p3) {
-		return cryptoEngine.get().inputKey(p1, p2, p3);
-	}
-
-	public static NativeByteString getKey(NativeKey p1) {
-		return cryptoEngine.get().getKey(p1);
-	}
-
-	//
-	public static NativeByteString macConnByPan(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4, String p5) {
-		return cryptoEngine.get().macConnByPan(p1, p2, p3, p4, p5);
-	}
-
-	public static NativeByteString decryptConnByPan(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4, String p5) {
-		return cryptoEngine.get().decryptConnByPan(p1, p2, p3, p4, p5);
-	}
-
-	public static NativeByteString encryptConnByPan(NativeByteString p1, Number p2, NativeByteString p3, NativeByteString p4, String p5) {
-		return cryptoEngine.get().encryptConnByPan(p1, p2, p3, p4, p5);
-	}
-
-	public static NativeByteString deriveKeyConnByPan(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4, String p5, NativeKey p6) {
-		return cryptoEngine.get().deriveKeyConnByPan(p1, p2, p3, p4, p5, p6);
-	}
-
-	public static NativeByteString decryptEncryptConnByPan(NativeKey p1, Number p2, NativeByteString p3, Number p4, NativeByteString p5, NativeByteString p6, NativeByteString p7, String p8) {
-		return cryptoEngine.get().decryptEncryptConnByPan(p1, p2, p3, p4, p5, p6, p7, p8);
-	}
-
-	public static NativeByteString wrapKeyConnByPan(NativeKey p1, Number p2, NativeByteString p3, NativeByteString p4, String p5) {
-		return cryptoEngine.get().wrapKeyConnByPan(p1, p2, p3, p4, p5);
-	}
-
-	public static NativeByteString connectByPan(String p1) {
-		return cryptoEngine.get().connectByPan(p1);
-	}
-
-	public static NativeByteString disconnByPan(String p1) {
-		return cryptoEngine.get().disconnByPan(p1);
-	}
-
-	private NativeByteString jsFunction_encryptConnByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined) || (args[4] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof NativeByteString)) || (!(args[1] instanceof Number)) || (!(args[2] instanceof NativeByteString)) || (!(args[3] instanceof NativeByteString)) || (!(args[4] instanceof String)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = encryptConnByPan((NativeByteString) args[0], (Number) args[1], (NativeByteString) args[2], (NativeByteString) args[3], (String) args[4]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_decryptConnByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined) || (args[4] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof NativeKey)) || (!(args[1] instanceof Number)) || (!(args[2] instanceof NativeByteString)) || (!(args[3] instanceof NativeByteString)) || (!(args[4] instanceof String)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = decryptConnByPan((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (NativeByteString) args[3], (String) args[4]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_deriveKeyConnByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined) || (args[4] instanceof Undefined) || (args[5] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof NativeKey)) || (!(args[1] instanceof Number)) || (!(args[2] instanceof NativeByteString)) || (!(args[3] instanceof NativeByteString)) || (!(args[4] instanceof String)) || (!(args[5] instanceof NativeKey)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = deriveKeyConnByPan((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (NativeByteString) args[3], (String) args[4], (NativeKey) args[5]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_wrapKeyConnByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined) || (args[4] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof NativeKey)) || (!(args[1] instanceof Number)) || (!(args[2] instanceof NativeByteString)) || (!(args[3] instanceof NativeByteString)) || (!(args[4] instanceof String)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = wrapKeyConnByPan((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (NativeByteString) args[3], (String) args[4]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_decryptEncryptConnByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined) || (args[4] instanceof Undefined) || (args[5] instanceof Undefined) || (args[6] instanceof Undefined) || (args[7] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof NativeKey)) || (!(args[1] instanceof Number)) || (!(args[2] instanceof NativeByteString)) || (!(args[3] instanceof Number)) || (!(args[4] instanceof NativeByteString)) || (!(args[5] instanceof NativeByteString)) || (!(args[6] instanceof NativeByteString)) || (!(args[7] instanceof String)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = decryptEncryptConnByPan((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (Number) args[3], (NativeByteString) args[4], (NativeByteString) args[5], (NativeByteString) args[6], (String) args[7]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_connectByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof String)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = connectByPan((String) args[0]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_disconnByPan(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof String)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		NativeByteString sNew = disconnByPan((String) args[0]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	// lmk包裹密钥的转加密
-	private NativeByteString jsFunction_decryptEncryptLmk(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined) || (args[4] instanceof Undefined) || (args[5] instanceof Undefined) || (args[6] instanceof Undefined) || (args[7] instanceof Undefined) || (args[8] instanceof Undefined) || (args[9] instanceof Undefined) || (args[10] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-
-		NativeByteString sNew = decryptEncryptLmk((Number) args[0], (Number) args[1], (Number) args[2], (NativeByteString) args[3], (NativeByteString) args[4], (Number) args[5], (Number) args[6], (Number) args[7], (NativeByteString) args[8], (NativeByteString) args[9], (NativeByteString) args[10]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_deriveKeyLmk(Context cx, Scriptable scope, Object[] args) {
-		NativeByteString sNew = deriveKeyLmk((Number) args[0], (Number) args[1], (Number) args[2], (NativeByteString) args[3], (NativeByteString) args[4], (NativeByteString) args[5]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_wrapToLmk(Context cx, Scriptable scope, Object[] args) {
-		NativeByteString sNew = wrapToLmk((Number) args[0], (Number) args[1], (Number) args[2], (NativeByteString) args[3], (Number) args[4], (Number) args[5], (NativeByteString) args[6], (NativeByteString) args[7]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_edk(Context cx, Scriptable scope, Object[] args) {
-		NativeByteString sNew = edk((Number) args[0], (NativeByteString) args[1], (NativeByteString) args[2]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_inputKey(Context cx, Scriptable scope, Object[] args) {
-		NativeByteString sNew = inputKey((NativeByteString) args[0], (NativeByteString) args[1], (NativeByteString) args[2]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
-
-	private NativeByteString jsFunction_getKey(Context cx, Scriptable scope, Object[] args) {
-		NativeByteString sNew = getKey((NativeKey) args[0]);
-		return NativeByteString.newByteString(cx, scope, sNew);
-	}
 
 	// the following just check the parameter mainly
 	private NativeByteString jsFunction_decrypt(Context cx, Scriptable scope, Object[] args) {
@@ -457,16 +283,16 @@ public class NativeCrypto extends IdScriptableObject {
 		deriveKey((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (NativeKey) args[3]);
 	}
 
-	private void jsFunction_deriveOddKey(Context cx, Scriptable scope, Object[] args) {
-		if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		if ((!(args[0] instanceof NativeKey)) || (!(args[1] instanceof Number)) || (!(args[3] instanceof NativeKey)) || (!(args[2] instanceof NativeByteString)))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		int mech = ((Number) args[1]).intValue();
-		if ((mech != DES_ECB) && (mech != DES_CBC))
-			throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
-		deriveOddKey((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (NativeKey) args[3]);
-	}
+	// private void jsFunction_deriveOddKey(Context cx, Scriptable scope, Object[] args) {
+	// if ((args[0] instanceof Undefined) || (args[1] instanceof Undefined) || (args[2] instanceof Undefined) || (args[3] instanceof Undefined))
+	// throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
+	// if ((!(args[0] instanceof NativeKey)) || (!(args[1] instanceof Number)) || (!(args[3] instanceof NativeKey)) || (!(args[2] instanceof NativeByteString)))
+	// throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
+	// int mech = ((Number) args[1]).intValue();
+	// if ((mech != DES_ECB) && (mech != DES_CBC))
+	// throw new EvaluatorException((new GPError("Crypto", GPError.INVALID_ARGUMENTS)).toString());
+	// deriveOddKey((NativeKey) args[0], (Number) args[1], (NativeByteString) args[2], (NativeKey) args[3]);
+	// }
 
 	private NativeByteString jsFunction_digest(Context cx, Scriptable scope, Object[] args) {
 		if (args.length != 2)

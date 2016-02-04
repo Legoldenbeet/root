@@ -2,27 +2,33 @@ package com.gerenhua.tool.panel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableModel;
 
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.logic.impl.TradeThread;
 import com.gerenhua.tool.utils.Config;
 import com.gerenhua.tool.utils.FileUtil;
 import com.gerenhua.tool.utils.PropertiesManager;
-import com.watchdata.commons.lang.WDAssert;
 
 public class AtmPanel extends JPanel {
 	/**
@@ -31,16 +37,20 @@ public class AtmPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	public static JTextField moneyTextField;
 	public static String proPath = System.getProperty("user.dir");
+	public static String reportDir = proPath + "/report/";
 	public static JButton qPBOCButton;
 	public static JButton lendButton;
 	public static JButton earmarkButton;
 	public static JButton ecashButton;
-	public final JButton reportButton;
 	private static JLabel enterMoneyLabel;
 	private PropertiesManager pm = new PropertiesManager();
 	private String money = new String("");
 	public static String tradeType = "";
 	public CommonAPDU apduHandler;
+	private static JTable table;
+	private static DefaultTableModel testDataTableModel = null;
+	private static Object[][] tableData = null;
+	private JPopupMenu popupMenu = new JPopupMenu();
 
 	// 终端性能列表，与配置界面上的配置型一致，从第一个字节开始
 	public enum TerminalSupportType {
@@ -66,6 +76,7 @@ public class AtmPanel extends JPanel {
 		add(enterMoneyLabel);
 
 		moneyTextField = new JTextField();
+		moneyTextField.setText("10");
 		moneyTextField.setBounds(46, 154, 60, 23);
 		add(moneyTextField);
 
@@ -82,10 +93,10 @@ public class AtmPanel extends JPanel {
 				// 更新交易状态
 				Config.setValue("Terminal_Data", "currentTradeType", tradeType);
 				// 设置检测报告按钮不可用
-				reportButton.setEnabled(false);
+				// reportButton.setEnabled(false);
 				money = moneyTextField.getText().trim();
 
-				TradeThread tradeThread = new TradeThread(money, tradeType, reportButton, textPane);
+				TradeThread tradeThread = new TradeThread(money, tradeType, textPane);
 				Thread thread = new Thread(tradeThread);
 				thread.start();
 			}
@@ -104,9 +115,9 @@ public class AtmPanel extends JPanel {
 				// 更新交易状态
 				Config.setValue("Terminal_Data", "currentTradeType", tradeType);
 				// 设置检测报告按钮不可用
-				reportButton.setEnabled(false);
+				// reportButton.setEnabled(false);
 				money = moneyTextField.getText().trim();
-				TradeThread tradeThread = new TradeThread(money, tradeType, reportButton, textPane);
+				TradeThread tradeThread = new TradeThread(money, tradeType, textPane);
 				Thread thread = new Thread(tradeThread);
 				thread.start();
 			}
@@ -125,9 +136,9 @@ public class AtmPanel extends JPanel {
 				// 更新交易状态
 				Config.setValue("Terminal_Data", "currentTradeType", tradeType);
 				// 设置检测报告按钮不可用
-				reportButton.setEnabled(false);
+				// reportButton.setEnabled(false);
 				money = moneyTextField.getText().trim();
-				TradeThread tradeThread = new TradeThread(money, tradeType, reportButton, textPane);
+				TradeThread tradeThread = new TradeThread(money, tradeType, textPane);
 				Thread thread = new Thread(tradeThread);
 				thread.start();
 			}
@@ -146,53 +157,59 @@ public class AtmPanel extends JPanel {
 				// 更新交易状态
 				Config.setValue("Terminal_Data", "currentTradeType", tradeType);
 				// 设置检测报告按钮不可用
-				reportButton.setEnabled(false);
+				// reportButton.setEnabled(false);
 				money = moneyTextField.getText().trim();
-				TradeThread tradeThread = new TradeThread(money, tradeType, reportButton, textPane);
+				TradeThread tradeThread = new TradeThread(money, tradeType, textPane);
 				Thread thread = new Thread(tradeThread);
 				thread.start();
 			}
 		});
 
-		reportButton = new JButton();
-		reportButton.setBounds(6, 456, 100, 23);
-		reportButton.setAlignmentX(CENTER_ALIGNMENT);
-		reportButton.setOpaque(false);
-		reportButton.setFocusPainted(false);
-		reportButton.setContentAreaFilled(false);// 设置不画按钮背景
-		reportButton.setBorderPainted(false);
-		reportButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-		reportButton.setText("交易检测报告");
-		reportButton.setEnabled(false);
-		add(reportButton);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(6, 187, 200, 300);
+		add(scrollPane);
 
-		reportButton.addActionListener(new ActionListener() {
+		table = new JTable();
+		tableDataDisp();
+		table.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 1 && SwingUtilities.isRightMouseButton(e)) {
+					popupMenu.show(table, e.getX(), e.getY());
+				}
+				if (e.getClickCount()==2&&SwingUtilities.isLeftMouseButton(e)) {
+					int row=table.getSelectedRow();
+					openDoc(reportDir+table.getValueAt(row, 0).toString());
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				int row = table.rowAtPoint(e.getPoint());
+				int colum = table.columnAtPoint(e.getPoint());
+				Object ob = table.getValueAt(row, colum);
+				table.setToolTipText(reportDir + ob.toString());
+				table.repaint();
+			}
+		});
+		scrollPane.setViewportView(table);
+
+		JMenuItem menuItem = new JMenuItem("打开");
+		menuItem.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				String currentTradeType = Config.getValue("Terminal_Data", "currentTradeType");
-
-				if (WDAssert.isEmpty(currentTradeType)) {
-					JOptionPane.showMessageDialog(null, "交易状态丢失！", "提示框", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				String filePath = System.getProperty("user.dir") + "/report/" + currentTradeType + ".doc";
-
+				int row=table.getSelectedRow();
+				String fileName=table.getValueAt(row, 0).toString();
+				String filePath = reportDir + fileName;
+				
 				File file = new File(filePath);
 				if (file.exists()) {
 					Object[] options = { "打开", "保存" };
 					int ret = JOptionPane.showOptionDialog(null, "交易检测报告", "提示框", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 					if (ret == JOptionPane.YES_OPTION) {
-						// word
-						try {
-							Runtime.getRuntime().exec("cmd /c start winword \"\" \"" + filePath + "\"");
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							JOptionPane.showMessageDialog(null, "打开文件失败，位置：" + filePath + "请手动操作！");
-							return;
-						}
-
+						openDoc(filePath);
 					} else if (ret == JOptionPane.NO_OPTION) {
 						JFileChooser fileChooser = new JFileChooser();
 						fileChooser.setCurrentDirectory(new File("."));
@@ -207,14 +224,14 @@ public class AtmPanel extends JPanel {
 							@Override
 							public boolean accept(File f) {
 								// TODO Auto-generated method stub
-								if (f.getName().endsWith(".doc") || f.isDirectory()) {
+								if (f.getName().endsWith(".doc") ||f.getName().endsWith(".docx")|| f.isDirectory()) {
 									return true;
 								} else {
 									return false;
 								}
 							}
 						});
-						fileChooser.setSelectedFile(new File(currentTradeType + ".doc"));
+						fileChooser.setSelectedFile(new File(filePath));
 						ret = fileChooser.showSaveDialog(null);
 						if (ret == JFileChooser.APPROVE_OPTION) {
 							FileUtil.copyFile(filePath, fileChooser.getSelectedFile().getAbsolutePath());
@@ -228,14 +245,65 @@ public class AtmPanel extends JPanel {
 				}
 			}
 		});
-
+		popupMenu.add(menuItem);
+		JMenuItem menuItemDel = new JMenuItem("删除");
+		menuItemDel.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int[] row=table.getSelectedRows();
+				for (int i : row) {
+					String fileName=table.getValueAt(i, 0).toString();
+					String filePath = reportDir + fileName;
+					
+					File file = new File(filePath);
+					if (file.exists()) {
+						file.delete();
+					}
+				}
+				tableDataDisp();
+			}
+		});
+		popupMenu.add(menuItemDel);
 	}
 
+	public static void tableDataDisp() {
+		File reportDirectory = new File(reportDir);
+		File[] reports = null;
+		if (reportDirectory.exists() && reportDirectory.isDirectory()) {
+			reports = reportDirectory.listFiles();
+		}
+
+		int rowNum = reports.length;
+		tableData = new Object[rowNum][1];
+		for (int i = 0; i < rowNum; i++) {
+			tableData[i][0] = reports[i].getName();
+		}
+		testDataTableModel = new DefaultTableModel(tableData, new String[] { "交易记录" }) {
+			private static final long serialVersionUID = -9082031840487910439L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		table.setModel(testDataTableModel);
+	}
+
+	private void openDoc(String filePath){
+		// word
+		try {
+			Runtime.getRuntime().exec("cmd /c start \"\" \"" + filePath + "\"");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "打开文件失败，位置：" + filePath + "请手动操作！");
+			return;
+		}
+	}
 	public static boolean decimalDigitsLimit(String moneyStr) {
 		String eg = "^[0-9]{1,3}([.]{1}[0-9]{0,2})?$";
 		Matcher m = Pattern.compile(eg, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(moneyStr);
 		return m.find() ? true : false;
 
 	}
-
 }

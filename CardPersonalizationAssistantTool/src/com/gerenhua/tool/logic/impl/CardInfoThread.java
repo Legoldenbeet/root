@@ -14,6 +14,7 @@ import javax.swing.tree.TreePath;
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.CommonAPDU;
 import com.gerenhua.tool.utils.Config;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class CardInfoThread extends Thread {
 	public static CommonAPDU commonAPDU;
@@ -53,7 +54,9 @@ public class CardInfoThread extends Thread {
 				logger.error("card reset error");
 			}
 			Thread.sleep(500);
-			resp = commonAPDU.send("00A4040000");
+			String isdAid=Config.getValue("Terminal_Data","defaultISD");
+			String aidLen=WDStringUtil.paddingHeadZero(Integer.toHexString(isdAid.length()/2), 2);
+			resp = commonAPDU.send("00A40400"+aidLen+isdAid);
 			commonAPDU.externalAuthenticate(secrityLevel, keyVersion, keyId, encKey, macKey, dekKey);
 			resp = commonAPDU.send("80F28000024F00");
 

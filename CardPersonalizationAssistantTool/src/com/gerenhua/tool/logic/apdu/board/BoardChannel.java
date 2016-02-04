@@ -1,11 +1,10 @@
 package com.gerenhua.tool.logic.apdu.board;
 
-import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.apdu.IAPDUChannel;
 import com.gerenhua.tool.logic.apdu.board.BoardOperate.CLibrary;
+import com.gerenhua.tool.utils.Config;
 
-public class BoardChannel implements IAPDUChannel {
-	private static Log logger = new Log();
+public class BoardChannel extends IAPDUChannel {
 	private static CLibrary handle = null;
 
 	public BoardChannel() {
@@ -14,20 +13,20 @@ public class BoardChannel implements IAPDUChannel {
 
 	@Override
 	public String send(String commandApdu) {
-		logger.debug("send[" + commandApdu.toUpperCase() + "]");
+		logger.debug("Send【" + commandApdu.toUpperCase() + "】");
 		String recv = handle.Send(commandApdu.length(), commandApdu);
 		String sw = recv.substring(recv.length() - 4, recv.length());
 		String sw2=sw.substring(sw.length() - 2, sw.length());
 		if (sw.equalsIgnoreCase("9000")) {
-			logger.debug("recv[" + recv + "]");
+			logger.debug("Recv【" + recv + "】");
 		} else if (sw.startsWith("61")) {
-			logger.debug("recv[" + recv + "]");
+			logger.debug("Recv【" + recv + "】");
 			recv=send("00C00000" + sw2);
 		} else if (sw.toUpperCase().startsWith("6C")) {
-			logger.debug("recv[" + recv + "]");
+			logger.debug("Recv【" + recv + "】");
 			recv=send(commandApdu.substring(0,commandApdu.length()-2) + sw2);
 		} else {
-			logger.error("recv[" + recv + "]");
+			logger.error("Recv【" + recv + "】["+Config.getValue("Exception_Code", recv)+"]");
 		}
 		return recv;
 	}

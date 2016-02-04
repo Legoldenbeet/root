@@ -40,7 +40,12 @@ public class SnapShot extends JFrame {
 	// start the app
 	public static void startApp() {
 		snapShot = new SnapShot();
-		//snapShot.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		snapShot.setAlwaysOnTop(true);
+		snapShot.setUndecorated(true);
+		snapShot.setResizable(false);
+		snapShot.setVisible(true);
+		snapShot.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		snapShot.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		gd.setFullScreenWindow(snapShot);
 	}
@@ -79,10 +84,6 @@ public class SnapShot extends JFrame {
 				g.drawImage(saveImage, x, y, snapShot);
 			}
 		});
-		setVisible(true);
-		setResizable(false);
-		setAlwaysOnTop(true);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	@Override
 	public void paint(Graphics g) {
@@ -102,6 +103,7 @@ public class SnapShot extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(f.getPath());
 	}
 
 	public static void screenShot() {

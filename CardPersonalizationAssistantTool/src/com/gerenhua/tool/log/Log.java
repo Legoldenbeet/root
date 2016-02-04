@@ -26,6 +26,7 @@ public class Log {
 	}
 
 	public void setLogArea(JTextPane textPane) {
+		//textPane.setText("");//cleal 
 		this.jTextPane = textPane;
 	}
 
@@ -76,7 +77,7 @@ public class Log {
 			SimpleAttributeSet simpleAttributeSet = new SimpleAttributeSet();
 
 			if (command == LOG_COLOR_BLACK) {
-				//jTextPane.setText("");
+//				jTextPane.setText("");
 				StyleConstants.setForeground(simpleAttributeSet, Color.BLACK);
 			}else if (command == LOG_COLOR_GREEN) {
 				StyleConstants.setForeground(simpleAttributeSet, Color.GREEN);

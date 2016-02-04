@@ -247,7 +247,7 @@ public class CapFile {
 					}
 					currentComponent = bo.toByteArray();
 				}
-				blocks = splitArray(currentComponent, blockSize);
+				blocks.addAll(splitArray(currentComponent, blockSize));
 			}
 		}
 		return blocks;

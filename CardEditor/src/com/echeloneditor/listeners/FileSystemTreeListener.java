@@ -11,8 +11,8 @@ import javax.swing.SwingUtilities;
 
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 
-import com.echeloneditor.actions.FileAction;
 import com.echeloneditor.actions.FileHander;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.StatusObject;
@@ -88,13 +88,13 @@ public class FileSystemTreeListener implements MouseListener, KeyListener {
 		if (selectedFile.exists() && selectedFile.isFile() && selectedFile.canRead()) {
 			if (selectedFile.getPath().endsWith(".jar")) {
 				try {
-					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "jd_path")).getParentFile(), "cmd.exe /c start " + Config.getValue("CONFIG", "jd_path") + " " + selectedFile.getPath(), false);
+					WindowsExcuter.excute(new File(Config.getValue("CONFIG", "jd_path")).getParentFile(), "start " + Config.getValue("CONFIG", "jd_path") + " " + selectedFile.getPath(), false);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} else {
-				fileHander.openFileWithFilePath(selectedFile.getPath(), FileAction.DEFAULT_FILE_ENCODE);
+				fileHander.openFileWithFilePath(selectedFile.getPath(), OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		}
 	}

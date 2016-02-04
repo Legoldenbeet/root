@@ -1,0 +1,979 @@
+
+************************************************************************************************
+                                 EMV Transaction Flow Demo V1.35 for HK Jetco 
+                                 Input  File: Terminal.ini
+                                 Output File: AppData.txt & Tran_Log.txt
+                                 Written by Raul Xu (Goldpac, mupingxu@goldpac.com) 
+                                 Release Date: 2010.08.24
+************************************************************************************************
+
+=======================================Transaction Start========================================
+
+-----------------------------------------Initialization-----------------------------------------
+Cold ATR:
+3B 6D 00 00 57 44 60 4B 68 86 93 08 00 00 00 00 00 
+
+State : SCARD_SPECIFIC
+
+Protocol : SCARD_PROTOCOL_T0
+
+
+Warm ATR:
+3B 6D 00 00 57 44 60 4B 68 86 93 08 00 00 00 00 00 
+
+State : SCARD_SPECIFIC
+
+Protocol : SCARD_PROTOCOL_T0
+
+--------------------------------------Application Selection--------------------------------------
+[APDU Command]->[Card]:
+Card Command : 00 A4 04 00 0E 
+
+Input   Data : 31 50 41 59 2E 53 59 53 2E 44 44 46 30 31 
+
+Output  Data : 
+
+Card  Status : 61 20 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 C0 00 00 20 
+
+Input   Data : 
+
+Output  Data : 6F 1E 84 0E 31 50 41 59 2E 53 59 53 2E 44 44 46 30 31 A5 0C 88 01 01 5F 2D 02 7A 
+               68 9F 11 01 01 
+
+Card  Status : 90 00 
+
+
+[84] DF Name
+31 50 41 59 2E 53 59 53 2E 44 44 46 30 31 
+
+[88] Short File Identifier (SFI)
+01 
+
+[5F2D] Language Preference
+7A 68 
+
+[9F11] Issuer Code Table Index
+01 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 0C 00 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C 2C 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 0C 2C 
+
+Input   Data : 
+
+Output  Data : 70 2A 61 28 4F 08 A0 00 00 03 33 01 01 02 50 0B 50 42 4F 43 20 43 52 45 44 49 54 
+               9F 12 0B 50 42 4F 43 20 43 52 45 44 49 54 87 01 01 
+
+Card  Status : 90 00 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 0C 00 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6A 83 
+
+
+Transaction Date ('9A') : 
+15 06 18 
+
+Unpredictable Number ('9F 37') :
+1D 95 5A 45 
+
+----------------------------------------Final Selection ----------------------------------------
+[APDU Command]->[Card]:
+Card Command : 00 A4 04 00 08 
+
+Input   Data : A0 00 00 03 33 01 01 02 
+
+Output  Data : 
+
+Card  Status : 61 4E 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 C0 00 00 4E 
+
+Input   Data : 
+
+Output  Data : 6F 4C 84 08 A0 00 00 03 33 01 01 02 A5 40 50 0B 50 42 4F 43 20 43 52 45 44 49 54 
+               87 01 01 9F 38 09 9F 7A 01 9F 02 06 5F 2A 02 5F 2D 02 7A 68 9F 11 01 01 9F 12 0B 
+               50 42 4F 43 20 43 52 45 44 49 54 BF 0C 0A 9F 4D 02 0B 0A DF 4D 02 0C 0A 
+
+Card  Status : 90 00 
+
+
+Information about the selected AID:
+[84_1] DF Name
+A0 00 00 03 33 01 01 02 
+
+[50] Application Lable
+50 42 4F 43 20 43 52 45 44 49 54 
+
+[87] Application Priority Indicator (API)
+01 
+
+[9F38] Processing Options Data Object List (PDOL)
+9F 7A 01 9F 02 06 5F 2A 02 
+
+[5F2D_1] Language Preference
+7A 68 
+
+[9F11_1] Issuer Code Table Index
+01 
+
+[9F12] Application Preferred Name
+50 42 4F 43 20 43 52 45 44 49 54 
+
+[BF0C] File Control Information(FCI) Issuer Discretionary Data
+9F 4D 02 0B 0A DF 4D 02 0C 0A 
+
+Issuer type: 03-PBOC(CUP) issuer
+---------------------------------------Initiate Application ------------------------------------
+[APDU Command]->[Card]:
+Card Command : 80 A8 00 00 0B 
+
+Input   Data : 83 09 00 00 00 00 00 12 00 01 56 
+
+Output  Data : 
+
+Card  Status : 61 14 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 C0 00 00 14 
+
+Input   Data : 
+
+Output  Data : 80 12 7C 00 08 01 02 00 10 01 03 01 18 01 02 00 20 01 01 00 
+
+Card  Status : 90 00 
+
+
+[82] Application Interchange Profile (AIP)
+7C 00 
+
+[94] Application file locator (AFL)
+08 01 02 00 10 01 03 01 18 01 02 00 20 01 01 00 
+
+-------------------------------------Read Application Data--------------------------------------
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 0C 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C 34 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 0C 34 
+
+Input   Data : 
+
+Output  Data : 70 32 57 12 62 53 53 00 00 01 81 08 D2 40 42 06 06 03 68 26 00 0F 9F 1F 14 30 36 
+               30 33 36 30 30 30 30 30 30 30 30 30 30 38 32 36 30 30 8F 01 0B 9F 32 01 03 
+
+Card  Status : 90 00 
+
+
+[57] Track 2 equivalent data
+62 53 53 00 00 01 81 08 D2 40 42 06 06 03 68 26 00 0F 
+
+[9F1F] Track 1 Discretionary Data
+30 36 30 33 36 30 30 30 30 30 30 30 30 30 30 38 32 36 30 30 
+
+[8F] Certification Authority Public Key Index (PKI)
+0B 
+
+[9F32] Issuer public key exponent
+03 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 0C 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C 07 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 0C 07 
+
+Input   Data : 
+
+Output  Data : 70 05 5F 20 02 20 20 
+
+Card  Status : 90 00 
+
+
+[5F20] Cardholder name
+20 20 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 14 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C 48 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 14 48 
+
+Input   Data : 
+
+Output  Data : 70 46 5F 24 03 24 04 28 5A 08 62 53 53 00 00 01 81 08 5F 34 01 00 9F 07 02 FF 00 
+               8E 0E 00 00 00 00 00 00 00 00 42 03 1E 03 1F 00 9F 0D 05 D8 60 9C A8 00 9F 0E 05 
+               00 10 00 00 00 9F 0F 05 D8 68 9C F8 00 5F 28 02 01 56 
+
+Card  Status : 90 00 
+
+
+[5F24] Application Expiration Date
+24 04 28 
+
+[5A] Application Primary Account Number (PAN)
+62 53 53 00 00 01 81 08 
+
+[5F34] Application Primary Account Number Sequence Number (PAN SN)
+00 
+
+[9F07] Application Usage Control (AUC)
+FF 00 
+
+[8E] Cardholder Verification Method (CVM) List
+00 00 00 00 00 00 00 00 42 03 1E 03 1F 00 
+
+[9F0D] Issuer Action Code-Default (IAC-Default)
+D8 60 9C A8 00 
+
+[9F0E] Issuer Action Code-Denial (IAC-Denial)
+00 10 00 00 00 
+
+[9F0F] Issuer Action Code-Online (IAC-Online)
+D8 68 9C F8 00 
+
+[5F28] Issuer Country Code
+01 56 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 14 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C BB 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 14 BB 
+
+Input   Data : 
+
+Output  Data : 70 81 B8 9F 46 81 B0 57 88 D5 F6 09 63 D9 DD D6 3B 0B F3 A4 2A 44 73 B7 0D B4 08 
+               93 EC F7 A8 40 4E 62 20 96 0F DC 47 6B DB 52 AB 62 60 58 21 F9 8E 58 DC 94 F6 CE 
+               3E 10 4F CE CE 87 16 B0 64 34 42 89 28 FA 80 45 76 48 8C 50 01 C9 65 9A E3 0F C9 
+               96 53 F1 39 7E B6 9D B5 3D 42 FB B2 4B 54 56 B5 B4 79 E8 21 24 65 22 46 6F 1C 3F 
+               D0 DC 60 00 3C 63 CF 26 B9 11 4C EE CA A6 D2 28 87 E3 0C 44 9E 05 DB CB 22 EC 42 
+               6C 1E 4D 56 20 99 FB 7E E2 B8 3F 36 30 11 21 4E 42 0E FC 98 2F 6C 23 FD 80 6E 4B 
+               91 4B ED 1F 1A 72 74 D0 23 57 AB 42 DE BD 96 A1 98 10 89 D6 56 9F 47 01 03 
+
+Card  Status : 90 00 
+
+
+[9F46] ICC Public Key Certificate
+57 88 D5 F6 09 63 D9 DD D6 3B 0B F3 A4 2A 44 73 B7 0D B4 08 93 EC F7 A8 40 4E 62 20 96 0F DC 47 
+6B DB 52 AB 62 60 58 21 F9 8E 58 DC 94 F6 CE 3E 10 4F CE CE 87 16 B0 64 34 42 89 28 FA 80 45 76 
+48 8C 50 01 C9 65 9A E3 0F C9 96 53 F1 39 7E B6 9D B5 3D 42 FB B2 4B 54 56 B5 B4 79 E8 21 24 65 
+22 46 6F 1C 3F D0 DC 60 00 3C 63 CF 26 B9 11 4C EE CA A6 D2 28 87 E3 0C 44 9E 05 DB CB 22 EC 42 
+6C 1E 4D 56 20 99 FB 7E E2 B8 3F 36 30 11 21 4E 42 0E FC 98 2F 6C 23 FD 80 6E 4B 91 4B ED 1F 1A 
+72 74 D0 23 57 AB 42 DE BD 96 A1 98 10 89 D6 56 
+
+[9F47] ICC Public Key Exponent
+03 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 03 14 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C C0 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 03 14 C0 
+
+Input   Data : 
+
+Output  Data : 70 81 BD 93 81 B0 83 3E 85 5B 7D 54 E0 62 3F 2E B2 29 58 C3 F0 6A 71 1E 91 F5 C9 
+               3E 35 00 C5 2A 77 D3 A0 6B BA 95 B0 04 EF 51 7C 44 1C FE 3E D8 B3 37 AD 4F 26 44 
+               24 33 16 51 C7 83 A8 79 3C 46 3A 9B 27 95 B2 6B 5F 6A EF 8C A1 E2 1B F2 64 E4 12 
+               9F E0 F3 D0 06 B7 66 73 60 8A CF 2B 50 64 CD F0 58 B8 56 B8 87 D4 CF 7D 24 28 29 
+               FA E0 56 DD 0C 88 3F AB B0 8C CC D2 D7 07 7B 52 32 1C 82 87 1D CB 0E C9 E5 A9 25 
+               C9 F7 21 B6 C0 1D 07 A9 D4 89 51 7E 16 99 7F C5 09 62 F6 BB D0 C9 65 B4 8A DC 0D 
+               61 C5 09 88 51 B3 FB F6 97 69 CC A1 D4 3F D6 7F CC 98 26 33 5F 25 03 15 02 05 9F 
+               4A 01 82 
+
+Card  Status : 90 00 
+
+
+[93] Signed Static Application Data
+83 3E 85 5B 7D 54 E0 62 3F 2E B2 29 58 C3 F0 6A 71 1E 91 F5 C9 3E 35 00 C5 2A 77 D3 A0 6B BA 95 
+B0 04 EF 51 7C 44 1C FE 3E D8 B3 37 AD 4F 26 44 24 33 16 51 C7 83 A8 79 3C 46 3A 9B 27 95 B2 6B 
+5F 6A EF 8C A1 E2 1B F2 64 E4 12 9F E0 F3 D0 06 B7 66 73 60 8A CF 2B 50 64 CD F0 58 B8 56 B8 87 
+D4 CF 7D 24 28 29 FA E0 56 DD 0C 88 3F AB B0 8C CC D2 D7 07 7B 52 32 1C 82 87 1D CB 0E C9 E5 A9 
+25 C9 F7 21 B6 C0 1D 07 A9 D4 89 51 7E 16 99 7F C5 09 62 F6 BB D0 C9 65 B4 8A DC 0D 61 C5 09 88 
+51 B3 FB F6 97 69 CC A1 D4 3F D6 7F CC 98 26 33 
+
+[5F25] Application Effective Date
+15 02 05 
+
+[9F4A] Static Data Authentication Tag List
+82 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 1C 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C FE 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 1C FE 
+
+Input   Data : 
+
+Output  Data : 70 81 FB 90 81 F8 27 73 FA 8F 61 A2 FA 87 4B 6C D1 B1 12 E4 7E 80 A4 85 78 7A EF 
+               8C 94 4E AD C6 46 64 7D 60 64 69 BC F9 21 43 63 45 DB FA 9A 3E F8 3A 59 74 B6 BF 
+               A2 15 45 8A F2 34 9E 6F AB AF DD 04 61 FF 86 8E 82 0A 27 71 EF B2 3E A2 67 03 CF 
+               A5 E8 D8 DA 41 F1 B6 A5 49 10 C7 F1 C8 78 B3 DC 4D 8D 69 3E EE E4 DB 3F 96 ED CE 
+               44 72 CC 45 F3 2A 54 DC 51 E0 ED 48 51 7D 9E B2 47 B4 60 2F C5 8B 1F 7B 63 B0 A6 
+               93 96 C4 E9 8D 02 4F C9 F8 4D A2 7D D2 8A E9 84 5F 5D 15 F2 DB D2 67 26 82 06 13 
+               DB 6E 5B 29 03 F2 E6 FA 6C AA 13 E5 C0 64 5B 22 79 60 D4 9A FA AC 0B 91 85 DA B4 
+               A1 22 38 F2 20 21 3C 09 EE 7C B8 62 B4 D3 99 12 42 08 BC AC 04 A3 A7 24 0B 19 B2 
+               C6 54 E4 6E 78 0D 17 1E 8D EE F4 45 A3 A8 A0 C8 9E EE 1D 7E 93 3A DA AA 39 D5 85 
+               AC F1 5B F2 38 39 66 85 19 F8 0E 
+
+Card  Status : 90 00 
+
+
+[90] Issuer public key certificate
+27 73 FA 8F 61 A2 FA 87 4B 6C D1 B1 12 E4 7E 80 A4 85 78 7A EF 8C 94 4E AD C6 46 64 7D 60 64 69 
+BC F9 21 43 63 45 DB FA 9A 3E F8 3A 59 74 B6 BF A2 15 45 8A F2 34 9E 6F AB AF DD 04 61 FF 86 8E 
+82 0A 27 71 EF B2 3E A2 67 03 CF A5 E8 D8 DA 41 F1 B6 A5 49 10 C7 F1 C8 78 B3 DC 4D 8D 69 3E EE 
+E4 DB 3F 96 ED CE 44 72 CC 45 F3 2A 54 DC 51 E0 ED 48 51 7D 9E B2 47 B4 60 2F C5 8B 1F 7B 63 B0 
+A6 93 96 C4 E9 8D 02 4F C9 F8 4D A2 7D D2 8A E9 84 5F 5D 15 F2 DB D2 67 26 82 06 13 DB 6E 5B 29 
+03 F2 E6 FA 6C AA 13 E5 C0 64 5B 22 79 60 D4 9A FA AC 0B 91 85 DA B4 A1 22 38 F2 20 21 3C 09 EE 
+7C B8 62 B4 D3 99 12 42 08 BC AC 04 A3 A7 24 0B 19 B2 C6 54 E4 6E 78 0D 17 1E 8D EE F4 45 A3 A8 
+A0 C8 9E EE 1D 7E 93 3A DA AA 39 D5 85 AC F1 5B F2 38 39 66 85 19 F8 0E 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 1C 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C 4E 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 02 1C 4E 
+
+Input   Data : 
+
+Output  Data : 70 4C 5F 30 02 02 06 8C 1B 9F 02 06 9F 03 06 9F 1A 02 95 05 5F 2A 02 9A 03 9C 01 
+               9F 37 04 9F 21 03 9F 4E 14 8D 1D 8A 02 9F 02 06 9F 03 06 9F 1A 02 95 05 5F 2A 02 
+               9A 03 9C 01 9F 37 04 9F 21 03 9F 4E 14 9F 08 02 00 30 9F 49 03 9F 37 04 
+
+Card  Status : 90 00 
+
+
+[5F30] Service Code
+02 06 
+
+[8C] Card Risk Management Data Object List 1 (CDOL1)
+9F 02 06 9F 03 06 9F 1A 02 95 05 5F 2A 02 9A 03 9C 01 9F 37 04 9F 21 03 9F 4E 14 
+
+[8D] Card Risk Management Data Object List 2 (CDOL2)
+8A 02 9F 02 06 9F 03 06 9F 1A 02 95 05 5F 2A 02 9A 03 9C 01 9F 37 04 9F 21 03 9F 4E 14 
+
+[9F08] Application Version Number
+00 30 
+
+[9F49] DynamicDataAuthDOL (DDOL)
+9F 37 04 
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 24 
+
+Input   Data : 
+
+Output  Data : 
+
+Card  Status : 6C 0A 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 B2 01 24 0A 
+
+Input   Data : 
+
+Output  Data : 70 08 9F 14 01 00 9F 23 01 00 
+
+Card  Status : 90 00 
+
+
+[9F14] Lower Consecutive Offline Limit (LCOL)
+00 
+
+[9F23] Upper Consecutive Offline Limit (UCOL)
+00 
+
+----------------------------------
+Static data to be authenticated:
+5F 24 03 24 04 28 5A 08 62 53 53 00 00 01 81 08 5F 34 01 00 9F 07 02 FF 00 8E 0E 00 00 00 00 00 
+00 00 00 42 03 1E 03 1F 00 9F 0D 05 D8 60 9C A8 00 9F 0E 05 00 10 00 00 00 9F 0F 05 D8 68 9C F8 
+00 5F 28 02 01 56 7C 00 
+
+-----------------------------------------------------
+Read Card Risk Management Data
+-----------------------------------------------------
+--------------------------------------Data Authentication---------------------------------------
+Offline Dynamic Data Authentication (DDA)
+
+---------------------------------------------
+Retrieve CA Public Key
+
+CA Public Key Index['8F']:
+0B
+
+RID:
+A0 00 00 03 33 
+
+CA_PK_Modulus:
+CF 9F DF 46 B3 56 37 8E 9A F3 11 B0 F9 81 B2 1A 1F 22 F2 50 FB 11 F5 5C 95 87 09 E3 C7 24 19 18 
+29 34 83 28 9E AE 68 8A 09 4C 02 C3 44 E2 99 9F 31 5A 72 84 1F 48 9E 24 B1 BA 00 56 CF AB 3B 47 
+9D 0E 82 64 52 37 5D CD BB 67 E9 7E C2 AA 66 F4 60 1D 77 4F EA EF 77 5A CC C6 21 BF EB 65 FB 00 
+53 FC 5F 39 2A A5 E1 D4 C4 1A 4D E9 FF DF DF 13 27 C4 BB 87 4F 1F 63 A5 99 EE 39 02 FE 95 E7 29 
+FD 78 D4 23 4D C7 E6 CF 1A BA BA A3 F6 DB 29 B7 F0 5D 1D 90 1D 2E 76 A6 06 A8 CB FF FF EC BD 91 
+8F A2 D2 78 BD B4 3B 04 34 F5 D4 51 34 BE 1C 27 81 D1 57 D5 01 FF 43 E5 F1 C4 70 96 7C D5 7C E5 
+3B 64 D8 29 74 C8 27 59 37 C5 D8 50 2A 12 52 A8 A5 D6 08 8A 25 9B 69 4F 98 64 8D 9A F2 CB 0E FD 
+9D 94 3C 69 F8 96 D4 9F A3 97 02 16 2A CB 5A F2 9B 90 BA DE 00 5B C1 57 
+
+Length of CA_PK_Modulus:
+1984 bits
+
+CA_PK_Exponent:
+03 
+
+Retrieve CA Public Key.....OK!
+---------------------------------------------
+Retrieve Issuer Public Key
+
+Issuer Public Key Certificate[90]:
+27 73 FA 8F 61 A2 FA 87 4B 6C D1 B1 12 E4 7E 80 A4 85 78 7A EF 8C 94 4E AD C6 46 64 7D 60 64 69 
+BC F9 21 43 63 45 DB FA 9A 3E F8 3A 59 74 B6 BF A2 15 45 8A F2 34 9E 6F AB AF DD 04 61 FF 86 8E 
+82 0A 27 71 EF B2 3E A2 67 03 CF A5 E8 D8 DA 41 F1 B6 A5 49 10 C7 F1 C8 78 B3 DC 4D 8D 69 3E EE 
+E4 DB 3F 96 ED CE 44 72 CC 45 F3 2A 54 DC 51 E0 ED 48 51 7D 9E B2 47 B4 60 2F C5 8B 1F 7B 63 B0 
+A6 93 96 C4 E9 8D 02 4F C9 F8 4D A2 7D D2 8A E9 84 5F 5D 15 F2 DB D2 67 26 82 06 13 DB 6E 5B 29 
+03 F2 E6 FA 6C AA 13 E5 C0 64 5B 22 79 60 D4 9A FA AC 0B 91 85 DA B4 A1 22 38 F2 20 21 3C 09 EE 
+7C B8 62 B4 D3 99 12 42 08 BC AC 04 A3 A7 24 0B 19 B2 C6 54 E4 6E 78 0D 17 1E 8D EE F4 45 A3 A8 
+A0 C8 9E EE 1D 7E 93 3A DA AA 39 D5 85 AC F1 5B F2 38 39 66 85 19 F8 0E 
+
+No Issuer Public Key Remainder[92]
+Issuer_PK_Exponent[9F 32]:
+03 
+
+Issuer Data Recovered : 
+6A 02 62 53 53 FF 12 30 00 36 87 01 01 B0 01 A0 54 80 0A 32 D4 29 CD C7 49 E4 9A 98 EE E9 66 CF 
+D4 90 27 6E 04 6D 13 BA AF B8 F2 B2 A2 D4 98 F6 CD 26 0B 12 B1 05 7D 07 EA 42 58 A5 7D 5C EF 3B 
+EE 5E 45 67 32 BF 51 00 ED 27 3A C4 DE 1D 26 36 26 C1 E2 68 14 01 E9 FE C8 84 DF 76 A3 02 B5 1C 
+A3 FD 84 82 8C 21 5A C0 07 41 4A 2C 96 FD 80 6B F2 25 8C 7F AD 6E FE 81 07 99 31 41 6F 20 16 7D 
+10 EE 75 A5 4F 7C D2 C3 80 09 B7 26 B7 C3 12 71 D3 22 15 C9 46 5D CE 07 25 A4 68 0A E9 A6 86 05 
+04 7B BA 49 44 85 CE A4 6B 4D C6 01 2F D4 48 14 78 BF 86 A1 55 DF E4 B1 7B 82 80 16 C5 8C AF BB 
+BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB D1 96 7C 1F EA 89 42 AC BE 29 D2 FB 43 9A F7 31 8F AD 6A 8F BC 
+
+Issuer Input Data for Hash : 
+02 62 53 53 FF 12 30 00 36 87 01 01 B0 01 A0 54 80 0A 32 D4 29 CD C7 49 E4 9A 98 EE E9 66 CF D4 
+90 27 6E 04 6D 13 BA AF B8 F2 B2 A2 D4 98 F6 CD 26 0B 12 B1 05 7D 07 EA 42 58 A5 7D 5C EF 3B EE 
+5E 45 67 32 BF 51 00 ED 27 3A C4 DE 1D 26 36 26 C1 E2 68 14 01 E9 FE C8 84 DF 76 A3 02 B5 1C A3 
+FD 84 82 8C 21 5A C0 07 41 4A 2C 96 FD 80 6B F2 25 8C 7F AD 6E FE 81 07 99 31 41 6F 20 16 7D 10 
+EE 75 A5 4F 7C D2 C3 80 09 B7 26 B7 C3 12 71 D3 22 15 C9 46 5D CE 07 25 A4 68 0A E9 A6 86 05 04 
+7B BA 49 44 85 CE A4 6B 4D C6 01 2F D4 48 14 78 BF 86 A1 55 DF E4 B1 7B 82 80 16 C5 8C AF BB BB 
+BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB 03 
+
+Issuer Hash retrived from Certificate:
+D1 96 7C 1F EA 89 42 AC BE 29 D2 FB 43 9A F7 31 8F AD 6A 8F 
+
+Issuer Hash Recomputed : 
+D1 96 7C 1F EA 89 42 AC BE 29 D2 FB 43 9A F7 31 8F AD 6A 8F 
+
+Issuer Public Key Certificate Hash is verified!
+
+Issuer Public Key Modulus:
+A0 54 80 0A 32 D4 29 CD C7 49 E4 9A 98 EE E9 66 CF D4 90 27 6E 04 6D 13 BA AF B8 F2 B2 A2 D4 98 
+F6 CD 26 0B 12 B1 05 7D 07 EA 42 58 A5 7D 5C EF 3B EE 5E 45 67 32 BF 51 00 ED 27 3A C4 DE 1D 26 
+36 26 C1 E2 68 14 01 E9 FE C8 84 DF 76 A3 02 B5 1C A3 FD 84 82 8C 21 5A C0 07 41 4A 2C 96 FD 80 
+6B F2 25 8C 7F AD 6E FE 81 07 99 31 41 6F 20 16 7D 10 EE 75 A5 4F 7C D2 C3 80 09 B7 26 B7 C3 12 
+71 D3 22 15 C9 46 5D CE 07 25 A4 68 0A E9 A6 86 05 04 7B BA 49 44 85 CE A4 6B 4D C6 01 2F D4 48 
+14 78 BF 86 A1 55 DF E4 B1 7B 82 80 16 C5 8C AF 
+
+Length of Issuer_PK_Modulus:
+1408 bits
+
+Retrieve Issuer Public Key.....OK!
+
+---------------------------------------------
+Retrieve ICC Public Key
+
+ICC Public Key Certificate ('9F 46') : 
+57 88 D5 F6 09 63 D9 DD D6 3B 0B F3 A4 2A 44 73 B7 0D B4 08 93 EC F7 A8 40 4E 62 20 96 0F DC 47 
+6B DB 52 AB 62 60 58 21 F9 8E 58 DC 94 F6 CE 3E 10 4F CE CE 87 16 B0 64 34 42 89 28 FA 80 45 76 
+48 8C 50 01 C9 65 9A E3 0F C9 96 53 F1 39 7E B6 9D B5 3D 42 FB B2 4B 54 56 B5 B4 79 E8 21 24 65 
+22 46 6F 1C 3F D0 DC 60 00 3C 63 CF 26 B9 11 4C EE CA A6 D2 28 87 E3 0C 44 9E 05 DB CB 22 EC 42 
+6C 1E 4D 56 20 99 FB 7E E2 B8 3F 36 30 11 21 4E 42 0E FC 98 2F 6C 23 FD 80 6E 4B 91 4B ED 1F 1A 
+72 74 D0 23 57 AB 42 DE BD 96 A1 98 10 89 D6 56 
+
+No ICC_PK_Remainder!
+ICC Public Key Exponent ('9F 47') : 
+03 
+
+Issuer Public Key Modulus :  
+A0 54 80 0A 32 D4 29 CD C7 49 E4 9A 98 EE E9 66 CF D4 90 27 6E 04 6D 13 BA AF B8 F2 B2 A2 D4 98 
+F6 CD 26 0B 12 B1 05 7D 07 EA 42 58 A5 7D 5C EF 3B EE 5E 45 67 32 BF 51 00 ED 27 3A C4 DE 1D 26 
+36 26 C1 E2 68 14 01 E9 FE C8 84 DF 76 A3 02 B5 1C A3 FD 84 82 8C 21 5A C0 07 41 4A 2C 96 FD 80 
+6B F2 25 8C 7F AD 6E FE 81 07 99 31 41 6F 20 16 7D 10 EE 75 A5 4F 7C D2 C3 80 09 B7 26 B7 C3 12 
+71 D3 22 15 C9 46 5D CE 07 25 A4 68 0A E9 A6 86 05 04 7B BA 49 44 85 CE A4 6B 4D C6 01 2F D4 48 
+14 78 BF 86 A1 55 DF E4 B1 7B 82 80 16 C5 8C AF 
+
+Issuer Public Key Exponent ('9F 32') : 
+03 
+
+ICC Data Recovered : 
+6A 04 62 53 53 00 00 01 81 08 FF FF 04 24 0A 0E C3 01 01 80 01 E1 62 2D 69 05 D3 F2 F4 00 EE 2B 
+13 64 D5 F1 12 84 5A 37 D2 67 28 4F 4F BE 59 28 70 B7 DE F3 49 D7 25 8D 1E F9 A0 75 49 96 04 87 
+D2 7B 35 EC 20 8E 0E D6 FF E3 FC A5 35 41 9F 3E FA FF BF 95 A1 2B 20 1B 4C 7B E5 04 D6 E7 06 CC 
+C7 E8 4F DD B1 4E 13 B0 F5 78 39 31 94 1A 0C A5 35 03 07 2A CD F2 71 29 82 6E A5 A3 8D 9E 36 7F 
+98 61 7D 61 E9 F2 3D C2 22 18 99 D8 9E 33 21 95 AF 4C 87 B3 33 BB BB BB BB BB BB 38 9F C9 42 63 
+E6 F1 46 49 DD 56 2C 62 9C DF BE F4 90 EC BE BC 
+
+Input Data for Hash (for ICC Public Key Certificate) : 
+04 62 53 53 00 00 01 81 08 FF FF 04 24 0A 0E C3 01 01 80 01 E1 62 2D 69 05 D3 F2 F4 00 EE 2B 13 
+64 D5 F1 12 84 5A 37 D2 67 28 4F 4F BE 59 28 70 B7 DE F3 49 D7 25 8D 1E F9 A0 75 49 96 04 87 D2 
+7B 35 EC 20 8E 0E D6 FF E3 FC A5 35 41 9F 3E FA FF BF 95 A1 2B 20 1B 4C 7B E5 04 D6 E7 06 CC C7 
+E8 4F DD B1 4E 13 B0 F5 78 39 31 94 1A 0C A5 35 03 07 2A CD F2 71 29 82 6E A5 A3 8D 9E 36 7F 98 
+61 7D 61 E9 F2 3D C2 22 18 99 D8 9E 33 21 95 AF 4C 87 B3 33 BB BB BB BB BB BB 03 5F 24 03 24 04 
+28 5A 08 62 53 53 00 00 01 81 08 5F 34 01 00 9F 07 02 FF 00 8E 0E 00 00 00 00 00 00 00 00 42 03 
+1E 03 1F 00 9F 0D 05 D8 60 9C A8 00 9F 0E 05 00 10 00 00 00 9F 0F 05 D8 68 9C F8 00 5F 28 02 01 
+56 7C 00 
+
+Hash Recovered from ICC Publick Key Certificate :
+38 9F C9 42 63 E6 F1 46 49 DD 56 2C 62 9C DF BE F4 90 EC BE 
+
+ICC Hash Recomputed :  
+38 9F C9 42 63 E6 F1 46 49 DD 56 2C 62 9C DF BE F4 90 EC BE 
+
+ICC Public Key Certificate Hash is verified!
+
+ICC Public Key Modulus:
+E1 62 2D 69 05 D3 F2 F4 00 EE 2B 13 64 D5 F1 12 84 5A 37 D2 67 28 4F 4F BE 59 28 70 B7 DE F3 49 
+D7 25 8D 1E F9 A0 75 49 96 04 87 D2 7B 35 EC 20 8E 0E D6 FF E3 FC A5 35 41 9F 3E FA FF BF 95 A1 
+2B 20 1B 4C 7B E5 04 D6 E7 06 CC C7 E8 4F DD B1 4E 13 B0 F5 78 39 31 94 1A 0C A5 35 03 07 2A CD 
+F2 71 29 82 6E A5 A3 8D 9E 36 7F 98 61 7D 61 E9 F2 3D C2 22 18 99 D8 9E 33 21 95 AF 4C 87 B3 33 
+
+Length of ICC_PK_Modulus:
+1024 bits
+
+Retrieve ICC Public Key.....OK!
+
+----------------------------------
+Internal Authenticate
+
+[APDU Command]->[Card]:
+Card Command : 00 88 00 00 04 
+
+Input   Data : 1D 95 5A 45 
+
+Output  Data : 
+
+Card  Status : 61 83 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 C0 00 00 83 
+
+Input   Data : 
+
+Output  Data : 80 81 80 C7 11 9A 2E 97 83 35 D2 1E 60 A4 40 E1 15 55 B6 78 8B 2E 47 9F F2 B7 CA 
+               81 44 66 09 59 DB 1C 98 1B F5 BB ED 71 A3 79 3F FB F6 C6 B9 7A 2A 13 B1 2C 9B 13 
+               BD 18 C4 B7 09 16 29 57 FD 52 4D 1E 89 2E 3D 1B 98 79 CA 3F 5A BC 92 FD EB 3C A7 
+               65 A8 7D 0E 41 93 89 06 6F 62 5A EA D1 92 0D 56 A2 B1 04 C7 27 13 E8 1F 59 B3 A3 
+               A7 7F 92 50 D7 38 71 C1 56 38 75 DA 31 CE 50 71 33 01 29 45 25 70 70 
+
+Card  Status : 90 00 
+
+
+[9F4B] Signed Dynamic Application Data
+C7 11 9A 2E 97 83 35 D2 1E 60 A4 40 E1 15 55 B6 78 8B 2E 47 9F F2 B7 CA 81 44 66 09 59 DB 1C 98 
+1B F5 BB ED 71 A3 79 3F FB F6 C6 B9 7A 2A 13 B1 2C 9B 13 BD 18 C4 B7 09 16 29 57 FD 52 4D 1E 89 
+2E 3D 1B 98 79 CA 3F 5A BC 92 FD EB 3C A7 65 A8 7D 0E 41 93 89 06 6F 62 5A EA D1 92 0D 56 A2 B1 
+04 C7 27 13 E8 1F 59 B3 A3 A7 7F 92 50 D7 38 71 C1 56 38 75 DA 31 CE 50 71 33 01 29 45 25 70 70 
+
+----------------------------------
+Dynamic Signature Verification
+
+DynamicDataAuthDOLRelatedData :
+1D 95 5A 45 
+
+Signed Dynamic Application Data ('9F 4B') :
+C7 11 9A 2E 97 83 35 D2 1E 60 A4 40 E1 15 55 B6 78 8B 2E 47 9F F2 B7 CA 81 44 66 09 59 DB 1C 98 
+1B F5 BB ED 71 A3 79 3F FB F6 C6 B9 7A 2A 13 B1 2C 9B 13 BD 18 C4 B7 09 16 29 57 FD 52 4D 1E 89 
+2E 3D 1B 98 79 CA 3F 5A BC 92 FD EB 3C A7 65 A8 7D 0E 41 93 89 06 6F 62 5A EA D1 92 0D 56 A2 B1 
+04 C7 27 13 E8 1F 59 B3 A3 A7 7F 92 50 D7 38 71 C1 56 38 75 DA 31 CE 50 71 33 01 29 45 25 70 70 
+
+ICC Public Key Modulus :
+E1 62 2D 69 05 D3 F2 F4 00 EE 2B 13 64 D5 F1 12 84 5A 37 D2 67 28 4F 4F BE 59 28 70 B7 DE F3 49 
+D7 25 8D 1E F9 A0 75 49 96 04 87 D2 7B 35 EC 20 8E 0E D6 FF E3 FC A5 35 41 9F 3E FA FF BF 95 A1 
+2B 20 1B 4C 7B E5 04 D6 E7 06 CC C7 E8 4F DD B1 4E 13 B0 F5 78 39 31 94 1A 0C A5 35 03 07 2A CD 
+F2 71 29 82 6E A5 A3 8D 9E 36 7F 98 61 7D 61 E9 F2 3D C2 22 18 99 D8 9E 33 21 95 AF 4C 87 B3 33 
+
+ICC Public Key Exponent ('9F 47') :
+03 
+
+Data Recovered (for DDA) :  
+6A 05 01 03 02 00 0C BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB BB BB BB BB BB BB BB BB 44 E1 15 79 39 7A 42 89 C8 E7 77 E9 4F E5 6C 31 42 0B 7B 6E BC 
+
+Input Data for Hash (for DDA) : 
+05 01 03 02 00 0C BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB BB 
+BB BB BB BB BB BB BB BB BB BB 1D 95 5A 45 
+
+Hash Recovered from Signed Dynamic Application Data :
+44 E1 15 79 39 7A 42 89 C8 E7 77 E9 4F E5 6C 31 42 0B 7B 6E 
+
+Hash Recomputed (for DDA) :  
+44 E1 15 79 39 7A 42 89 C8 E7 77 E9 4F E5 6C 31 42 0B 7B 6E 
+
+Dynamic Application Data Hash is verified! DDA...OK!
+
+Offline Data Authentication was performed!
+--------------------------------------Processing Restrictions-----------------------------------
+
+Compare Application Version Number
+Terminal Application Version Number ('9F 09') : 
+00 20 
+
+Get Card Application Version Number ('9F 08'):
+00 30 
+
+Application Version Number is different!!!
+Set TVR bit 'ICC and terminal have different application versions' : 1
+--------------------------------------------
+Check AUC
+AUC ('9F 07') :
+FF 00 
+
+Terminal Country Code ('9F 1A') : 
+01 56 
+
+Issuer Country Code ('5F 28') : 
+01 56 
+
+Transaction Type ('9C') :
+01 
+
+Amount Other (Numeric) ('9F 03') :
+00 00 00 00 00 00 
+
+Is ATM?: 00
+
+Terminal Type (9F35):
+12 
+
+Financial Institution, Attended, Offline with Online capability
+
+Check AUC...OK!
+--------------------------------------------
+Check Application Effective Date
+Application Effective Date ('5F 25') : 
+15 02 05 
+
+Transaction Date ('9A') : 
+15 06 18 
+
+Check Application Effective Date...OK!
+--------------------------------------------
+Check Application Expiration Date
+Application Expiration Date ('5F 24') : 
+20 24 04 28 
+
+Transaction Date ('9A') : 
+15 06 18 
+
+Check Application Expiration Date...OK!
+--------------------------------------Cardholder Verification-----------------------------------
+Analyze Condition
+Amount Authorised (Numeric) ('9F 02') :
+00 00 00 00 12 00 
+
+Amount X : 
+00 00 00 00 
+
+Amount Y : 
+00 00 00 00 
+
+Transaction Currency Code ('5F 2A') :
+01 56 
+
+Application Currency Code ('9F 42') :
+None
+
+CVM Condition:
+03 
+
+CVM Code:
+42 
+
+IsOnlineEncipheredPINSupported : 01
+
+-------------------
+CVM to be taken:
+Online encryption PIN verification
+
+IsOnlineEncipheredPINSupported : 01
+
+Transaction PIN Data ('99') :
+12 34 FF FF FF FF FF FF 
+
+Whatever you enter, you will pass the online pin verification(Just a test).
+
+Set TVR bit 'Online PIN entered' : 1
+
+Cardholder Verification was performed.
+--------------------------------------Terminal Risk Management----------------------------------
+Random Selection is not performed!
+Check Floor Limits
+Amount Authorised (Binary) ('81') : 
+00 00 04 B0 
+
+Terminal Floor Limit ('9F 1B') :
+00 FF FF FF 
+
+Check Floor Limits...OK!
+--------------------------------------------
+Velocity Checking 
+[APDU Command]->[Card]:
+Card Command : 80 CA 9F 13 05 
+
+Input   Data : 
+
+Output  Data : 9F 13 02 00 0A 
+
+Card  Status : 90 00 
+
+
+[APDU Command]->[Card]:
+Card Command : 80 CA 9F 36 05 
+
+Input   Data : 
+
+Output  Data : 9F 36 02 00 0C 
+
+Card  Status : 90 00 
+
+
+[9F13] Last Online Application Transaction Counter(ATC) Register
+00 0A 
+
+[9F36] Application Transaction Counter (ATC)
+00 0C 
+
+Set TVR bit 'Lower consecutive offline limit exceeded' : 1
+Set TVR bit 'Upper consecutive offline limit exceeded' : 1
+--------------------------------------------
+New Card Checking
+
+New Card Checking...OK!
+
+Terminal risk management was performed
+--------------------------------------Terminal Action Analysis----------------------------------
+Compare TVR with Denial IAC and TAC
+TVR:
+00 80 04 60 00 
+
+IAC Denial:
+00 10 00 00 00 
+
+TAC Denial: 
+00 00 00 00 00 
+
+No Terminal decision: Perform next action...
+--------------------------------------------
+The Terminal can go online
+Compare TVR with Online IAC and TAC
+TVR:
+00 80 04 60 00 
+
+IAC Online:
+D8 68 9C F8 00 
+
+TAC Online: 
+00 00 00 00 00 
+
+Terminal Decision: ARQC
+----------------------------------------Card Action Analysis------------------------------------
+[APDU Command]->[Card]:
+Card Command : 80 AE 80 00 34 
+
+Input   Data : 00 00 00 00 12 00 00 00 00 00 00 00 01 56 00 80 04 60 00 01 56 15 06 18 01 1D 95 
+               5A 45 13 21 00 52 61 75 6C 20 58 75 2D 47 6F 6C 64 70 61 63 20 32 30 30 35 
+
+Output  Data : 
+
+Card  Status : 61 20 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 C0 00 00 20 
+
+Input   Data : 
+
+Output  Data : 80 1E 80 00 0C 1F 69 AC 45 71 1E B5 4B 07 02 01 03 A0 20 02 01 0A 01 00 00 00 00 
+               10 61 12 1A 85 
+
+Card  Status : 90 00 
+
+
+[9F26] Application Cryptogram (AC)
+1F 69 AC 45 71 1E B5 4B 
+
+[9F36_1] Application Transaction Counter (ATC)
+00 0C 
+
+[9F27] Cryptogram Information Data (CID)
+80 
+
+[DF54] Crypto Version Number
+01 
+
+[DF55] Key Index
+02 
+
+[9F10] Issuer Application Data
+07 02 01 03 A0 20 02 01 0A 01 00 00 00 00 10 61 12 1A 85 
+
+Cryptogram Information Data ('9F 27') :
+80 
+
+Card Desicion:
+ARQC
+-------------------------Online processing and Issuer Authentication----------------------------
+[NOTE] To view details in online processing, please refer to 'OnlineTrace.txt'.
+------------------------------------------
+Issuer Script Template 1 ('71') : (none)
+------------------------------------------
+Issuer Script Template 2 ('72') : (none)
+------------------------------------------
+Issuer Authentication Data ('91') :
+5C 52 1E 54 19 11 E9 97 30 30 
+
+[APDU Command]->[Card]:
+Card Command : 00 82 00 00 0A 
+
+Input   Data : 5C 52 1E 54 19 11 E9 97 30 30 
+
+Output  Data : 
+
+Card  Status : 90 00 
+
+
+---------------------------------------------Completion-----------------------------------------
+[APDU Command]->[Card]:
+Card Command : 80 AE 40 00 36 
+
+Input   Data : 30 30 00 00 00 00 12 00 00 00 00 00 00 00 01 56 00 80 04 60 00 01 56 15 06 18 01 
+               1D 95 5A 45 13 21 00 52 61 75 6C 20 58 75 2D 47 6F 6C 64 70 61 63 20 32 30 30 35 
+
+Output  Data : 
+
+Card  Status : 61 20 
+
+
+[APDU Command]->[Card]:
+Card Command : 00 C0 00 00 20 
+
+Input   Data : 
+
+Output  Data : 80 1E 40 00 0C 9E 6A E3 73 79 99 6C 4C 07 02 01 03 60 20 02 01 0A 01 00 00 00 00 
+               10 61 12 1A 85 
+
+Card  Status : 90 00 
+
+
+[9F26_1] Application Cryptogram (AC)
+9E 6A E3 73 79 99 6C 4C 
+
+[9F36_2] Application Transaction Counter (ATC)
+00 0C 
+
+[9F27_1] Cryptogram Information Data (CID)
+40 
+
+[DF54_1] Crypto Version Number
+01 
+
+[DF55_1] Key Index
+02 
+
+[9F10_1] Issuer Application Data
+07 02 01 03 60 20 02 01 0A 01 00 00 00 00 10 61 12 1A 85 
+
+Cryptogram Information Data ('9F 27') :
+40 
+
+Card Desicion:
+TC
+--------------------------------------------
+Cryptogram Information Data ('9F 27') :  
+40 
+
+Transaction Result: Approved! (Online)
+
+========================================Transaction End=========================================
+Log Save Time: 
+2015.06.18 13:21:50 Thursday

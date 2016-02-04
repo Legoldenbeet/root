@@ -1,12 +1,8 @@
 package com.gerenhua.tool.logic.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 
 import org.apache.log4j.NDC;
@@ -14,30 +10,14 @@ import org.apache.log4j.NDC;
 import com.gerenhua.tool.log.Log;
 import com.gerenhua.tool.logic.Constants;
 import com.gerenhua.tool.logic.apdu.AbstractAPDU;
-import com.gerenhua.tool.logic.apdu.CommonHelper;
-import com.gerenhua.tool.logic.issuer.IIssuerDao;
-import com.gerenhua.tool.logic.issuer.local.IssuerDaoImpl;
-import com.gerenhua.tool.logic.pki.DataAuthenticate;
+import com.gerenhua.tool.logic.apdu.PbocProcess;
 import com.gerenhua.tool.utils.PropertiesManager;
-import com.gerenhua.tool.utils.TermSupportUtil;
-import com.gerenhua.tool.utils.reportutil.APDUSendANDRes;
 import com.gerenhua.tool.utils.reportutil.GenReportUtil;
-import com.watchdata.commons.lang.WDAssert;
 import com.watchdata.commons.lang.WDStringUtil;
 
-/**
- * 
- * @description: PBOC交易逻辑处理
- * @author: juan.jiang 2012-3-21
- * @version: 1.0.0
- * @modify:
- * @Copyright: watchdata
- */
 public class PBOCHandler extends BaseHandler {
 	private static Log logger = new Log();
-	private IIssuerDao issuerDao = new IssuerDaoImpl();
 	private GenReportUtil genWordUtil = null;
-
 	private PropertiesManager pm = new PropertiesManager();
 
 	public PBOCHandler(JTextPane textPane) {
@@ -45,18 +25,13 @@ public class PBOCHandler extends BaseHandler {
 	}
 
 	/**
-	 * @author juan.jiang
+	 * pboc交易处理流程 LIYAXIAO 2015-6-20,上午10:28:55
+	 * 
 	 * @param tradeMount
-	 *            交易金额
 	 * @param readerName
-	 *            读卡器名称
-	 * @param tradeLabel
-	 *            交易界面显示详细控件
-	 * @param termSupportUtil
-	 *            判断终端性能
 	 * @return
 	 */
-	public boolean doTrade(int tradeMount, String readerName,TermSupportUtil termSupportUtil) {
+	public boolean doTrade(int tradeMount, String readerName) {
 		// 初始化交易参数，如授权金额，pin等
 		HashMap<String, String> param = new HashMap<String, String>();
 		String termRandom = WDStringUtil.getRandomHexString(8);
@@ -67,7 +42,6 @@ public class PBOCHandler extends BaseHandler {
 		Date dateTime = new Date();
 		param.put("9A", getFormatDate(dateTime, Constants.FORMAT_SHORT_DATE));
 		param.put("9F21", getFormatDate(dateTime, Constants.FORMAT_TIME));
-		param.put("9F66", "46800000");// 非接触能力
 		NDC.push("[PBOC]");
 		logger.debug("PBOC trade start...", 0);
 		genWordUtil = new GenReportUtil();
@@ -78,218 +52,130 @@ public class PBOCHandler extends BaseHandler {
 
 		try {
 			// 为了保证卡片和读卡器的正确性，交易开始前务必先复位
-			logger.debug("=============================reset===================================");
-			HashMap<String, String> res = apduHandler.reset();
-			if (!"9000".equals(res.get("sw"))) {
-				logger.error("card reset falied");
-				genWordUtil.add("卡片复位失败");
-				// genWordUtil.close();
-				return false;
-			}
-			logger.debug("atr:" + res.get("atr"));
-			// 复位报告内容
-			genWordUtil.add("atr", "Card Reset", res.get("atr"), new HashMap<String, String>());
-
-			logger.debug("============================select PSE=================================");
-			HashMap<String, String> result = apduHandler.select(Constants.PSE);
-			if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
-				logger.error("select PSE error,card return:" + result.get("sw"));
-				genWordUtil.add("选择PSE出错");
-				// genWordUtil.close();
-				return false;
-			}
-
-			// 选择pse报告内容
-			genWordUtil.add(result.get("apdu"), "Select PSE", result.get("res"), result);
-
-			if (WDAssert.isNotEmpty(result.get("88"))) {
-				// read dir, begin from 01
-				logger.debug("==============================read dir================================");
-				List<HashMap<String, String>> readDirList = apduHandler.readDir(result.get("88"));
-
-				// select aid
-				String aid = readDirList.get(0).get("4F");
-				logger.debug("===============================select aid==============================");
-				if (WDAssert.isEmpty(aid)) {
-					logger.error("select aid is null");
-					genWordUtil.add("获取AID为空");
-					// genWordUtil.close();
-					return false;
-				}
-				if (termSupportUtil.isSupportAID(aid)) {
-					result = apduHandler.select(aid);
-				} else {
-					logger.error("Terminal can not support the app");
-					genWordUtil.add("终端不支持此应用");
-					// genWordUtil.close();
-					return false;
-				}
-				if (!"9000".equals(result.get("sw"))) {
-					logger.error("select app get response:" + result.get("sw"));
-					genWordUtil.add("选择应用出错");
-					// genWordUtil.close();
-					return false;
-				}
-				String pdol = result.get("9F38");
-
-				// 选择aid报告内容
-				genWordUtil.add(result.get("apdu"), "Select AID", result.get("res"), result);
-
-				// get data
-				logger.debug("================================get data=============================");
-				HashMap<String, String> dataMap = new HashMap<String, String>();
-				result = apduHandler.getData("9F52");
-				dataMap.put("9F52", result.get("9F52"));
-				result = apduHandler.getData("9F54");
-				dataMap.put("9F54", result.get("9F54"));
-				result = apduHandler.getData("9F5C");
-				dataMap.put("9F5C", result.get("9F5C"));
-				result = apduHandler.getData("9F56");
-				dataMap.put("9F56", result.get("9F56"));
-				result = apduHandler.getData("9F57");
-				dataMap.put("9F57", result.get("9F57"));
-				result = apduHandler.getData("9F58");
-				dataMap.put("9F58", result.get("9F58"));
-				result = apduHandler.getData("9F59");
-				dataMap.put("9F59", result.get("9F59"));
-
-				genWordUtil.add("PDOL Data:" + pdol);
-				// gpo
-				logger.debug("==================================gpo==================================");
-				String loadDolDataResult = "";
-				try {
-					loadDolDataResult = loadDolData(pdol, param);
-				} catch (Exception e) {
-					logger.error("PBOC get ddol param exception!");
-					genWordUtil.add("获取DDOL数据出错");
-					// genWordUtil.close();
-					return false;
-				}
-				result = apduHandler.gpo("83" + CommonHelper.getLVData(loadDolDataResult, 1));
-				String aip = result.get("82");
-
-				genWordUtil.add(result.get("apdu"), "GPO", result.get("res"), result);
-
-				genWordUtil.add("LoadDolDataResult:" + loadDolDataResult);
-				genWordUtil.add("AIP:" + aip);
-
-				// read record
-				logger.debug("=================================read record===========================");
-				List<APDUSendANDRes> aList = new ArrayList<APDUSendANDRes>();
-				HashMap<String, String> cardRecordData = getCardRecordData(result.get("94"), aList);
-				String staticDataList = cardRecordData.get("staticDataList");
-
-				// 读记录报告
-				for (APDUSendANDRes apduSendANDRes2 : aList) {
-					genWordUtil.add(apduSendANDRes2);
-				}
-				// Verify PIN
-				if (WDAssert.isNotEmpty(cardRecordData.get("8E"))) {
-					if (CommonHelper.parse8E(cardRecordData.get("8E"))) {
-						logger.debug("=================================Verify PIN===========================");
-						String pin = JOptionPane.showInputDialog("请输入PIN：");
-						if (WDAssert.isNotEmpty(pin)) {
-							result = apduHandler.verifyPin(pin);
-							if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
-								logger.error("verify pin failed,card return:" + result.get("sw"));
-								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
-							} else {
-								logger.debug("verify pin pass!");
-								genWordUtil.add(result.get("apdu"), "Verify PIN", result.get("res"), result);
-							}
-						}else {
-							logger.error("verify pin failed,card return:" + result.get("sw"));
-						}
-					}
-				}
-
-				// Internal Authenticate
-				logger.debug("=======================internal Authenticate==============================");
-				result = apduHandler.internalAuthenticate(termRandom);
-				String signedDynmicData = result.get("80");
-
-				genWordUtil.add(result.get("apdu"), "Internal Authenticate", result.get("res"), result);
-
-				genWordUtil.add("Random Data:" + termRandom);
-				genWordUtil.add("StaticDataList:" + staticDataList);
-				// DDA,SDA
-				logger.debug("===========================DDA validate===============================");
-				String issuerPKCert = cardRecordData.get("90");
-				String issuerPKReminder = cardRecordData.get("92");
-				String issuerPKExp = cardRecordData.get("9F32");
-				// String signedStaticData = cardRecordData.get("93");
-				String icPKCert = cardRecordData.get("9F46");
-				String icPKExp = cardRecordData.get("9F47");
-				String icPKReminder = cardRecordData.get("9F48");
-				String caPKIndex = cardRecordData.get("8F");
-				staticDataList += aip;
-				String pan = cardRecordData.get("5A");
-				pan = pan.replaceAll("F", "");
-				String panSerial = cardRecordData.get("5F34");
-				String rid = aid.substring(0, 10);
-
-				DataAuthenticate dataAuthenticate = new DataAuthenticate(rid, caPKIndex, issuerPKCert, issuerPKReminder, issuerPKExp, pan, staticDataList);
-				List<String> logList = new ArrayList<String>();
-				if (!dataAuthenticate.dynamicDataAuthenticate(icPKCert, icPKReminder, icPKExp, signedDynmicData, termRandom, logList)) {
-					logger.error("DDA failed!");
-					genWordUtil.add("动态数据认证失败");
-					// genWordUtil.close();
-					return false;
-				}
-				logger.debug("DDA validate successed!");
-
-				genWordUtil.add("DDA中使用的数据");
-				for (String log : logList) {
-					genWordUtil.add(log);
-				}
-				// Generate arqc
-				logger.debug("==========================Generate AC1================================");
-				String cdol1Data = loadDolData(cardRecordData.get("8C"), param);// 9F0206 9F0306 9F1A02 9505 5F2A02 9A03 9C01 9F3704 9F2103 9F4E14
-				result = apduHandler.generateAC(cdol1Data, AbstractAPDU.P1_ARQC);
-
-				genWordUtil.add(result.get("apdu"), "Generate AC1", result.get("res"), result);
-
-				genWordUtil.add("CDOL1 Data:" + cdol1Data);
-
-				String arqc = result.get("9F26");
-				String atc = result.get("9F36");
-				String iad = result.get("9F10");
-
-				logger.debug("=================================ARQC=================================");
-				String arpc = issuerDao.requestArpc(pan, panSerial, cdol1Data, aip, atc, iad, arqc);
-				logger.debug("online validate successed!");
-
-				genWordUtil.add("验证ARQC中使用的数据");
-				genWordUtil.add("ARQC:" + arqc);
-				genWordUtil.add("ATC:" + atc);
-				genWordUtil.add("IAD:" + iad);
-				genWordUtil.add("ARPC:" + arpc);
-				// 请求发卡行认证AC密文
-				logger.debug("=======================external Authenticate============================");
-				result = apduHandler.externalAuthenticate(arpc + authRespCode);
-				if (!Constants.SW_SUCCESS.equalsIgnoreCase(result.get("sw"))) {
-					logger.error("external Authenticate failed,card return:" + result.get("sw"));
-					genWordUtil.add("外部认证失败");
-					// genWordUtil.close();
-					return false;
-				}
-
-				genWordUtil.add(result.get("apdu"), "External Authenticate", result.get("res"), result);
-
-				// Generate tc
-				logger.debug("===========================Generate AC2===========================");
-				param.put("8A", authRespCode);
-				String cdol2Data = loadDolData(cardRecordData.get("8D"), param);
-				result = apduHandler.generateAC(cdol2Data, AbstractAPDU.P1_TC);
-
-				genWordUtil.add(result.get("apdu"), "Generate AC2", result.get("res"), result);
-				genWordUtil.add("CDOL2 Data:" + cdol2Data);
-				logger.debug("========================PBOC trade finished!=======================");
-				genWordUtil.add("PBOC交易完成!");
-				return true;
+			logger.debug("=============================Initialization=================================");
+			HashMap<String, String> result;
+			PbocProcess.initialization(apduHandler, logger, genWordUtil);
+			logger.debug("============================Application Selection=================================");
+			String aid = PbocProcess.applicationSelection(Constants.PSE, apduHandler, logger, genWordUtil);
+			logger.debug("===============================Final Selection=================================");
+			result = PbocProcess.finalSelection(aid, apduHandler, logger, genWordUtil);
+			String pdol = result.get("9F38");
+			genWordUtil.add("PDOL Data:" + pdol);
+			// gpo
+			logger.debug("==================================Initiate Application(GPO)==================================");
+			result = PbocProcess.initiateApplication((BaseHandler) this, pdol, param, apduHandler, logger, genWordUtil);
+			String aip = result.get("82");
+			// 字节1：
+			// 位8：1=RFU
+			// 位7：1=支持SDA
+			// 位6：1=支持DDA
+			// 位5：1=支持持卡人认证
+			// 位4：1=执行终端风险管理
+			// 位3：1=支持发卡行认证
+			// 位2：RFU（0）
+			// 位1：1=支持CDA
+			// 字节2：RFU（“00”）
+			genWordUtil.add("AIP:" + aip);
+			// read record
+			logger.debug("=================================Read Application Data===========================");
+			HashMap<String, String> cardRecordData = PbocProcess.readApplicationData((BaseHandler) this, result, genWordUtil);
+			String staticDataList = cardRecordData.get("staticDataList");
+			genWordUtil.add("StaticDataList:" + cardRecordData);
+			// Internal Authenticate
+			logger.debug("=======================Internal Authenticate==============================");
+			result = PbocProcess.internalAuthenticate(aip, termRandom, apduHandler, logger, genWordUtil);
+			String signedDynmicData = result.get("80");
+			logger.debug("===============================Data Authentication============================");
+			String pan = cardRecordData.get("5A");
+			pan = pan.replaceAll("F", "");
+			String panSerial = cardRecordData.get("5F34");
+			if (PbocProcess.dataAuthentication(cardRecordData, pan, aid, aip, staticDataList, signedDynmicData, termRandom, logger, genWordUtil)) {
+				logger.debug("Offline Data Authentication was performed!\n");
 			} else {
-				return false;
+				logger.error("Offline Data Authentication Fail!\n");
 			}
+			// get data
+			logger.debug("================================GET DATA=============================");
+			HashMap<String, String> dataMap = new HashMap<String, String>();
+			dataMap = PbocProcess.getData(cardRecordData, apduHandler);
+			logger.debug("================================Processing Restrictions=============================");
+			if (PbocProcess.processingRestrictions(cardRecordData, param, logger)) {
+				logger.debug("Processing Restrictions OK.");
+			} else {
+				logger.error("Processing Restrictions Fail!");
+			}
+			logger.debug("================================Cardholder Verification=============================");
+			if (PbocProcess.cardholderVerification(cardRecordData, apduHandler, logger, genWordUtil)) {
+				logger.debug("Cardholder Verification OK.");
+			} else {
+				logger.error("Cardholder Verification Fail!");
+			}
+			logger.debug("================================Terminal Risk Management=============================");
+			// <<终端风险管理>>
+			//  终端异常文件检查
+			//  商户强制联机
+			//  最低限额检查
+			//  交易日志
+			//  随机选择
+			//  频度检查 可选（EMV）
+			//  新卡检查 可选（JR/T 0025借记/贷记）
+			if (PbocProcess.terminalRiskManagement()) {
+				logger.debug("Terminal Risk Management OK.");
+			}
+			logger.debug("================================Terminal Action Analysis=============================");
+			// IAC可选（EMV）IAC需要（JR/T 0025借记/贷记）
+			if (PbocProcess.terminalActionAnalysis()) {
+				logger.debug("Terminal Action Analysis.");
+			}
+			// Generate arqc
+			logger.debug("==========================Card Action Analysis(Generate AC1)================================");
+			result = PbocProcess.cardActionAnalysis((BaseHandler) this, cardRecordData, param, AbstractAPDU.P1_ARQC, apduHandler, genWordUtil);
+			String arqc = result.get("9F26");
+			String atc = result.get("9F36");
+			String iad = result.get("9F10");
+			String CVR = iad.substring(6, 14);
+			// 字节1： 长度字节 03
+			// 字节2：
+			// 位8–7：
+			// 00=第2 个GENERATE AC 返回AAC
+			// 01=第2 个GENERATE AC 返回TC
+			// 10=不请求第2 个GENERATE AC
+			// 11=RFU
+			// 位6–5：
+			// 00=第1 个GENERATE AC 返回AAC
+			// 01=第1 个GENERATE AC 返回TC
+			// 10=第1 个GENERATE AC 返回ARQC
+			// 11=不能返回11
+			// 位4：1=发卡行认证执行但失败
+			// 位3：1 =脱机PIN 执行
+			// 位2：1=脱机PIN 认证失败
+			// 位1：1 =不能联机
+			// 字节3：
+			// 位8：1=上次联机交易没有完成
+			// 位7：1=PIN 锁定
+			// 位6：1=超过频率检查
+			// 位5：1=新卡
+			// 位4：1=上次联机交易发卡行认证失败
+			// 位3：1=联机授权后，发卡行认证没有执行
+			// 位2：1=由于PIN 锁卡片锁定应用
+			// 位1：1=上次交易SDA 失败交易拒绝
+			// 字节4：
+			// 位8–5：上次交易第2 个生成应用密文（GENERATE
+			// AC）命令后收到的带有安全报文的发卡行脚本命
+			// 令
+			// 位4：1 =上次交易发卡行脚本处理失败指针
+			// 位3：1=上次交易DDA 失败交易拒绝
+			logger.debug("=================================Online processing=================================");
+			String arpc = PbocProcess.onlineprocessing((BaseHandler) this, pan, panSerial, aip, atc, iad, arqc, param, logger, genWordUtil);
+			// 请求发卡行认证AC密文
+			logger.debug("=======================Issuer Authentication============================");
+			result = PbocProcess.issuerAuthentication(apduHandler, arpc, logger, genWordUtil);
+			// Generate tc
+			logger.debug("===========================Completion(Generate AC2)===========================");
+			result = PbocProcess.completion((BaseHandler) this, cardRecordData, param, apduHandler, genWordUtil);
+			logger.debug("========================PBOC trade Approved!=======================");
+			genWordUtil.add("PBOC交易完成!");
+			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			genWordUtil.add(e.getMessage());
@@ -298,7 +184,7 @@ public class PBOCHandler extends BaseHandler {
 			genWordUtil.close();
 			NDC.pop();
 			NDC.remove();
-			//apduHandler.close();
+			// apduHandler.close();
 		}
 
 	}

@@ -96,9 +96,9 @@ public class PublicKeyInfo {
 		Config.addItem(sectionName, "CA_PK_Modulus");
 		
 		Config.setValue(sectionName,"Algorithm", publicKeyInfo.getArith());
-		Config.setValue(sectionName,"CA_PK_Exponent", publicKeyInfo.getArith());
-		Config.setValue(sectionName,"Hash_Algorithm", publicKeyInfo.getArith());
-		Config.setValue(sectionName,"CA_PK_Modulus", publicKeyInfo.getArith());
+		Config.setValue(sectionName,"CA_PK_Exponent", publicKeyInfo.getExp());
+		Config.setValue(sectionName,"Hash_Algorithm", publicKeyInfo.getHashArith());
+		Config.setValue(sectionName,"CA_PK_Modulus", publicKeyInfo.getModule());
 		
 		return true;
 	}

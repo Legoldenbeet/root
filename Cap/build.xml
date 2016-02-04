@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- 
+
+	This is the Ant build script for CardEditor.jar.
+	Available targets include:
+	
+		1. compile:         Compiles all src classes into ${class-dir}.
+		2. make-jar:        Createqs the jar file.
+		3. make-source-zip: Creates a source zip file.
+		3. make-javadoc:    Creates the javadoc for RSyntaxTextArea.
+
+	Author:   liya.xiao
+	Version:  1.0
+	Date:     20141009
+
+-->
+
+<project name="CapInsight" default="build" basedir=".">
+	<description>CapInsight build file</description>
+
+	<!-- Set global properties for this build. -->
+	<property name="version" value="0.1.0" />
+	<property name="source-dir" location="src" />
+	<property name="root-dir" location="E:/程序打包/CapInsight" />
+	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
+	<property name="class-dir" location="${root-dir}/ant-classes" />
+	<property name="dist-dir" location="${root-dir}/dist" />
+	<property name="doc-dir" location="${root-dir}/javadoc" />
+	<property name="zip-dir" location="${root-dir}/src-zip" />
+	<property name="setup-dir" location="${root-dir}/setup" />
+	<property name="lib" value="lib" />
+	<property name="debug" value="true" />
+	<property name="debuglevel" value="lines,vars,source" />
+	<property name="java-level" value="1.6" />
+
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="clean">
+		<delete dir="${root-dir}" includeEmptyDirs="true" quiet="false" />
+	</target>
+
+	<!-- Compiles the classes.  -->
+	<target name="compile" description="Compile the source">
+		<mkdir dir="${class-dir}" />
+		<javac fork="true" executable="${javac-home}" srcdir="${source-dir}" destdir="${class-dir}" deprecation="yes" listfiles="yes" debug="${debug}" debuglevel="${debuglevel}" source="${java-level}" target="${java-level}" includeantruntime="false" encoding="UTF-8">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!-- Creates the jar file. -->
+	<target name="make-jar-main" description="Create the jar file">
+		<pathconvert property="mf.classpath" pathsep=" ">
+			<path refid="classpath" />
+			<mapper>
+				<!--chainedmapper 作用是联合多个mapper-->
+				<chainedmapper>
+					<!--过滤文件，将路径去掉，只保留文件名-->
+					<flattenmapper />
+					<globmapper from="*" to="plugins/*" />
+				</chainedmapper>
+			</mapper>
+		</pathconvert>
+		<mkdir dir="${dist-dir}" />
+		<jar destfile="${dist-dir}/CapInsight.jar">
+			<fileset dir="${class-dir}" />
+			<fileset dir="${source-dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.png" />
+				<include name="**/*.jpg" />
+				<include name="**/*.gif" />
+				<include name="**/*.properties" />
+				<include name="**/*.format" />
+			</fileset>
+			<manifest>
+				<attribute name="Main-Class" value="com.javacard.cap.main.CapInsight" />
+				<attribute name="Class-Path" value="${mf.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!--move files to ${dist-dir}-->
+	<target name="move">
+		<copy todir="${dist-dir}/debug">
+			<fileset dir="debug" />
+		</copy>
+		<copy todir="${dist-dir}/plugins">
+			<fileset dir="lib" />
+		</copy>
+		<copy todir="${dist-dir}/..">
+			<fileset dir=".">
+				<include name="setup/*" />
+			</fileset>
+		</copy>
+		<copy todir="${dist-dir}/">
+			<fileset dir=".">
+				<include name="*.txt" />
+				<include name="*.bat" />
+				<include name="*.dll" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Builds the source zip file. -->
+	<target name="make-source-zip" description="Builds the source zip file">
+		<mkdir dir="${zip-dir}" />
+		<zip destfile="${zip-dir}/CardEditor_${version}_Source.zip">
+			<fileset dir=".">
+				<include name="src/**" />
+				<!--include name="build.xml" />
+				<include name=".project" />
+				<include name=".classpath" />
+			    <include name="**/*.xml" />
+				<include name="**/*.png" />
+				<include name="**/*.jpg" />
+				<include name="**/*.gif" />
+				<include name="**/*.properties" /-->
+			</fileset>
+		</zip>
+	</target>
+
+	<!-- Builds the javadoc.  -->
+	<target name="make-javadoc" description="make javadoc for ${source-dir}">
+		<mkdir dir="${doc-dir}" />
+		<javadoc destdir="${doc-dir}" author="true" version="true" breakiterator="yes" classpath="${classpath}" encoding="UTF-8" docencoding="UTF-8" charset="UTF-8">
+			<packageset dir="${source-dir}" defaultexcludes="yes">
+				<include name="com/**" />
+			</packageset>
+			<!--link href="" /-->
+		</javadoc>
+	</target>
+
+	<!-- Builds all target 32bit system  -->
+	<target name="build" depends="clean,compile,make-jar-main,move">
+		<!--antcall target="make-javadoc">
+		</antcall>
+		<antcall target="make-source-zip">
+		</antcall-->
+	</target>
+</project>
