@@ -70,9 +70,9 @@ public class LadyFaceDemo {
 	private void initialize() {
 		frmAfc = new JFrame();
 		frmAfc.setIconImage(Toolkit.getDefaultToolkit().getImage(LadyFaceDemo.class.getResource("/resources/images/beijing_mtr.jpg")));
-		frmAfc.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 18));
+		frmAfc.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 18));
 		frmAfc.setTitle("\u5317\u4EAC\u5730\u94C1\u552E\u5361\u5145\u503C\u7CFB\u7EDF");
-		// ×î´ó»¯ ¾ÓÖĞ ²»ÕÚ¸ÇÈÎÎñÀ¸
+		// æœ€å¤§åŒ– å±…ä¸­ ä¸é®ç›–ä»»åŠ¡æ 
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle bounds = new Rectangle(d);
 		Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(frmAfc.getGraphicsConfiguration());
@@ -82,54 +82,54 @@ public class LadyFaceDemo {
 		bounds.width -= insets.left + insets.right;
 		bounds.height -= insets.top + insets.bottom;
 		frmAfc.setBounds(bounds);
-		// ÉèÖÃ±³¾°
+		// è®¾ç½®èƒŒæ™¯
 		frmAfc.getContentPane().setBackground(BACK_COLOR);
 		frmAfc.getContentPane().setLayout(null);
 
 		textField = new JTextField();
-		textField.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		textField.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		textField.setText("10007510724045616430");
 		textField.setBounds(128, 23, 400, 40);
 		frmAfc.getContentPane().add(textField);
 		textField.setColumns(10);
 
 		JLabel lblNewLabel = new JLabel("\u5361\u53F7");
-		lblNewLabel.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		lblNewLabel.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		lblNewLabel.setBounds(58, 23, 60, 40);
 		frmAfc.getContentPane().add(lblNewLabel);
 
 		JLabel label = new JLabel("\u72B6\u6001");
-		label.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		label.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		label.setBounds(1016, 23, 60, 40);
 		frmAfc.getContentPane().add(label);
 
 		textField_1 = new JTextField();
 		textField_1.setText("\u5DF2\u542F\u7528");
-		textField_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		textField_1.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		textField_1.setColumns(10);
 		textField_1.setBounds(1086, 23, 102, 40);
 		frmAfc.getContentPane().add(textField_1);
 
 		JLabel label_1 = new JLabel("\u5361\u7C7B\u578B");
-		label_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		label_1.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		label_1.setBounds(706, 23, 90, 40);
 		frmAfc.getContentPane().add(label_1);
 
 		textField_2 = new JTextField();
 		textField_2.setText("\u666E\u901A\u5145\u503C\u5361");
-		textField_2.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		textField_2.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		textField_2.setColumns(10);
 		textField_2.setBounds(806, 23, 166, 40);
 		frmAfc.getContentPane().add(textField_2);
 
 		label_2 = new JLabel("\u4F59\u989D");
-		label_2.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		label_2.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		label_2.setBounds(58, 106, 60, 40);
 		frmAfc.getContentPane().add(label_2);
 
 		textField_3 = new JTextField();
 		textField_3.setText("50.2\u5143");
-		textField_3.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		textField_3.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		textField_3.setColumns(10);
 		textField_3.setBounds(128, 107, 102, 40);
 		frmAfc.getContentPane().add(textField_3);
@@ -137,85 +137,85 @@ public class LadyFaceDemo {
 		JButton btnNewButton = new JButton("\u5145\u503C10\u5143");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "Íê³É");
+				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "å®Œæˆ");
 			}
 		});
 		btnNewButton.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-		btnNewButton.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		btnNewButton.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		btnNewButton.setBounds(128, 301, 180, 46);
 		frmAfc.getContentPane().add(btnNewButton);
 
 		button = new JButton("\u5145\u503C20\u5143");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "Íê³É");
+				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "å®Œæˆ");
 			}
 		});
 		button.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-		button.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		button.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		button.setBounds(334, 301, 180, 46);
 		frmAfc.getContentPane().add(button);
 
 		button_1 = new JButton("\u5145\u503C30\u5143");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "Íê³É");
+				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "å®Œæˆ");
 			}
 		});
 		button_1.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-		button_1.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		button_1.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		button_1.setBounds(543, 301, 180, 46);
 		frmAfc.getContentPane().add(button_1);
 
 		button_2 = new JButton("\u5145\u503C50\u5143");
 		button_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "Íê³É");
+				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "å®Œæˆ");
 			}
 		});
 		button_2.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-		button_2.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		button_2.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		button_2.setBounds(755, 301, 180, 46);
 		frmAfc.getContentPane().add(button_2);
 
 		label_3 = new JLabel("\u81EA\u5B9A\u4E49\u91D1\u989D");
-		label_3.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		label_3.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		label_3.setBounds(128, 386, 130, 40);
 		frmAfc.getContentPane().add(label_3);
 
 		textField_4 = new JTextField();
 		textField_4.setText("200");
-		textField_4.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		textField_4.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		textField_4.setColumns(10);
 		textField_4.setBounds(268, 387, 76, 40);
 		frmAfc.getContentPane().add(textField_4);
 
 		label_4 = new JLabel("\u5143");
-		label_4.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		label_4.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		label_4.setBounds(354, 386, 30, 40);
 		frmAfc.getContentPane().add(label_4);
 
 		button_3 = new JButton("\u5145\u503C");
 		button_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, "³äÖµ" + textField_4.getText() + label_4.getText() + "Íê³É");
+				JOptionPane.showMessageDialog(frmAfc, "å……å€¼" + textField_4.getText() + label_4.getText() + "å®Œæˆ");
 				textField_4.requestFocusInWindow();
 				textField_4.setText("");
 			}
 		});
 		button_3.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-		button_3.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		button_3.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		button_3.setBounds(422, 386, 90, 40);
 		frmAfc.getContentPane().add(button_3);
 
 		button_4 = new JButton("\u51B2\u8D26");
 		button_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, "×îºóÒ»±Ê³äÖµ³åÕËÍê³É");
+				JOptionPane.showMessageDialog(frmAfc, "æœ€åä¸€ç¬”å……å€¼å†²è´¦å®Œæˆ");
 			}
 		});
 		button_4.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
-		button_4.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		button_4.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		button_4.setBounds(131, 464, 90, 40);
 		frmAfc.getContentPane().add(button_4);
 
@@ -223,13 +223,13 @@ public class LadyFaceDemo {
 		button_5.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		button_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "Íê³É");
+				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "å®Œæˆ");
 			}
 		});
-		button_5.setFont(new Font("Î¢ÈíÑÅºÚ", Font.PLAIN, 24));
+		button_5.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 24));
 		button_5.setBounds(966, 301, 180, 46);
 		frmAfc.getContentPane().add(button_5);
-		// ÉèÖÃ¿É¸Ä±ä³ß´ç
+		// è®¾ç½®å¯æ”¹å˜å°ºå¯¸
 		frmAfc.setResizable(false);
 		frmAfc.setAlwaysOnTop(true);
 		frmAfc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
