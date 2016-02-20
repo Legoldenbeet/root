@@ -90,6 +90,7 @@ public class LadyFaceDemo {
 		textField.setFont(new Font("微软雅黑", Font.PLAIN, 24));
 		textField.setText("10007510724045616430");
 		textField.setBounds(128, 23, 400, 40);
+		textField.setToolTipText("10007510724045616430");
 		frmAfc.getContentPane().add(textField);
 		textField.setColumns(10);
 
@@ -135,6 +136,8 @@ public class LadyFaceDemo {
 		frmAfc.getContentPane().add(textField_3);
 
 		JButton btnNewButton = new JButton("\u5145\u503C10\u5143");
+		btnNewButton.setToolTipText("<html><body>This message just used for demo, cool tool tip!<br>Ni hao Jack Jiang.</body></html>");
+
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(frmAfc, ((JButton) e.getSource()).getText() + "完成");
