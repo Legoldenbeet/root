@@ -9,6 +9,8 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
+import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
+
 /**
  * @author LIYAXIAO
  *
@@ -22,6 +24,8 @@ public class SwitchDialog extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.frameBorderStyle.generalNoTranslucencyShadow;
+					BeautyEyeLNFHelper.launchBeautyEyeLNF();
 					SwitchDialog dialog = new SwitchDialog();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
@@ -36,7 +40,7 @@ public class SwitchDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public SwitchDialog() {
-		setBounds(100, 100, 767, 164);
+		setBounds(100, 100, 767, 173);
 		getContentPane().setLayout(null);
 		
 		JButton btnNewButton = new JButton("售卡充值");
