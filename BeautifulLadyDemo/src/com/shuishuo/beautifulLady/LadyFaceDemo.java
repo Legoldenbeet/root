@@ -234,7 +234,7 @@ public class LadyFaceDemo {
 		frmAfc.getContentPane().add(button_5);
 		// 设置可改变尺寸
 		frmAfc.setResizable(false);
-		frmAfc.setAlwaysOnTop(true);
+//		frmAfc.setAlwaysOnTop(true);
 		frmAfc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 }

@@ -8,6 +8,7 @@ import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 
@@ -26,7 +27,7 @@ public class SwitchDialog extends JDialog {
 				try {
 					BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.frameBorderStyle.generalNoTranslucencyShadow;
 					BeautyEyeLNFHelper.launchBeautyEyeLNF();
-					SwitchDialog dialog = new SwitchDialog();
+					SwitchDialog dialog = new SwitchDialog(null);
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setVisible(true);
 				} catch (Exception e) {
@@ -39,8 +40,10 @@ public class SwitchDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SwitchDialog() {
-		setBounds(100, 100, 767, 173);
+	public SwitchDialog(JFrame frame) {
+		super(frame, true);
+//		setBounds(100, 100, 767, 173);
+		setSize( 780, 173);
 		getContentPane().setLayout(null);
 		
 		JButton btnNewButton = new JButton("售卡充值");
@@ -55,18 +58,18 @@ public class SwitchDialog extends JDialog {
 		
 		JButton button_1 = new JButton("系统设置");
 		button_1.setFont(new Font("微软雅黑", Font.PLAIN, 28));
-		button_1.setBounds(290, 10, 160, 120);
+		button_1.setBounds(590, 10, 160, 120);
 		getContentPane().add(button_1);
 		
 		JButton button_2 = new JButton("资金结算");
 		button_2.setFont(new Font("微软雅黑", Font.PLAIN, 28));
-		button_2.setBounds(460, 10, 160, 120);
+		button_2.setBounds(290, 10, 160, 120);
 		getContentPane().add(button_2);
 		
 		JButton button_3 = new JButton("登出");
 		button_3.setFont(new Font("微软雅黑", Font.PLAIN, 28));
-		button_3.setBounds(630, 10, 120, 120);
+		button_3.setBounds(460, 10, 120, 120);
 		getContentPane().add(button_3);
-
+		setLocationRelativeTo(frame);
 	}
 }
