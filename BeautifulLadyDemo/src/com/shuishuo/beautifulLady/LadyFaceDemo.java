@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
+import javax.swing.SwingConstants;
 
 public class LadyFaceDemo {
 
@@ -37,6 +38,21 @@ public class LadyFaceDemo {
 	private JButton button_3;
 	private JButton button_4;
 	private JButton button_5;
+	private JTextField textField_5;
+	private JLabel label_6;
+	private JTextField textField_6;
+	private JLabel label_7;
+	private JTextField textField_7;
+	private JLabel label_8;
+	private JTextField textField_8;
+	private JLabel label_9;
+	private JTextField textField_9;
+	private JLabel label_10;
+	private JTextField textField_10;
+	private JLabel label_11;
+	private JTextField textField_11;
+	private JLabel label_12;
+	private JTextField textField_12;
 
 	/**
 	 * Launch the application.
@@ -87,52 +103,56 @@ public class LadyFaceDemo {
 		frmAfc.getContentPane().setLayout(null);
 
 		textField = new JTextField();
+		textField.setHorizontalAlignment(SwingConstants.RIGHT);
 		textField.setFont(new Font("微软雅黑", Font.PLAIN, 24));
 		textField.setText("10007510724045616430");
-		textField.setBounds(128, 23, 400, 40);
+		textField.setBounds(820, 28, 400, 40);
 		textField.setToolTipText("10007510724045616430");
 		frmAfc.getContentPane().add(textField);
 		textField.setColumns(10);
 
 		JLabel lblNewLabel = new JLabel("\u5361\u53F7");
 		lblNewLabel.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		lblNewLabel.setBounds(58, 23, 60, 40);
+		lblNewLabel.setBounds(674, 28, 60, 40);
 		frmAfc.getContentPane().add(lblNewLabel);
 
 		JLabel label = new JLabel("\u72B6\u6001");
 		label.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		label.setBounds(1016, 23, 60, 40);
+		label.setBounds(674, 154, 60, 40);
 		frmAfc.getContentPane().add(label);
 
 		textField_1 = new JTextField();
+		textField_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		textField_1.setText("\u5DF2\u542F\u7528");
 		textField_1.setFont(new Font("微软雅黑", Font.PLAIN, 24));
 		textField_1.setColumns(10);
-		textField_1.setBounds(1086, 23, 102, 40);
+		textField_1.setBounds(820, 154, 400, 40);
 		frmAfc.getContentPane().add(textField_1);
 
-		JLabel label_1 = new JLabel("\u5361\u7C7B\u578B");
+		JLabel label_1 = new JLabel("卡片类型");
 		label_1.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		label_1.setBounds(706, 23, 90, 40);
+		label_1.setBounds(49, 91, 120, 40);
 		frmAfc.getContentPane().add(label_1);
 
 		textField_2 = new JTextField();
-		textField_2.setText("\u666E\u901A\u5145\u503C\u5361");
+		textField_2.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_2.setText("普通储值卡");
 		textField_2.setFont(new Font("微软雅黑", Font.PLAIN, 24));
 		textField_2.setColumns(10);
-		textField_2.setBounds(806, 23, 166, 40);
+		textField_2.setBounds(209, 91, 400, 40);
 		frmAfc.getContentPane().add(textField_2);
 
-		label_2 = new JLabel("\u4F59\u989D");
+		label_2 = new JLabel("充值前余额");
 		label_2.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		label_2.setBounds(58, 106, 60, 40);
+		label_2.setBounds(49, 154, 150, 40);
 		frmAfc.getContentPane().add(label_2);
 
 		textField_3 = new JTextField();
+		textField_3.setHorizontalAlignment(SwingConstants.RIGHT);
 		textField_3.setText("50.2\u5143");
 		textField_3.setFont(new Font("微软雅黑", Font.PLAIN, 24));
 		textField_3.setColumns(10);
-		textField_3.setBounds(128, 107, 102, 40);
+		textField_3.setBounds(209, 154, 400, 40);
 		frmAfc.getContentPane().add(textField_3);
 
 		JButton btnNewButton = new JButton("\u5145\u503C10\u5143");
@@ -145,7 +165,7 @@ public class LadyFaceDemo {
 		});
 		btnNewButton.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		btnNewButton.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		btnNewButton.setBounds(128, 301, 180, 46);
+		btnNewButton.setBounds(49, 689, 180, 46);
 		frmAfc.getContentPane().add(btnNewButton);
 
 		button = new JButton("\u5145\u503C20\u5143");
@@ -156,7 +176,7 @@ public class LadyFaceDemo {
 		});
 		button.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		button.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		button.setBounds(334, 301, 180, 46);
+		button.setBounds(255, 689, 180, 46);
 		frmAfc.getContentPane().add(button);
 
 		button_1 = new JButton("\u5145\u503C30\u5143");
@@ -167,7 +187,7 @@ public class LadyFaceDemo {
 		});
 		button_1.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		button_1.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		button_1.setBounds(543, 301, 180, 46);
+		button_1.setBounds(464, 689, 180, 46);
 		frmAfc.getContentPane().add(button_1);
 
 		button_2 = new JButton("\u5145\u503C50\u5143");
@@ -178,24 +198,24 @@ public class LadyFaceDemo {
 		});
 		button_2.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		button_2.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		button_2.setBounds(755, 301, 180, 46);
+		button_2.setBounds(676, 689, 180, 46);
 		frmAfc.getContentPane().add(button_2);
 
 		label_3 = new JLabel("\u81EA\u5B9A\u4E49\u91D1\u989D");
 		label_3.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		label_3.setBounds(128, 386, 130, 40);
+		label_3.setBounds(49, 774, 130, 40);
 		frmAfc.getContentPane().add(label_3);
 
 		textField_4 = new JTextField();
 		textField_4.setText("200");
 		textField_4.setFont(new Font("微软雅黑", Font.PLAIN, 24));
 		textField_4.setColumns(10);
-		textField_4.setBounds(268, 387, 76, 40);
+		textField_4.setBounds(189, 775, 76, 40);
 		frmAfc.getContentPane().add(textField_4);
 
 		label_4 = new JLabel("\u5143");
 		label_4.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		label_4.setBounds(354, 386, 30, 40);
+		label_4.setBounds(275, 774, 30, 40);
 		frmAfc.getContentPane().add(label_4);
 
 		button_3 = new JButton("\u5145\u503C");
@@ -208,7 +228,7 @@ public class LadyFaceDemo {
 		});
 		button_3.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		button_3.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		button_3.setBounds(422, 386, 90, 40);
+		button_3.setBounds(343, 774, 90, 40);
 		frmAfc.getContentPane().add(button_3);
 
 		button_4 = new JButton("\u51B2\u8D26");
@@ -219,7 +239,7 @@ public class LadyFaceDemo {
 		});
 		button_4.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 		button_4.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		button_4.setBounds(131, 464, 90, 40);
+		button_4.setBounds(464, 774, 90, 40);
 		frmAfc.getContentPane().add(button_4);
 
 		button_5 = new JButton("\u5145\u503C100\u5143");
@@ -230,8 +250,112 @@ public class LadyFaceDemo {
 			}
 		});
 		button_5.setFont(new Font("微软雅黑", Font.PLAIN, 24));
-		button_5.setBounds(966, 301, 180, 46);
+		button_5.setBounds(887, 689, 180, 46);
 		frmAfc.getContentPane().add(button_5);
+		
+		JLabel label_5 = new JLabel("卡发行商");
+		label_5.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_5.setBounds(674, 90, 120, 40);
+		frmAfc.getContentPane().add(label_5);
+		
+		textField_5 = new JTextField();
+		textField_5.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_5.setText("北京一卡通");
+		textField_5.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_5.setColumns(10);
+		textField_5.setBounds(820, 90, 400, 40);
+		frmAfc.getContentPane().add(textField_5);
+		
+		label_6 = new JLabel("交易类型");
+		label_6.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_6.setBounds(49, 29, 120, 40);
+		frmAfc.getContentPane().add(label_6);
+		
+		textField_6 = new JTextField();
+		textField_6.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_6.setText("充值");
+		textField_6.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_6.setColumns(10);
+		textField_6.setBounds(209, 28, 400, 40);
+		frmAfc.getContentPane().add(textField_6);
+		
+		label_7 = new JLabel("充值金额");
+		label_7.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_7.setBounds(49, 217, 120, 40);
+		frmAfc.getContentPane().add(label_7);
+		
+		textField_7 = new JTextField();
+		textField_7.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_7.setText("30元");
+		textField_7.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_7.setColumns(10);
+		textField_7.setBounds(209, 217, 400, 40);
+		frmAfc.getContentPane().add(textField_7);
+		
+		label_8 = new JLabel("充值后余额");
+		label_8.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_8.setBounds(49, 285, 150, 40);
+		frmAfc.getContentPane().add(label_8);
+		
+		textField_8 = new JTextField();
+		textField_8.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_8.setText("80.2元");
+		textField_8.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_8.setColumns(10);
+		textField_8.setBounds(209, 285, 400, 40);
+		frmAfc.getContentPane().add(textField_8);
+		
+		label_9 = new JLabel("有效期限");
+		label_9.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_9.setBounds(674, 217, 120, 40);
+		frmAfc.getContentPane().add(label_9);
+		
+		textField_9 = new JTextField();
+		textField_9.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_9.setText("2017-11-27");
+		textField_9.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_9.setColumns(10);
+		textField_9.setBounds(820, 217, 400, 40);
+		frmAfc.getContentPane().add(textField_9);
+		
+		label_10 = new JLabel("应收金额");
+		label_10.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_10.setBounds(49, 349, 120, 40);
+		frmAfc.getContentPane().add(label_10);
+		
+		textField_10 = new JTextField();
+		textField_10.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_10.setText("30元");
+		textField_10.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_10.setColumns(10);
+		textField_10.setBounds(209, 349, 400, 40);
+		frmAfc.getContentPane().add(textField_10);
+		
+		label_11 = new JLabel("付款金额");
+		label_11.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_11.setBounds(49, 407, 120, 40);
+		frmAfc.getContentPane().add(label_11);
+		
+		textField_11 = new JTextField();
+		textField_11.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_11.setText("50元");
+		textField_11.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_11.setColumns(10);
+		textField_11.setBounds(209, 407, 400, 40);
+		frmAfc.getContentPane().add(textField_11);
+		
+		label_12 = new JLabel("找零金额");
+		label_12.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		label_12.setBounds(49, 468, 120, 40);
+		frmAfc.getContentPane().add(label_12);
+		
+		textField_12 = new JTextField();
+		textField_12.setHorizontalAlignment(SwingConstants.RIGHT);
+		textField_12.setText("20元");
+		textField_12.setFont(new Font("微软雅黑", Font.PLAIN, 24));
+		textField_12.setColumns(10);
+		textField_12.setBounds(209, 468, 400, 40);
+		frmAfc.getContentPane().add(textField_12);
 		// 设置可改变尺寸
 		frmAfc.setResizable(false);
 //		frmAfc.setAlwaysOnTop(true);
