@@ -5,49 +5,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.mina.core.buffer.IoBuffer;
-import org.apache.mina.core.future.ReadFuture;
-import org.apache.mina.core.service.IoHandlerAdapter;
-import org.apache.mina.core.session.IdleStatus;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolCodecFactory;
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.codec.ProtocolDecoder;
-import org.apache.mina.filter.codec.ProtocolDecoderOutput;
-import org.apache.mina.filter.codec.ProtocolEncoder;
-import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
-import org.apache.mina.filter.codec.ProtocolEncoderOutput;
-import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
-import org.apache.mina.filter.executor.ExecutorFilter;
-import org.apache.mina.filter.logging.LoggingFilter;
-import org.apache.mina.transport.socket.SocketSessionConfig;
-import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
-import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.echeloneditor.actions.FileHander;
 import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
-import com.echeloneditor.utils.Debug;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.vo.Cmd;
-import com.echeloneditor.vo.FileHeader;
 import com.echeloneditor.vo.StatusObject;
+import com.sessionsocket.client.SessionClient;
+import com.socket.concurrentsocketserver.PooledRemoteFileServer;
 import com.watchdata.commons.lang.WDByteUtil;
-import com.watchdata.commons.lang.WDStringUtil;
 
-public class SeppImpl implements Sepp {
+public class SeppImpl extends Thread implements Sepp {
 	JTabbedPane tabbedPane;
 	StatusObject statusObject;
 
@@ -145,7 +121,7 @@ public class SeppImpl implements Sepp {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean sendFile(File file, String ip) throws Exception {
+	public String sendFile(File file, String tip) throws Exception {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		int len = fileInputStream.available();
 		byte[] data = new byte[Sepp.COMMAND_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("UTF-8").length + len];
@@ -163,11 +139,10 @@ public class SeppImpl implements Sepp {
 		System.arraycopy(fileBytes, 0, data, pos, len);
 		fileInputStream.close();
 
-		send(data, targetIp, 9991);
-		return true;
+		return send(data, tip, 9991);
 	}
 
-	public boolean sendFile(String filePath, String ip) throws Exception {
+	public String sendFile(String filePath, String ip) throws Exception {
 		return sendFile(new File(filePath), ip);
 	}
 
@@ -187,167 +162,22 @@ public class SeppImpl implements Sepp {
 	}
 
 	@Override
-	public void startService(int seppPort) {
-		try {
-			NioSocketAcceptor acceptor = new NioSocketAcceptor();
-			acceptor.getFilterChain().addLast("logger", new LoggingFilter());
-			acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
-			Executor threadPool = Executors.newCachedThreadPool();// 建立线程池
-			acceptor.getFilterChain().addLast("exector", new ExecutorFilter(threadPool));
-			acceptor.getSessionConfig().setReuseAddress(true);
-			acceptor.setHandler(new SeppIOHander());
-			acceptor.bind(new InetSocketAddress(seppPort));
-			Debug.log.debug("Service started on port " + seppPort + "...");
-		} catch (Exception e) {
-			Debug.log.debug(e.getMessage());
-		}
+	public void run() {
+		PooledRemoteFileServer server = new PooledRemoteFileServer(Integer.parseInt(Config.getValue("CONFIG", "seppPort")), 10);
+		server.setUpHandlers();
+		server.acceptConnections();
 	}
 
 	public String send(byte[] msg, String ip, int port) {
-		String recv = "";
-		NioSocketConnector connector = new NioSocketConnector();
-		connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new ObjectSerializationCodecFactory()));
-		connector.getSessionConfig().setUseReadOperation(true);
-		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-		IoSession session = connector.connect(new InetSocketAddress(ip, port)).awaitUninterruptibly().getSession();
+		SessionClient sessionClient=null;
 		try {
-			session.write(msg).awaitUninterruptibly(10, TimeUnit.SECONDS);
-			Debug.log.info("Send：" + msg);
-			ReadFuture readFuture = session.read();
-			if (readFuture.awaitUninterruptibly(10, TimeUnit.SECONDS)) {
-				recv = readFuture.getMessage().toString();
-				Debug.log.info("Recv：" + recv);
-			}
-		} finally {
-			session.close(true);
-			session.getService().dispose();
-			connector.dispose();
+			sessionClient = new SessionClient("9000", ip, port);
+			sessionClient.send(msg, "9000");
+			return sessionClient.recive("9000");
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		return recv;
-
-	}
-
-	private class SeppIOHander extends IoHandlerAdapter {
-		public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
-			Debug.log.info("exceptionCaught=" + cause.toString());
-			cause.printStackTrace();
-		}
-
-		public void messageSent(IoSession session, Object message) throws Exception {
-			Debug.log.info("messageSent=" + session.getRemoteAddress().toString());
-		}
-
-		public void sessionClosed(IoSession session) throws Exception {
-			session.close(true);
-			Debug.log.info("sessionClosed");
-		}
-
-		public void sessionCreated(IoSession session) throws Exception {
-			SocketSessionConfig cfg = (SocketSessionConfig) session.getConfig();
-			cfg.setSoLinger(0);
-			Debug.log.info("sessionCreated=" + session.getRemoteAddress().toString());
-		}
-
-		public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
-			Debug.log.info("sessionIdle=" + status.toString() + "=" + session.getRemoteAddress().toString());
-		}
-
-		public void sessionOpened(IoSession session) throws Exception {
-			Debug.log.info("sessionOpened=" + session.getRemoteAddress().toString());
-		}
-
-		public void messageReceived(IoSession session, Object msg) throws Exception {
-			try {
-				Debug.log.info("接收到的报文数据：" + msg.toString());
-				String recv = process((byte[]) msg);
-				session.write(recv);
-				Debug.log.info("发送出的报文数据：" + recv);
-			} catch (Exception e) {
-				Debug.log.debug(e.getMessage());
-			}
-		}
-	}
-
-	private class ByteArrayCodecFactory implements ProtocolCodecFactory {
-		private ByteArrayDecoder decoder = null;
-		private ByteArrayEncoder encoder = null;
-
-		public ByteArrayCodecFactory() {
-			encoder = new ByteArrayEncoder();
-			decoder = new ByteArrayDecoder();
-		}
-
-		@Override
-		public ProtocolDecoder getDecoder(IoSession iosession) throws Exception {
-			// TODO Auto-generated method stub
-			return decoder;
-		}
-
-		@Override
-		public ProtocolEncoder getEncoder(IoSession iosession) throws Exception {
-			// TODO Auto-generated method stub
-			return encoder;
-		}
-	}
-
-	private class ByteArrayDecoder extends CumulativeProtocolDecoder {
-
-		@Override
-		protected boolean doDecode(IoSession session, IoBuffer in, ProtocolDecoderOutput out) throws Exception {
-			in.setAutoExpand(true);
-			if (in.remaining() > 0) {
-				FileHeader fileHeader = (FileHeader) session.getAttribute("fileHeaer");
-				if (fileHeader == null || fileHeader.getSize() <= 0) {
-					fileHeader = new FileHeader();
-					// 有数据时，读取 4 字节判断消息长度
-					byte[] sizeBytes = new byte[Sepp.headerLen];
-					// 读取钱 4 个字节
-					in.get(sizeBytes);
-					int size = Integer.parseInt(WDByteUtil.bytes2HEX(sizeBytes), 16);
-					fileHeader.setSize(size);
-					session.setAttribute("fileHeaer", fileHeader);
-				}
-				in.mark();
-				int fileSize = fileHeader.getSize();
-				if (fileSize > in.remaining()) {
-					// 如果消息内容的长度不够，则重置（相当于不读取 size），返回 false
-					in.reset();
-					// 接收新数据，以拼凑成完整的数据~
-					return false;
-				} else {
-					byte[] dataBytes = new byte[fileSize];
-					in.get(dataBytes, 0, fileSize);
-					out.write(dataBytes);
-					if (in.remaining() > 0) {
-						// 如果读取内容后还粘了包，就让父类把剩下的数据再给解析一次~
-						return true;
-					}
-				}
-			}
-			// 处理成功，让父类进行接收下个包
-			return false;
-		}
-	}
-
-	private class ByteArrayEncoder extends ProtocolEncoderAdapter {
-
-		@Override
-		public void encode(IoSession iosession, Object obj, ProtocolEncoderOutput out) throws Exception {
-			// TODO Auto-generated method stub
-			byte[] bytes = (byte[]) obj;
-			IoBuffer buffer = IoBuffer.allocate(1024, true);
-			buffer.setAutoExpand(true);
-
-			buffer.put(WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(bytes.length + "", Sepp.headerLen * 2)));
-			buffer.put(bytes);
-			buffer.flip();
-
-			out.write(buffer);
-			out.flush();
-
-			buffer.free();
-		}
-
+		return null;
 	}
 
 	@Override

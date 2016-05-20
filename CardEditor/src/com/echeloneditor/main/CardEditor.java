@@ -163,14 +163,7 @@ public class CardEditor {
 			}
 		}
 		// 启动同步接收和发送服务
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				new SeppImpl(tabbedPane, statusObject).startService(Integer.parseInt(Config.getValue("CONFIG", "seppPort")));
-			}
-		});
-
+		new SeppImpl(tabbedPane, statusObject).start();
 	}
 
 	/**

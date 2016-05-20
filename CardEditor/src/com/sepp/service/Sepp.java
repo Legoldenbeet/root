@@ -22,16 +22,16 @@ public interface Sepp {
 	public final byte FILE_NAME_LEN_OFFSET = COMMAND_LEN;
 	public final byte FILE_NAME_LEN = (byte) 0x1;
 
-	// 创建sepp服务
-	public void startService(int seppPort);
+//	// 创建sepp服务
+//	public void startService(int seppPort);
 	//接收文件
 	public File receiveFile(File file,byte[] buf,short offset) throws Exception ;
 	//接收并打开文件
 	public void receiveFileAndOpenIt(File file,byte[] buf,short offset) throws Exception ;
 	
 	// 发送文件
-	public boolean sendFile(File file,String ip) throws Exception;
-	public boolean sendFile(String filePath, String ip) throws Exception;
+	public String sendFile(File file,String ip) throws Exception;
+	public String sendFile(String filePath, String ip) throws Exception;
 	// 关闭文件
 	public boolean closeFile(String fileName,String ip);
 
