@@ -55,7 +55,7 @@ public class SessionClient {
 		}
 	}
 
-	private void sendData(byte[] data, Socket socket) throws IOException {
+	public void sendData(byte[] data, Socket socket) throws IOException {
 		OutputStream sender = socket.getOutputStream();
 		sender.write(data);
 		sender.flush();

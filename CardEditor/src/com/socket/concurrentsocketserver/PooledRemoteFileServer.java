@@ -19,14 +19,20 @@ public class PooledRemoteFileServer {
 
 	public void acceptConnections() {
 		try {
-			ServerSocket server = new ServerSocket(listenPort);
+			serverSocket = new ServerSocket(listenPort);
 			log.debug("server listen on " + listenPort + "...");
 			Socket incomingConnection = null;
-			while (!server.isClosed()) {
-				incomingConnection = server.accept();
+			while (!serverSocket.isClosed()) {
+				incomingConnection = serverSocket.accept();
 				handleConnection(incomingConnection);
 			}
 		} catch (IOException e) {
+			try {
+				serverSocket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 	}

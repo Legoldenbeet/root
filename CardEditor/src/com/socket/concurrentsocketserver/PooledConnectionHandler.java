@@ -26,7 +26,7 @@ public class PooledConnectionHandler implements Runnable {
 	}
 
 	public void handleConnection() {
-		log.debug("get socket from pool success:::process adress "+socket.getLocalAddress()+"on port:"+socket.getLocalPort());
+		log.debug("get socket from pool success:::process adress "+socket.getLocalAddress()+"on port:"+socket.getLocalPort()+"/"+socket.getRemoteSocketAddress());
 		if(!socket.isClosed()) {
 			try {
 				byte[] data = reciveMessage(socket);
@@ -40,6 +40,7 @@ public class PooledConnectionHandler implements Runnable {
 		}else {
 			System.out.println(":::::连接异常关闭:::::");
 		}
+		
 	}
 
 	/**

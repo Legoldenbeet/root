@@ -93,13 +93,12 @@ public class SeppImpl extends Thread implements Sepp {
 
 	private void openFile(final File file) throws IOException {
 		// 在编辑区打开文件开启独立线程
-		Thread thread=new Thread(new Runnable() {
-			
+		Thread thread = new Thread(new Runnable() {
+
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(),
-						OsConstants.DEFAULT_FILE_ENCODE);
+				new FileHander(tabbedPane, statusObject).openFileWithFilePath(file.getPath(), OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		});
 		thread.start();
@@ -122,20 +121,20 @@ public class SeppImpl extends Thread implements Sepp {
 	 * @return
 	 * @throws Exception
 	 */
-	public String sendFile(byte ins,File file, String tip) throws Exception {
+	public String sendFile(byte ins, File file, String tip) throws Exception {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		int len = fileInputStream.available();
-		int dataLen=Sepp.COMMAND_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes(OsConstants.DEFAULT_FILE_ENCODE).length + len;
-		byte[] data = new byte[Sepp.HEADER_LEN+dataLen];
+		int dataLen = Sepp.COMMAND_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes(OsConstants.DEFAULT_FILE_ENCODE).length + len;
+		byte[] data = new byte[Sepp.HEADER_LEN + dataLen];
 		byte[] fileBytes = new byte[len];
 
 		fileInputStream.read(fileBytes);
 		int pos = 0;
-		byte[] headerLenBytes=WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(Integer.toHexString(dataLen), Sepp.HEADER_LEN*2));
+		byte[] headerLenBytes = WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(Integer.toHexString(dataLen), Sepp.HEADER_LEN * 2));
 		System.arraycopy(headerLenBytes, 0, data, 0, Sepp.HEADER_LEN);
-		pos+=Sepp.HEADER_LEN;
-		byte[] cmdBytes=WDByteUtil.HEX2Bytes("0F000000");
-		cmdBytes[1]=ins;
+		pos += Sepp.HEADER_LEN;
+		byte[] cmdBytes = WDByteUtil.HEX2Bytes("0F000000");
+		cmdBytes[1] = ins;
 		System.arraycopy(cmdBytes, 0, data, pos, 4);
 		int fileNameLen = file.getName().getBytes(OsConstants.DEFAULT_FILE_ENCODE).length;
 		pos += Sepp.COMMAND_LEN;
@@ -145,7 +144,6 @@ public class SeppImpl extends Thread implements Sepp {
 		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
 		fileInputStream.close();
-
 		return send(data, tip, 9991);
 	}
 
@@ -166,19 +164,28 @@ public class SeppImpl extends Thread implements Sepp {
 
 	@Override
 	public void run() {
-		PooledRemoteFileServer server = new PooledRemoteFileServer(Integer.parseInt(Config.getValue("CONFIG", "seppPort")), 10);
+		PooledRemoteFileServer server = new PooledRemoteFileServer(Integer.parseInt(Config.getValue("CONFIG", "seppPort")), 3);
 		server.setUpHandlers();
 		server.acceptConnections();
 	}
 
 	public String send(byte[] msg, String ip, int port) {
-		SessionClient sessionClient=null;
+		SessionClient sessionClient = null;
+		String connectorName = WDStringUtil.getRandomHexString(8);
 		try {
-			sessionClient = new SessionClient("shuishuo9000", ip, port);
-			sessionClient.send(msg, "shuishuo9000");
-			return sessionClient.recive("shuishuo9000");
+			sessionClient = new SessionClient(connectorName, ip, port);
+			sessionClient.send(msg, connectorName);
+			String resp=sessionClient.recive(connectorName);
+			sessionClient.Close(connectorName);
+			return resp;
 		} catch (Exception e) {
-			// TODO: handle exception
+			try {
+				sessionClient.Close(connectorName);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
 		}
 		return null;
 	}

@@ -206,7 +206,8 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent actionevent) {
 				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					new SeppImpl(tabbedPane, statusObject).sendFile(Sepp.INS_TRANSFER_OPEN,new File(filePath), Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem().trim()));
+					Sepp sepp=new SeppImpl(tabbedPane, statusObject);
+					sepp.sendFile(Sepp.INS_TRANSFER_OPEN,new File(filePath), Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem().trim()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
