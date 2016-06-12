@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
 
@@ -22,6 +21,7 @@ import com.echeloneditor.vo.StatusObject;
 import com.sessionsocket.client.SessionClient;
 import com.socket.concurrentsocketserver.PooledRemoteFileServer;
 import com.watchdata.commons.lang.WDByteUtil;
+import com.watchdata.commons.lang.WDStringUtil;
 
 public class SeppImpl extends Thread implements Sepp {
 	JTabbedPane tabbedPane;
@@ -93,8 +93,8 @@ public class SeppImpl extends Thread implements Sepp {
 
 	private void openFile(final File file) throws IOException {
 		// 在编辑区打开文件开启独立线程
-		SwingUtilities.invokeLater(new Runnable() {
-
+		Thread thread=new Thread(new Runnable() {
+			
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
@@ -102,6 +102,7 @@ public class SeppImpl extends Thread implements Sepp {
 						OsConstants.DEFAULT_FILE_ENCODE);
 			}
 		});
+		thread.start();
 	}
 
 	public void openDir(String target) {
@@ -121,29 +122,31 @@ public class SeppImpl extends Thread implements Sepp {
 	 * @return
 	 * @throws Exception
 	 */
-	public String sendFile(File file, String tip) throws Exception {
+	public String sendFile(byte ins,File file, String tip) throws Exception {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		int len = fileInputStream.available();
-		byte[] data = new byte[Sepp.COMMAND_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes("UTF-8").length + len];
+		int dataLen=Sepp.COMMAND_LEN + Sepp.FILE_NAME_LEN + file.getName().getBytes(OsConstants.DEFAULT_FILE_ENCODE).length + len;
+		byte[] data = new byte[Sepp.HEADER_LEN+dataLen];
 		byte[] fileBytes = new byte[len];
 
 		fileInputStream.read(fileBytes);
 		int pos = 0;
-		System.arraycopy(WDByteUtil.HEX2Bytes("0F000000"), 0, data, pos, 4);
-		int fileNameLen = file.getName().getBytes("UTF-8").length;
-		pos += 4;
+		byte[] headerLenBytes=WDByteUtil.HEX2Bytes(WDStringUtil.paddingHeadZero(Integer.toHexString(dataLen), Sepp.HEADER_LEN*2));
+		System.arraycopy(headerLenBytes, 0, data, 0, Sepp.HEADER_LEN);
+		pos+=Sepp.HEADER_LEN;
+		byte[] cmdBytes=WDByteUtil.HEX2Bytes("0F000000");
+		cmdBytes[1]=ins;
+		System.arraycopy(cmdBytes, 0, data, pos, 4);
+		int fileNameLen = file.getName().getBytes(OsConstants.DEFAULT_FILE_ENCODE).length;
+		pos += Sepp.COMMAND_LEN;
 		data[pos] = (byte) fileNameLen;
 		pos++;
-		System.arraycopy(file.getName().getBytes("UTF-8"), 0, data, pos, fileNameLen);
+		System.arraycopy(file.getName().getBytes(OsConstants.DEFAULT_FILE_ENCODE), 0, data, pos, fileNameLen);
 		pos += fileNameLen;
 		System.arraycopy(fileBytes, 0, data, pos, len);
 		fileInputStream.close();
 
 		return send(data, tip, 9991);
-	}
-
-	public String sendFile(String filePath, String ip) throws Exception {
-		return sendFile(new File(filePath), ip);
 	}
 
 	@Override
@@ -171,9 +174,9 @@ public class SeppImpl extends Thread implements Sepp {
 	public String send(byte[] msg, String ip, int port) {
 		SessionClient sessionClient=null;
 		try {
-			sessionClient = new SessionClient("9000", ip, port);
-			sessionClient.send(msg, "9000");
-			return sessionClient.recive("9000");
+			sessionClient = new SessionClient("shuishuo9000", ip, port);
+			sessionClient.send(msg, "shuishuo9000");
+			return sessionClient.recive("shuishuo9000");
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -187,7 +190,7 @@ public class SeppImpl extends Thread implements Sepp {
 		offset += 1;
 		System.arraycopy(buf, offset, fileNameBytes, 0, fileNameLen);
 		offset += fileNameLen;
-		String fileName = new String(fileNameBytes, "GBK");
+		String fileName = new String(fileNameBytes, OsConstants.DEFAULT_FILE_ENCODE);
 		file = new File(OsConstants.DEFAULT_USER_DIR + "/" + Config.getValue("CONFIG", "debugPath") + "/" + fileName);
 		if (!file.getParentFile().exists()) {
 			file.mkdir();
@@ -199,12 +202,12 @@ public class SeppImpl extends Thread implements Sepp {
 		}
 
 		FileOutputStream fos = new FileOutputStream(file);
-		BufferedOutputStream bw = new BufferedOutputStream(fos);
+		BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-		bw.write(buf, offset, buf.length - offset);
-		bw.flush();
+		bos.write(buf, offset, buf.length - offset);
+		bos.flush();
 		fos.close();
-		bw.close();
+		bos.close();
 
 		return file;
 	}

@@ -37,7 +37,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
@@ -74,6 +73,7 @@ import com.echeloneditor.utils.SwingUtils;
 import com.echeloneditor.utils.WindowsExcuter;
 import com.echeloneditor.utils.ZipUtil;
 import com.echeloneditor.vo.StatusObject;
+import com.sepp.service.Sepp;
 import com.sepp.service.SeppImpl;
 import com.watchdata.Generater;
 import com.watchdata.commons.lang.WDAssert;
@@ -206,7 +206,7 @@ public class CardEditor {
 			public void actionPerformed(ActionEvent actionevent) {
 				String filePath = SwingUtils.getCloseableTabComponent(tabbedPane).getFilePath();
 				try {
-					new SeppImpl(tabbedPane, statusObject).sendFile(filePath, Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem()));
+					new SeppImpl(tabbedPane, statusObject).sendFile(Sepp.INS_TRANSFER_OPEN,new File(filePath), Config.getValue("FREND_LIST", statusObject.getSelectedSeppTartgetItem().trim()));
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

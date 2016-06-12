@@ -2,7 +2,6 @@ package com.socket.concurrentsocketserver;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -11,8 +10,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.echeloneditor.main.CardEditor;
+import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Debug;
-import com.echeloneditor.vo.Cmd;
 import com.sepp.service.Sepp;
 import com.sepp.service.SeppImpl;
 import com.watchdata.commons.lang.WDByteUtil;
@@ -26,18 +26,19 @@ public class PooledConnectionHandler implements Runnable {
 	}
 
 	public void handleConnection() {
-		log.debug("get socket from pool success:process adress "+socket.getLocalAddress()+"on port:"+socket.getLocalPort());
-//		log.debug(Thread.currentThread().getName() + " processing...");
+		log.debug("get socket from pool success:::process adress "+socket.getLocalAddress()+"on port:"+socket.getLocalPort());
 		if(!socket.isClosed()) {
 			try {
 				byte[] data = reciveMessage(socket);
-				SeppImpl sepp=new SeppImpl(null, null);
+				SeppImpl sepp=new SeppImpl(CardEditor.tabbedPane, CardEditor.statusObject);
 				String cmd=sepp.process(data);
-				sendMessage((cmd+"\n").getBytes("UTF-8"));
+				sendMessage((cmd+"\n").getBytes(OsConstants.DEFAULT_FILE_ENCODE));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else {
+			System.out.println(":::::连接异常关闭:::::");
 		}
 	}
 
@@ -64,8 +65,8 @@ public class PooledConnectionHandler implements Runnable {
 		out = new ByteArrayOutputStream();
 
 		// 读取数据
-		byte[] msgHeader = new byte[4];// 缓存大小
-		byte[] buffer = new byte[5 * 1024];// 缓存大小
+		byte[] msgHeader = new byte[Sepp.HEADER_LEN];// 缓存大小
+		byte[] buffer = new byte[Sepp.PACKAGE_SIZE];// 缓存大小
 
 		int amount = reciver.read(msgHeader);
 		long headLen = Long.parseLong(WDByteUtil.bytes2HEX(msgHeader), 16);

@@ -4,6 +4,8 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
+import com.echeloneditor.main.CardEditor;
+
 public class TestDemo {
 	public static void sendFile() throws Exception{
 		JFileChooser jFileChooser=new JFileChooser(".");
@@ -12,7 +14,7 @@ public class TestDemo {
 			File file= jFileChooser.getSelectedFile();
 //			SessionClient sessionClient=new SessionClient("test", "10.0.97.68", 9000);
 			
-			//long len=file.length();
+//			long len=file.length();
 			
 			
 //			FileInputStream fileInputStream=new FileInputStream(file);
@@ -44,8 +46,8 @@ public class TestDemo {
 //			
 //			fileInputStream.close();
 			
-			Sepp sepp=new SeppImpl(null,null);
-			String res=sepp.sendFile(file, "127.0.0.1");
+			Sepp sepp=new SeppImpl(CardEditor.tabbedPane,CardEditor.statusObject);
+			String res=sepp.sendFile(Sepp.INS_TRANSFER_OPEN,file, "127.0.0.1");
 			System.out.println(res);
 		}
 	}

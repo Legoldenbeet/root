@@ -30,8 +30,8 @@ public interface Sepp {
 	public void receiveFileAndOpenIt(File file,byte[] buf,short offset) throws Exception ;
 	
 	// 发送文件
-	public String sendFile(File file,String ip) throws Exception;
-	public String sendFile(String filePath, String ip) throws Exception;
+	public String sendFile(byte type,File file,String ip) throws Exception;
+
 	// 关闭文件
 	public boolean closeFile(String fileName,String ip);
 
