@@ -317,7 +317,7 @@ public class AssistantToolDialog extends JPanel {
 		btnNewButton_6.setFocusPainted(false);
 		btnNewButton_6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				restultField.setText(WDByteUtil.bytes2HEX(WDEncodeUtil.md5(WDByteUtil.HEX2Bytes(dataField.getText()))));
+				restultField.setText(WDByteUtil.bytes2HEX(WDEncodeUtil.md5(dataField.getText().getBytes())));
 			}
 		});
 		btnNewButton_6.setBounds(650, 450, 140, 25);

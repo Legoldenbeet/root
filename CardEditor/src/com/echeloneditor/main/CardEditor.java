@@ -67,6 +67,7 @@ import com.echeloneditor.listeners.TabbedPaneChangeListener;
 import com.echeloneditor.os.JButton;
 import com.echeloneditor.os.OsConstants;
 import com.echeloneditor.utils.Config;
+import com.echeloneditor.utils.FileUtil;
 import com.echeloneditor.utils.FontUtil;
 import com.echeloneditor.utils.ImageHelper;
 import com.echeloneditor.utils.SwingUtils;
@@ -865,6 +866,30 @@ public class CardEditor {
 		});
 		mntmSnapshot.setIcon(new ImageIcon(CardEditor.class.getResource("/com/echeloneditor/resources/images/20150103103702829_easyicon_net_24.png")));
 		menu_1.add(mntmSnapshot);
+		
+		JMenuItem mntmCodecounter = new JMenuItem("CodeCounter");
+		mntmCodecounter.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser(".");
+				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int ret = fileChooser.showOpenDialog(frmEcheloneditor);
+
+				if (ret == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fileChooser.getSelectedFile();
+					long num=0;
+					try {
+						num=FileUtil.countLines(selectedFile);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(frmEcheloneditor, e1.getMessage());
+						return;
+					}
+					FileUtil.lines=0;
+					JOptionPane.showMessageDialog(frmEcheloneditor, "操作完成!"+num);
+				}
+			}
+		});
+		menu_1.add(mntmCodecounter);
 
 		JMenu menu_5 = new JMenu("皮肤");
 		menuBar.add(menu_5);
