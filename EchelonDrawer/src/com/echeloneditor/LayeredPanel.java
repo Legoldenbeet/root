@@ -21,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
 public class LayeredPanel extends JPanel implements MouseListener, MouseMotionListener, KeyListener {
 	/**
 	 * 
@@ -71,12 +69,12 @@ public class LayeredPanel extends JPanel implements MouseListener, MouseMotionLi
 		int imageWidth = imageIcon.getIconWidth();
 		int imageHeight = imageIcon.getIconHeight();
 
-		if (imageIcon.getIconWidth() > 800) {
-			imageWidth = 800;
-		}
-		if (imageIcon.getIconHeight() > 600) {
-			imageHeight = 600;
-		}
+//		if (imageIcon.getIconWidth() > 800) {
+//			imageWidth = 800;
+//		}
+//		if (imageIcon.getIconHeight() > 600) {
+//			imageHeight = 600;
+//		}
 		this.setBounds(0, 50, imageWidth, imageHeight);
 
 		x1 = this.getWidth();

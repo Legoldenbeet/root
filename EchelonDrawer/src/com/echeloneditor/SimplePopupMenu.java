@@ -26,12 +26,10 @@ public class SimplePopupMenu extends JPopupMenu {
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				echelonDrawer.getLayeredPane().remove(layeredPanel);
-				System.out.println();
 			}
 		});
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
 		add(menuItem);
-		
 		JSeparator separator = new JSeparator();
 		add(separator);
 		
