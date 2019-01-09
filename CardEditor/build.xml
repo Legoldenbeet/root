@@ -23,7 +23,9 @@
 	<property name="version" value="1.1.6" />
 	<property name="source-dir" location="src" />
 	<property name="root-dir" location="E:/程序打包/CardEditor" />
-	<property name="javac-home" location="C:\Program Files (x86)\Java\jdk1.6.0_10\bin\javac" />
+	<property name="javac-home" location="C:\Program Files\Java\jdk1.8.0_181\bin\javac" />
+	<property name="ant-home" location="C:\Program Files\exe4j\bin\ant.jar" />
+		<property name="innosetup-home" location="C:\Program Files (x86)\Inno Setup 5" />
 	<property name="class-dir" location="${root-dir}/ant-classes" />
 	<property name="dist-dir" location="${root-dir}/dist" />
 	<property name="doc-dir" location="${root-dir}/javadoc" />
@@ -155,9 +157,21 @@
 			<!--link href="" /-->
 		</javadoc>
 	</target>
+	<taskdef name="exe4j" classname="com.exe4j.Exe4JTask"
+			classpath="${ant-home}" />
+		<target name="makelauncher">
+			<exe4j projectfile="${setup-dir}\CardEditor_32.exe4j"
+				verbose="true" release="1.0.10" />
+		</target>
 
+		<target name="makesetup">
+			<exec executable="${innosetup-home}\ISCC.exe">
+				<arg value="/Qp" />
+				<arg value="${setup-dir}\CardEditor_setup_x86_64.iss" />
+			</exec>
+		</target>
 	<!-- Builds all target 32bit system  -->
-	<target name="build" depends="clean,compile,make-jar-main,make-jar-ScreenShot,move">
+	<target name="build" depends="clean,compile,make-jar-main,make-jar-ScreenShot,move,makelauncher,makesetup">
 		<!--antcall target="make-javadoc">
 		</antcall>
 		<antcall target="make-source-zip">
