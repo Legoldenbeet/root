@@ -269,6 +269,9 @@ public class AtmPanel extends JPanel {
 
 	public static void tableDataDisp() {
 		File reportDirectory = new File(reportDir);
+		if (!reportDirectory.exists()) {
+			reportDirectory.mkdir();
+		}
 		File[] reports = null;
 		if (reportDirectory.exists() && reportDirectory.isDirectory()) {
 			reports = reportDirectory.listFiles();
